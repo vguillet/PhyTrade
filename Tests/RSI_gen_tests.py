@@ -47,3 +47,4 @@ def test_dynamic_boundary(data):
 
     assert sell_trigger == rsi_inst.sell_trigger
     assert buy_trigger == rsi_inst.buy_trigger
+    print("test passes")

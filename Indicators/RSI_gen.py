@@ -111,7 +111,7 @@ class RSI:
     
         # Define upper dynamic bound method
         for i in range(len(self.rsi_values)):
-            if self.rsi_values[i] > 70 and self.rsi_values[i] > (upper_bound[i] + self.buffer):
+            if self.rsi_values[i] > (70 + self.buffer):
                 new_upper_bound = self.rsi_values[i] - self.buffer
                 if new_upper_bound >= upper_bound[i-1]:
                     upper_bound[i] = new_upper_bound
@@ -120,12 +120,12 @@ class RSI:
     
         # Define lower dynamic bound method
         for i in range(len(self.rsi_values)):
-            if self.rsi_values[i] < 30 and self.rsi_values[i] < (upper_bound[i] + self.buffer):
+            if self.rsi_values[i] < (30 - self.buffer):
                 new_lower_bound = self.rsi_values[i] + self.buffer
                 if new_lower_bound <= upper_bound[i-1]:
-                    upper_bound[i] = new_lower_bound
+                    lower_bound[i] = new_lower_bound
                 else:
-                    upper_bound[i] = upper_bound[i-1]
+                    lower_bound[i] = lower_bound[i-1]
 
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
         # Indicator output
@@ -143,9 +143,9 @@ class RSI:
         # Defining indicator trigger for...
         for i in range(len(self.dates)):
             # ...upper bound
-            if self.rsi_values[i] > 70 and self.sell_trigger == 0:  # Initiate sell trigger
+            if self.rsi_values[i] >= 70 and self.sell_trigger == 0:  # Initiate sell trigger
                 self.sell_trigger = 1
-            if self.rsi_values[i] < upper_bound[i] and self.sell_trigger == 1:  # Trigger sell signal
+            if self.rsi_values[i] <= upper_bound[i] and self.sell_trigger == 1:  # Trigger sell signal
                 sellcount += 1
                 self.sell_dates.append(self.dates[i])
                 self.sell_trigger = 2
@@ -153,9 +153,9 @@ class RSI:
                 self.sell_trigger = 0
 
             # ...lower bound
-            if self.rsi_values[i] < 30 and self.buy_trigger == 0:  # Initiate buy trigger
+            if self.rsi_values[i] <= 30 and self.buy_trigger == 0:  # Initiate buy trigger
                 self.buy_trigger = 1
-            if self.rsi_values[i] > lower_bound[i] and self.buy_trigger == 1:  # Trigger buy signal
+            if self.rsi_values[i] >= lower_bound[i] and self.buy_trigger == 1:  # Trigger buy signal
                 buycount += 1
                 self.buy_dates.append(self.dates[i])
                 self.buy_trigger = 2
