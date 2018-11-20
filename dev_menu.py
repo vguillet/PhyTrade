@@ -1,6 +1,6 @@
 # Data Collection using Quandl
 from Data_Collection.Quandl import pull_quandl_data
-from Indicators.RSI_gen import rsi
+from Indicators.RSI_gen import RSI
 
 
 quandl_ticker = 'WIKI/AAPL'           # ticker selected for Quandl data collection
@@ -12,8 +12,9 @@ data = pull_quandl_data(quandl_ticker)  # Pull data from Quandl
 data_slice = data[-800:-200]               # Slice the data
 print("Selected number of points for analysis:", len(data_slice))
 # print(data_slice)
-rsi, sell_dates_rsi, buy_dates_rsi = rsi(quandl_ticker, data_slice, data)
+Rsi = RSI(quandl_ticker, data_slice, data)
 
+rsi = Rsi.rsi_values
 # Simple Indicator output
 sellcount = 0
 sell_trigger = True
