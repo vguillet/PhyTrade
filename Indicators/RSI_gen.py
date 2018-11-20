@@ -171,7 +171,7 @@ class RSI:
         self.bb_signal = []
 
         for i in range(len(self.rsi_values)):
-            self.bb_signal.append((self.rsi_values[i])/100)
+            self.bb_signal.append((self.rsi_values[i])/max(self.rsi_values)-1)
 
         for date in self.sell_dates:
             self.bb_signal[self.dates.index(date)] = 1
@@ -197,25 +197,29 @@ class RSI:
 
         plt.gcf().autofmt_xdate()
         plt.grid()
+        plt.title("RSI")
         plt.xlabel("Trade date")
         plt.ylabel("RSI - %")
         plt.show()
 
     def plot_rsi_signal(self):
-        import matplotlib.pyplot as plt
-        from scipy.interpolate import interp1d
         import numpy as np
+        import matplotlib.pyplot as plt
+        from scipy.interpolate import UnivariateSpline
 
-        nb_dates = list(range(len(self.dates)))
-        print(len(nb_dates))
-        x = np.array(nb_dates)
+        x = np.array(range(len(self.dates)))
         y = np.array(self.bb_signal)
 
-        bb_smooth = interp1d(x, y, kind='cubic')
-        xnew = np.linspace(0, max(nb_dates), int(len(nb_dates)/4))
+        spl = UnivariateSpline(x, y)
+        xs = np.linspace(0, 200, 1000)
+        spl.set_smoothing_factor(0.7)
 
-        plt.plot(bb_smooth(xnew))            # Plot rsi continuous signal
+        plt.plot(xs, spl(xs), 'g', lw=3)
+        plt.plot(range(len(self.dates)), self.bb_signal)            # Plot rsi continuous signal
+
+        plt.gcf().autofmt_xdate()
         plt.grid()
+        plt.title("RSI signal")
         plt.xlabel("Trade date")
         plt.ylabel("Signal power")
         plt.show()

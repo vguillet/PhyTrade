@@ -12,8 +12,8 @@ quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data co
 data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
 
 # Create data slice
-data_start_ind = -800
-data_stop_ind = -200
+data_start_ind = -600
+data_stop_ind = -400
 
 # data_start_ind = 0
 # data_stop_ind = len(data)
@@ -22,7 +22,7 @@ print("Selected number of points for analysis:", data_stop_ind-data_start_ind)
 
 # -------------------------INDICATORS CALCULATION-------------------------------
 # --RSI
-rsi = RSI(quandl_ticker, data, data_start_ind, data_stop_ind, buffer_setting=1)
+rsi = RSI(quandl_ticker, data, data_start_ind, data_stop_ind, timeframe=14, buffer_setting=1)
 
 
 # -------------------------SIGNAL PLOTS-----------------------------------------
