@@ -1,38 +1,24 @@
 # Data Collection using Quandl
 from Data_Collection.Quandl import pull_quandl_data
 from Indicators.RSI_gen import RSI
+from Indicators.Open_close_value import plot_open_close_values
 
+# -------------------------DATA COLLECTION AND SELECTION------------------------
+quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data collection
 
-quandl_ticker = 'WIKI/AAPL'           # ticker selected for Quandl data collection
+data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
 
-data = pull_quandl_data(quandl_ticker)  # Pull data from Quandl
-
-# print(data[0:5])
-
-data_slice = data[-800:-200]               # Slice the data
+data_slice = data[-200:]                    # Create data slice
 print("Selected number of points for analysis:", len(data_slice))
-# print(data_slice)
-Rsi = RSI(quandl_ticker, data_slice, data)
 
-rsi = Rsi.rsi_values
-# Simple Indicator output
-sellcount = 0
-sell_trigger = True
-buycount = 0
-buy_trigger = True
+# -------------------------INDICATORS CALCULATION-------------------------------
+# --RSI
+rsi = RSI(quandl_ticker, data_slice, data)
+rsi.plot_rsi_and_bounds()
 
-for i in rsi:
-    if i > 70 and sell_trigger is True:
-        sellcount = sellcount + 1
-        sell_trigger = False
-    if i < 70 and sell_trigger is False:
-        sell_trigger = True
+# --OPEN-CLOSE VALUES
+plot_open_close_values(data_slice)
 
-    if i < 30 and buy_trigger is True:
-        buycount = buycount + 1
-        buy_trigger = False
-    if i > 30 and buy_trigger is False:
-        buy_trigger = True
 
-print("sellcount:", sellcount)
-print("buycount:", buycount)
+print("Run complete")
+

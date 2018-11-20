@@ -1,6 +1,6 @@
 """
 The RSI indicator script is contained here
-
+It is currently optimised for Quandl
 """
 
 
@@ -22,16 +22,14 @@ class RSI:
         self.rsi_values = []
         # Fetch the data from the dataframe
         self.dates = list(self.data_slice.index.values)
+
+        # Variable initialisation
         close_price = []
         open_price = []
-    
+
         close_price_slice = []
         open_price_slice = []
-    
-        # print("".join([ticker, ' - Close']))
-        # assert "".join([ticker, ' - Close']) == 'WIKI/AAPL - Close'
-        # return
-    
+
         # Collect Open and close prices in respective lists
         for index, row in self.data_slice.iterrows():
             # ...for the data slice
@@ -88,8 +86,8 @@ class RSI:
             # print("Gains:", gains)
             # print("losses", losses)
             
-        print("RSI:", len(self.rsi_values))
-        print("Dates:", len(self.dates))
+        # print("RSI:", len(self.rsi_values))
+        # print("Dates:", len(self.dates))
     
     # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
@@ -129,7 +127,7 @@ class RSI:
                 else:
                     upper_bound[i] = upper_bound[i-1]
 
-    # =========================DETERMINE INDICATOR OUTPUT=================
+    # ===================== INDICATOR OUTPUT DETERMINATION ==============
         # Indicator output
         sellcount = 0
         buycount = 0
@@ -166,8 +164,9 @@ class RSI:
 
         self.upper_bound = upper_bound
         self.lower_bound = lower_bound
-        print("sellcount Db:", sellcount)
-        print("buycount Db:", buycount)
+
+        # print("sellcount Db:", sellcount)
+        # print("buycount Db:", buycount)
 
     # ____________________________________________________________________
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
@@ -181,7 +180,6 @@ class RSI:
         plt.grid()
         plt.xlabel("Trade date")
         plt.ylabel("RSI - %")
-        plt.figure(figsize=(70, 70))  # This increases resolution
         plt.show()
         
 
