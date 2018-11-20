@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture()
 def data():
-    from Data_Collection.Quandl import pull_quandl_data
+    from Data_Collection_preparation.Quandl import pull_quandl_data
 
     quandl_ticker = 'WIKI/AAPL'  # ticker selected for Quandl data collection
     data = pull_quandl_data(quandl_ticker)  # Pull data from Quandl

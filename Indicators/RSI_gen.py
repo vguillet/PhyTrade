@@ -21,7 +21,6 @@ class RSI:
     # -------------------------DATA PRE-PROCESSING------------------------
         self.timeframe = timeframe
         self.rsi_values = []
-        # Fetch the data from the dataframe
         self.dates = list(self.data_slice.index.values)
 
         # Variable initialisation
@@ -33,8 +32,6 @@ class RSI:
             # ...for the whole dataset
             close_price.append(row['Close'])
             open_price.append(row['Open'])
-
-        print(len(close_price))
 
     # --------------------------RSI CALCULATION---------------------------
         # Calculate for each date the RSI
@@ -123,6 +120,7 @@ class RSI:
                     lower_bound[i] = lower_bound[i-1]
 
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
+        # -----------------Trigger points determination
         # Indicator output
         sellcount = 0
         buycount = 0
@@ -169,16 +167,26 @@ class RSI:
             if self.rsi_values[i] > 30 and self.sell_trigger == 2:  # Reset trigger
                 self.buy_trigger = 0
 
+        # -----------------Bear/Bullish continuous signal
+        self.bb_signal = []
+
+        for i in range(len(self.rsi_values)):
+            self.bb_signal.append((self.rsi_values[i])/100)
+
+        for date in self.sell_dates:
+            self.bb_signal[self.dates.index(date)] = 1
+
+        for date in self.buy_dates:
+            self.bb_signal[self.dates.index(date)] = 0
+
         self.upper_bound = upper_bound
         self.lower_bound = lower_bound
-
-        # print("sellcount Db:", sellcount)
-        # print("buycount Db:", buycount)
 
     # ____________________________________________________________________
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
     def plot_rsi_and_bounds(self):
         import matplotlib.pyplot as plt
+
         plt.plot(self.dates, self.upper_bound)          # Plot upper bound
         plt.plot(self.dates, self.lower_bound)          # Plot lower bound
 
@@ -188,12 +196,27 @@ class RSI:
         plt.scatter(self.buy_dates, self.buy_rsi)       # Plot buy signals
 
         plt.gcf().autofmt_xdate()
-        plt.title("RSI")
         plt.grid()
         plt.xlabel("Trade date")
         plt.ylabel("RSI - %")
         plt.show()
-        
 
+    def plot_rsi_signal(self):
+        import matplotlib.pyplot as plt
+        from scipy.interpolate import interp1d
+        import numpy as np
 
+        nb_dates = list(range(len(self.dates)))
+        print(len(nb_dates))
+        x = np.array(nb_dates)
+        y = np.array(self.bb_signal)
+
+        bb_smooth = interp1d(x, y, kind='cubic')
+        xnew = np.linspace(0, max(nb_dates), int(len(nb_dates)/4))
+
+        plt.plot(bb_smooth(xnew))            # Plot rsi continuous signal
+        plt.grid()
+        plt.xlabel("Trade date")
+        plt.ylabel("Signal power")
+        plt.show()
 
