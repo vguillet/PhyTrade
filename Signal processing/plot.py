@@ -10,7 +10,7 @@ quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data co
 
 data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
 
-data_slice = data[-1000:]                    # Create data slice
+data_slice = data[-1500:]                    # Create data slice
 print("Selected number of points for analysis:", len(data_slice))
 
 # -------------------------INDICATORS CALCULATION-------------------------------
@@ -32,7 +32,7 @@ for index, row in data_slice.iterrows():
     open_value_slice.append(row['Open'])
 
 # Signal plotting
-# Plot
+# ------------------Plot Open/Close prices
 ax1 = plt.subplot(211)
 plt.plot(dates, close_value_slice)
 plt.plot(dates, open_value_slice)
@@ -42,11 +42,16 @@ plt.grid()
 plt.xlabel("Trade date")
 plt.ylabel("Value")
 
-# Plot RSI
+# ------------------Plot RSI
 ax2 = plt.subplot(212, sharex=ax1)
-plt.plot(dates, rsi.upper_bound)
-plt.plot(dates, rsi.lower_bound)
-# plt.plot(dates, rsi.rsi_values)
+plt.plot(dates, rsi.upper_bound)            # Plot upper bound
+plt.plot(dates, rsi.lower_bound)            # Plot lower bound
+
+plt.plot(dates, rsi.rsi_values)             # Plot RSI values
+
+plt.scatter(rsi.sell_dates, rsi.sell_rsi)   # Plot sell signals
+plt.scatter(rsi.buy_dates, rsi.buy_rsi)     # Plot buy signals
+
 plt.gcf().autofmt_xdate()
 plt.title("RSI")
 plt.grid()

@@ -133,7 +133,10 @@ class RSI:
         buycount = 0
 
         self.sell_dates = []
+        self.sell_rsi = []
+
         self.buy_dates = []
+        self.buy_rsi = []
 
         # Buy and sell triggers can take three values:
         # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
@@ -142,23 +145,33 @@ class RSI:
 
         # Defining indicator trigger for...
         for i in range(len(self.dates)):
+
             # ...upper bound
             if self.rsi_values[i] >= 70 and self.sell_trigger == 0:  # Initiate sell trigger
                 self.sell_trigger = 1
+
             if self.rsi_values[i] <= upper_bound[i] and self.sell_trigger == 1:  # Trigger sell signal
                 sellcount += 1
                 self.sell_dates.append(self.dates[i])
+                self.sell_rsi.append(self.rsi_values[i])
+
                 self.sell_trigger = 2
+
             if self.rsi_values[i] < 70 and self.sell_trigger == 2:  # Reset trigger
                 self.sell_trigger = 0
+
 
             # ...lower bound
             if self.rsi_values[i] <= 30 and self.buy_trigger == 0:  # Initiate buy trigger
                 self.buy_trigger = 1
+
             if self.rsi_values[i] >= lower_bound[i] and self.buy_trigger == 1:  # Trigger buy signal
                 buycount += 1
                 self.buy_dates.append(self.dates[i])
+                self.buy_rsi.append(self.rsi_values[i])
+
                 self.buy_trigger = 2
+
             if self.rsi_values[i] > 30 and self.sell_trigger == 2:  # Reset trigger
                 self.buy_trigger = 0
 
