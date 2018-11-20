@@ -5,16 +5,17 @@ It is currently optimised for Quandl
 
 
 class RSI:
-    def __init__(self, ticker, data_slice, data, timeframe=25, buffer_setting=0):
+    def __init__(self, ticker, data, data_start_ind, data_stop_ind, timeframe=14, buffer_setting=0):
         """
         :param ticker: Ticker of requested company/product
-        :param data_slice: Data slice to analyse
+        :param data_start_ind: Starting index of data to analyse
+        :param data_stop_ind: Stopping index of data to analyse
         :param data: Full dataset
         :param timeframe:
         :param buffer_setting: 0: no buffer, 1: fixed value buffer, 2: variable value buffer
         """
         self.ticker = ticker
-        self.data_slice = data_slice
+        self.data_slice = data[data_start_ind:data_stop_ind]
         self.data = data
 
     # -------------------------DATA PRE-PROCESSING------------------------
@@ -27,31 +28,25 @@ class RSI:
         close_price = []
         open_price = []
 
-        close_price_slice = []
-        open_price_slice = []
-
-        # Collect Open and close prices in respective lists
-        for index, row in self.data_slice.iterrows():
-            # ...for the data slice
-            close_price_slice.append(row['Close'])
-            open_price_slice.append(row['Open'])
-
-        for index, row in self.data[-(len(self.data_slice) + self.timeframe):].iterrows():
+        # Collect open and close prices in respective lists
+        for index, row in self.data.iterrows():
             # ...for the whole dataset
             close_price.append(row['Close'])
             open_price.append(row['Open'])
 
+        print(len(close_price))
+
     # --------------------------RSI CALCULATION---------------------------
         # Calculate for each date the RSI
-        for i in range(len(close_price_slice)):
+        for i in range(len(self.data_slice)):
     
             timeframe_open_prices = []
             timeframe_close_prices = []
     
             # Store open and close prices falling in the time frame
             for j in range(self.timeframe):
-                    timeframe_open_prices.append(open_price[i - j])
-                    timeframe_close_prices.append(close_price[i - j])
+                    timeframe_open_prices.append(open_price[(data_start_ind+i) - j])
+                    timeframe_close_prices.append(close_price[(data_start_ind+i) - j])
     
             # Calculate the net loss or gain for each date falling 
             # in the data frame and store them in gains and loss lists
@@ -99,7 +94,7 @@ class RSI:
             self.buffer = 0
 
         elif buffer_setting == 1:
-            self.buffer = 2
+            self.buffer = 3
 
         elif buffer_setting == 2:
             self.buffer = 2
@@ -160,7 +155,6 @@ class RSI:
             if self.rsi_values[i] < 70 and self.sell_trigger == 2:  # Reset trigger
                 self.sell_trigger = 0
 
-
             # ...lower bound
             if self.rsi_values[i] <= 30 and self.buy_trigger == 0:  # Initiate buy trigger
                 self.buy_trigger = 1
@@ -185,11 +179,16 @@ class RSI:
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
     def plot_rsi_and_bounds(self):
         import matplotlib.pyplot as plt
-        plt.plot(self.dates, self.upper_bound)
-        plt.plot(self.dates, self.lower_bound)
-        plt.plot(self.dates, self.rsi_values)
+        plt.plot(self.dates, self.upper_bound)          # Plot upper bound
+        plt.plot(self.dates, self.lower_bound)          # Plot lower bound
+
+        plt.plot(self.dates, self.rsi_values)           # Plot RSI
+
+        plt.scatter(self.sell_dates, self.sell_rsi)     # Plot sell signals
+        plt.scatter(self.buy_dates, self.buy_rsi)       # Plot buy signals
+
         plt.gcf().autofmt_xdate()
-        plt.title("RSI of Apple stocks over time")
+        plt.title("RSI")
         plt.grid()
         plt.xlabel("Trade date")
         plt.ylabel("RSI - %")
