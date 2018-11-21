@@ -4,9 +4,8 @@ This scripts enable plotting the opening and close value of stocks of a data sli
 
 
 class OC:
-    def __init__(self, big_data):
-
-        self.big_data = big_data
+    @staticmethod
+    def __init__(big_data):
         import numpy as np
 
         # -------Compute the values matching the trigger sell/buy dates
@@ -14,20 +13,13 @@ class OC:
         rsi_sell_values = []
         rsi_buy_values = []
 
-        print("big_data.rsi_sell_dates:", big_data.rsi_sell_dates[0])
-        print("big_data.data_slice_dates", big_data.data_slice_dates[0])
-        print(big_data.data_slice_dates.index[big_data.rsi_sell_dates[0]])
-
-        print("finished")
-        return
-
         for i in range(len(big_data.rsi_sell_dates)):
             rsi_sell_values.append(
-                big_data.data_slice_close_values[big_data.data_slice_dates.index[big_data.rsi_sell_dates[i]]])
+                big_data.data_slice_close_values[big_data.data_slice_dates.index(big_data.rsi_sell_dates[i])])
 
         for i in range(len(big_data.rsi_buy_dates)):
             rsi_buy_values.append(
-                big_data.data_slice_close_values[big_data.data_slice_dates.index[big_data.rsi_buy_dates[i]]])
+                big_data.data_slice_close_values[big_data.data_slice_dates.index(big_data.rsi_buy_dates[i])])
 
         setattr(big_data, "rsi_sell_values", rsi_sell_values)
         setattr(big_data, "rsi_buy_values", rsi_buy_values)
@@ -36,7 +28,7 @@ class OC:
 
         values_fluctuation = []
         for i in range(len(big_data.data_slice)):
-            values_fluctuation.append(big_data.data_close_values[i] - big_data.data_open_values[i])
+            values_fluctuation.append(big_data.data_slice_close_values[i] - big_data.data_slice_open_values[i])
 
         setattr(big_data, "data_slice_values_fluctuation", values_fluctuation)
 
@@ -48,14 +40,15 @@ class OC:
         setattr(big_data, "data_slice_close_values_gradient", close_values_gradient)
         setattr(big_data, "data_slice_open_values_gradient", open_values_gradient)
 
-    def plot_open_close_values(self):
+    @staticmethod
+    def plot_open_close_values(big_data):
         import matplotlib.pyplot as plt
 
-        plt.plot(self.big_data.data_slice_dates, self.big_data.data_slice_close_values)                # Plot closing value
-        plt.plot(self.big_data.data_slice_dates, self.big_data.data_slice_open_values)                 # Plot opening value
+        plt.plot(big_data.data_slice_dates, big_data.data_slice_close_values)                # Plot closing value
+        plt.plot(big_data.data_slice_dates, big_data.data_slice_open_values)                 # Plot opening value
 
-        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.rsi_sell_values)           # Plot sell signals
-        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.rsi_buy_values)             # Plot buy signals
+        plt.scatter(big_data.rsi_sell_dates, big_data.rsi_sell_values)           # Plot sell signals
+        plt.scatter(big_data.rsi_buy_dates, big_data.rsi_buy_values)             # Plot buy signals
 
         plt.gcf().autofmt_xdate()
         plt.title("Open and close values")
@@ -63,13 +56,11 @@ class OC:
         plt.xlabel("Trade date")
         plt.ylabel("Value")
 
-    def plot_open_close_values_diff(self):
+    @staticmethod
+    def plot_open_close_values_diff(big_data):
         import matplotlib.pyplot as plt
 
-        plt.plot(self.big_data.data_slice_dates, self.big_data.data_slice_values_fluctuation)      # Plot value fluctuation
-
-        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.rsi_sell_values)    # Plot sell signals
-        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.rsi_buy_values)      # Plot buy signals
+        plt.plot(big_data.data_slice_dates, big_data.data_slice_values_fluctuation)      # Plot value fluctuation
 
         plt.gcf().autofmt_xdate()
         plt.title("Open and close values fluctuation")

@@ -5,9 +5,8 @@ It is currently optimised for Quandl
 
 
 class RSI:
-    def __init__(self, big_data):
-
-        self.big_data = big_data
+    @staticmethod
+    def __init__(big_data):
 
         # --------------------------RSI CALCULATION---------------------------
         rsi_values = []
@@ -168,16 +167,17 @@ class RSI:
     # ____________________________________________________________________
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
 
-    def plot_rsi_and_bounds(self):
+    @staticmethod
+    def plot_rsi_and_bounds(big_data):
         import matplotlib.pyplot as plt
 
-        plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_upper_bound)   # Plot upper bound
-        plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_lower_bound)   # Plot lower bound
+        plt.plot(big_data.data_slice_dates, big_data.rsi_upper_bound)   # Plot upper bound
+        plt.plot(big_data.data_slice_dates, big_data.rsi_lower_bound)   # Plot lower bound
 
-        plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_values)        # Plot RSI
+        plt.plot(big_data.data_slice_dates, big_data.rsi_values)        # Plot RSI
 
-        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.rsi_sell_rsi)         # Plot sell signals
-        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.rsi_buy_rsi)           # Plot buy signals
+        plt.scatter(big_data.rsi_sell_dates, big_data.rsi_sell_rsi)         # Plot sell signals
+        plt.scatter(big_data.rsi_buy_dates, big_data.rsi_buy_rsi)           # Plot buy signals
 
         plt.gcf().autofmt_xdate()
         plt.grid()
@@ -186,20 +186,22 @@ class RSI:
         plt.ylabel("RSI - %")
         # plt.show()
 
-    def plot_rsi_signal(self):
+    @staticmethod
+    def plot_rsi_signal(big_data):
         import numpy as np
         import matplotlib.pyplot as plt
         from scipy.interpolate import UnivariateSpline
 
-        x = np.array(range(len(self.big_data.data_slice_dates)))
-        y = np.array(self.big_data.rsi_bb_signal)
+        x = np.array(range(len(big_data.data_slice_dates)))
+        y = np.array(big_data.rsi_bb_signal)
 
-        spl = UnivariateSpline(x, y)
-        xs = np.linspace(0, 200, len(self.big_data.data_slice_dates)*5)
-        spl.set_smoothing_factor(0.7)
+        rsi_bb_spl = UnivariateSpline(x, y)
+        xs = np.linspace(0, 200, len(big_data.data_slice_dates)*5)
+        rsi_bb_spl.set_smoothing_factor(0.7)
 
-        plt.plot(xs, spl(xs), 'g', lw=3)
-        plt.plot(range(len(self.big_data.data_slice_dates)), self.big_data.rsi_bb_signal)            # Plot rsi continuous signal
+        plt.plot(xs, rsi_bb_spl(xs), 'g', lw=3)
+
+        plt.plot(range(len(big_data.data_slice_dates)), big_data.rsi_bb_signal)            # Plot rsi continuous signal
 
         plt.gcf().autofmt_xdate()
         plt.grid()
