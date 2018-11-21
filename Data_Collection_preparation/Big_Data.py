@@ -1,5 +1,5 @@
 """
-The big data class contains all the information relating to a certain analysis,
+The big data class contains all the information relating to a specific analysis,
 modules can be called, which then save all their outputs to the big_data instance
 as new attributes. To compute specific attributes, run the corresponding modules:
 
@@ -50,8 +50,13 @@ OC module:
 
 SPLINE module:
 
-        spline_x        : x value array for spline calculation
-        spline_xs       : xs value array for spline calculation
+        spline_x            : x value array for spline calculation
+        spline_xs           : xs value array for spline calculation
+
+    (upon generating splines);
+        spline_length       : length of splines
+    (upon calling combine_signal_splines);
+        combined_signal_splines : combined selected signal spline
 
 """
 

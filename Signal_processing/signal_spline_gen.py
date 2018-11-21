@@ -21,7 +21,18 @@ class SPLINE:
         spline = UnivariateSpline(big_data.spline_x, y)
         spline.set_smoothing_factor(smoothing_factor)
 
+        setattr(big_data, "spline_length", len(spline(big_data.spline_xs)))
+
         return spline(big_data.spline_xs)
+
+    @staticmethod
+    def combine_signal_splines(big_data, signals):
+
+        combined_signal_spline = []
+        for i in range(big_data.spline_length):
+            combined_signal_spline.append(sum(signals[j][i] for j in range(len(signals)))/len(signals))
+
+        setattr(big_data, "combined_signal_splines", combined_signal_spline)
 
     @staticmethod
     def plot_signal_spline(big_data, spline):

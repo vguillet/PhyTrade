@@ -6,7 +6,7 @@ from Indicators.OC_values import OC
 
 from Signal_processing.signal_spline_gen import SPLINE
 
-# -------------------------DATA COLLECTION AND SELECTION------------------------
+# ========================= DATA COLLECTION AND SELECTION ========================
 # Data Collection using Quandl
 quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data collection
 data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
@@ -30,11 +30,15 @@ setattr(big_data, "rsi_signal_spline",
         spline.calc_signal_spline(big_data, big_data.rsi_bb_signal))
 
 setattr(big_data, "oc_avg_gradient_signal_spline",
-        spline.calc_signal_spline(big_data, big_data.oc_avg_gradient_bb_signal))
+        spline.calc_signal_spline(big_data, big_data.oc_avg_gradient_bb_signal, smoothing_factor=4))
 
-# -------------------------SIGNAL PLOTS-----------------------------------------
+signals = [big_data.rsi_signal_spline, big_data.oc_avg_gradient_signal_spline]
+
+spline.combine_signal_splines(big_data, signals)
+
+# ========================= SIGNAL PLOTS =========================================
 import matplotlib.pyplot as plt
-# ============================================== Plot 1
+# ---------------------------------------------- Plot 1
 # ------------------Plot Open/Close prices
 ax1 = plt.subplot(311)
 oc.plot_open_close_values(big_data)
@@ -48,13 +52,16 @@ ax3 = plt.subplot(313, sharex=ax1)
 rsi.plot_rsi_and_bounds(big_data)
 plt.show()
 
-# ============================================== Plot 2
+# ---------------------------------------------- Plot 2
 # # ------------------Plot Open/Close prices
 ax4 = plt.subplot(211)
 oc.plot_open_close_values(big_data)
 
 # ------------------Plot RSI/OC Signal
 ax5 = plt.subplot(212)
-spline.plot_signal_spline(big_data, big_data.rsi_signal_spline)
-spline.plot_signal_spline(big_data, big_data.oc_avg_gradient_signal_spline)
+# spline.plot_signal_spline(big_data, big_data.rsi_signal_spline)
+# spline.plot_signal_spline(big_data, big_data.oc_avg_gradient_signal_spline)
+spline.plot_signal_spline(big_data, big_data.combined_signal_splines)
 plt.show()
+
+print(big_data.__dict__.keys())
