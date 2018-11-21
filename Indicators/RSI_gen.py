@@ -19,11 +19,8 @@ class RSI:
             timeframe_close_values = []
 
             for j in range(big_data.rsi_timeframe):
-                timeframe_open_values.append(big_data.open_values[(+i) - j])
-                timeframe_close_values.append(big_data.close_values[(big_data.data_slice_start_ind+i) - j])
-
-            setattr(big_data, "rsi_timeframe_open_values", timeframe_open_values)
-            setattr(big_data, "rsi_timeframe_close_values", timeframe_close_values)
+                timeframe_open_values.append(big_data.data_open_values[big_data.data_slice_start_ind + (i - j)])
+                timeframe_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + (i - j)])
 
             # ------------------ Calculate gains and losses in timeframe
             # Calculate the net loss or gain for each date falling
@@ -74,8 +71,8 @@ class RSI:
     
     # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # Define initial upper and lower bounds
-        upper_bound = [70]*len(big_data.dates)
-        lower_bound = [30]*len(big_data.dates)
+        upper_bound = [70]*len(big_data.data_slice_dates)
+        lower_bound = [30]*len(big_data.data_slice_dates)
     
         # Define upper dynamic bound method
         for i in range(len(big_data.rsi_values)):
@@ -103,8 +100,8 @@ class RSI:
         sell_dates = []
         buy_dates = []
         
-        buy_count = []
-        sell_count = []
+        buy_count = 0
+        sell_count = 0
         
         sell_rsi = []
         buy_rsi = []
@@ -123,7 +120,7 @@ class RSI:
 
             if big_data.rsi_values[i] <= upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
                 sell_count += 1
-                sell_dates.append(big_data.dates[i])
+                sell_dates.append(big_data.data_slice_dates[i])
                 sell_rsi.append(big_data.rsi_values[i])
 
                 sell_trigger = 2
@@ -137,7 +134,7 @@ class RSI:
 
             if big_data.rsi_values[i] >= lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
                 buy_count += 1
-                buy_dates.append(big_data.dates[i])
+                buy_dates.append(big_data.data_slice_dates[i])
                 buy_rsi.append(big_data.rsi_values[i])
 
                 buy_trigger = 2
@@ -161,10 +158,10 @@ class RSI:
             bb_signal.append((big_data.rsi_values[i])/max(big_data.rsi_values)-1)
 
         for date in big_data.rsi_sell_dates:
-            big_data.bb_signal[big_data.data_slice.index(date)] = 1
+            bb_signal[big_data.data_slice_dates.index(date)] = 1
 
         for date in big_data.rsi_buy_dates:
-            bb_signal[big_data.data_slice.index(date)] = 0
+            bb_signal[big_data.data_slice_dates.index(date)] = 0
         
         setattr(big_data, "rsi_bb_signal", bb_signal)
 
@@ -179,8 +176,8 @@ class RSI:
 
         plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_values)        # Plot RSI
 
-        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.sell_rsi)         # Plot sell signals
-        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.buy_rsi)           # Plot buy signals
+        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.rsi_sell_rsi)         # Plot sell signals
+        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.rsi_buy_rsi)           # Plot buy signals
 
         plt.gcf().autofmt_xdate()
         plt.grid()
