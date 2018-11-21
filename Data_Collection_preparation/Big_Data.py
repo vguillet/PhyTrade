@@ -7,62 +7,80 @@ Default |Attributes:
     D   ticker              : Ticker of the dataset
     D   data                : Data collected
     D   dates               : Dates of the data
-    D   data_open_values    : Open values
-    D   data_close_values   : Close values
+    D   data_close_values   : List of close values in data slice
+    D   data_open_values    : List of open values in data slice
 
-    D   data_slice_start_ind: Starting index of data slice
+    D   data_slice_start_ind        : Starting index of data slice
     D   data_slice_stop_ind         : Stopping index of data slice
     D   data_slice                  : Data slice (data falling in range of the start/stop indices)
     D   data_slice_dates            : Dates of the data slice
-
     D   data_slice_close_values     : List of close values in data slice
     D   data_slice_open_values      : List of open values in data slice
 
-RSI module:
-    D   rsi_timeframe       : Time frame to be used by RSI module (default = 14)
-    D   rsi_buffer_setting  : Buffer setting to be used by RSI module (default = 0)
+    D   values_fluctuation          : Fluctuation of values in data slice
+    D   close_values_gradient       : Gradient of close values in data slice
+    D   open_values_gradient        : Gradient of open values in data slice
+
+    D   oc_avg_gradient_bb_signal   : OC gradient bull-bear signal
+
+    D   sell_trigger_values         : Sell values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
+    D   buy_trigger_values          : Buy values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
+
+---------------------------------- Indicators (to be set as big_data attributes) ---------
+RSI indicator:
+        timeframe           : Time frame to be used by RSI module (default = 14)
+        buffer_setting      : Buffer setting to be used by RSI module (default = 0)
 
         rsi_values          : RSI values for data slice
-        rsi_upper_bound     : Dynamic upper bound for data slice
-        rsi_lower_bound     : Dynamic lower bound for data slice
+        upper_bound         : Dynamic upper bound for data slice
+        lower_bound         : Dynamic lower bound for data slice
 
-        rsi_sell_dates      : RSI trigger sell dates
-        rsi_buy_dates       : RSI trigger buy dates
+        sell_dates          : RSI trigger sell dates
+        buy_dates           : RSI trigger buy dates
 
-        rsi_sell_count      : RSI trigger sell count
-        rsi_buy_count       : RSI trigger buy count
+        sell_trigger_count  : RSI trigger sell count
+        buy_trigger_count   : RSI trigger buy count
 
-        rsi_sell_rsi        : RSI sell rsi
-        rsi_buy_rsi         : RSI buy rsi
+        sell_rsi            : RSI sell rsi
+        buy_rsi             : RSI buy rsi
 
-        rsi_bb_signal       : RSI bull-bear signal
+        bb_signal           : RSI bull-bear signal
 
+    --> plot_rsi_and_bounds(self, big_data, plot_rsi=True, plot_upper_bound=True, plot_lower_bound=True, plot_trigger_signals=True):
+
+SMA indicator:
+        timeframe           : Time frame to be used by SMA module (default = 50)
+
+
+---------------------------------- Tools -------------------------------------------------
 OC module:
-        rsi_sell_values     : Sell values matching RSI sell triggers
-        rsi_buy_values      : Buy values matching RSI buy triggers
+    --> calc_trigger_values(big_data, sell_dates, buy_dates):
+            sell_trigger_values
+            buy_trigger_values
 
-        values_fluctuation       : Fluctuation of values in data
+    --> plot_open_close_values(big_data, plot_close_values=True, plot_open_values=True):
 
-        close_values_gradient    : Gradient of close values in data slice
-        open_values_gradient     : Gradient of open values in data slice
+    --> plot_open_close_values_diff(big_data):
 
-        oc_avg_gradient_bb_signal: OC gradient bull-bear signal
+    --> plot_trigger_values(big_data):
 
 SPLINE module:
 
         spline_x            : x value array for spline calculation
         spline_xs           : xs value array for spline calculation
 
-    (upon generating splines);
-        spline_length       : length of splines
-    (upon calling combine_signal_splines);
-        combined_signal_splines : combined selected signal spline
+    --> calc_signal_spline(big_data, signal, smoothing_factor=0.7):
+            spline_length       : length of splines
+
+    --> combine_signal_splines(big_data, signals):
+            combined_signal_splines : combined selected signal spline
 
 """
 
 
 class BIGDATA:
-    def __init__(self, data, ticker, data_slice_start_ind, data_slice_stop_ind, timeframe_rsi=14, rsi_buffer_setting=0):
+    def __init__(self, data, ticker, data_slice_start_ind, data_slice_stop_ind):
+        import numpy as np
 
         self.ticker = ticker
         self.data = data
@@ -73,14 +91,18 @@ class BIGDATA:
         self.data_slice = data[data_slice_start_ind:data_slice_stop_ind]
         self.data_slice_dates = list(self.data_slice.index.values)
 
-        # ---------------------List close/open values
+        self.sell_trigger_values = []
+        self.buy_trigger_values = []
 
+        self.sell_trigger_dates = []
+        self.buy_trigger_dates = []
+
+        # --------------------- List close/open values
         # ... in data
         self.data_open_values = []
         self.data_close_values = []
 
         for index, row in self.data.iterrows():
-            # ...for the whole dataset
             self.data_close_values.append(row['Close'])
             self.data_open_values.append(row['Open'])
 
@@ -89,12 +111,34 @@ class BIGDATA:
         self.data_slice_close_values = []
 
         for index, row in self.data_slice.iterrows():
-            # ...for the whole dataset
             self.data_slice_close_values.append(row['Close'])
             self.data_slice_open_values.append(row['Open'])
 
-        # RSI data
-        self.rsi_timeframe = timeframe_rsi
-        self.rsi_buffer_setting = rsi_buffer_setting
+        # ------- Calculate value fluctuation for each point in data slice
+        values_fluctuation = []
+        for i in range(len(self.data_slice)):
+            values_fluctuation.append(self.data_slice_close_values[i] - self.data_slice_open_values[i])
 
+        self.values_fluctuation = values_fluctuation
 
+        # -------Calculate open/close values gradient:
+        close_values_gradient = np.gradient(self.data_slice_close_values)
+        open_values_gradient = np.gradient(self.data_slice_open_values)
+
+        self.close_values_gradient = close_values_gradient
+        self.open_values_gradient = open_values_gradient
+
+        # -----------------Bear/Bullish continuous signal
+        avg_gradient = []
+        avg_gradient_bb_signal = []
+
+        # Obtaining the average gradient
+        for i in range(len(self.data_slice)):
+            avg_gradient.append(
+                (self.close_values_gradient[i] + self.open_values_gradient[i]) / 2)
+
+        # Normalising avg gradient values between -1 and 1
+        for i in range(len(avg_gradient)):
+            avg_gradient_bb_signal.append(-((avg_gradient[i]) / (max(max(avg_gradient), -min(avg_gradient)))))
+
+        self.oc_avg_gradient_bb_signal = avg_gradient_bb_signal

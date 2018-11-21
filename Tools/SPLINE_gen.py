@@ -1,3 +1,6 @@
+"""
+This script contains tools for smoothing out signals, using interpolation and splines
+"""
 
 
 class SPLINE:
@@ -6,7 +9,7 @@ class SPLINE:
         import numpy as np
 
         x = np.array(range(len(big_data.data_slice_dates)))
-        xs = np.linspace(0, 200, len(big_data.data_slice_dates) * 5)
+        xs = np.linspace(0, len(big_data.data_slice_dates), len(big_data.data_slice_dates) * 5)
 
         setattr(big_data, "spline_x", x)
         setattr(big_data, "spline_xs", xs)
