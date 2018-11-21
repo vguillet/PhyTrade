@@ -38,13 +38,20 @@ RSI module:
         rsi_bb_signal       : RSI bull-bear signal
 
 OC module:
-        rsi_sell_values     : sell values matching RSI sell triggers
-        rsi_buy_values      : buy values matching RSI buy triggers
+        rsi_sell_values     : Sell values matching RSI sell triggers
+        rsi_buy_values      : Buy values matching RSI buy triggers
 
-        data_slice_values_fluctuation       : Fluctuation of values in data
+        values_fluctuation       : Fluctuation of values in data
 
-        data_slice_close_values_gradient    : Gradient of close values in data slice
-        data_slice_open_values_gradient     : Gradient of open values in data slice
+        close_values_gradient    : Gradient of close values in data slice
+        open_values_gradient     : Gradient of open values in data slice
+
+        oc_avg_gradient_bb_signal: OC gradient bull-bear signal
+
+SPLINE module:
+
+        spline_x        : x value array for spline calculation
+        spline_xs       : xs value array for spline calculation
 
 """
 

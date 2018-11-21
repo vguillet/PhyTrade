@@ -1,10 +1,10 @@
 from Data_Collection_preparation.Quandl import pull_quandl_data
 from Data_Collection_preparation.Big_Data import BIGDATA
-from Indicators.RSI_gen import RSI
-from Indicators.OC_values import *
 
-import numpy as np
-import matplotlib.pyplot as plt
+from Indicators.RSI_gen import RSI
+from Indicators.OC_values import OC
+
+from Signal_processing.signal_spline_gen import SPLINE
 
 # -------------------------DATA COLLECTION AND SELECTION------------------------
 # Data Collection using Quandl
@@ -24,10 +24,16 @@ big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind,
 
 rsi = RSI(big_data)
 oc = OC(big_data)
+spline = SPLINE(big_data)
 
-print(len(big_data.data_slice_dates))
+setattr(big_data, "rsi_signal_spline",
+        spline.calc_signal_spline(big_data, big_data.rsi_bb_signal))
+
+setattr(big_data, "oc_avg_gradient_signal_spline",
+        spline.calc_signal_spline(big_data, big_data.oc_avg_gradient_bb_signal))
 
 # -------------------------SIGNAL PLOTS-----------------------------------------
+import matplotlib.pyplot as plt
 # ============================================== Plot 1
 # ------------------Plot Open/Close prices
 ax1 = plt.subplot(311)
@@ -47,7 +53,8 @@ plt.show()
 ax4 = plt.subplot(211)
 oc.plot_open_close_values(big_data)
 
-# ------------------Plot RSI Signal
+# ------------------Plot RSI/OC Signal
 ax5 = plt.subplot(212)
-rsi.plot_rsi_signal(big_data)
+spline.plot_signal_spline(big_data, big_data.rsi_signal_spline)
+spline.plot_signal_spline(big_data, big_data.oc_avg_gradient_signal_spline)
 plt.show()

@@ -153,6 +153,7 @@ class RSI:
         # -----------------Bear/Bullish continuous signal
         bb_signal = []
 
+        # Normalising rsi values between -1 and 1
         for i in range(len(big_data.rsi_values)):
             bb_signal.append((big_data.rsi_values[i])/max(big_data.rsi_values)-1)
 
@@ -184,29 +185,3 @@ class RSI:
         plt.title("RSI")
         plt.xlabel("Trade date")
         plt.ylabel("RSI - %")
-        # plt.show()
-
-    @staticmethod
-    def plot_rsi_signal(big_data):
-        import numpy as np
-        import matplotlib.pyplot as plt
-        from scipy.interpolate import UnivariateSpline
-
-        x = np.array(range(len(big_data.data_slice_dates)))
-        y = np.array(big_data.rsi_bb_signal)
-
-        rsi_bb_spl = UnivariateSpline(x, y)
-        xs = np.linspace(0, 200, len(big_data.data_slice_dates)*5)
-        rsi_bb_spl.set_smoothing_factor(0.7)
-
-        plt.plot(xs, rsi_bb_spl(xs), 'g', lw=3)
-
-        plt.plot(range(len(big_data.data_slice_dates)), big_data.rsi_bb_signal)            # Plot rsi continuous signal
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("RSI signal")
-        plt.xlabel("Trade date")
-        plt.ylabel("Signal power")
-        # plt.show()
-
