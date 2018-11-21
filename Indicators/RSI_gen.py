@@ -5,57 +5,40 @@ It is currently optimised for Quandl
 
 
 class RSI:
-    def __init__(self, ticker, data, data_start_ind, data_stop_ind, timeframe=14, buffer_setting=0):
-        """
-        :param ticker: Ticker of requested company/product
-        :param data_start_ind: Starting index of data to analyse
-        :param data_stop_ind: Stopping index of data to analyse
-        :param data: Full dataset
-        :param timeframe:
-        :param buffer_setting: 0: no buffer, 1: fixed value buffer, 2: variable value buffer
-        """
-        self.ticker = ticker
-        self.data_slice = data[data_start_ind:data_stop_ind]
-        self.data = data
+    def __init__(self, big_data):
 
-    # -------------------------DATA PRE-PROCESSING------------------------
-        self.timeframe = timeframe
-        self.rsi_values = []
-        self.dates = list(self.data_slice.index.values)
+        self.big_data = big_data
 
-        # Variable initialisation
-        close_price = []
-        open_price = []
+        # --------------------------RSI CALCULATION---------------------------
+        rsi_values = []
+        
+        for i in range(len(big_data.data_slice)):
 
-        # Collect open and close prices in respective lists
-        for index, row in self.data.iterrows():
-            # ...for the whole dataset
-            close_price.append(row['Close'])
-            open_price.append(row['Open'])
+            # ------------------Calculate open and close values falling in rsi_timeframe
+            timeframe_open_values = []
+            timeframe_close_values = []
 
-    # --------------------------RSI CALCULATION---------------------------
-        # Calculate for each date the RSI
-        for i in range(len(self.data_slice)):
-    
-            timeframe_open_prices = []
-            timeframe_close_prices = []
-    
-            # Store open and close prices falling in the time frame
-            for j in range(self.timeframe):
-                    timeframe_open_prices.append(open_price[(data_start_ind+i) - j])
-                    timeframe_close_prices.append(close_price[(data_start_ind+i) - j])
-    
-            # Calculate the net loss or gain for each date falling 
+            for j in range(big_data.rsi_timeframe):
+                timeframe_open_values.append(big_data.open_values[(+i) - j])
+                timeframe_close_values.append(big_data.close_values[(big_data.data_slice_start_ind+i) - j])
+
+            setattr(big_data, "rsi_timeframe_open_values", timeframe_open_values)
+            setattr(big_data, "rsi_timeframe_close_values", timeframe_close_values)
+
+            # ------------------ Calculate gains and losses in timeframe
+            # Calculate the net loss or gain for each date falling
             # in the data frame and store them in gains and loss lists
             gains = []
             losses = []
-            for j in range(len(timeframe_close_prices)):
-                net = timeframe_close_prices[j] - timeframe_open_prices[j]
+            for j in range(len(timeframe_close_values)):
+                net = timeframe_close_values[j] - timeframe_open_values[j]
                 if net > 0:
                     gains.append(net)
                 elif net < 0:
                     losses.append(net)
-    
+            
+            # ------------------Calculate rs and rsi values for data_slice
+            
             if gains:                       # If gains != Null, calculate rsi_value, else rsi_value = 50
                 avg_gain = sum(gains)/len(gains)
                 if losses:                  # If losses != Null, calculate rsi_value, else rsi_value = 50
@@ -69,158 +52,162 @@ class RSI:
                     current_rsi_value = 50
             else:
                 current_rsi_value = 50
-    
-            self.rsi_values.append(current_rsi_value)
-    
-            # print("timeframe_open_prices", timeframe_open_prices)
-            # print("timeframe_close_prices", timeframe_close_prices)
-            # print("Point:", i)
-            # print("Gains:", gains)
-            # print("losses", losses)
+
+            rsi_values.append(current_rsi_value)
             
-        # print("RSI:", len(self.rsi_values))
-        # print("Dates:", len(self.dates))
-    
+        setattr(big_data, "rsi_values", rsi_values)
+        
     # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer
         #       - 1: fixed value buffer
         #       - 2: variable value buffer
 
-        if buffer_setting == 0:
-            self.buffer = 0
+        if big_data.rsi_buffer_setting == 0:
+            big_data.buffer = 0
 
-        elif buffer_setting == 1:
-            self.buffer = 3
+        elif big_data.rsi_buffer_setting == 1:
+            big_data.buffer = 3
 
-        elif buffer_setting == 2:
-            self.buffer = 2
+        elif big_data.rsi_buffer_setting == 2:
+            big_data.buffer = 2
     
     # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # Define initial upper and lower bounds
-        upper_bound = [70]*len(self.dates)
-        lower_bound = [30]*len(self.dates)
+        upper_bound = [70]*len(big_data.dates)
+        lower_bound = [30]*len(big_data.dates)
     
         # Define upper dynamic bound method
-        for i in range(len(self.rsi_values)):
-            if self.rsi_values[i] > (70 + self.buffer):
-                new_upper_bound = self.rsi_values[i] - self.buffer
+        for i in range(len(big_data.rsi_values)):
+            if big_data.rsi_values[i] > (70 + big_data.buffer):
+                new_upper_bound = big_data.rsi_values[i] - big_data.buffer
                 if new_upper_bound >= upper_bound[i-1]:
                     upper_bound[i] = new_upper_bound
                 else:
                     upper_bound[i] = upper_bound[i-1]
-    
+        setattr(big_data, "rsi_upper_bound", upper_bound)
+        
         # Define lower dynamic bound method
-        for i in range(len(self.rsi_values)):
-            if self.rsi_values[i] < (30 - self.buffer):
-                new_lower_bound = self.rsi_values[i] + self.buffer
+        for i in range(len(big_data.rsi_values)):
+            if big_data.rsi_values[i] < (30 - big_data.buffer):
+                new_lower_bound = big_data.rsi_values[i] + big_data.buffer
                 if new_lower_bound <= upper_bound[i-1]:
                     lower_bound[i] = new_lower_bound
                 else:
                     lower_bound[i] = lower_bound[i-1]
+        setattr(big_data, "rsi_lower_bound", lower_bound)
 
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
         # -----------------Trigger points determination
         # Indicator output
-        sellcount = 0
-        buycount = 0
-
-        self.sell_dates = []
-        self.sell_rsi = []
-
-        self.buy_dates = []
-        self.buy_rsi = []
+        sell_dates = []
+        buy_dates = []
+        
+        buy_count = []
+        sell_count = []
+        
+        sell_rsi = []
+        buy_rsi = []
 
         # Buy and sell triggers can take three values:
         # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
-        self.sell_trigger = 0
-        self.buy_trigger = 0
+        sell_trigger = 0
+        buy_trigger = 0
 
         # Defining indicator trigger for...
-        for i in range(len(self.dates)):
+        for i in range(len(big_data.data_slice)):
 
             # ...upper bound
-            if self.rsi_values[i] >= 70 and self.sell_trigger == 0:  # Initiate sell trigger
-                self.sell_trigger = 1
+            if big_data.rsi_values[i] >= 70 and sell_trigger == 0:  # Initiate sell trigger
+                sell_trigger = 1
 
-            if self.rsi_values[i] <= upper_bound[i] and self.sell_trigger == 1:  # Trigger sell signal
-                sellcount += 1
-                self.sell_dates.append(self.dates[i])
-                self.sell_rsi.append(self.rsi_values[i])
+            if big_data.rsi_values[i] <= upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
+                sell_count += 1
+                sell_dates.append(big_data.dates[i])
+                sell_rsi.append(big_data.rsi_values[i])
 
-                self.sell_trigger = 2
+                sell_trigger = 2
 
-            if self.rsi_values[i] < 70 and self.sell_trigger == 2:  # Reset trigger
-                self.sell_trigger = 0
+            if big_data.rsi_values[i] < 70 and sell_trigger == 2:  # Reset trigger
+                sell_trigger = 0
 
             # ...lower bound
-            if self.rsi_values[i] <= 30 and self.buy_trigger == 0:  # Initiate buy trigger
-                self.buy_trigger = 1
+            if big_data.rsi_values[i] <= 30 and buy_trigger == 0:  # Initiate buy trigger
+                buy_trigger = 1
 
-            if self.rsi_values[i] >= lower_bound[i] and self.buy_trigger == 1:  # Trigger buy signal
-                buycount += 1
-                self.buy_dates.append(self.dates[i])
-                self.buy_rsi.append(self.rsi_values[i])
+            if big_data.rsi_values[i] >= lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
+                buy_count += 1
+                buy_dates.append(big_data.dates[i])
+                buy_rsi.append(big_data.rsi_values[i])
 
-                self.buy_trigger = 2
+                buy_trigger = 2
 
-            if self.rsi_values[i] > 30 and self.sell_trigger == 2:  # Reset trigger
-                self.buy_trigger = 0
+            if big_data.rsi_values[i] > 30 and sell_trigger == 2:  # Reset trigger
+                buy_trigger = 0
+
+        setattr(big_data, "rsi_sell_rsi", sell_rsi)
+        setattr(big_data, "rsi_buy_rsi", buy_rsi)
+
+        setattr(big_data, "rsi_sell_dates", sell_dates)
+        setattr(big_data, "rsi_buy_dates", buy_dates)
+        
+        setattr(big_data, "rsi_sell_count", sell_count)
+        setattr(big_data, "rsi_buy_count", buy_count)
 
         # -----------------Bear/Bullish continuous signal
-        self.bb_signal = []
+        bb_signal = []
 
-        for i in range(len(self.rsi_values)):
-            self.bb_signal.append((self.rsi_values[i])/max(self.rsi_values)-1)
+        for i in range(len(big_data.rsi_values)):
+            bb_signal.append((big_data.rsi_values[i])/max(big_data.rsi_values)-1)
 
-        for date in self.sell_dates:
-            self.bb_signal[self.dates.index(date)] = 1
+        for date in big_data.rsi_sell_dates:
+            big_data.bb_signal[big_data.data_slice.index(date)] = 1
 
-        for date in self.buy_dates:
-            self.bb_signal[self.dates.index(date)] = 0
-
-        self.upper_bound = upper_bound
-        self.lower_bound = lower_bound
+        for date in big_data.rsi_buy_dates:
+            bb_signal[big_data.data_slice.index(date)] = 0
+        
+        setattr(big_data, "rsi_bb_signal", bb_signal)
 
     # ____________________________________________________________________
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
+
     def plot_rsi_and_bounds(self):
         import matplotlib.pyplot as plt
 
-        plt.plot(self.dates, self.upper_bound)          # Plot upper bound
-        plt.plot(self.dates, self.lower_bound)          # Plot lower bound
+        plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_upper_bound)   # Plot upper bound
+        plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_lower_bound)   # Plot lower bound
 
-        plt.plot(self.dates, self.rsi_values)           # Plot RSI
+        plt.plot(self.big_data.data_slice_dates, self.big_data.rsi_values)        # Plot RSI
 
-        plt.scatter(self.sell_dates, self.sell_rsi)     # Plot sell signals
-        plt.scatter(self.buy_dates, self.buy_rsi)       # Plot buy signals
+        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.sell_rsi)         # Plot sell signals
+        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.buy_rsi)           # Plot buy signals
 
         plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("RSI")
         plt.xlabel("Trade date")
         plt.ylabel("RSI - %")
-        plt.show()
+        # plt.show()
 
     def plot_rsi_signal(self):
         import numpy as np
         import matplotlib.pyplot as plt
         from scipy.interpolate import UnivariateSpline
 
-        x = np.array(range(len(self.dates)))
-        y = np.array(self.bb_signal)
+        x = np.array(range(len(self.big_data.data_slice_dates)))
+        y = np.array(self.big_data.rsi_bb_signal)
 
         spl = UnivariateSpline(x, y)
-        xs = np.linspace(0, 200, 1000)
+        xs = np.linspace(0, 200, len(self.big_data.data_slice_dates)*5)
         spl.set_smoothing_factor(0.7)
 
         plt.plot(xs, spl(xs), 'g', lw=3)
-        plt.plot(range(len(self.dates)), self.bb_signal)            # Plot rsi continuous signal
+        plt.plot(range(len(self.big_data.data_slice_dates)), self.big_data.rsi_bb_signal)            # Plot rsi continuous signal
 
         plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("RSI signal")
         plt.xlabel("Trade date")
         plt.ylabel("Signal power")
-        plt.show()
+        # plt.show()
 

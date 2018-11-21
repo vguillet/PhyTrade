@@ -3,81 +3,52 @@ This scripts enable plotting the opening and close value of stocks of a data sli
 """
 
 
-def format_data(data, data_start_ind, data_stop_ind):
-    # Variable initialisation
-    data_slice = data[data_start_ind:data_stop_ind]
-    dates = list(data_slice.index.values)
+class OC:
+    def __init__(self, big_data):
 
-    close_value_slice = []
-    open_value_slice = []
+        self.big_data = big_data
+        import numpy as np
 
-    # Collect Open and close values in respective lists
-    for index, row in data_slice.iterrows():
-        # ...for the data slice
-        close_value_slice.append(row['Close'])
-        open_value_slice.append(row['Open'])
+        # -------Calculate value fluctuation for each point
+        values_fluctuation = []
+        for i in range(len(big_data.data_slice)):
+            values_fluctuation.append(big_data.close_values[i] - big_data.open_values[i])
 
-    return dates, close_value_slice, open_value_slice
+        setattr(big_data, "data_slice_values_fluctuation", values_fluctuation)
 
+        # -------Calculate open/close values gradient:
 
-def plot_open_close_values(data, data_start_ind, data_stop_ind, sell_dates, buy_dates):
-    import matplotlib.pyplot as plt
+        close_values_gradient = np.gradient(big_data.close_values)
+        open_values_gradient = np.gradient(big_data.open_values)
 
-    # Initial data formatting
-    dates, close_value_slice, open_value_slice = format_data(data, data_start_ind, data_stop_ind)
+        setattr(big_data, "close_values_gradient", close_values_gradient)
+        setattr(big_data, "open_values_gradient", open_values_gradient)
 
-    # List sell and buy triggers
-    sell_values = []
-    buy_values = []
+    def plot_open_close_values(self):
+        import matplotlib.pyplot as plt
 
-    for date in sell_dates:
-        sell_values.append(close_value_slice[dates.index(date)])
+        plt.plot(self.big_data.data_slice_dates, self.big_data.close_values)                # Plot closing value
+        plt.plot(self.big_data.data_slice_dates, self.big_data.open_values)                 # Plot opening value
 
-    for date in buy_dates:
-        buy_values.append(close_value_slice[dates.index(date)])
+        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.rsi_sell_values)           # Plot sell signals
+        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.rsi_buy_values)             # Plot buy signals
 
-    plt.plot(dates, close_value_slice)      # Plot closing value
-    plt.plot(dates, open_value_slice)       # Plot opening value
+        plt.gcf().autofmt_xdate()
+        plt.title("Open and close values")
+        plt.grid()
+        plt.xlabel("Trade date")
+        plt.ylabel("Value")
 
-    plt.scatter(sell_dates, sell_values)  # Plot sell signals
-    plt.scatter(buy_dates, buy_values)  # Plot buy signals
+    def plot_open_close_values_diff(self):
+        import matplotlib.pyplot as plt
 
-    plt.gcf().autofmt_xdate()
-    plt.title("Open and close values")
-    plt.grid()
-    plt.xlabel("Trade date")
-    plt.ylabel("Value")
+        plt.plot(self.big_data.data_slice_dates, self.big_data.data_slice_values_fluctuation)      # Plot value fluctuation
 
+        plt.scatter(self.big_data.rsi_sell_dates, self.big_data.sell_values)    # Plot sell signals
+        plt.scatter(self.big_data.rsi_buy_dates, self.big_data.buy_values)      # Plot buy signals
 
-def plot_open_close_values_diff(data, data_start_ind, data_stop_ind, sell_dates, buy_dates):
-    import matplotlib.pyplot as plt
-
-    # Initial data formatting
-    dates, close_value_slice, open_value_slice = format_data(data, data_start_ind, data_stop_ind)
-
-    # Calculate value fluctuation for each point
-    value_fluctuation = []
-
-    for i in range(len(dates)):
-        value_fluctuation.append(close_value_slice[i] - open_value_slice[i])
-
-    # List sell and buy triggers
-    sell_values = []
-    buy_values = []
-
-    for date in sell_dates:
-        sell_values.append(value_fluctuation[dates.index(date)])
-
-    for date in buy_dates:
-        buy_values.append(value_fluctuation[dates.index(date)])
-
-    plt.plot(dates, value_fluctuation)      # Plot value fluctuation
-
-    plt.scatter(sell_dates, sell_values)    # Plot sell signals
-    plt.scatter(buy_dates, buy_values)      # Plot buy signals
-
-    plt.gcf().autofmt_xdate()
-    plt.title("Open and close values fluctuation")
-    plt.grid()
-    plt.xlabel("Trade date")
-    plt.ylabel("Value fluctuation")
+        plt.gcf().autofmt_xdate()
+        plt.title("Open and close values fluctuation")
+        plt.grid()
+        plt.xlabel("Trade date")
+        plt.ylabel("Value fluctuation")

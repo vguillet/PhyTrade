@@ -1,4 +1,5 @@
 from Data_Collection_preparation.Quandl import pull_quandl_data
+from Data_Collection_preparation.Big_Data import BIGDATA
 from Indicators.RSI_gen import RSI
 from Indicators.OC_values import *
 
@@ -8,32 +9,33 @@ import matplotlib.pyplot as plt
 # -------------------------DATA COLLECTION AND SELECTION------------------------
 # Data Collection using Quandl
 quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data collection
-
 data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
 
-# Create data slice
-data_start_ind = -600
-data_stop_ind = -400
+# ---------Analysis definition
+ticker = "AAPL"
 
-# data_start_ind = 0
-# data_stop_ind = len(data)
+data_slice_start_ind = -600
+data_slice_stop_ind = -200
+timeframe_rsi = 14
+rsi_buffer_setting = 0
 
-print("Selected number of points for analysis:", data_stop_ind-data_start_ind)
+big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind,
+                   timeframe_rsi=timeframe_rsi, rsi_buffer_setting=rsi_buffer_setting)
 
-# -------------------------INDICATORS CALCULATION-------------------------------
-# --RSI
-rsi = RSI(quandl_ticker, data, data_start_ind, data_stop_ind, timeframe=14, buffer_setting=1)
+rsi = RSI(big_data)
+oc = OC(big_data)
 
+print(len(big_data.data_slice_dates))
 
 # -------------------------SIGNAL PLOTS-----------------------------------------
 # ============================================== Plot 1
 # ------------------Plot Open/Close prices
 ax1 = plt.subplot(311)
-plot_open_close_values(data, data_start_ind, data_stop_ind, rsi.sell_dates, rsi.buy_dates)
+oc.plot_open_close_values()
 
 # ------------------Plot open close diff
 ax2 = plt.subplot(312, sharex=ax1)
-plot_open_close_values_diff(data, data_start_ind, data_stop_ind, rsi.sell_dates, rsi.buy_dates)
+oc.plot_open_close_values_diff()
 
 # ------------------Plot RSI
 ax3 = plt.subplot(313, sharex=ax1)
@@ -43,7 +45,7 @@ plt.show()
 # ============================================== Plot 2
 # # ------------------Plot Open/Close prices
 ax4 = plt.subplot(211)
-plot_open_close_values(data, data_start_ind, data_stop_ind, rsi.sell_dates, rsi.buy_dates)
+oc.plot_open_close_values()
 
 # ------------------Plot RSI Signal
 ax5 = plt.subplot(212)
