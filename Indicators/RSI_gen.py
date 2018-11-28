@@ -1,6 +1,9 @@
 """
 This script enables computing the RSI indicator
 It is currently optimised for Quandl data
+
+Victor Guillet
+11/28/2018
 """
 
 

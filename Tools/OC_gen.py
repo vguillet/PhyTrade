@@ -1,5 +1,8 @@
 """
 This scripts enable plotting the opening and close value of stocks of a data slice
+
+Victor Guillet
+11/28/2018
 """
 
 

@@ -1,3 +1,10 @@
+"""
+This script is a prototype making use of the full PhyTrade library, as a mean of testing and optimizing
+
+Victor Guillet
+11/28/2018
+"""
+
 from Data_Collection_preparation.Quandl import pull_quandl_data
 from Data_Collection_preparation.Big_Data import BIGDATA
 
@@ -13,10 +20,10 @@ from Tools.SPLINE_gen import SPLINE
 quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data collection
 data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
 
-
+print(data)
 # ========================= ANALYSIS INITIALISATION ==============================
 ticker = "AAPL"
-data_slice_start_ind = -400
+data_slice_start_ind = -200
 data_slice_stop_ind = len(data)-10
 
 
@@ -55,9 +62,10 @@ setattr(big_data, "signal_splines_weight_combined", spline.combine_weighted_sign
                                                                                            big_data.signal_spline_sma,
                                                                                            weight_1=1,
                                                                                            weight_2=1,
-                                                                                           weight_3=3))
+                                                                                           weight_3=2))
 # ========================= SIGNAL PLOTS =========================================
 import matplotlib.pyplot as plt
+
 
 # ---------------------------------------------- Plot 1
 # ------------------ Plot Open/Close prices
@@ -92,10 +100,10 @@ oc.plot_trigger_values(big_data)
 # ------------------ Plot bb signal(s)
 ax6 = plt.subplot(212)
 # spline.plot_signal_spline(big_data, big_data.signal_spline_rsi, label="RSI bb signal")
-# spline.plot_signal_spline(big_data, big_data.signal_spline_sma, label="SMA bb signal", color='r')
+spline.plot_signal_spline(big_data, big_data.signal_spline_sma, label="SMA bb signal", color='r')
 # spline.plot_signal_spline(big_data, big_data.signal_spline_oc_avg_gradient, label="OC gradient bb signal", color='m')
 
-spline.plot_signal_spline(big_data, big_data.signal_splines_combined, label="Combined bb signal", color='b')
+# spline.plot_signal_spline(big_data, big_data.signal_splines_combined, label="Combined bb signal", color='b')
 spline.plot_signal_spline(big_data, big_data.signal_splines_weight_combined, label="Combined weighted bb signal", color='y')
 plt.show()
 

@@ -1,3 +1,6 @@
+Author: Victor Guillet
+11/28/2018
+
 The Phytrade library is developed for trading using a combination of classic economics methods along with a number
 of physics principles. The library is structured as follow:
 
@@ -117,7 +120,10 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
 
 
 
-
+Signal combination:
+The weight associated with each signal in the signal adition should be selected according to the
+type and period of trade. For trading on the short term, short term indicators should be weighted higher
+while on the long term, longer term indicators should be dominant
 
 
 

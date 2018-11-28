@@ -3,7 +3,10 @@ The big data class contains all the information relating to a specific analysis,
 modules can be called, and their instance attribute should be saved in the big_data instance
 (to enable attribute access anywhere).
 To compute specific attributes, run the corresponding Indicators/modules. The list of all options
-can be found in the Lib info file
+can be found in the PhyTrade Library file
+
+Victor Guillet
+11/28/2018
 """
 
 

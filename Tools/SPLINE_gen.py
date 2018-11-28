@@ -1,5 +1,8 @@
 """
-This script contains tools for smoothing out signals, using interpolation and splines
+This script contains tools for smoothing out and adding up signals, using interpolation and splines
+
+Victor Guillet
+11/28/2018
 """
 
 
