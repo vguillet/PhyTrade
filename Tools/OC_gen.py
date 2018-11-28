@@ -29,10 +29,10 @@ class OC:
         import matplotlib.pyplot as plt
 
         if plot_close_values:
-            plt.plot(big_data.data_slice_dates, big_data.data_slice_close_values, label="Close values")   # Plot closing value
+            plt.plot(big_data.data_slice_dates, big_data.data_slice_close_values, linewidth=1, label="Close values")   # Plot closing value
 
         if plot_open_values:
-            plt.plot(big_data.data_slice_dates, big_data.data_slice_open_values, label="Open values")     # Plot opening value
+            plt.plot(big_data.data_slice_dates, big_data.data_slice_open_values, linewidth=1, label="Open values")     # Plot opening value
 
         plt.gcf().autofmt_xdate()
         plt.grid()
@@ -45,7 +45,7 @@ class OC:
     def plot_open_close_values_diff(big_data):
         import matplotlib.pyplot as plt
 
-        plt.plot(big_data.data_slice_dates, big_data.values_fluctuation, label="Values fluctuation")
+        plt.plot(big_data.data_slice_dates, big_data.values_fluctuation, linewidth=1, label="Values fluctuation")
 
         plt.gcf().autofmt_xdate()
         plt.grid()

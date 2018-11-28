@@ -175,13 +175,13 @@ class RSI:
         import matplotlib.pyplot as plt
 
         if plot_rsi:
-            plt.plot(big_data.data_slice_dates, self.rsi_values, label="RSI values")    # Plot RSI
+            plt.plot(big_data.data_slice_dates, self.rsi_values, linewidth=1, label="RSI values")    # Plot RSI
 
         if plot_upper_bound:
-            plt.plot(big_data.data_slice_dates, self.upper_bound, label="Upper bound")  # Plot upper bound
+            plt.plot(big_data.data_slice_dates, self.upper_bound, linewidth=1, label="Upper bound")  # Plot upper bound
 
         if plot_lower_bound:
-            plt.plot(big_data.data_slice_dates, self.lower_bound, label="Lower bound")  # Plot lower bound
+            plt.plot(big_data.data_slice_dates, self.lower_bound, linewidth=1, label="Lower bound")  # Plot lower bound
 
         if plot_trigger_signals:
             plt.scatter(self.sell_dates, self.sell_rsi, label="Sell trigger")           # Plot sell signals

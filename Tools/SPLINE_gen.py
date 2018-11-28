@@ -38,6 +38,18 @@ class SPLINE:
         return combined_signal_spline
 
     @staticmethod
+    def combine_weighted_signal_splines(big_data,
+                                        signal_1, signal_2, signal_3,
+                                        weight_1=1, weight_2=1, weight_3=1):
+
+        combined_signal_spline = []
+        for i in range(big_data.spline_length):
+            combined_signal_spline.append((signal_1[i]*weight_1 + signal_2[i]*weight_2 + signal_3[i]*weight_3) /
+                                          (weight_1+weight_2+weight_3))
+
+        return combined_signal_spline
+
+    @staticmethod
     def plot_signal_spline(big_data, spline, label, color='g'):
         import matplotlib.pyplot as plt
 
@@ -48,4 +60,4 @@ class SPLINE:
         plt.title("Spline signals")
         plt.legend()
         plt.xlabel("Trade date")
-        plt.ylabel("Signal power")
+        plt.ylabel("Buy <-- Signal power --> Sell")

@@ -39,7 +39,7 @@ class SMA:
         bb_signal_normalised = []
         # Normalising sma bb signal values between -1 and 1
         for i in range(len(big_data.data_slice)):
-            bb_signal_normalised.append((bb_signal[i])/max(bb_signal))
+            bb_signal_normalised.append((bb_signal[i])/(max(max(bb_signal), -min(bb_signal))))
 
         self.bb_signal = bb_signal_normalised
     # ____________________________________________________________________
@@ -60,7 +60,7 @@ class SMA:
 
         plt.gcf().autofmt_xdate()
         plt.grid()
-        plt.title("SMI")
+        plt.title("SMA")
         plt.legend()
         plt.xlabel("Trade date")
         plt.ylabel("SMI")
