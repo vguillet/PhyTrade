@@ -3,7 +3,6 @@ venv/*
 __pycache__/*
 
 
-src/.pytest_cache/*
 .pytest_cache/*
 Tests/.pytest_cache/*
 *.iml

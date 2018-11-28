@@ -1,5 +1,13 @@
 Author: Victor Guillet
 11/28/2018
+_______________________________________________________________________________________________
+"Econophysics is an interdisciplinary research field, applying theories and methods originally developed by physicists
+in order to solve problems in economics, usually those including uncertainty or stochastic processes
+and nonlinear dynamics. Some of its application to the study of financial markets has also been termed
+statistical finance referring to its roots in statistical physics."
+
+https://en.wikipedia.org/wiki/Econophysics
+_______________________________________________________________________________________________
 
 The Phytrade library is developed for trading using a combination of classic economics methods along with a number
 of physics principles. The library is structured as follow:
@@ -16,7 +24,8 @@ instances of the same indicator to be computed with different parameters.
 
 -The big_data instance is then to be passed on to every function and class which require access to the dataset's 
 determined properties
-To access a specific atributes, use: big_data."name of storred instance which's property you want to access".property
+To access a specific attributes, use: big_data."name of starred instance which's property you want to access".property
+
 
 A list of possible attributes/functions to be computed by the library and the classes required: 
 _______________________________________________________________________________________________
@@ -81,9 +90,9 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
 
     P   timeperiod_1         	: First time period to be used by SMA module (default = 50)
     P   timeperiod_2         	: Second time period to be used by SMA module (default = 200)
-	sma_1		     	: SMA caclulated for the first time period
-	sma_2		     	: SMA caclulated for the second time period
-	bb_signal		: SMA bull-bear signal
+	sma_1		     	: SMA calculated for the first time period
+	sma_2		     	: SMA calculated for the second time period
+	bb_signal		    : SMA bull-bear signal
 
     --> plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
         
@@ -106,8 +115,8 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
         spline_xs           	: xs value array for spline calculation
 
     --> calc_signal_spline(big_data, signal, smoothing_factor=0.7):
-            spline_length       : length of splines
-	    >return spline 	: generated spline from input signal
+            spline_length      : length of splines
+	    >return spline         : generated spline from input signal
 
     --> combine_signal_splines(big_data, signals):
             >return combined_signal_splines : combined selected signal spline
@@ -117,11 +126,12 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
     
     --> plot_signal_spline(big_data, spline, label, color='g'):
 
+    --> calc_upper_lower_threshold(big_data):
 
 
 
 Signal combination:
-The weight associated with each signal in the signal adition should be selected according to the
+The weight associated with each signal in the signal addition should be selected according to the
 type and period of trade. For trading on the short term, short term indicators should be weighted higher
 while on the long term, longer term indicators should be dominant
 

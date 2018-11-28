@@ -1,5 +1,6 @@
 """
-This script is a prototype making use of the full PhyTrade library, as a mean of testing and optimizing
+This script is a prototype making use of the full PhyTrade library, as a mean of testing and optimizing.
+The code is uncommented and messy as this is meant for personal experimentation
 
 Victor Guillet
 11/28/2018
@@ -20,18 +21,18 @@ from Tools.SPLINE_gen import SPLINE
 quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data collection
 data = pull_quandl_data(quandl_ticker)      # Pull data from Quandl
 
-print(data)
+# print(data)
 # ========================= ANALYSIS INITIALISATION ==============================
 ticker = "AAPL"
-data_slice_start_ind = -200
-data_slice_stop_ind = len(data)-10
+data_slice_start_ind = -50
+data_slice_stop_ind = len(data)-1
 
 
 big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
 # ------------------ Indicators initialisation
-setattr(big_data, "rsi", RSI(big_data))     # Create RSI property
-setattr(big_data, "sma", SMA(big_data))      # Create SMA property
+setattr(big_data, "rsi", RSI(big_data, timeframe=14))     # Create RSI property
+setattr(big_data, "sma", SMA(big_data, timeperiod_1=10, timeperiod_2=25))      # Create SMA property
 
 # ------------------ Tools initialisation
 oc = OC()
@@ -43,12 +44,15 @@ spline = SPLINE(big_data)
 # ------------------ Trigger value determination
 oc.calc_trigger_values(big_data, big_data.rsi.sell_dates, big_data.rsi.buy_dates)
 
-# ------------------ Signal processing
+# ------------------ BB signals processing
+setattr(big_data, "signal_spline_upper_threshold", spline.calc_upper_threshold(big_data))
+setattr(big_data, "signal_spline_lower_threshold", spline.calc_lower_threshold(big_data))
+
 setattr(big_data, "signal_spline_rsi",
         spline.calc_signal_spline(big_data, big_data.rsi.bb_signal))
 
 setattr(big_data, "signal_spline_oc_avg_gradient",
-        spline.calc_signal_spline(big_data, big_data.oc_avg_gradient_bb_signal, smoothing_factor=4))
+        spline.calc_signal_spline(big_data, big_data.oc_avg_gradient_bb_signal, smoothing_factor=7))
 
 setattr(big_data, "signal_spline_sma",
         spline.calc_signal_spline(big_data, big_data.sma.bb_signal))
@@ -61,8 +65,8 @@ setattr(big_data, "signal_splines_weight_combined", spline.combine_weighted_sign
                                                                                            big_data.signal_spline_oc_avg_gradient,
                                                                                            big_data.signal_spline_sma,
                                                                                            weight_1=1,
-                                                                                           weight_2=1,
-                                                                                           weight_3=2))
+                                                                                           weight_2=2,
+                                                                                           weight_3=4))
 # ========================= SIGNAL PLOTS =========================================
 import matplotlib.pyplot as plt
 
@@ -99,12 +103,15 @@ oc.plot_trigger_values(big_data)
 
 # ------------------ Plot bb signal(s)
 ax6 = plt.subplot(212)
-# spline.plot_signal_spline(big_data, big_data.signal_spline_rsi, label="RSI bb signal")
+spline.plot_signal_spline(big_data, big_data.signal_spline_rsi, label="RSI bb signal")
+spline.plot_signal_spline(big_data, big_data.signal_spline_oc_avg_gradient, label="OC gradient bb signal", color='m')
 spline.plot_signal_spline(big_data, big_data.signal_spline_sma, label="SMA bb signal", color='r')
-# spline.plot_signal_spline(big_data, big_data.signal_spline_oc_avg_gradient, label="OC gradient bb signal", color='m')
 
 # spline.plot_signal_spline(big_data, big_data.signal_splines_combined, label="Combined bb signal", color='b')
 spline.plot_signal_spline(big_data, big_data.signal_splines_weight_combined, label="Combined weighted bb signal", color='y')
+
+spline. plot_signal_spline(big_data, big_data.signal_spline_upper_threshold, label="Upper threshold")
+spline. plot_signal_spline(big_data, big_data.signal_spline_lower_threshold, label="Lower threshold")
 plt.show()
 
 print(big_data.__dict__.keys())

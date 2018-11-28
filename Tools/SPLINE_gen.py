@@ -61,6 +61,21 @@ class SPLINE:
         plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("Spline signals")
-        plt.legend()
+        # plt.legend()
         plt.xlabel("Trade date")
         plt.ylabel("Buy <-- Signal power --> Sell")
+
+    @staticmethod
+    def calc_upper_threshold(big_data):
+
+        upper_threshold = [0.6]*len(big_data.spline_xs)
+
+        return upper_threshold
+
+    @staticmethod
+    def calc_lower_threshold(big_data):
+
+        lower_threshold = [-0.6]*len(big_data.spline_xs)
+
+        return lower_threshold
+
