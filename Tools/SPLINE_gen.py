@@ -35,7 +35,7 @@ class SPLINE:
         for i in range(big_data.spline_length):
             combined_signal_spline.append(sum(signals[j][i] for j in range(len(signals)))/len(signals))
 
-        setattr(big_data, "combined_signal_splines", combined_signal_spline)
+        return combined_signal_spline
 
     @staticmethod
     def plot_signal_spline(big_data, spline, label, color='g'):

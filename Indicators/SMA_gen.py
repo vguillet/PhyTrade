@@ -30,17 +30,29 @@ class SMA:
             self.sma_1.append(sum(timeperiod_1_close_values)/len(timeperiod_1_close_values))
             self.sma_2.append(sum(timeperiod_2_close_values)/len(timeperiod_2_close_values))
 
+        # -----------------Bear/Bullish continuous signal
+        bb_signal = []
+
+        for i in range(len(big_data.data_slice)):
+            bb_signal.append((self.sma_1[i] - self.sma_2[i])/2)
+
+        bb_signal_normalised = []
+        # Normalising sma bb signal values between -1 and 1
+        for i in range(len(big_data.data_slice)):
+            bb_signal_normalised.append((bb_signal[i])/max(bb_signal))
+
+        self.bb_signal = bb_signal_normalised
     # ____________________________________________________________________
-    # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
+    # -------------------------PLOT SMA ----------------------------------
 
     def plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
         import matplotlib.pyplot as plt
 
         if plot_sma_1:
-            plt.plot(big_data.data_slice_dates, self.sma_1, label="SMA 1")          # Plot SMA_1
+            plt.plot(big_data.data_slice_dates, self.sma_1, label="SMA "+str(self.timeperiod_1)+" days")          # Plot SMA_1
 
         if plot_sma_2:
-            plt.plot(big_data.data_slice_dates, self.sma_2, label="SMA 2")          # Plot SMA_2
+            plt.plot(big_data.data_slice_dates, self.sma_2, label="SMA "+str(self.timeperiod_2)+" days")          # Plot SMA_2
 
         if plot_trigger_signals:
             plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")       # Plot sell signals

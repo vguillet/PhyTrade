@@ -76,7 +76,7 @@ class RSI:
         lower_bound = [30]*len(big_data.data_slice_dates)
     
         # Define upper dynamic bound method
-        for i in range(len(self.rsi_values)):
+        for i in range(len(big_data.data_slice)):
             if self.rsi_values[i] > (70 + big_data.buffer):
                 new_upper_bound = self.rsi_values[i] - big_data.buffer
                 if new_upper_bound >= upper_bound[i-1]:
@@ -154,19 +154,19 @@ class RSI:
         self.buy_trigger_count = buy_count
 
         # -----------------Bear/Bullish continuous signal
-        bb_signal = []
+        bb_signal_normalised = []
 
-        # Normalising rsi values between -1 and 1
-        for i in range(len(self.rsi_values)):
-            bb_signal.append((self.rsi_values[i])/max(self.rsi_values)-1)
+        # Normalising rsi bb signal values between -1 and 1
+        for i in range(len(big_data.data_slice)):
+            bb_signal_normalised.append((self.rsi_values[i])/max(self.rsi_values)-1)
 
         for date in self.sell_dates:
-            bb_signal[big_data.data_slice_dates.index(date)] = 1
+            bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
 
         for date in self.buy_dates:
-            bb_signal[big_data.data_slice_dates.index(date)] = 0
-        
-        self.bb_signal = bb_signal
+            bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
+
+        self.bb_signal = bb_signal_normalised
 
     # ____________________________________________________________________
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
