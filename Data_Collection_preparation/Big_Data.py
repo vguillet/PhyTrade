@@ -1,7 +1,8 @@
 """
 The big data class contains all the information relating to a specific analysis,
-modules can be called, which then save all their outputs to the big_data instance
-as new attributes. To compute specific attributes, run the corresponding modules:
+modules can be called, and their instance attribute should be saved in the big_data instance
+(to enable attribute access anywhere).
+To compute specific attributes, run the corresponding Indicators/modules:
 
 Default |Attributes:
     D   ticker              : Ticker of the dataset
@@ -74,12 +75,11 @@ SPLINE module:
 
     --> combine_signal_splines(big_data, signals):
             combined_signal_splines : combined selected signal spline
-
 """
 
 
 class BIGDATA:
-    def __init__(self, data, ticker, data_slice_start_ind, data_slice_stop_ind):
+    def __init__(self, data, ticker, data_slice_start_ind=0, data_slice_stop_ind=200):
         import numpy as np
 
         self.ticker = ticker
@@ -128,7 +128,7 @@ class BIGDATA:
         self.close_values_gradient = close_values_gradient
         self.open_values_gradient = open_values_gradient
 
-        # -----------------Bear/Bullish continuous signal
+        # -----------------Bear/Bullish continuous signal of dataset gradient
         avg_gradient = []
         avg_gradient_bb_signal = []
 

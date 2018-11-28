@@ -38,13 +38,14 @@ class SPLINE:
         setattr(big_data, "combined_signal_splines", combined_signal_spline)
 
     @staticmethod
-    def plot_signal_spline(big_data, spline):
+    def plot_signal_spline(big_data, spline, label, color='g'):
         import matplotlib.pyplot as plt
 
-        plt.plot(big_data.spline_xs, spline, 'g', lw=3)
+        plt.plot(big_data.spline_xs, spline, 'g', linewidth=1, label=label, c=color)
 
         plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("Spline signals")
+        plt.legend()
         plt.xlabel("Trade date")
         plt.ylabel("Signal power")
