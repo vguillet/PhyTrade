@@ -42,15 +42,50 @@ class SPLINE:
 
     @staticmethod
     def combine_weighted_signal_splines(big_data,
-                                        signal_1, signal_2, signal_3,
-                                        weight_1=1, weight_2=1, weight_3=1):
+                                        signal_1, signal_2, signal_3, signal_4,
+                                        weight_1=1, weight_2=1, weight_3=1, weight_4=1):
 
         combined_signal_spline = []
         for i in range(big_data.spline_length):
-            combined_signal_spline.append((signal_1[i]*weight_1 + signal_2[i]*weight_2 + signal_3[i]*weight_3) /
-                                          (weight_1+weight_2+weight_3))
+            combined_signal_spline.append((signal_1[i]*weight_1 + signal_2[i]*weight_2
+                                           + signal_3[i]*weight_3 + signal_4[i]*weight_4) /
+                                          (weight_1+weight_2+weight_3+weight_4))
 
         return combined_signal_spline
+
+    @staticmethod
+    def shift_signal(signal, index_shift):
+
+        shifted_signal = [0]*len(signal)
+
+        if index_shift < 0:
+            for i in range(len(signal) + index_shift):
+                shifted_signal[i+index_shift] = signal[i]
+        else:
+            for i in range(len(signal) - index_shift):
+                shifted_signal[i+index_shift] = signal[i]
+
+        return shifted_signal
+
+    @staticmethod
+    def simple_increase_amplitude_signal(signal, coef):
+
+        signal_amplified = []
+
+        for i in signal:
+            signal_amplified.append(i*coef)
+
+        return signal_amplified
+
+    @staticmethod
+    def increase_amplitude_signal(signal, coef_signal):
+
+        signal_amplified = []
+
+        for i in range(len(signal)):
+            signal_amplified.append(signal[i]*(1+abs(coef_signal[i])))
+
+        return signal_amplified
 
     @staticmethod
     def plot_signal_spline(big_data, spline, label, color='g'):

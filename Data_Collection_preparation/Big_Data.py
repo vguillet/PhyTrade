@@ -46,6 +46,13 @@ class BIGDATA:
             self.data_slice_close_values.append(row['Close'])
             self.data_slice_open_values.append(row['Open'])
 
+        # --------------------- List Volume values
+        # ... in data slice
+        self.volume = []
+        for index, row in self.data_slice.iterrows():
+            self.volume.append(row['Volume'])
+
+
         # ------- Calculate value fluctuation for each point in data slice
         values_fluctuation = []
         for i in range(len(self.data_slice)):

@@ -42,7 +42,7 @@ BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
         data_close_values   : List of close values in data slice
         data_open_values    : List of open values in data slice
 
-    P   data_slice_start_ind		: Starting index of data slice
+    P   data_slice_start_ind		    : Starting index of data slice
     P   data_slice_stop_ind         	: Stopping index of data slice
         data_slice                  	: Data slice (data falling in range of the start/stop indices)
         data_slice_dates            	: Dates of the data slice
