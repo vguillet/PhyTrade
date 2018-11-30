@@ -2,9 +2,6 @@
 venv/*
 __pycache__/*
 
-
-.pytest_cache/*
-Tests/.pytest_cache/*
 *.iml
 *.pyc
 

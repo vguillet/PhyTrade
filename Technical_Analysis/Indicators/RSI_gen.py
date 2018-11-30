@@ -100,14 +100,12 @@ class RSI:
         self.lower_bound = lower_bound
 
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    def get_output(self, big_data, include_triggers_in_bb_signal=False):
+
         # -----------------Trigger points determination
-        # Indicator output
         sell_dates = []
         buy_dates = []
-        
-        buy_count = 0
-        sell_count = 0
-        
+
         sell_rsi = []
         buy_rsi = []
 
@@ -123,8 +121,7 @@ class RSI:
             if self.rsi_values[i] >= 70 and sell_trigger == 0:  # Initiate sell trigger
                 sell_trigger = 1
 
-            if self.rsi_values[i] <= upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
-                sell_count += 1
+            if self.rsi_values[i] <= self.upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
                 sell_dates.append(big_data.data_slice_dates[i])
                 sell_rsi.append(self.rsi_values[i])
 
@@ -137,8 +134,7 @@ class RSI:
             if self.rsi_values[i] <= 30 and buy_trigger == 0:  # Initiate buy trigger
                 buy_trigger = 1
 
-            if self.rsi_values[i] >= lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
-                buy_count += 1
+            if self.rsi_values[i] >= self.lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
                 buy_dates.append(big_data.data_slice_dates[i])
                 buy_rsi.append(self.rsi_values[i])
 
@@ -153,21 +149,18 @@ class RSI:
         self.sell_dates = sell_dates
         self.buy_dates = buy_dates
 
-        self.sell_trigger_count = sell_count
-        self.buy_trigger_count = buy_count
-
         # -----------------Bear/Bullish continuous signal
-        bb_signal_normalised = []
-
         # Normalising rsi bb signal values between -1 and 1
+        bb_signal_normalised = []
         for i in range(len(big_data.data_slice)):
             bb_signal_normalised.append((self.rsi_values[i])/max(self.rsi_values)-1)
 
-        for date in self.sell_dates:
-            bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+        if include_triggers_in_bb_signal:
+            for date in self.sell_dates:
+                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
 
-        for date in self.buy_dates:
-            bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
+            for date in self.buy_dates:
+                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
 
         self.bb_signal = bb_signal_normalised
 

@@ -27,6 +27,9 @@ class OC:
         big_data.sell_trigger_values.append(sell_values)
         big_data.buy_trigger_values.append(buy_values)
 
+        # big_data.sell_trigger_values = sorted(big_data.sell_trigger_values)
+        # big_data.buy_trigger_values = sorted(big_data.buy_trigger_values)
+
     @staticmethod
     def plot_open_close_values(big_data, plot_close_values=True, plot_open_values=True):
         import matplotlib.pyplot as plt

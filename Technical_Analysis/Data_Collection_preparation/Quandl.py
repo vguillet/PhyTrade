@@ -7,4 +7,5 @@ def pull_quandl_data(ticker):
     # data = data.iloc[::-1]                            # Reindex data ti invert df
     print("--Quandl data pulled successfully--")
     print("Number of points pulled:", len(data))
+    print("-----------------------------------")
     return data

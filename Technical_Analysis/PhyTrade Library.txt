@@ -9,6 +9,8 @@ statistical finance referring to its roots in statistical physics."
 https://en.wikipedia.org/wiki/Econophysics
 _______________________________________________________________________________________________
 
+This library is currently being buit up, come back to this file to stay up to date with the latest developments
+
 The Phytrade library is developed for trading using a combination of classic economics methods along with a number
 of physics principles. The library is structured as follow:
 
@@ -74,9 +76,6 @@ RSI(big_data, timeframe=14, buffer_setting=0)
         sell_dates          	: RSI trigger sell dates
         buy_dates           	: RSI trigger buy dates
 
-        sell_trigger_count  	: RSI trigger sell count
-        buy_trigger_count   	: RSI trigger buy count
-
         sell_rsi            	: RSI sell rsi
         buy_rsi             	: RSI buy rsi
 
@@ -130,6 +129,8 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
 
 
 
+
+Notes:
 Signal combination:
 The weight associated with each signal in the signal addition should be selected according to the
 type and period of trade. For trading on the short term, short term indicators should be weighted higher

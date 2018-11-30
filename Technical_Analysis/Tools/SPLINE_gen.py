@@ -32,18 +32,9 @@ class SPLINE:
         return spline(big_data.spline_xs)
 
     @staticmethod
-    def combine_signal_splines(big_data, signals):
-
-        combined_signal_spline = []
-        for i in range(big_data.spline_length):
-            combined_signal_spline.append(sum(signals[j][i] for j in range(len(signals)))/len(signals))
-
-        return combined_signal_spline
-
-    @staticmethod
-    def combine_weighted_signal_splines(big_data,
-                                        signal_1, signal_2, signal_3, signal_4,
-                                        weight_1=1, weight_2=1, weight_3=1, weight_4=1):
+    def combine_signal_splines(big_data,
+                               signal_1, signal_2, signal_3, signal_4,
+                               weight_1=1, weight_2=1, weight_3=1, weight_4=1):
 
         combined_signal_spline = []
         for i in range(big_data.spline_length):

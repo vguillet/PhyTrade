@@ -33,16 +33,49 @@ class SMA:
             self.sma_1.append(sum(timeperiod_1_close_values)/len(timeperiod_1_close_values))
             self.sma_2.append(sum(timeperiod_2_close_values)/len(timeperiod_2_close_values))
 
+        # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    def get_output(self, big_data, include_triggers_in_bb_signal=False):
+
+        # -----------------Trigger points determination
+        sell_dates = []
+        buy_dates = []
+
+        # sma config can take two values, 0 for when sma_1 is higher than sma_2, and 2 for the other way around
+        if self.sma_1[0] > self.sma_2[0]:
+            sma_config = 0
+        else:
+            sma_config = 1
+
+        for i in range(len(big_data.data_slice)):
+            if sma_config == 0:
+                if self.sma_2[i] > self.sma_1[i]:
+                    sell_dates.append(big_data.data_slice_dates[i])
+                    sma_config = 1
+            else:
+                if self.sma_1[i] > self.sma_2[i]:
+                    buy_dates.append(big_data.data_slice_dates[i])
+                    sma_config = 0
+
+        self.sell_dates = sell_dates
+        self.buy_dates = buy_dates
+
         # -----------------Bear/Bullish continuous signal
         bb_signal = []
 
         for i in range(len(big_data.data_slice)):
             bb_signal.append((self.sma_1[i] - self.sma_2[i])/2)
 
-        bb_signal_normalised = []
         # Normalising sma bb signal values between -1 and 1
+        bb_signal_normalised = []
         for i in range(len(big_data.data_slice)):
             bb_signal_normalised.append((bb_signal[i])/(max(max(bb_signal), -min(bb_signal))))
+
+        if include_triggers_in_bb_signal:
+            for date in self.sell_dates:
+                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+
+            for date in self.buy_dates:
+                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
 
         self.bb_signal = bb_signal_normalised
     # ____________________________________________________________________

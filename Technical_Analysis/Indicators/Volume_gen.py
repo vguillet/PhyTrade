@@ -13,5 +13,3 @@ class Volume:
 
         for i in range(len(big_data.data_slice)):
             self.amp_coef.append((self.volume[i])/max(self.volume)-1)
-
-        print(self.amp_coef)
