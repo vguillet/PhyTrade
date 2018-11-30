@@ -30,9 +30,7 @@ To access a specific attributes, use: big_data."name of starred instance which's
 
 
 A list of possible attributes/functions to be computed by the library and the classes required: 
-_______________________________________________________________________________________________
-Param  |Attributes:
-_______________________________________________________________________________________________
+
 
 --------------- Big_data storage class:
 
@@ -60,7 +58,7 @@ BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
         sell_trigger_values         	: Sell values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
         buy_trigger_values          	: Buy values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
 
-================================= Indicators (to be set as big_data attributes) ===============
+========================== Indicators (to be set as big_data attributes) ======================
 
 --------------- RSI indicator:
 
@@ -89,13 +87,14 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
 
     P   timeperiod_1         	: First time period to be used by SMA module (default = 50)
     P   timeperiod_2         	: Second time period to be used by SMA module (default = 200)
-	sma_1		     	: SMA calculated for the first time period
-	sma_2		     	: SMA calculated for the second time period
-	bb_signal		    : SMA bull-bear signal
+	sma_1		     			: SMA calculated for the first time period
+	sma_2		     			: SMA calculated for the second time period
+	bb_signal		    		: SMA bull-bear signal
 
     --> plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
+
         
-================================= Tools =======================================================
+================================= Tools =====================================================
 
 --------------- OC module:
     --> calc_trigger_values(big_data, sell_dates, buy_dates):
@@ -114,8 +113,8 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
         spline_xs           	: xs value array for spline calculation
 
     --> calc_signal_spline(big_data, signal, smoothing_factor=0.7):
-            spline_length      : length of splines
-	    >return spline         : generated spline from input signal
+            spline_length      	: length of splines
+	    >return spline         	: generated spline from input signal
 
     --> combine_signal_splines(big_data, signals):
             >return combined_signal_splines : combined selected signal spline
