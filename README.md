@@ -60,6 +60,7 @@ BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
         sell_trigger_values         	: Sell values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
         buy_trigger_values          	: Buy values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
 
+
 ========================== Indicators (to be set as big_data attributes) ======================
 
 --------------- RSI indicator:
@@ -96,6 +97,7 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
     --> plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
 
         
+	
 ================================= Tools =========================================
 
 --------------- OC module:
