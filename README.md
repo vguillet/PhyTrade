@@ -96,7 +96,7 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
     --> plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
 
         
-================================= Tools ================================================
+================================= Tools =========================================
 
 --------------- OC module:
     --> calc_trigger_values(big_data, sell_dates, buy_dates):
