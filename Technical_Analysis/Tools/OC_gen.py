@@ -21,11 +21,11 @@ class OC:
             buy_values.append(
                 big_data.data_slice_close_values[big_data.data_slice_dates.index(buy_dates[i])])
 
-        big_data.sell_trigger_dates.append(sell_dates)
-        big_data.buy_trigger_dates.append(buy_dates)
+        big_data.sell_trigger_dates = sell_dates
+        big_data.buy_trigger_dates = buy_dates
 
-        big_data.sell_trigger_values.append(sell_values)
-        big_data.buy_trigger_values.append(buy_values)
+        big_data.sell_trigger_values = sell_values
+        big_data.buy_trigger_values = buy_values
 
         # big_data.sell_trigger_values = sorted(big_data.sell_trigger_values)
         # big_data.buy_trigger_values = sorted(big_data.buy_trigger_values)

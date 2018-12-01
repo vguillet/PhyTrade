@@ -94,14 +94,14 @@ class SPLINE:
     @staticmethod
     def calc_upper_threshold(big_data):
 
-        upper_threshold = [0.6]*len(big_data.spline_xs)
+        upper_threshold = [0.55]*len(big_data.spline_xs)
 
         return upper_threshold
 
     @staticmethod
     def calc_lower_threshold(big_data):
 
-        lower_threshold = [-0.6]*len(big_data.spline_xs)
+        lower_threshold = [-0.55]*len(big_data.spline_xs)
 
         return lower_threshold
 
@@ -121,7 +121,6 @@ class SPLINE:
             if i % 5 == 0:
                 dates_points.append(i)
 
-        print(dates_points)
         # Buy and sell triggers can take three values:
         # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
         sell_trigger = 0
