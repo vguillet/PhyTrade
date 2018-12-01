@@ -27,6 +27,8 @@ instances of the same indicator to be computed with different parameters.
 -The big_data instance is then to be passed on to every function and class which require access to the dataset's 
 determined properties
 To access a specific attributes, use: big_data."name of starred instance which's property you want to access".property
+_______________________________________________________________________________________________
+
 
 
 A list of possible attributes/functions to be computed by the library and the classes required: 
@@ -57,6 +59,7 @@ BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
         sell_trigger_values         	: Sell values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
         buy_trigger_values          	: Buy values matching sell triggers (initially empty list, to fill using calc_trigger_values from OC module)
+
 
 ========================== Indicators (to be set as big_data attributes) ======================
 
@@ -94,7 +97,8 @@ SMA(big_data, timeperiod_1=50, timeperiod_2=200)
     --> plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
 
         
-================================= Tools =====================================================
+	
+================================= Tools =========================================
 
 --------------- OC module:
     --> calc_trigger_values(big_data, sell_dates, buy_dates):
