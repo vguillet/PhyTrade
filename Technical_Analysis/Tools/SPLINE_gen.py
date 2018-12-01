@@ -45,7 +45,7 @@ class SPLINE:
         return combined_signal_spline
 
     @staticmethod
-    def shift_signal(signal, index_shift):
+    def shift_signal_spline(signal, index_shift):
 
         shifted_signal = [0]*len(signal)
 
@@ -59,7 +59,7 @@ class SPLINE:
         return shifted_signal
 
     @staticmethod
-    def simple_increase_amplitude_signal(signal, coef):
+    def simple_increase_amplitude_signal_spline(signal, coef):
 
         signal_amplified = []
 
@@ -69,7 +69,7 @@ class SPLINE:
         return signal_amplified
 
     @staticmethod
-    def increase_amplitude_signal(signal, coef_signal):
+    def increase_amplitude_signal_spline(signal, coef_signal):
 
         signal_amplified = []
 
@@ -105,3 +105,52 @@ class SPLINE:
 
         return lower_threshold
 
+    @staticmethod
+    def calc_spline_trigger(big_data, signal):
+
+        lower_threshold = SPLINE(big_data).calc_upper_threshold(big_data)
+        upper_threshold = SPLINE(big_data).calc_lower_threshold(big_data)
+
+        sell_dates = []
+        buy_dates = []
+
+        # Listing out point of spline which are date points
+        dates_points = []
+
+        for i in range(len(signal)):
+            if i % 5 == 0:
+                dates_points.append(i)
+
+        print(dates_points)
+        # Buy and sell triggers can take three values:
+        # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
+        sell_trigger = 0
+        buy_trigger = 0
+
+        # Defining indicator trigger for...
+
+        for i in dates_points:
+
+            # ...upper bound
+            if signal[i] >= upper_threshold[i] and sell_trigger == 0:  # Initiate sell trigger
+                sell_trigger = 1
+
+            if signal[i] < signal[dates_points.index(i)-1] and sell_trigger == 1:  # Initiate sell trigger
+                sell_dates.append(big_data.data_slice_dates[dates_points.index(i)])
+                sell_trigger = 2
+
+            if signal[i] <= upper_threshold[i] and sell_trigger == 2:  # Reset trigger
+                sell_trigger = 0
+
+            # ...lower bound
+            if signal[i] <= lower_threshold[i] and buy_trigger == 0:  # Initiate buy trigger
+                buy_trigger = 1
+
+            if signal[i] > signal[dates_points.index(i)-1] and buy_trigger == 1:  # Initiate sell trigger
+                buy_dates.append(big_data.data_slice_dates[dates_points.index(i)])
+                buy_trigger = 2
+
+            if signal[i] >= lower_threshold[i] and buy_trigger == 2:  # Reset trigger
+                buy_trigger = 0
+
+        return sell_dates, buy_dates
