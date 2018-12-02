@@ -9,7 +9,7 @@ class Trade_bot:
         self.start_trade_money = 0
         self.money = 1000
 
-        self.investment_per_trade = 200
+        self.investment_per_trade = self.money * 0.3
         self.share_owned = 0
 
         # Define trade actions
@@ -38,7 +38,7 @@ class Trade_bot:
                     if self.money > self.start_trade_money:
                         successful_trades += 1
 
-                        print("================> Day ", i)
+                        print("================> Day ", i+1)
                         print("Trade action:", self.trade_actions[i])
                         print("Money =", self.money)
                         print("Share owned=", self.share_owned)

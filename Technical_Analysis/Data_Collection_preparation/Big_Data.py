@@ -52,7 +52,6 @@ class BIGDATA:
         for index, row in self.data_slice.iterrows():
             self.volume.append(row['Volume'])
 
-
         # ------- Calculate value fluctuation for each point in data slice
         values_fluctuation = []
         for i in range(len(self.data_slice)):

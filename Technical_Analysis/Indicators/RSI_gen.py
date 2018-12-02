@@ -8,10 +8,13 @@ Victor Guillet
 
 
 class RSI:
-    def __init__(self, big_data, timeframe=14, buffer_setting=0):
+    def __init__(self, big_data, timeframe=14, buffer_setting=0,
+                 standard_upper_threshold=70, standard_lower_threshold=30):
         
         self.timeframe = timeframe
         self.buffer_setting = buffer_setting
+        self.standard_upper_threshold = standard_upper_threshold
+        self.standard_lower_threshold = standard_lower_threshold
         
         # --------------------------RSI CALCULATION---------------------------
         rsi_values = []
@@ -65,23 +68,23 @@ class RSI:
         #       - 2: variable value buffer
 
         if self.buffer_setting == 0:
-            big_data.buffer = 0
+            rsi_buffer = 0
 
         elif self.buffer_setting == 1:
-            big_data.buffer = 3
+            rsi_buffer = 3
 
         elif self.buffer_setting == 2:
-            big_data.buffer = 2
+            rsi_buffer = 2
     
     # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # Define initial upper and lower bounds
-        upper_bound = [70]*len(big_data.data_slice_dates)
-        lower_bound = [30]*len(big_data.data_slice_dates)
+        upper_bound = [self.standard_upper_threshold]*len(big_data.data_slice_dates)
+        lower_bound = [self.standard_lower_threshold]*len(big_data.data_slice_dates)
     
         # Define upper dynamic bound method
         for i in range(len(big_data.data_slice)):
-            if self.rsi_values[i] > (70 + big_data.buffer):
-                new_upper_bound = self.rsi_values[i] - big_data.buffer
+            if self.rsi_values[i] > (self.standard_upper_threshold + rsi_buffer):
+                new_upper_bound = self.rsi_values[i] - rsi_buffer
                 if new_upper_bound >= upper_bound[i-1]:
                     upper_bound[i] = new_upper_bound
                 else:
@@ -91,8 +94,8 @@ class RSI:
         
         # Define lower dynamic bound method
         for i in range(len(self.rsi_values)):
-            if self.rsi_values[i] < (30 - big_data.buffer):
-                new_lower_bound = self.rsi_values[i] + big_data.buffer
+            if self.rsi_values[i] < (self.standard_lower_threshold - rsi_buffer):
+                new_lower_bound = self.rsi_values[i] + rsi_buffer
                 if new_lower_bound <= upper_bound[i-1]:
                     lower_bound[i] = new_lower_bound
                 else:
@@ -118,7 +121,7 @@ class RSI:
         for i in range(len(big_data.data_slice)):
 
             # ...upper bound
-            if self.rsi_values[i] >= 70 and sell_trigger == 0:  # Initiate sell trigger
+            if self.rsi_values[i] >= self.standard_upper_threshold and sell_trigger == 0:  # Initiate sell trigger
                 sell_trigger = 1
 
             if self.rsi_values[i] <= self.upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
@@ -127,11 +130,11 @@ class RSI:
 
                 sell_trigger = 2
 
-            if self.rsi_values[i] < 70 and sell_trigger == 2:  # Reset trigger
+            if self.rsi_values[i] < self.standard_upper_threshold and sell_trigger == 2:  # Reset trigger
                 sell_trigger = 0
 
             # ...lower bound
-            if self.rsi_values[i] <= 30 and buy_trigger == 0:  # Initiate buy trigger
+            if self.rsi_values[i] <= self.standard_lower_threshold and buy_trigger == 0:  # Initiate buy trigger
                 buy_trigger = 1
 
             if self.rsi_values[i] >= self.lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
@@ -140,7 +143,7 @@ class RSI:
 
                 buy_trigger = 2
 
-            if self.rsi_values[i] > 30 and sell_trigger == 2:  # Reset trigger
+            if self.rsi_values[i] > self.standard_lower_threshold and sell_trigger == 2:  # Reset trigger
                 buy_trigger = 0
 
         self.sell_rsi = sell_rsi
