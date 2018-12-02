@@ -33,56 +33,56 @@ class SPLINE:
 
     @staticmethod
     def combine_splines(big_data,
-                               signal_1, signal_2, signal_3, signal_4,
-                               weight_1=1, weight_2=1, weight_3=1, weight_4=1):
+                        spline_1, spline_2, spline_3, spline_4,
+                        weight_1=1, weight_2=1, weight_3=1, weight_4=1):
 
-        combined_signal_spline = []
+        combined_splines = []
         for i in range(big_data.spline_length):
-            combined_signal_spline.append((signal_1[i]*weight_1 + signal_2[i]*weight_2
-                                           + signal_3[i]*weight_3 + signal_4[i]*weight_4) /
+            combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
+                                           + spline_3[i]*weight_3 + spline_4[i]*weight_4) /
                                           (weight_1+weight_2+weight_3+weight_4))
 
-        return combined_signal_spline
+        return combined_splines
 
     @staticmethod
-    def shift_spline(signal, index_shift):
+    def shift_spline(spline, index_shift):
 
-        shifted_signal = [0]*len(signal)
+        shifted_spline = [0]*len(spline)
 
         if index_shift < 0:
-            for i in range(len(signal) + index_shift):
-                shifted_signal[i+index_shift] = signal[i]
+            for i in range(len(spline) + index_shift):
+                shifted_spline[i+index_shift] = spline[i]
         else:
-            for i in range(len(signal) - index_shift):
-                shifted_signal[i+index_shift] = signal[i]
+            for i in range(len(spline) - index_shift):
+                shifted_spline[i+index_shift] = spline[i]
 
-        return shifted_signal
-
-    @staticmethod
-    def simple_increase_amplitude_spline(signal, coef):
-
-        signal_amplified = []
-
-        for i in signal:
-            signal_amplified.append(i*coef)
-
-        return signal_amplified
+        return shifted_spline
 
     @staticmethod
-    def increase_amplitude_spline(signal, coef_signal):
+    def simple_increase_amplitude_spline(spline, coef):
 
-        signal_amplified = []
+        spline_amplified = []
 
-        for i in range(len(signal)):
-            signal_amplified.append(signal[i]*(1+abs(coef_signal[i])))
+        for i in spline:
+            spline_amplified.append(i*coef)
 
-        # Normalising signal_amplified values between -1 and 1
-        signal_amplified_normalised = []
+        return spline_amplified
 
-        for i in range(len(signal_amplified)):
-            signal_amplified_normalised.append((signal_amplified[i])/max(max(signal_amplified), -min(signal_amplified)))
+    @staticmethod
+    def increase_amplitude_spline(spline, coef_spline):
 
-        return signal_amplified_normalised
+        spline_amplified = []
+
+        for i in range(len(spline)):
+            spline_amplified.append(spline[i]*(1+abs(coef_spline[i])))
+
+        # Normalising spline_amplified values between -1 and 1
+        spline_amplified_normalised = []
+
+        for i in range(len(spline_amplified)):
+            spline_amplified_normalised.append((spline_amplified[i])/max(max(spline_amplified), -min(spline_amplified)))
+
+        return spline_amplified_normalised
 
     @staticmethod
     def plot_spline(big_data, spline, label, color='g'):
@@ -92,7 +92,7 @@ class SPLINE:
 
         plt.gcf().autofmt_xdate()
         plt.grid()
-        plt.title("Spline signals")
+        plt.title("Splines")
         # plt.legend()
         plt.xlabel("Trade date")
         plt.ylabel("Buy <-- Signal power --> Sell")
@@ -100,13 +100,14 @@ class SPLINE:
     # =========================================================================================
 
     @staticmethod
-    def calc_upper_threshold(big_data, signal, buffer_setting=0, standard_upper_threshold=0.5):
-
+    def calc_upper_threshold(big_data, spline, buffer_setting=0, standard_upper_threshold=0.5):
+        # TODO combine calc_upper and calc_lower functions?
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer
         #       - 1: fixed value buffer
         #       - 2: variable value buffer
+        # TODO implement variable weighted buffer
 
         if buffer_setting == 0:
             spline_buffer = 0
@@ -124,16 +125,16 @@ class SPLINE:
         freeze_trade = False
         
         # Define upper dynamic bound method
-        for i in range(len(signal)):
-            if signal[i] < standard_upper_threshold:
+        for i in range(len(spline)):
+            if spline[i] < standard_upper_threshold:
                 freeze_trade = False
 
-            if signal[i] > (standard_upper_threshold + spline_buffer) and freeze_trade is False:
-                new_upper_threshold = signal[i] - spline_buffer
+            if spline[i] > (standard_upper_threshold + spline_buffer) and freeze_trade is False:
+                new_upper_threshold = spline[i] - spline_buffer
                 if new_upper_threshold >= upper_threshold[i - 1]:
                     upper_threshold[i] = new_upper_threshold
 
-                elif signal[i] < upper_threshold[i - 1]:
+                elif spline[i] < upper_threshold[i - 1]:
                     freeze_trade = True
 
                 else:
@@ -142,13 +143,14 @@ class SPLINE:
         return upper_threshold
 
     @staticmethod
-    def calc_lower_threshold(big_data, signal, buffer_setting=0, standard_lower_threshold=-0.5):
+    def calc_lower_threshold(big_data, spline, buffer_setting=0, standard_lower_threshold=-0.5):
 
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer
         #       - 1: fixed value buffer
         #       - 2: variable value buffer
+        # TODO implement variable weighted buffer
 
         if buffer_setting == 0:
             spline_buffer = 0
@@ -165,16 +167,16 @@ class SPLINE:
         freeze_trade = False
 
         # Define upper dynamic bound method
-        for i in range(len(signal)):
-            if signal[i] > standard_lower_threshold:
+        for i in range(len(spline)):
+            if spline[i] > standard_lower_threshold:
                 freeze_trade = False
 
-            if signal[i] < (standard_lower_threshold - spline_buffer) and freeze_trade is False:
-                new_lower_threshold = signal[i] + spline_buffer
+            if spline[i] < (standard_lower_threshold - spline_buffer) and freeze_trade is False:
+                new_lower_threshold = spline[i] + spline_buffer
                 if new_lower_threshold <= lower_threshold[i - 1]:
                     lower_threshold[i] = new_lower_threshold
 
-                elif signal[i] > lower_threshold[i - 1]:
+                elif spline[i] > lower_threshold[i - 1]:
                     freeze_trade = True
 
                 else:
@@ -182,8 +184,8 @@ class SPLINE:
         return lower_threshold
 
     @staticmethod
-    def calc_spline_trigger(big_data, signal):
-
+    def calc_spline_trigger(big_data, spline):
+        # TODO fix calc_spline_trigger
         sell_dates = []
         buy_dates = []
 
@@ -193,7 +195,7 @@ class SPLINE:
         # Listing out point of spline which are date points
         dates_points = []
 
-        for i in range(len(signal)):
+        for i in range(len(spline)):
             if i % 5 == 0:
                 dates_points.append(i)
 
@@ -207,36 +209,36 @@ class SPLINE:
         for i in dates_points:
 
             # ...upper bound
-            if signal[i] >= big_data.spline_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
+            if spline[i] >= big_data.spline_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                 sell_trigger = 1
 
-            if signal[i] < big_data.spline_upper_threshold[i] and sell_trigger == 1:   # Initiate sell trigger
+            if spline[i] < big_data.spline_upper_threshold[i] and sell_trigger == 1:   # Initiate sell trigger
                 sell_dates.append(big_data.data_slice_dates[dates_points.index(i)])
-                sell_spline.append(signal[i])
+                sell_spline.append(spline[i])
 
                 sell_trigger = 2
 
-            if signal[i] < big_data.spline_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
+            if spline[i] < big_data.spline_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
                 sell_trigger = 0
 
             # ...lower bound
-            if signal[i] <= big_data.spline_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
+            if spline[i] <= big_data.spline_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                 buy_trigger = 1
 
-            if signal[i] > big_data.spline_lower_threshold[i] and buy_trigger == 1:    # Initiate sell trigger
+            if spline[i] > big_data.spline_lower_threshold[i] and buy_trigger == 1:    # Initiate sell trigger
                 buy_dates.append(big_data.data_slice_dates[dates_points.index(i)])
-                buy_spline.append(signal[i])
+                buy_spline.append(spline[i])
 
                 buy_trigger = 2
 
-            if signal[i] > big_data.spline_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
+            if spline[i] > big_data.spline_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
                 buy_trigger = 0
 
         return sell_dates, buy_dates, sell_spline, buy_spline
 
     @staticmethod
-    def plot_spline_trigger(sell_spline, buy_spline, signal):
+    def plot_spline_trigger(sell_spline, buy_spline, spline):
             import matplotlib.pyplot as plt
 
-            plt.scatter(signal.index(sell_spline[i] for i in range(len(sell_spline))), sell_spline, label="Sell trigger")
-            plt.scatter(signal.index(buy_spline[i] for i in range(len(buy_spline))), buy_spline, label="Buy trigger")
+            plt.scatter(spline.index(sell_spline[i] for i in range(len(sell_spline))), sell_spline, label="Sell trigger")
+            plt.scatter(spline.index(buy_spline[i] for i in range(len(buy_spline))), buy_spline, label="Buy trigger")

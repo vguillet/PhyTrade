@@ -1,16 +1,18 @@
 from Analysis_protocol_V.Prototype_1 import Prototype_1
 
 
-class Trade_bot:
+class Trade_bot_1:
     def __init__(self):
-        self.p1 = Prototype_1()
-        self.p1.plot(plot_1=True, plot_2=False, plot_3=True)
 
         self.start_trade_money = 0
         self.money = 1000
 
         self.investment_per_trade = self.money * 0.3
         self.share_owned = 0
+
+        # Market analysis protocol:
+        self.p1 = Prototype_1()
+        self.p1.plot(plot_1=True, plot_2=False, plot_3=True)
 
         # Define trade actions
         self.trade_actions = ["hold"]*len(self.p1.big_data.data_slice_dates)

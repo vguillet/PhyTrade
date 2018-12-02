@@ -70,6 +70,7 @@ class Prototype_1:
                 self.spline.calc_signal_spline(self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
     
         # -- Adding signals together
+        # TODO create class instance major spline and store relevant info in it
         setattr(self.big_data, "major_spline", self.spline.combine_splines(self.big_data,
                                                                            self.big_data.spline_rsi,
                                                                            self.big_data.spline_oc_avg_gradient,
@@ -149,6 +150,7 @@ class Prototype_1:
             self.spline. plot_spline(self.big_data, self.big_data.spline_lower_threshold, label="Lower threshold")
 
             # self.spline.plot_spline_trigger(sell_spline, buy_spline, self.big_data.major_spline)
+            # TODO fix spline trigger points plot
 
             # self.spline. plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()
