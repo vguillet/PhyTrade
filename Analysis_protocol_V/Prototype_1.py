@@ -31,7 +31,7 @@ class Prototype_1:
         # print(data)
         # ========================= ANALYSIS INITIALISATION ==============================
         ticker = "AAPL"
-        data_slice_start_ind = -500
+        data_slice_start_ind = -800
         data_slice_stop_ind = len(data)-10
     
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)

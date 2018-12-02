@@ -94,14 +94,14 @@ class SPLINE:
     @staticmethod
     def calc_upper_threshold(big_data):
 
-        upper_threshold = [0.55]*len(big_data.spline_xs)
+        upper_threshold = [0.3]*len(big_data.spline_xs)
 
         return upper_threshold
 
     @staticmethod
     def calc_lower_threshold(big_data):
 
-        lower_threshold = [-0.55]*len(big_data.spline_xs)
+        lower_threshold = [-0.3]*len(big_data.spline_xs)
 
         return lower_threshold
 
