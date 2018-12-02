@@ -86,14 +86,20 @@ class Prototype_1:
 
         # -- Creating dynamic thresholds
         setattr(self.big_data, "spline_upper_threshold", self.spline.calc_upper_threshold(
-            self.big_data, self.big_data.major_spline))
+            self.big_data, self.big_data.major_spline, buffer_setting=1))
 
         setattr(self.big_data, "spline_lower_threshold", self.spline.calc_lower_threshold(
-            self.big_data, self.big_data.major_spline))
+            self.big_data, self.big_data.major_spline, buffer_setting=1))
 
         # ========================= TRADING SIGNAL GENERATION ============================
         buy_dates, sell_dates, sell_spline, buy_spline = self.spline.calc_spline_trigger(self.big_data, self.big_data.major_spline)
         self.oc.calc_trigger_values(self.big_data, sell_dates, buy_dates)
+
+
+
+
+
+
 
     def plot(self, plot_1=True, plot_2=True, plot_3=True):
         # ========================= SIGNAL PLOTS =========================================
@@ -137,10 +143,12 @@ class Prototype_1:
             # self.spline.plot_spline(self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='r')
             # self.spline.plot_spline(self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
 
-            self.spline.plot_spline(self.big_data, self.big_data.major_spline, label="Combined weighted bb splines", color='y')
+            self.spline.plot_spline(self.big_data, self.big_data.major_spline, label="Major spline", color='y')
 
             self.spline. plot_spline(self.big_data, self.big_data.spline_upper_threshold, label="Upper threshold")
             self.spline. plot_spline(self.big_data, self.big_data.spline_lower_threshold, label="Lower threshold")
+
+            # self.spline.plot_spline_trigger(sell_spline, buy_spline, self.big_data.major_spline)
 
             # self.spline. plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()

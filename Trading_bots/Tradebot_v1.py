@@ -4,7 +4,7 @@ from Analysis_protocol_V.Prototype_1 import Prototype_1
 class Trade_bot:
     def __init__(self):
         self.p1 = Prototype_1()
-        self.p1.plot(plot_1=False, plot_2=False, plot_3=True)
+        self.p1.plot(plot_1=True, plot_2=False, plot_3=True)
 
         self.start_trade_money = 0
         self.money = 1000

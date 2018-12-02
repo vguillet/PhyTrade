@@ -97,6 +97,8 @@ class SPLINE:
         plt.xlabel("Trade date")
         plt.ylabel("Buy <-- Signal power --> Sell")
 
+    # =========================================================================================
+
     @staticmethod
     def calc_upper_threshold(big_data, signal, buffer_setting=0, standard_upper_threshold=0.5):
 
@@ -110,7 +112,7 @@ class SPLINE:
             spline_buffer = 0
 
         elif buffer_setting == 1:
-            spline_buffer = 3
+            spline_buffer = 0.05
 
         elif buffer_setting == 2:
             spline_buffer = 2
@@ -118,9 +120,25 @@ class SPLINE:
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
 
         upper_threshold = [standard_upper_threshold]*len(big_data.spline_xs)
+        
+        freeze_trade = False
+        
+        # Define upper dynamic bound method
+        for i in range(len(signal)):
+            if signal[i] < standard_upper_threshold:
+                freeze_trade = False
 
-        # for i in range(len(signal)):
-        #     if signal[i] <
+            if signal[i] > (standard_upper_threshold + spline_buffer) and freeze_trade is False:
+                new_upper_threshold = signal[i] - spline_buffer
+                if new_upper_threshold >= upper_threshold[i - 1]:
+                    upper_threshold[i] = new_upper_threshold
+
+                elif signal[i] < upper_threshold[i - 1]:
+                    freeze_trade = True
+
+                else:
+                    upper_threshold[i] = upper_threshold[i - 1]
+
         return upper_threshold
 
     @staticmethod
@@ -136,7 +154,7 @@ class SPLINE:
             spline_buffer = 0
 
         elif buffer_setting == 1:
-            spline_buffer = 3
+            spline_buffer = 0.05
 
         elif buffer_setting == 2:
             spline_buffer = 2
@@ -144,6 +162,23 @@ class SPLINE:
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
         lower_threshold = [standard_lower_threshold]*len(big_data.spline_xs)
 
+        freeze_trade = False
+
+        # Define upper dynamic bound method
+        for i in range(len(signal)):
+            if signal[i] > standard_lower_threshold:
+                freeze_trade = False
+
+            if signal[i] < (standard_lower_threshold - spline_buffer) and freeze_trade is False:
+                new_lower_threshold = signal[i] + spline_buffer
+                if new_lower_threshold <= lower_threshold[i - 1]:
+                    lower_threshold[i] = new_lower_threshold
+
+                elif signal[i] > lower_threshold[i - 1]:
+                    freeze_trade = True
+
+                else:
+                    lower_threshold[i] = lower_threshold[i - 1]
         return lower_threshold
 
     @staticmethod
@@ -175,26 +210,33 @@ class SPLINE:
             if signal[i] >= big_data.spline_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                 sell_trigger = 1
 
-            elif signal[i] < big_data.spline_upper_threshold[i] and sell_trigger == 1:   # Initiate sell trigger
+            if signal[i] < big_data.spline_upper_threshold[i] and sell_trigger == 1:   # Initiate sell trigger
                 sell_dates.append(big_data.data_slice_dates[dates_points.index(i)])
                 sell_spline.append(signal[i])
 
                 sell_trigger = 2
 
-            elif signal[i] < big_data.spline_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
+            if signal[i] < big_data.spline_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
                 sell_trigger = 0
 
             # ...lower bound
             if signal[i] <= big_data.spline_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                 buy_trigger = 1
 
-            elif signal[i] > big_data.spline_lower_threshold[i] and buy_trigger == 1:    # Initiate sell trigger
+            if signal[i] > big_data.spline_lower_threshold[i] and buy_trigger == 1:    # Initiate sell trigger
                 buy_dates.append(big_data.data_slice_dates[dates_points.index(i)])
                 buy_spline.append(signal[i])
 
                 buy_trigger = 2
 
-            elif signal[i] > big_data.spline_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
+            if signal[i] > big_data.spline_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
                 buy_trigger = 0
 
         return sell_dates, buy_dates, sell_spline, buy_spline
+
+    @staticmethod
+    def plot_spline_trigger(sell_spline, buy_spline, signal):
+            import matplotlib.pyplot as plt
+
+            plt.scatter(signal.index(sell_spline[i] for i in range(len(sell_spline))), sell_spline, label="Sell trigger")
+            plt.scatter(signal.index(buy_spline[i] for i in range(len(buy_spline))), buy_spline, label="Buy trigger")

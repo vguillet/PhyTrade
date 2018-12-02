@@ -80,26 +80,45 @@ class RSI:
         # Define initial upper and lower bounds
         upper_bound = [self.standard_upper_threshold]*len(big_data.data_slice_dates)
         lower_bound = [self.standard_lower_threshold]*len(big_data.data_slice_dates)
-    
+
         # Define upper dynamic bound method
+        freeze_trade_upper = False
+
         for i in range(len(big_data.data_slice)):
-            if self.rsi_values[i] > (self.standard_upper_threshold + rsi_buffer):
+            if self.rsi_values[i] < self.standard_upper_threshold:
+                freeze_trade_upper = False
+
+            if self.rsi_values[i] > (self.standard_upper_threshold + rsi_buffer) and freeze_trade_upper is False:
                 new_upper_bound = self.rsi_values[i] - rsi_buffer
                 if new_upper_bound >= upper_bound[i-1]:
                     upper_bound[i] = new_upper_bound
+
+                elif self.rsi_values[i] < upper_bound[i-1]:
+                    freeze_trade_upper = True
+
                 else:
                     upper_bound[i] = upper_bound[i-1]
         
         self.upper_bound = upper_bound
-        
+
         # Define lower dynamic bound method
+        freeze_trade_lower = False
+
         for i in range(len(self.rsi_values)):
-            if self.rsi_values[i] < (self.standard_lower_threshold - rsi_buffer):
+            if self.rsi_values[i] > self.standard_lower_threshold:
+                freeze_trade_lower = False
+
+            if self.rsi_values[i] < (self.standard_lower_threshold - rsi_buffer) and freeze_trade_lower is False:
                 new_lower_bound = self.rsi_values[i] + rsi_buffer
                 if new_lower_bound <= upper_bound[i-1]:
                     lower_bound[i] = new_lower_bound
+
+                elif self.rsi_values[i] > lower_bound[i - 1]:
+                    freeze_trade_lower = True
+
                 else:
                     lower_bound[i] = lower_bound[i-1]
+
         self.lower_bound = lower_bound
 
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
