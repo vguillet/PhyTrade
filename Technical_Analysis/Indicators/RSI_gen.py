@@ -122,6 +122,16 @@ class RSI:
 
         self.lower_bound = lower_bound
 
+    """
+
+
+
+
+
+
+
+
+    """
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
 
@@ -187,10 +197,19 @@ class RSI:
 
         self.bb_signal = bb_signal_normalised
 
-    # ____________________________________________________________________
+    """
+
+
+
+
+
+
+
+
+    """
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
 
-    def plot_rsi_and_bounds(self, big_data, plot_rsi=True, plot_upper_bound=True, plot_lower_bound=True, plot_trigger_signals=True):
+    def plot_rsi(self, big_data, plot_rsi=True, plot_upper_bound=True, plot_lower_bound=True, plot_trigger_signals=True):
         import matplotlib.pyplot as plt
 
         if plot_rsi:

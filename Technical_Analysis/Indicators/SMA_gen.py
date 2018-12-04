@@ -78,7 +78,16 @@ class SMA:
                 bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
 
         self.bb_signal = bb_signal_normalised
-    # ____________________________________________________________________
+    """
+
+
+
+
+
+
+
+
+    """
     # -------------------------PLOT SMA ----------------------------------
 
     def plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):

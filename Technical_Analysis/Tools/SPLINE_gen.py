@@ -18,7 +18,7 @@ class SPLINE:
         setattr(big_data, "spline_xs", xs)
 
     @staticmethod
-    def calc_signal_spline(big_data, signal, smoothing_factor=0.7):
+    def calc_signal_to_spline(big_data, signal, smoothing_factor=0.7):
         import numpy as np
         from scipy.interpolate import UnivariateSpline
 
@@ -90,18 +90,25 @@ class SPLINE:
 
         plt.plot(big_data.spline_xs, spline, 'g', linewidth=1, label=label, c=color)
 
-        plt.gcf().autofmt_xdate()
+        # plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("Splines")
         # plt.legend()
         plt.xlabel("Trade date")
         plt.ylabel("Buy <-- Signal power --> Sell")
+        """
 
-    # =========================================================================================
 
+
+
+
+
+
+
+        """
     @staticmethod
-    def calc_upper_threshold(big_data, spline, buffer_setting=0, standard_upper_threshold=0.5):
-        # TODO combine calc_upper and calc_lower functions?
+    def calc_thresholds(big_data, spline, buffer_setting=0,
+                         standard_upper_threshold=0.5, standard_lower_threshold=-0.5):
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer
@@ -121,9 +128,7 @@ class SPLINE:
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
 
         upper_threshold = [standard_upper_threshold]*len(big_data.spline_xs)
-        
         freeze_trade = False
-        
         # Define upper dynamic bound method
         for i in range(len(spline)):
             if spline[i] < standard_upper_threshold:
@@ -140,32 +145,8 @@ class SPLINE:
                 else:
                     upper_threshold[i] = upper_threshold[i - 1]
 
-        return upper_threshold
-
-    @staticmethod
-    def calc_lower_threshold(big_data, spline, buffer_setting=0, standard_lower_threshold=-0.5):
-
-        # -------------------------WEIGHTED BUFFER DEFINITION-----------------
-        # Buffer settings:
-        #       - 0: no buffer
-        #       - 1: fixed value buffer
-        #       - 2: variable value buffer
-        # TODO implement variable weighted buffer
-
-        if buffer_setting == 0:
-            spline_buffer = 0
-
-        elif buffer_setting == 1:
-            spline_buffer = 0.05
-
-        elif buffer_setting == 2:
-            spline_buffer = 2
-
-        # -------------------------DYNAMIC BOUND DEFINITION-------------------
         lower_threshold = [standard_lower_threshold]*len(big_data.spline_xs)
-
         freeze_trade = False
-
         # Define upper dynamic bound method
         for i in range(len(spline)):
             if spline[i] > standard_lower_threshold:
@@ -181,10 +162,10 @@ class SPLINE:
 
                 else:
                     lower_threshold[i] = lower_threshold[i - 1]
-        return lower_threshold
+        return upper_threshold, lower_threshold
 
     @staticmethod
-    def calc_spline_trigger(big_data, spline):
+    def calc_spline_trigger(big_data, spline, upper_threshold, lower_threshold):
         # TODO fix calc_spline_trigger
         sell_dates = []
         buy_dates = []
@@ -195,7 +176,7 @@ class SPLINE:
         # Listing out point of spline which are date points
         dates_points = []
 
-        for i in range(len(spline)):
+        for i in range(0, len(big_data.spline_xs)):
             if i % 5 == 0:
                 dates_points.append(i)
 
@@ -205,40 +186,57 @@ class SPLINE:
         buy_trigger = 0
 
         # Defining indicator trigger for...
-
         for i in dates_points:
 
             # ...upper bound
-            if spline[i] >= big_data.spline_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
+            if spline[i] >= upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                 sell_trigger = 1
 
-            if spline[i] < big_data.spline_upper_threshold[i] and sell_trigger == 1:   # Initiate sell trigger
+            if spline[i] <= max(list(upper_threshold[i-j] for j in range(20))) and sell_trigger == 1:   # Initiate sell trigger
                 sell_dates.append(big_data.data_slice_dates[dates_points.index(i)])
                 sell_spline.append(spline[i])
-
                 sell_trigger = 2
 
-            if spline[i] < big_data.spline_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
+            if spline[i] <= min(upper_threshold) and sell_trigger == 2:   # Reset trigger
                 sell_trigger = 0
 
             # ...lower bound
-            if spline[i] <= big_data.spline_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
+            if spline[i] <= lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                 buy_trigger = 1
 
-            if spline[i] > big_data.spline_lower_threshold[i] and buy_trigger == 1:    # Initiate sell trigger
+            if spline[i] >= min(list(lower_threshold[i-j] for j in range(20))) and buy_trigger == 1:    # Initiate sell trigger
                 buy_dates.append(big_data.data_slice_dates[dates_points.index(i)])
                 buy_spline.append(spline[i])
-
                 buy_trigger = 2
 
-            if spline[i] > big_data.spline_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
+            if spline[i] >= max(lower_threshold) and buy_trigger == 2:    # Reset trigger
                 buy_trigger = 0
 
         return sell_dates, buy_dates, sell_spline, buy_spline
 
     @staticmethod
-    def plot_spline_trigger(sell_spline, buy_spline, spline):
-            import matplotlib.pyplot as plt
+    def plot_spline_trigger(big_data,  spline, sell_dates, buy_dates):
+        import matplotlib.pyplot as plt
 
-            plt.scatter(spline.index(sell_spline[i] for i in range(len(sell_spline))), sell_spline, label="Sell trigger")
-            plt.scatter(spline.index(buy_spline[i] for i in range(len(buy_spline))), buy_spline, label="Buy trigger")
+        # Listing out point of spline which are date points
+        dates_points = []
+
+        for i in range(len(big_data.spline_xs)):
+            if i % 5 == 0:
+                dates_points.append(i)
+
+        sell_spline_values = []
+        sell_spline_dates = []
+
+        for i in sell_dates:
+            sell_spline_values.append(spline[dates_points[big_data.data_slice_dates.index(i)]])
+            sell_spline_dates.append(dates_points[big_data.data_slice_dates.index(i)]/5)
+
+        buy_spline_values = []
+        buy_spline_dates = []
+        for i in buy_dates:
+            buy_spline_values.append(spline[dates_points[big_data.data_slice_dates.index(i)]])
+            buy_spline_dates.append(dates_points[big_data.data_slice_dates.index(i)]/5)
+
+        plt.scatter(sell_spline_dates,  sell_spline_values, label="Sell trigger")
+        plt.scatter(buy_spline_dates, buy_spline_values, label="Buy trigger")

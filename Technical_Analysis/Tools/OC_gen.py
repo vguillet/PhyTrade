@@ -21,17 +21,10 @@ class OC:
             buy_values.append(
                 big_data.data_slice_close_values[big_data.data_slice_dates.index(buy_dates[i])])
 
-        big_data.sell_trigger_dates = sell_dates
-        big_data.buy_trigger_dates = buy_dates
-
-        big_data.sell_trigger_values = sell_values
-        big_data.buy_trigger_values = buy_values
-
-        # big_data.sell_trigger_values = sorted(big_data.sell_trigger_values)
-        # big_data.buy_trigger_values = sorted(big_data.buy_trigger_values)
+        return sell_values, buy_values
 
     @staticmethod
-    def plot_open_close_values(big_data, plot_close_values=True, plot_open_values=True):
+    def plot_oc_values(big_data, plot_close_values=True, plot_open_values=True):
         import matplotlib.pyplot as plt
 
         if plot_close_values:
@@ -48,7 +41,7 @@ class OC:
         plt.ylabel("Value")
 
     @staticmethod
-    def plot_open_close_values_diff(big_data):
+    def plot_oc_values_diff(big_data):
         import matplotlib.pyplot as plt
 
         plt.plot(big_data.data_slice_dates, big_data.values_fluctuation, linewidth=1, label="Values fluctuation")
@@ -61,9 +54,11 @@ class OC:
         plt.ylabel("Value fluctuation")
 
     @staticmethod
-    def plot_trigger_values(big_data):
+    def plot_trigger_values(big_data, sell_dates, buy_dates):
         import matplotlib.pyplot as plt
 
-        plt.scatter(big_data.sell_trigger_dates, big_data.sell_trigger_values, label="Sell triggers")   # Plot sell signals
-        plt.scatter(big_data.buy_trigger_dates, big_data.buy_trigger_values, label="Buy triggers")      # Plot buy signals
+        sell_values, buy_values = OC().calc_trigger_values(big_data, sell_dates, buy_dates)
+
+        plt.scatter(sell_dates, sell_values, label="Sell triggers")   # Plot sell signals
+        plt.scatter(buy_dates, buy_values, label="Buy triggers")      # Plot buy signals
         plt.legend()
