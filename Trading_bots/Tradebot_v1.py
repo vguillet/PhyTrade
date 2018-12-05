@@ -14,11 +14,11 @@ class Trade_bot_1:
 
         # Market analysis protocol:
 
-        self.p = Prototype_1()
-        self.p.plot(plot_1=False, plot_2=False, plot_3=True)
-        
-        # self.p = Prototype_2()
+        # self.p = Prototype_1()
         # self.p.plot(plot_1=False, plot_2=False, plot_3=True)
+
+        self.p = Prototype_2()
+        self.p.plot(plot_1=False, plot_2=False, plot_3=True)
 
         # ==============================================================================
         """

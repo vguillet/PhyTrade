@@ -28,7 +28,7 @@ class Prototype_2:
         data = pull_yahoo_data(ticker)      # Pull data from Yahoo
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = -700
+        data_slice_start_ind = -1400
         data_slice_stop_ind = len(data)
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
@@ -75,7 +75,7 @@ class Prototype_2:
                 self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_2.bb_signal, smoothing_factor=1))
 
         setattr(self.big_data, "spline_volume",
-                self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
+                self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0))
 
         # -- Adding signals together
         setattr(self.big_data, "combined_spline", self.spline_tools.combine_splines(self.big_data,
@@ -152,11 +152,11 @@ class Prototype_2:
             #     self.big_data, self.big_data.spline_rsi, label="RSI bb spline")
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_oc_avg_gradient, label="OC gradient bb spline", color='m')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='r')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
-            #
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='r')
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
+
             self.spline_tools.plot_spline(
                 self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
 
@@ -168,5 +168,5 @@ class Prototype_2:
             self.spline_tools.plot_spline_trigger(
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
 
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()

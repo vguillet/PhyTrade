@@ -67,8 +67,12 @@ class SMA:
 
         # Normalising sma bb signal values between -1 and 1
         bb_signal_normalised = []
+
+        # for i in range(len(big_data.data_slice)):
+        #     bb_signal_normalised.append((bb_signal[i])/(max(max(bb_signal), -min(bb_signal))))
+
         for i in range(len(big_data.data_slice)):
-            bb_signal_normalised.append((bb_signal[i])/(max(max(bb_signal), -min(bb_signal))))
+            bb_signal_normalised.append(2*(bb_signal[i]-min(bb_signal))/(max(bb_signal)-min(bb_signal))-1)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:

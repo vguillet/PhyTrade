@@ -70,6 +70,26 @@ class SPLINE:
 
     @staticmethod
     def increase_amplitude_spline(spline, coef_spline):
+        import statistics
+
+
+        coef_spline_standard_dev = statistics.stdev(coef_spline)
+        coef_spline_mean = statistics.mean(coef_spline)
+
+        edited_points = 0
+        std_dev_max = 4
+
+        for i in range(len(coef_spline)):
+            if coef_spline[i] > 0 and coef_spline[i]-coef_spline_mean > std_dev_max * coef_spline_standard_dev:
+                coef_spline[i] = coef_spline_mean + std_dev_max * coef_spline_standard_dev
+                edited_points += 1
+
+            if coef_spline[i] < 0 and abs(coef_spline[i]) + coef_spline_mean > std_dev_max * coef_spline_standard_dev:
+                coef_spline[i] = coef_spline_mean - std_dev_max * coef_spline_standard_dev
+                edited_points += 1
+
+        print("coef spline formating completed", edited_points)
+
 
         spline_amplified = []
 
@@ -80,7 +100,8 @@ class SPLINE:
         spline_amplified_normalised = []
 
         for i in range(len(spline_amplified)):
-            spline_amplified_normalised.append((spline_amplified[i])/max(max(spline_amplified), -min(spline_amplified)))
+            spline_amplified_normalised.append(2 * (spline_amplified[i] - min(spline_amplified)) / (max(spline_amplified) - min(spline_amplified)) - 1)
+
 
         return spline_amplified_normalised
 
