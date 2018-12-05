@@ -8,18 +8,16 @@ Victor Guillet
 11/28/2018
 """
 
-from Technical_Analysis.Data_Collection_preparation.Quandl import pull_quandl_data
-from Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
+from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
+from PhyTrade.Technical_Analysis.Data_Collection_preparation.Quandl import pull_quandl_data
 
-from Technical_Analysis.Indicators.RSI_gen import RSI
-from Technical_Analysis.Indicators.SMA_gen import SMA
-from Technical_Analysis.Indicators.Volume_gen import Volume
+from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
+from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
+from PhyTrade.Technical_Analysis.Indicators.Volume_gen import Volume
 
-from Technical_Analysis.Tools.OC_gen import OC
-from Technical_Analysis.Tools.SPLINE_gen import SPLINE
-from Technical_Analysis.Tools.Major_spline_gen import MAJOR_SPLINE
-
-import numpy as np
+from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
+from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
+from PhyTrade.Technical_Analysis.Tools.Major_spline_gen import MAJOR_SPLINE
 
 
 class Prototype_1:
@@ -97,7 +95,8 @@ class Prototype_1:
 
         # -- Creating Major Spline
         setattr(self.big_data, "Major_spline",
-                MAJOR_SPLINE(self.big_data, self.big_data.combined_spline, threshold_buffer_setting=1,
+                MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,
+                             threshold_buffer=0.05, threshold_buffer_setting=0,
                              upper_threshold=0.45, lower_threshold=-0.45))
 
     # ================================================================================
@@ -169,7 +168,6 @@ class Prototype_1:
 
             self.spline_tools.plot_spline_trigger(
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
-            # TODO fix spline trigger points plot
 
             # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()

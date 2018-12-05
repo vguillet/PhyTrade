@@ -107,35 +107,73 @@ class SPLINE:
 
         """
     @staticmethod
-    def calc_thresholds(big_data, spline, buffer_setting=0,
-                         standard_upper_threshold=0.5, standard_lower_threshold=-0.5):
+    def calc_thresholds(big_data, spline, buffer=0.05, buffer_setting=0,
+                        standard_upper_threshold=0.5, standard_lower_threshold=-0.5):
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
-        # Buffer settings:
-        #       - 0: no buffer
-        #       - 1: fixed value buffer
-        #       - 2: variable value buffer
-        # TODO implement variable weighted buffer
+        from PhyTrade.Technical_Analysis.Data_Collection_preparation.Google_trends import pull_google_trends_data
+        import pandas as pd
+
+        """        
+        Buffer settings:
+              - 0: no buffer
+              - 1: fixed value buffer
+              - 2: variable value buffer
+        """
+
+        # TODO decide whether to keep google trends-modulated buffer size
 
         if buffer_setting == 0:
-            spline_buffer = 0
+            buffer = 0.0000001
+            spline_buffer = [1]*len(big_data.spline_xs)
 
         elif buffer_setting == 1:
-            spline_buffer = 0.05
+            spline_buffer = [1]*len(big_data.spline_xs)
 
         elif buffer_setting == 2:
-            spline_buffer = 2
+
+            # ---- Obtaining timeframe to be used for fetching google trends data
+            start_date = str(pd.to_datetime(big_data.data_slice_dates[0]).date())
+            end_date = str(
+                pd.to_datetime(big_data.data_slice_dates[len(big_data.data_slice_dates) - 1]).date())
+
+            timeframe = start_date + " " + end_date
+
+            google_trends_data = pull_google_trends_data(["Apple"], cat=7, timeframe=timeframe, gprop="news")
+
+            google_trends_lst = []
+            for index, row in google_trends_data.iterrows():
+                google_trends_lst.append(row['Apple'])
+
+            # ---- Normalising the list obtained
+            google_trends_lst_normalised = []
+            for i in range(len(big_data.data_slice)):
+                google_trends_lst_normalised.append((google_trends_lst[i]) / max(google_trends_lst))
+
+            spline_buffer_lst = SPLINE(big_data).calc_signal_to_spline(
+                big_data, google_trends_lst_normalised, smoothing_factor=0)
+
+            for i in range(len(spline_buffer_lst)):
+                round(i, 4)
+                if spline_buffer_lst[i] < 0:
+                    spline_buffer_lst[i] = 0
+
+            # ---- Normalising spline_buffer obtained
+            spline_buffer_normalised = []
+            for i in range(len(spline_buffer_lst)):
+                spline_buffer_normalised.append((spline_buffer_lst[i])/max(spline_buffer_lst))
+
+            spline_buffer = spline_buffer_normalised
 
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
-
         upper_threshold = [standard_upper_threshold]*len(big_data.spline_xs)
         freeze_trade = False
-        # Define upper dynamic bound method
+        # ---- Define upper dynamic bound method
         for i in range(len(spline)):
             if spline[i] < standard_upper_threshold:
                 freeze_trade = False
 
-            if spline[i] > (standard_upper_threshold + spline_buffer) and freeze_trade is False:
-                new_upper_threshold = spline[i] - spline_buffer
+            if spline[i] > (standard_upper_threshold + (buffer * spline_buffer[i])) and freeze_trade is False:
+                new_upper_threshold = spline[i] - (buffer * spline_buffer[i])
                 if new_upper_threshold >= upper_threshold[i - 1]:
                     upper_threshold[i] = new_upper_threshold
 
@@ -147,13 +185,14 @@ class SPLINE:
 
         lower_threshold = [standard_lower_threshold]*len(big_data.spline_xs)
         freeze_trade = False
-        # Define upper dynamic bound method
+
+        # ---- Define upper dynamic bound method
         for i in range(len(spline)):
             if spline[i] > standard_lower_threshold:
                 freeze_trade = False
 
-            if spline[i] < (standard_lower_threshold - spline_buffer) and freeze_trade is False:
-                new_lower_threshold = spline[i] + spline_buffer
+            if spline[i] < (standard_lower_threshold - (buffer * spline_buffer[i])) and freeze_trade is False:
+                new_lower_threshold = spline[i] + (buffer * spline_buffer[i])
                 if new_lower_threshold <= lower_threshold[i - 1]:
                     lower_threshold[i] = new_lower_threshold
 
@@ -166,7 +205,7 @@ class SPLINE:
 
     @staticmethod
     def calc_spline_trigger(big_data, spline, upper_threshold, lower_threshold):
-        # TODO fix calc_spline_trigger
+
         sell_dates = []
         buy_dates = []
 

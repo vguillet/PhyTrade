@@ -6,17 +6,15 @@ Victor Guillet
 11/28/2018
 """
 
-from Technical_Analysis.Data_Collection_preparation.Quandl import pull_quandl_data
-from Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
+from PhyTrade.Technical_Analysis.Data_Collection_preparation.Quandl import pull_quandl_data
+from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
 
-from Technical_Analysis.Indicators.RSI_gen import RSI
-from Technical_Analysis.Indicators.SMA_gen import SMA
-from Technical_Analysis.Indicators.Volume_gen import Volume
+from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
+from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
+from PhyTrade.Technical_Analysis.Indicators.Volume_gen import Volume
 
-from Technical_Analysis.Tools.OC_gen import OC
-from Technical_Analysis.Tools.SPLINE_gen import SPLINE
-
-import numpy as np
+from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
+from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
 
 # ========================= DATA COLLECTION INITIALISATION =======================
 # Data Collection using Quandl

@@ -1,10 +1,9 @@
-# TODO create Major spline class for organised info
-from Technical_Analysis.Tools.SPLINE_gen import SPLINE
-from Technical_Analysis.Tools.OC_gen import OC
+from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
+from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
 
 
 class MAJOR_SPLINE:
-    def __init__(self, big_data, spline, threshold_buffer_setting=0,
+    def __init__(self, big_data, spline, threshold_buffer=0.05, threshold_buffer_setting=0,
                  upper_threshold=0.5, lower_threshold=-0.5):
 
         oc_tools = OC()
@@ -14,7 +13,9 @@ class MAJOR_SPLINE:
 
         # -- Creating dynamic thresholds
         self.upper_threshold, self.lower_threshold = \
-            spline_tools.calc_thresholds(big_data, spline, buffer_setting=threshold_buffer_setting,
+            spline_tools.calc_thresholds(big_data, spline,
+                                         buffer=threshold_buffer,
+                                         buffer_setting=threshold_buffer_setting,
                                          standard_upper_threshold=upper_threshold,
                                          standard_lower_threshold=lower_threshold)
 

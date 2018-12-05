@@ -61,7 +61,7 @@ class Trade_bot_1:
 
                         print("=====================================> Day ", i+1)
                         print("Trade action:", self.trade_actions[i])
-                        print("Money =", self.money)
+                        print("Money =", self.money, "$")
                         print("Share owned=", self.share_owned)
 
                         print("Total asset value=",
@@ -73,11 +73,11 @@ class Trade_bot_1:
 
                         print("=====================================> Day ", i)
                         print("Trade action:", self.trade_actions[i])
-                        print("Money =", self.money)
+                        print("Money =", self.money, "$")
                         print("Share owned=", self.share_owned)
 
                         print("Total asset value=",
-                              self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned)
+                              self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned, "$")
                         print("Trade failed")
 
                 if not self.money == 0 and self.trade_actions[i] == "buy":
@@ -89,14 +89,17 @@ class Trade_bot_1:
 
                     print("----------------- Day ", i)
                     print("Trade action:", self.trade_actions[i])
-                    print("Investment =", investment_per_trade)
-                    print("Money =", self.money)
+                    print("Investment =", investment_per_trade, "$")
+                    print("Money =", self.money, "$")
                     print("Share owned=", self.share_owned)
 
                     print("Total asset value=",
-                          self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned)
+                          self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned, "$")
 
+        print("")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Successful trades:", successful_trades)
         print("Failed trades:", failed_trades)
-        print("Net worth:", self.money + self.p1.big_data.data_slice_open_values[-1] * self.share_owned)
+        print("")
+        print("Net worth:", self.money + self.p1.big_data.data_slice_open_values[-1] * self.share_owned, "$")
+        print("Profit=", self.money + self.p1.big_data.data_slice_open_values[-1] * self.share_owned - 1000)

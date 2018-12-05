@@ -66,7 +66,7 @@ class RSI:
         #       - 0: no buffer
         #       - 1: fixed value buffer
         #       - 2: variable value buffer
-        # TODO implement variable weighted buffer for rsi
+        # TODO implement variable weighted buffer for rsi ??
 
         if self.buffer_setting == 0:
             rsi_buffer = 0
