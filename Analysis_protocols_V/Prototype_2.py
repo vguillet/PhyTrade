@@ -28,8 +28,8 @@ class Prototype_2:
         data = pull_yahoo_data(ticker)      # Pull data from Yahoo
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = 0
-        data_slice_stop_ind = len(data)-130
+        data_slice_start_ind = -800
+        data_slice_stop_ind = len(data)
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -173,5 +173,5 @@ class Prototype_2:
             self.spline_tools.plot_spline_trigger(
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
 
-            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()

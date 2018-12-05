@@ -34,7 +34,7 @@ class SPLINE:
             if spline[i] > 1:
                 spline[i] = 1
 
-            if spline[i] < 0:
+            if spline[i] < -1:
                 spline[i] = -1
 
         setattr(big_data, "spline_length", len(spline))
