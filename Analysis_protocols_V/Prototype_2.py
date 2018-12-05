@@ -148,25 +148,25 @@ class Prototype_2:
 
             # ------------------ Plot bb signal(s)
             ax6 = plt.subplot(212)
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_rsi, label="RSI bb spline")
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_oc_avg_gradient, label="OC gradient bb spline", color='m')
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_rsi, label="RSI bb spline")
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_oc_avg_gradient, label="OC gradient bb spline", color='m')
             self.spline_tools.plot_spline(
                 self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='r')
             self.spline_tools.plot_spline(
                 self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
 
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
+            # self.spline_tools.plot_spline(
+            #     self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
 
-            self.spline_tools. plot_spline(
-                self.big_data, self.big_data.Major_spline.upper_threshold, label="Upper threshold")
-            self.spline_tools. plot_spline(
-                self.big_data, self.big_data.Major_spline.lower_threshold, label="Lower threshold")
+            # self.spline_tools. plot_spline(
+            #     self.big_data, self.big_data.Major_spline.upper_threshold, label="Upper threshold")
+            # self.spline_tools. plot_spline(
+            #     self.big_data, self.big_data.Major_spline.lower_threshold, label="Lower threshold")
 
             self.spline_tools.plot_spline_trigger(
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
 
-            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()

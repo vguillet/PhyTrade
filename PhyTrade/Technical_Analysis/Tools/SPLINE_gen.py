@@ -114,7 +114,7 @@ class SPLINE:
         # plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("Splines")
-        # plt.legend()
+        plt.legend()
         plt.xlabel("Trade date")
         plt.ylabel("Buy <-- Signal power --> Sell")
         """

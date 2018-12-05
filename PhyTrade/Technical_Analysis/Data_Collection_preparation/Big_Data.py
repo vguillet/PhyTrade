@@ -76,7 +76,10 @@ class BIGDATA:
                 (self.close_values_gradient[i] + self.open_values_gradient[i]) / 2)
 
         # Normalising avg gradient values between -1 and 1
+        # for i in range(len(avg_gradient)):
+        #     avg_gradient_bb_signal.append(-((avg_gradient[i]) / (max(max(avg_gradient), -min(avg_gradient)))))
+
         for i in range(len(avg_gradient)):
-            avg_gradient_bb_signal.append(-((avg_gradient[i]) / (max(max(avg_gradient), -min(avg_gradient)))))
+            avg_gradient_bb_signal.append(2 * (avg_gradient[i] - min(avg_gradient)) / (max(avg_gradient) - min(avg_gradient)) - 1)
 
         self.oc_avg_gradient_bb_signal = avg_gradient_bb_signal
