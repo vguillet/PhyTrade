@@ -1,4 +1,5 @@
 from Analysis_protocols_V.Prototype_1 import Prototype_1
+from Analysis_protocols_V.Prototype_2 import Prototype_2
 
 
 class Trade_bot_1:
@@ -12,8 +13,12 @@ class Trade_bot_1:
         self.share_owned = 0
 
         # Market analysis protocol:
-        self.p1 = Prototype_1()
-        self.p1.plot(plot_1=False, plot_2=False, plot_3=True)
+
+        self.p = Prototype_1()
+        self.p.plot(plot_1=False, plot_2=False, plot_3=True)
+        
+        # self.p = Prototype_2()
+        # self.p.plot(plot_1=False, plot_2=False, plot_3=True)
 
         # ==============================================================================
         """
@@ -28,17 +33,17 @@ class Trade_bot_1:
         """
         # ============================ TRADE PROTOCOL DEF ==============================
 
-        print("Buy count =", len(self.p1.big_data.Major_spline.buy_dates))
-        print("Sell count =", len(self.p1.big_data.Major_spline.sell_dates))
+        print("Buy count =", len(self.p.big_data.Major_spline.buy_dates))
+        print("Sell count =", len(self.p.big_data.Major_spline.sell_dates))
 
         # Define trade actions
-        self.trade_actions = ["hold"]*len(self.p1.big_data.data_slice_dates)
+        self.trade_actions = ["hold"]*len(self.p.big_data.data_slice_dates)
 
-        for i in self.p1.big_data.Major_spline.sell_dates:
-            self.trade_actions[self.p1.big_data.data_slice_dates.index(i)] = "sell"
+        for i in self.p.big_data.Major_spline.sell_dates:
+            self.trade_actions[self.p.big_data.data_slice_dates.index(i)] = "sell"
 
-        for i in self.p1.big_data.Major_spline.buy_dates:
-            self.trade_actions[self.p1.big_data.data_slice_dates.index(i)] = "buy"
+        for i in self.p.big_data.Major_spline.buy_dates:
+            self.trade_actions[self.p.big_data.data_slice_dates.index(i)] = "buy"
 
         successful_trades = 0
         failed_trades = 0
@@ -52,7 +57,7 @@ class Trade_bot_1:
 
             if not self.trade_actions[i] == "hold":
                 if self.trade_actions[i] == "sell" and not self.share_owned == 0:
-                    net = self.p1.big_data.data_slice_open_values[i] * self.share_owned
+                    net = self.p.big_data.data_slice_open_values[i] * self.share_owned
                     self.money += net
                     self.share_owned = 0
 
@@ -65,7 +70,7 @@ class Trade_bot_1:
                         print("Share owned=", self.share_owned)
 
                         print("Total asset value=",
-                              self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned)
+                              self.money + self.p.big_data.data_slice_open_values[i] * self.share_owned)
                         print("Trade successful")
 
                     else:
@@ -77,11 +82,11 @@ class Trade_bot_1:
                         print("Share owned=", self.share_owned)
 
                         print("Total asset value=",
-                              self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned, "$")
+                              self.money + self.p.big_data.data_slice_open_values[i] * self.share_owned, "$")
                         print("Trade failed")
 
                 if not self.money == 0 and self.trade_actions[i] == "buy":
-                    investment = investment_per_trade / self.p1.big_data.data_slice_open_values[i]
+                    investment = investment_per_trade / self.p.big_data.data_slice_open_values[i]
                     self.start_trade_money = self.money
                     self.money -= investment_per_trade
 
@@ -94,12 +99,12 @@ class Trade_bot_1:
                     print("Share owned=", self.share_owned)
 
                     print("Total asset value=",
-                          self.money + self.p1.big_data.data_slice_open_values[i] * self.share_owned, "$")
+                          self.money + self.p.big_data.data_slice_open_values[i] * self.share_owned, "$")
 
         print("")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Successful trades:", successful_trades)
         print("Failed trades:", failed_trades)
         print("")
-        print("Net worth:", self.money + self.p1.big_data.data_slice_open_values[-1] * self.share_owned, "$")
-        print("Profit=", self.money + self.p1.big_data.data_slice_open_values[-1] * self.share_owned - 1000)
+        print("Net worth:", self.money + self.p.big_data.data_slice_open_values[-1] * self.share_owned, "$")
+        print("Profit=", self.money + self.p.big_data.data_slice_open_values[-1] * self.share_owned - 1000)
