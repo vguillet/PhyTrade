@@ -28,8 +28,8 @@ class Prototype_2:
         data = pull_yahoo_data(ticker)      # Pull data from Yahoo
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = -700
-        data_slice_stop_ind = len(data)
+        data_slice_start_ind = 0
+        data_slice_stop_ind = len(data)-130
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -42,7 +42,7 @@ class Prototype_2:
         setattr(self.big_data, "sma_1", SMA(self.big_data, timeperiod_1=10, timeperiod_2=25))
         setattr(self.big_data, "sma_2", SMA(self.big_data, timeperiod_1=5, timeperiod_2=15))
 
-        setattr(self.big_data, "volume", Volume(self.big_data))
+        setattr(self.big_data, "volume", Volume(self.big_data, amplification_factor=1.4))
 
         # ================================================================================
         """
@@ -67,15 +67,19 @@ class Prototype_2:
                 self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.rsi.bb_signal, smoothing_factor=.3))
 
         setattr(self.big_data, "spline_oc_avg_gradient",
-                self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.oc_avg_gradient_bb_signal, smoothing_factor=5))
+                self.spline_tools.calc_signal_to_spline(
+                    self.big_data, self.big_data.oc_avg_gradient_bb_signal, smoothing_factor=1))
 
         setattr(self.big_data, "spline_sma_1",
-                self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_1.bb_signal, smoothing_factor=1))
+                self.spline_tools.calc_signal_to_spline(
+                    self.big_data, self.big_data.sma_1.bb_signal, smoothing_factor=1))
         setattr(self.big_data, "spline_sma_2",
-                self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_2.bb_signal, smoothing_factor=1))
+                self.spline_tools.calc_signal_to_spline(
+                    self.big_data, self.big_data.sma_2.bb_signal, smoothing_factor=1))
 
         setattr(self.big_data, "spline_volume",
-                self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
+                self.spline_tools.calc_signal_to_spline(
+                    self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
 
         # -- Adding signals together
         setattr(self.big_data, "combined_spline", self.spline_tools.combine_splines(self.big_data,
@@ -83,20 +87,21 @@ class Prototype_2:
                                                                                     self.big_data.spline_oc_avg_gradient,
                                                                                     self.big_data.spline_sma_1,
                                                                                     self.big_data.spline_sma_2,
-                                                                                    weight_1=1,
-                                                                                    weight_2=3,
-                                                                                    weight_3=4,
+                                                                                    weight_1=5,
+                                                                                    weight_2=1,
+                                                                                    weight_3=3,
                                                                                     weight_4=3))
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \
-            self.spline_tools.increase_amplitude_spline(self.big_data.combined_spline, self.big_data.spline_volume)
+            self.spline_tools.increase_amplitude_spline(
+                self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=6)
 
         # -- Creating Major Spline
         setattr(self.big_data, "Major_spline",
                 MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,
                              threshold_buffer=0.05, threshold_buffer_setting=0,
-                             upper_threshold=0.45, lower_threshold=-0.45))
+                             upper_threshold=0.5, lower_threshold=-0.55))
 
     # ================================================================================
     """
@@ -156,7 +161,7 @@ class Prototype_2:
             #     self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='r')
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
-            #
+
             self.spline_tools.plot_spline(
                 self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
 
@@ -168,5 +173,5 @@ class Prototype_2:
             self.spline_tools.plot_spline_trigger(
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
 
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()

@@ -29,7 +29,7 @@ class Prototype_1:
 
         # ========================= ANALYSIS INITIALISATION ==============================
         ticker = "AAPL"
-        data_slice_start_ind = -710
+        data_slice_start_ind = 0
         data_slice_stop_ind = len(data)-10
     
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
@@ -96,8 +96,8 @@ class Prototype_1:
         # -- Creating Major Spline
         setattr(self.big_data, "Major_spline",
                 MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,
-                             threshold_buffer=0.05, threshold_buffer_setting=0,
-                             upper_threshold=0.45, lower_threshold=-0.45))
+                             threshold_buffer=0.05, threshold_buffer_setting=1,
+                             upper_threshold=0.6, lower_threshold=-0.5))
 
     # ================================================================================
     """

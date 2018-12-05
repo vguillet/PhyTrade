@@ -14,11 +14,11 @@ class Trade_bot_1:
 
         # Market analysis protocol:
 
-        self.p = Prototype_1()
-        self.p.plot(plot_1=False, plot_2=False, plot_3=True)
-        
-        # self.p = Prototype_2()
+        # self.p = Prototype_1()
         # self.p.plot(plot_1=False, plot_2=False, plot_3=True)
+
+        self.p = Prototype_2()
+        self.p.plot(plot_1=False, plot_2=False, plot_3=True)
 
         # ==============================================================================
         """
@@ -49,6 +49,11 @@ class Trade_bot_1:
         failed_trades = 0
 
         for i in range(len(self.trade_actions)):
+
+            if self.money + self.p.big_data.data_slice_open_values[i] * self.share_owned < 1000:
+                print("")
+                print("!!!!!!!!!!!!!!!!!!LOSSING MONEY!!!!!!!!!!!!!!!!!!")
+                print("")
 
             if self.money > 0:
                 investment_per_trade = self.money * self.investment_per_trade

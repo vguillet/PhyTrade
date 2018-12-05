@@ -186,7 +186,8 @@ class RSI:
         # Normalising rsi bb signal values between -1 and 1
         bb_signal_normalised = []
         for i in range(len(big_data.data_slice)):
-            bb_signal_normalised.append((self.rsi_values[i])/max(self.rsi_values)-1)
+            bb_signal_normalised.append(
+                2*(self.rsi_values[i]-min(self.rsi_values))/(max(self.rsi_values)-min(self.rsi_values))-1)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:

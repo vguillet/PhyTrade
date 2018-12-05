@@ -24,12 +24,22 @@ class SPLINE:
 
         y = np.array(signal)
 
-        spline = UnivariateSpline(big_data.spline_x, y)
-        spline.set_smoothing_factor(smoothing_factor)
+        spline_x = UnivariateSpline(big_data.spline_x, y)
+        spline_x.set_smoothing_factor(smoothing_factor)
 
-        setattr(big_data, "spline_length", len(spline(big_data.spline_xs)))
+        spline = spline_x(big_data.spline_xs)
 
-        return spline(big_data.spline_xs)
+        # Limiting the magnitude of the signal when it reaches values above 1 or below -1
+        for i in range(len(spline)):
+            if spline[i] > 1:
+                spline[i] = 1
+
+            if spline[i] < 0:
+                spline[i] = -1
+
+        setattr(big_data, "spline_length", len(spline))
+
+        return spline
 
     @staticmethod
     def combine_splines(big_data,
@@ -39,13 +49,15 @@ class SPLINE:
         combined_splines = []
         for i in range(big_data.spline_length):
             combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
-                                           + spline_3[i]*weight_3 + spline_4[i]*weight_4) /
-                                          (weight_1+weight_2+weight_3+weight_4))
+                                     + spline_3[i]*weight_3 + spline_4[i]*weight_4) /
+                                    (weight_1+weight_2+weight_3+weight_4))
 
         return combined_splines
 
     @staticmethod
     def shift_spline(spline, index_shift):
+
+        # Shifts a spline by index_shift
 
         shifted_spline = [0]*len(spline)
 
@@ -59,20 +71,22 @@ class SPLINE:
         return shifted_spline
 
     @staticmethod
-    def simple_increase_amplitude_spline(spline, coef):
+    def increase_amplitude_spline(spline, coef_spline, std_dev_max=5):
+        import statistics
 
+        # Limiting the magnitude of the signal when it reaches values above a certain number of standard deviation
+        coef_spline_standard_dev = statistics.stdev(coef_spline)
+        coef_spline_mean = statistics.mean(coef_spline)
+
+        for i in range(len(coef_spline)):
+            if coef_spline[i] > 0 and coef_spline[i] - coef_spline_mean > std_dev_max * coef_spline_standard_dev:
+                coef_spline[i] = coef_spline_mean + std_dev_max * coef_spline_standard_dev
+
+            if coef_spline[i] < 0 and abs(coef_spline[i]) + coef_spline_mean > std_dev_max * coef_spline_standard_dev:
+                coef_spline[i] = coef_spline_mean - std_dev_max * coef_spline_standard_dev
+
+        # Amplifying spline
         spline_amplified = []
-
-        for i in spline:
-            spline_amplified.append(i*coef)
-
-        return spline_amplified
-
-    @staticmethod
-    def increase_amplitude_spline(spline, coef_spline):
-
-        spline_amplified = []
-
         for i in range(len(spline)):
             spline_amplified.append(spline[i]*(1+abs(coef_spline[i])))
 
@@ -80,7 +94,7 @@ class SPLINE:
         spline_amplified_normalised = []
 
         for i in range(len(spline_amplified)):
-            spline_amplified_normalised.append((spline_amplified[i])/max(max(spline_amplified), -min(spline_amplified)))
+            spline_amplified_normalised.append(2*(spline_amplified[i]-min(spline_amplified))/(max(spline_amplified) - min(spline_amplified))-1)
 
         return spline_amplified_normalised
 
@@ -90,7 +104,6 @@ class SPLINE:
 
         plt.plot(big_data.spline_xs, spline, 'g', linewidth=1, label=label, c=color)
 
-        # plt.gcf().autofmt_xdate()
         plt.grid()
         plt.title("Splines")
         # plt.legend()
@@ -120,7 +133,7 @@ class SPLINE:
               - 2: variable value buffer
         """
 
-        # TODO decide whether to keep google trends-modulated buffer size
+        # TODO decide whether to keep google trends-modulated buffer size?
 
         if buffer_setting == 0:
             buffer = 0.0000001
