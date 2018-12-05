@@ -43,14 +43,15 @@ class SPLINE:
 
     @staticmethod
     def combine_splines(big_data,
-                        spline_1, spline_2, spline_3, spline_4,
-                        weight_1=1, weight_2=1, weight_3=1, weight_4=1):
+                        spline_1, spline_2, spline_3, spline_4, spline_5,
+                        weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1):
 
         combined_splines = []
         for i in range(big_data.spline_length):
             combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
-                                     + spline_3[i]*weight_3 + spline_4[i]*weight_4) /
-                                    (weight_1+weight_2+weight_3+weight_4))
+                                     + spline_3[i]*weight_3 + spline_4[i]*weight_4
+                                     + spline_5[i]*weight_5) /
+                                    (weight_1+weight_2+weight_3+weight_4+weight_5))
 
         return combined_splines
 
@@ -97,6 +98,12 @@ class SPLINE:
             spline_amplified_normalised.append(2*(spline_amplified[i]-min(spline_amplified))/(max(spline_amplified) - min(spline_amplified))-1)
 
         return spline_amplified_normalised
+
+    @staticmethod
+    def flip_spline(spline):
+        flipped_spline = [-x for x in spline]
+
+        return flipped_spline
 
     @staticmethod
     def plot_spline(big_data, spline, label, color='g'):

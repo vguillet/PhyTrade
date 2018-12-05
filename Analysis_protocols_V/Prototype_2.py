@@ -28,8 +28,8 @@ class Prototype_2:
         data = pull_yahoo_data(ticker)      # Pull data from Yahoo
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = -800
-        data_slice_stop_ind = len(data)
+        data_slice_start_ind = -90
+        data_slice_stop_ind = len(data)-60
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -39,8 +39,10 @@ class Prototype_2:
 
         # ------------------ Indicators initialisation
         setattr(self.big_data, "rsi", RSI(self.big_data, timeframe=14))
-        setattr(self.big_data, "sma_1", SMA(self.big_data, timeperiod_1=10, timeperiod_2=25))
-        setattr(self.big_data, "sma_2", SMA(self.big_data, timeperiod_1=5, timeperiod_2=15))
+        setattr(self.big_data, "sma_1", SMA(self.big_data, timeperiod_1=5, timeperiod_2=15))
+        setattr(self.big_data, "sma_2", SMA(self.big_data, timeperiod_1=10, timeperiod_2=25))
+
+        setattr(self.big_data, "sma_3", SMA(self.big_data, timeperiod_1=20, timeperiod_2=45))
 
         setattr(self.big_data, "volume", Volume(self.big_data, amplification_factor=1.4))
 
@@ -60,6 +62,7 @@ class Prototype_2:
         self.big_data.rsi.get_output(self.big_data, include_triggers_in_bb_signal=True)
         self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
         self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        self.big_data.sma_3.get_output(self.big_data, include_triggers_in_bb_signal=False)
 
         # ------------------ BB signals processing
         # -- Creating splines from signals
@@ -77,9 +80,16 @@ class Prototype_2:
                 self.spline_tools.calc_signal_to_spline(
                     self.big_data, self.big_data.sma_2.bb_signal, smoothing_factor=1))
 
+        setattr(self.big_data, "spline_sma_3",
+                self.spline_tools.calc_signal_to_spline(
+                    self.big_data, self.big_data.sma_3.bb_signal, smoothing_factor=1))
+
         setattr(self.big_data, "spline_volume",
                 self.spline_tools.calc_signal_to_spline(
                     self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
+
+        # -- Tuning separate signals
+        self.big_data.spline_sma_3 = self.spline_tools.flip_spline(self.big_data.spline_sma_3)
 
         # -- Adding signals together
         setattr(self.big_data, "combined_spline", self.spline_tools.combine_splines(self.big_data,
@@ -87,10 +97,12 @@ class Prototype_2:
                                                                                     self.big_data.spline_oc_avg_gradient,
                                                                                     self.big_data.spline_sma_1,
                                                                                     self.big_data.spline_sma_2,
+                                                                                    self.big_data.spline_sma_3,
                                                                                     weight_1=5,
                                                                                     weight_2=1,
                                                                                     weight_3=3,
-                                                                                    weight_4=3))
+                                                                                    weight_4=3,
+                                                                                    weight_5=2))
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \
@@ -158,9 +170,11 @@ class Prototype_2:
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_oc_avg_gradient, label="OC gradient bb spline", color='m')
             # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='r')
+            #     self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='b')
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_sma_3, label="SMA_3 bb spline", color='r')
 
             self.spline_tools.plot_spline(
                 self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
