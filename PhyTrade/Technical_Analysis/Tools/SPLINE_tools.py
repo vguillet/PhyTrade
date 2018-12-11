@@ -86,18 +86,12 @@ class SPLINE:
             if coef_spline[i] < 0 and abs(coef_spline[i]) + coef_spline_mean > std_dev_max * coef_spline_standard_dev:
                 coef_spline[i] = coef_spline_mean - std_dev_max * coef_spline_standard_dev
 
-        # Amplifying spline
-        spline_amplified = []
+        # Modulating spline
+        spline_modulated = []
         for i in range(len(spline)):
-            spline_amplified.append(spline[i]*(1+abs(coef_spline[i])))
+            spline_modulated.append(spline[i]*(1+abs(coef_spline[i])))
 
-        # Normalising spline_amplified values between -1 and 1
-        spline_amplified_normalised = []
-
-        for i in range(len(spline_amplified)):
-            spline_amplified_normalised.append(2*(spline_amplified[i]-min(spline_amplified))/(max(spline_amplified) - min(spline_amplified))-1)
-
-        return spline_amplified_normalised
+        return spline_modulated         # Note that the spline modulated still requires being normalised
 
     @staticmethod
     def flip_spline(spline):
