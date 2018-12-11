@@ -67,8 +67,9 @@ class BIGDATA:
         self.open_values_gradient = open_values_gradient
 
         # -----------------Bear/Bullish continuous signal of dataset gradient
+        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+
         avg_gradient = []
-        avg_gradient_bb_signal = []
 
         # Obtaining the average gradient
         for i in range(len(self.data_slice)):
@@ -76,9 +77,6 @@ class BIGDATA:
                 (self.close_values_gradient[i] + self.open_values_gradient[i]) / 2)
 
         # Normalising avg gradient values between -1 and 1
-
-        for i in range(len(avg_gradient)):
-            avg_gradient_bb_signal.append(
-                2 * ((avg_gradient[i]) - min(avg_gradient)) / (max(avg_gradient) - min(avg_gradient))-1)
+        avg_gradient_bb_signal = MATH().normalise_minus_one_one(avg_gradient)
 
         self.oc_avg_gradient_bb_signal = avg_gradient_bb_signal

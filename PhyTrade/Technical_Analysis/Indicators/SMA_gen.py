@@ -66,10 +66,9 @@ class SMA:
             bb_signal.append((self.sma_1[i] - self.sma_2[i])/2)
 
         # Normalising sma bb signal values between -1 and 1
-        bb_signal_normalised = []
+        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
 
-        for i in range(len(big_data.data_slice)):
-            bb_signal_normalised.append(2*((bb_signal[i]) - min(bb_signal)) / (max(bb_signal) - min(bb_signal))-1)
+        bb_signal_normalised = MATH().normalise_minus_one_one(bb_signal)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:
@@ -79,6 +78,7 @@ class SMA:
                 bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
 
         self.bb_signal = bb_signal_normalised
+
     """
 
 

@@ -13,10 +13,10 @@ from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_y
 
 from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
 from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
-from PhyTrade.Technical_Analysis.Amplification_factors.Volume_gen import VOLUME
+from PhyTrade.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
 
-from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
-from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
+from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
+from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 from PhyTrade.Technical_Analysis.Tools.Major_spline_gen import MAJOR_SPLINE
 
 

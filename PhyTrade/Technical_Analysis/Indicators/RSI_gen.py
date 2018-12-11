@@ -10,7 +10,7 @@ Victor Guillet
 class RSI:
     def __init__(self, big_data, timeframe=14, buffer_setting=0,
                  standard_upper_threshold=70, standard_lower_threshold=30):
-        
+
         self.timeframe = timeframe
         self.buffer_setting = buffer_setting
         self.standard_upper_threshold = standard_upper_threshold
@@ -183,11 +183,10 @@ class RSI:
         self.buy_dates = buy_dates
 
         # -----------------Bear/Bullish continuous signal
+        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+
         # Normalising rsi bb signal values between -1 and 1
-        bb_signal_normalised = []
-        for i in range(len(big_data.data_slice)):
-            bb_signal_normalised.append(
-                2*(self.rsi_values[i]-min(self.rsi_values))/(max(self.rsi_values)-min(self.rsi_values))-1)
+        bb_signal_normalised = MATH().normalise_minus_one_one(self.rsi_values)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:

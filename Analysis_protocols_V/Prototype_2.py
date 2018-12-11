@@ -13,10 +13,12 @@ from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_y
 
 from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
 from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
-from PhyTrade.Technical_Analysis.Amplification_factors.Volume_gen import VOLUME
 
-from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
-from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
+from PhyTrade.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
+from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
+
+from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
+from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 from PhyTrade.Technical_Analysis.Tools.Major_spline_gen import MAJOR_SPLINE
 
 
@@ -41,10 +43,10 @@ class Prototype_2:
         setattr(self.big_data, "rsi", RSI(self.big_data, timeframe=14))
         setattr(self.big_data, "sma_1", SMA(self.big_data, timeperiod_1=5, timeperiod_2=15))
         setattr(self.big_data, "sma_2", SMA(self.big_data, timeperiod_1=10, timeperiod_2=25))
-
         setattr(self.big_data, "sma_3", SMA(self.big_data, timeperiod_1=20, timeperiod_2=45))
 
-        setattr(self.big_data, "volume", VOLUME(self.big_data, amplification_factor=1.4))
+        setattr(self.big_data, "volume", VOLUME(self.big_data, amplification_factor=1.2))
+        setattr(self.big_data, "volatility", VOLATILITY(self.big_data, timeframe=15, amplification_factor=1.3))
 
         # ================================================================================
         """
@@ -84,9 +86,14 @@ class Prototype_2:
                 self.spline_tools.calc_signal_to_spline(
                     self.big_data, self.big_data.sma_3.bb_signal, smoothing_factor=1))
 
+        # -- Generating amplification signals
         setattr(self.big_data, "spline_volume",
                 self.spline_tools.calc_signal_to_spline(
                     self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
+
+        setattr(self.big_data, "spline_volatility",
+                self.spline_tools.calc_signal_to_spline(
+                    self.big_data, self.big_data.volatility.amp_coef, smoothing_factor=0.5))
 
         # -- Tuning separate signals
         self.big_data.spline_sma_3 = self.spline_tools.flip_spline(self.big_data.spline_sma_3)
@@ -98,23 +105,31 @@ class Prototype_2:
                                                                                     self.big_data.spline_sma_1,
                                                                                     self.big_data.spline_sma_2,
                                                                                     self.big_data.spline_sma_3,
-                                                                                    weight_1=5,
+                                                                                    weight_1=6,
                                                                                     weight_2=1,
                                                                                     weight_3=3,
                                                                                     weight_4=3,
-                                                                                    weight_5=4))
+                                                                                    weight_5=3))
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \
-            self.spline_tools.increase_amplitude_spline(
-                self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=6)
+            self.spline_tools.modulate_amplitude_spline(
+                self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=3)
+
+        self.big_data.combined_spline = \
+            self.spline_tools.modulate_amplitude_spline(
+                self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=3)
 
         # -- Creating Major Spline
         setattr(self.big_data, "Major_spline",
                 MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,
                              threshold_buffer=0.05, threshold_buffer_setting=0,
-                             upper_threshold=0.4, lower_threshold=-0.6))
+                             upper_threshold=0.6, lower_threshold=-0.6))
 
+        # -- Modulating threshold with SMA 3 value
+        # self.big_data.Major_spline.upper_threshold = \
+        #     self.spline_tools.modulate_amplitude_spline(
+        #         self.big_data.Major_spline.upper_threshold, self.big_data.spline_sma_3)
     # ================================================================================
     """
 
@@ -188,4 +203,5 @@ class Prototype_2:
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
 
             self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volatility, label="Volatility", color='grey')
             plt.show()

@@ -1,10 +1,10 @@
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
 
-from PhyTrade.Technical_Analysis.Amplification_factors.Volatility_gen import VOLATILITY
+from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
-from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
-from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
+from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
+from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 
 
 class dev_prototype:

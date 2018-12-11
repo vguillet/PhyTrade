@@ -7,9 +7,11 @@ Victor Guillet
 
 
 class VOLATILITY:
-    def __init__(self, big_data, timeframe=10):
-        import numpy as np
+    def __init__(self, big_data, timeframe=10, amplification_factor=1):
+
+        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
         import statistics as st
+        import numpy as np
         
         self.timeframe = timeframe
         self.volatility = []
@@ -28,10 +30,8 @@ class VOLATILITY:
 
             self.volatility.append(annualised_volatility)
 
-        # Normalising volatility signal values between -1 and 1
-        self.amp_coef = []
+        # Normalising volatility signal values between 0 and 1
+        self.amp_coef = MATH().normalise_zero_one(self.volatility)
 
-        for i in range(len(big_data.data_slice)):
-            self.amp_coef.append(
-                (self.volatility[i] - min(self.volatility)) / (max(self.volatility) - min(self.volatility)))
-
+        # Amplifying volatility signal
+        self.amp_coef = MATH().amplify(self.amp_coef, amplification_factor)

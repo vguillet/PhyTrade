@@ -72,7 +72,7 @@ class SPLINE:
         return shifted_spline
 
     @staticmethod
-    def increase_amplitude_spline(spline, coef_spline, std_dev_max=5):
+    def modulate_amplitude_spline(spline, coef_spline, std_dev_max=5):
         import statistics
 
         # Limiting the magnitude of the signal when it reaches values above a certain number of standard deviation
