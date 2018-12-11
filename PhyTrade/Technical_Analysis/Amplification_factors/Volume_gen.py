@@ -6,7 +6,7 @@ Victor Guillet
 """
 
 
-class Volume:
+class VOLUME:
     def __init__(self, big_data, amplification_factor=1):
         self.volume = big_data.volume
         self.amp_coef = []

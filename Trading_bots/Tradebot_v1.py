@@ -9,7 +9,7 @@ class Trade_bot_1:
         self.start_trade_money = 0
         self.money = 1000
 
-        self.investment_per_trade = 0.4
+        self.investment_per_trade = 0.6
         self.share_owned = 0
 
         # Market analysis protocol:
@@ -59,10 +59,10 @@ class Trade_bot_1:
                 print(self.net_worth)
                 print("")
 
-            if self.net_worth < 800:
-                net = self.p.big_data.data_slice_open_values[i] * self.share_owned
-                self.money += net
-                self.share_owned = 0
+            # if self.net_worth < 800:
+            #     net = self.p.big_data.data_slice_open_values[i] * self.share_owned
+            #     self.money += net
+            #     self.share_owned = 0
 
             if not self.trade_actions[i] == "hold":
                 if self.trade_actions[i] == "sell" and not self.share_owned == 0:
@@ -94,7 +94,7 @@ class Trade_bot_1:
                               self.net_worth, "$")
                         print("Trade failed")
 
-                if not self.net_worth < 800 and self.trade_actions[i] == "buy":
+                if self.trade_actions[i] == "buy":
                     investment = investment_per_trade / self.p.big_data.data_slice_open_values[i]
                     self.start_trade_money = self.money
                     self.money -= investment_per_trade
@@ -120,3 +120,4 @@ class Trade_bot_1:
         print("")
         print("Net worth:", self.money + self.p.big_data.data_slice_open_values[-1] * self.share_owned, "$")
         print("Profit=", self.money + self.p.big_data.data_slice_open_values[-1] * self.share_owned - 1000)
+        print("% profit=", (self.money + self.p.big_data.data_slice_open_values[-1] * self.share_owned - 1000)/10)

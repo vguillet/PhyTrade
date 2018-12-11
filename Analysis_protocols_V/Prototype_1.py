@@ -9,11 +9,11 @@ Victor Guillet
 """
 
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
-from PhyTrade.Technical_Analysis.Data_Collection_preparation.Quandl import pull_quandl_data
+from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
 
 from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
 from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
-from PhyTrade.Technical_Analysis.Indicators.Volume_gen import Volume
+from PhyTrade.Technical_Analysis.Amplification_factors.Volume_gen import VOLUME
 
 from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
 from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
@@ -24,13 +24,12 @@ class Prototype_1:
     def __init__(self):
 
         # ========================= DATA COLLECTION INITIALISATION =======================
-        quandl_ticker = 'WIKI/AAPL'                 # Ticker selected for Quandl data collection
-        data = pull_quandl_data(quandl_ticker)      # Pull data from Quand
+        ticker = 'RADA'                     # Ticker selected for Yahoo data collection
+        data = pull_yahoo_data(ticker)      # Pull data from Yahoo
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        ticker = "AAPL"
         data_slice_start_ind = -800
-        data_slice_stop_ind = len(data)-10
+        data_slice_stop_ind = len(data)
     
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -43,7 +42,7 @@ class Prototype_1:
         setattr(self.big_data, "sma_1", SMA(self.big_data, timeperiod_1=10, timeperiod_2=25))
         setattr(self.big_data, "sma_2", SMA(self.big_data, timeperiod_1=5, timeperiod_2=15))
     
-        setattr(self.big_data, "volume", Volume(self.big_data))
+        setattr(self.big_data, "volume", VOLUME(self.big_data))
 
         # ================================================================================
         """

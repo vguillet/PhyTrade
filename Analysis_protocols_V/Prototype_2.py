@@ -1,5 +1,5 @@
 """
-Prototype 1
+Prototype 2
 
 This prototype is based entirely on technical analysis, and is ment as a test for the spline toolbox and RSI, SMA and OC
 indicators
@@ -13,7 +13,7 @@ from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_y
 
 from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
 from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
-from PhyTrade.Technical_Analysis.Indicators.Volume_gen import Volume
+from PhyTrade.Technical_Analysis.Amplification_factors.Volume_gen import VOLUME
 
 from PhyTrade.Technical_Analysis.Tools.OC_gen import OC
 from PhyTrade.Technical_Analysis.Tools.SPLINE_gen import SPLINE
@@ -28,8 +28,8 @@ class Prototype_2:
         data = pull_yahoo_data(ticker)      # Pull data from Yahoo
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = -90
-        data_slice_stop_ind = len(data)-60
+        data_slice_start_ind = -200
+        data_slice_stop_ind = len(data)
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -44,7 +44,7 @@ class Prototype_2:
 
         setattr(self.big_data, "sma_3", SMA(self.big_data, timeperiod_1=20, timeperiod_2=45))
 
-        setattr(self.big_data, "volume", Volume(self.big_data, amplification_factor=1.4))
+        setattr(self.big_data, "volume", VOLUME(self.big_data, amplification_factor=1.4))
 
         # ================================================================================
         """
@@ -102,7 +102,7 @@ class Prototype_2:
                                                                                     weight_2=1,
                                                                                     weight_3=3,
                                                                                     weight_4=3,
-                                                                                    weight_5=2))
+                                                                                    weight_5=4))
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \
@@ -113,7 +113,7 @@ class Prototype_2:
         setattr(self.big_data, "Major_spline",
                 MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,
                              threshold_buffer=0.05, threshold_buffer_setting=0,
-                             upper_threshold=0.5, lower_threshold=-0.55))
+                             upper_threshold=0.4, lower_threshold=-0.6))
 
     # ================================================================================
     """
@@ -187,5 +187,5 @@ class Prototype_2:
             self.spline_tools.plot_spline_trigger(
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
 
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
             plt.show()
