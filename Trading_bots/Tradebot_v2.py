@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 class Tradebot_v2:
-    def __init__(self, investment_settings=1, stop_loss=0.95):
+    def __init__(self, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
 
@@ -42,27 +42,43 @@ class Tradebot_v2:
         """
         # ============================ TRADE PROTOCOL DEF ==============================
         for i in range(len(self.trade_actions)):
-            print("----------------- Day ", i + 1)
+            print("----------------- Day ", i)
 
             # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
             if investment_settings == 0:
-                investment_per_trade = 100
+                if self.account.current_funds >= 100:
+                    investment_per_trade = 100
+                else:
+                    investment_per_trade = self.account.current_funds
 
             elif investment_settings == 1:
                 investment_per_trade = self.account.current_funds * 0.5
+
+            # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
+            if cash_in_settings == 0:
+                assets_sold_per_trade = self.account.current_assets
+
+            elif cash_in_settings == 1:
+                assets_sold_per_trade = self.account.current_assets*0.5
+
+            # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
+            if i % 100 == 0 and not self.stop_loss == 0.98:
+                self.stop_loss += 0.01
+
             """
             
             
             """
             # ~~~~~~~~~~~~~~~~~~ Define trade protocol
             # -- Define stop-loss
-            if self.account.calc_net_worth(
-                self.analysis.big_data.data_slice_open_values[i]) < \
-                 max(self.account.net_worth_history) * self.stop_loss and not self.account.current_assets == 0:
+            if not len(self.account.net_worth_history) == 0 and \
+                    self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[i]) < \
+                    max(self.account.net_worth_history) * self.stop_loss and \
+                    not self.account.current_assets == 0:
 
                 self.account.convert_assets_to_funds(
                     self.analysis.big_data.data_slice_open_values[i],
-                    self.account.current_assets * self.analysis.big_data.data_slice_open_values[i])
+                    self.account.current_assets)
 
                 print("==========================================================")
                 print("Stop-loss triggered")
@@ -72,9 +88,10 @@ class Tradebot_v2:
             # -- Define hold action
             elif self.trade_actions[i] == "hold":
                 self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
+                print("->Hold")
 
             # -- Define buy action
-            elif self.trade_actions[i] == "buy":
+            elif self.trade_actions[i] == "buy" and not self.account.current_funds == 0:
                 self.account.convert_funds_to_assets(
                     self.analysis.big_data.data_slice_open_values[i], investment_per_trade)
 
@@ -85,11 +102,15 @@ class Tradebot_v2:
             # -- Define sell action
             elif self.trade_actions[i] == "sell" and not self.account.current_assets == 0:
                 self.account.convert_assets_to_funds(
-                    self.analysis.big_data.data_slice_open_values[i], investment_per_trade)
+                    self.analysis.big_data.data_slice_open_values[i], assets_sold_per_trade)
 
                 print("Trade action: Sell")
                 print("Investment =", investment_per_trade, "$")
                 self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+
+            else:
+                print("Trade action 'Sell' canceled because nothing to sell")
+                self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
 
         # ==============================================================================
         """
@@ -112,15 +133,9 @@ class Tradebot_v2:
         print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1])/10)
         print("Max worth:", max(self.account.net_worth_history))
         print("Min worth:", min(self.account.net_worth_history))
+
+        print("")
+        print("1000$ simple initial investment:",
+              (1000/self.analysis.big_data.data_slice_open_values[0])*self.analysis.big_data.data_slice_open_values[-1])
         self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
         plt.show()
-
-
-
-
-
-
-
-
-
-

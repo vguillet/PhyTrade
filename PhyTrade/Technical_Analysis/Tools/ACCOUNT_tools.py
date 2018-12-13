@@ -8,9 +8,9 @@ class ACCOUNT:
         self.current_funds = initial_funds
         self.current_assets = 0
         
-        self.funds_history = [initial_funds]
-        self.assets_history = [0]
-        self.net_worth_history = [initial_funds]
+        self.funds_history = []
+        self.assets_history = []
+        self.net_worth_history = []
 
     def convert_funds_to_assets(self, current_value, investment_per_trade):
 
@@ -21,9 +21,9 @@ class ACCOUNT:
         self.assets_history.append(self.current_assets)
         self.net_worth_history.append(self.current_funds + self.current_assets * current_value)
 
-    def convert_assets_to_funds(self, current_value, investment_per_trade):
-        self.current_funds = self.current_funds + investment_per_trade
-        self.current_assets = self.current_assets - investment_per_trade / current_value
+    def convert_assets_to_funds(self, current_value, assets_sold_per_trade):
+        self.current_funds = self.current_funds + assets_sold_per_trade * current_value
+        self.current_assets = self.current_assets - assets_sold_per_trade
 
         self.funds_history.append(self.current_funds)
         self.assets_history.append(self.current_assets)
