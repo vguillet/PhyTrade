@@ -1,8 +1,5 @@
-from Analysis_protocols_V.Prototype_1 import Prototype_1
 from Analysis_protocols_V.Prototype_2 import Prototype_2
-
 from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
-
 import matplotlib.pyplot as plt
 
 
@@ -19,8 +16,6 @@ class Tradebot_v2:
         self.stop_loss = stop_loss
 
         # -- Market analysis protocol
-        # self.analysis = Prototype_1()
-        # self.analysis.plot(plot_1=False, plot_2=False, plot_3=True)
         self.analysis = Prototype_2()
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=True)
 
@@ -62,7 +57,7 @@ class Tradebot_v2:
                 assets_sold_per_trade = self.account.current_assets*0.5
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
-            if i % 100 == 0 and not self.stop_loss == 0.98:
+            if i % 100 == 0 and not self.stop_loss == 0.99:
                 self.stop_loss += 0.01
 
             """
@@ -70,7 +65,7 @@ class Tradebot_v2:
             
             """
             # ~~~~~~~~~~~~~~~~~~ Define trade protocol
-            # -- Define stop-loss
+            # -- Define stop-loss action
             if not len(self.account.net_worth_history) == 0 and \
                     self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[i]) < \
                     max(self.account.net_worth_history) * self.stop_loss and \
@@ -124,9 +119,6 @@ class Tradebot_v2:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Buy count =", len(self.analysis.big_data.Major_spline.buy_dates))
         print("Sell count =", len(self.analysis.big_data.Major_spline.sell_dates))
-        print("")
-        print("Successful trades:", self.successful_trades)
-        print("Failed trades:", self.failed_trades)
         print("")
         print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
         print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
