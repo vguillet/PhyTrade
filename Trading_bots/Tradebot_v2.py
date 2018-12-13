@@ -3,6 +3,8 @@ from Analysis_protocols_V.Prototype_2 import Prototype_2
 
 from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
 
+import matplotlib.pyplot as plt
+
 class Tradebot_v2:
 
     def __init__(self, investment_settings=0):
@@ -13,7 +15,7 @@ class Tradebot_v2:
         self.failed_trades = 0
 
         # -- Tradebot finance
-        self.account = ACCOUNT(initial_funds=1000, initial_assets=0)
+        self.account = ACCOUNT(initial_funds=1000)
 
         # -- Market analysis protocol:
         # self.analysis = Prototype_1()
@@ -53,8 +55,10 @@ class Tradebot_v2:
                 investment_per_trade = self.account.current_funds * 0.6
 
             # -- Define trade protocol
-            if self.trade_actions[i] == "buy":
+            if self.trade_actions[i] == "hold":
+                self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
 
+            if self.trade_actions[i] == "buy":
                 self.account.convert_funds_to_assets(
                     self.analysis.big_data.data_slice_open_values[i], investment_per_trade)
 
@@ -70,7 +74,6 @@ class Tradebot_v2:
                     self.analysis.big_data.data_slice_open_values[i]), "$")
 
             if self.trade_actions[i] == "sell" and not self.account.current_assets == 0:
-
                 self.account.convert_assets_to_funds(
                     self.analysis.big_data.data_slice_open_values[i], investment_per_trade)
 
@@ -95,6 +98,9 @@ class Tradebot_v2:
         print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
         print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
         print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1])/10)
+
+        self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
+        plt.show()
 
 
 

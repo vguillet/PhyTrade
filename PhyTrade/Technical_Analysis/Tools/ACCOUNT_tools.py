@@ -1,15 +1,16 @@
 
 
 class ACCOUNT:
-    def __init__(self, initial_funds=1000, initial_assets=0):
+    def __init__(self, initial_funds=1000):
 
         self.initial_funds = initial_funds
 
         self.current_funds = initial_funds
-        self.current_assets = initial_assets
+        self.current_assets = 0
         
         self.funds_history = [initial_funds]
-        self.assets_history = [initial_assets]
+        self.assets_history = [0]
+        self.net_worth_history = [initial_funds]
     
     def convert_funds_to_assets(self, current_value, investment_per_trade):
 
@@ -18,6 +19,7 @@ class ACCOUNT:
 
         self.funds_history.append(self.current_funds)
         self.assets_history.append(self.current_assets)
+        self.net_worth_history.append(self.current_funds+self.current_assets*current_value)
 
     def convert_assets_to_funds(self, current_value, investment_per_trade):
         self.current_funds = self.current_funds + investment_per_trade
@@ -25,6 +27,10 @@ class ACCOUNT:
 
         self.funds_history.append(self.current_funds)
         self.assets_history.append(self.current_assets)
+        self.net_worth_history.append(self.current_funds + self.current_assets * current_value)
+
+    def record_net_worth(self, current_value):
+        self.net_worth_history.append(self.current_funds + self.current_assets * current_value)
 
     def calc_net_worth(self, current_value):
         return self.current_funds+self.current_assets*current_value
@@ -32,12 +38,17 @@ class ACCOUNT:
     def calc_net_profit(self, current_value):
         return self.current_funds+self.current_assets*current_value-self.initial_funds
 
-    def max_net_worth(self):
-        self.net_worth_history = []
-        for i in range(len(self.funds_history)):
-            self.net_worth_history.append(self.funds_history[i])
-        return max(self.)
-    
+    def plot_net_worth(self, dates):
+        import matplotlib.pyplot as plt
+
+        plt.plot(dates, self.net_worth_history)
+
+        plt.gcf().autofmt_xdate()
+        plt.grid()
+        plt.title("Net worth over time")
+        plt.xlabel("Trade date")
+        plt.ylabel("Net worth ($)")
+
 
 
 
