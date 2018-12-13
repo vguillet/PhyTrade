@@ -2,7 +2,7 @@ from Analysis_protocols_V.Prototype_1 import Prototype_1
 from Analysis_protocols_V.Prototype_2 import Prototype_2
 
 
-class Trade_bot_1:
+class Tradebot_v1:
     def __init__(self):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================

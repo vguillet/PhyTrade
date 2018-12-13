@@ -17,7 +17,7 @@ from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
 from PhyTrade.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
 from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
-from PhyTrade.Technical_Analysis.Tools.Major_spline_gen import MAJOR_SPLINE
+from PhyTrade.Technical_Analysis.Data_Collection_preparation.MAJOR_SPLINE_gen import MAJOR_SPLINE
 from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
@@ -121,16 +121,19 @@ class Prototype_2:
         # ~~~~~~~~~~~~~~~~~~ Threshold determination
         # -- Creating dynamic thresholds
         upper_threshold, lower_threshold = \
-            self.big_data.combined_spline.calc_thresholds(self.big_data, self.big_data.combined_spline,
-                                                          buffer=0.05, buffer_setting=0,
-                                                          standard_upper_threshold=0.6,
-                                                          standard_lower_threshold=0.6)
+            self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
+                                              buffer=0.05, buffer_setting=1,
+                                              standard_upper_threshold=0.45,
+                                              standard_lower_threshold=-0.5)
 
         # -- Modulating threshold with SMA 3 value
-        self.big_data.upper_threshold = \
-            self.spline_tools.modulate_amplitude_spline(
-                upper_threshold,  self.math_tools.amplify(
-                    self.math_tools.normalise_zero_one(self.big_data.spline_sma_3), 1))
+        # upper_threshold = self.spline_tools.modulate_amplitude_spline(
+        #         upper_threshold,  self.math_tools.amplify(
+        #             self.math_tools.normalise_zero_one(self.big_data.spline_sma_3), 0.3))
+        #
+        # lower_threshold = self.spline_tools.modulate_amplitude_spline(
+        #         lower_threshold,  self.math_tools.amplify(
+        #             self.math_tools.normalise_zero_one(self.big_data.spline_sma_3), 0.3))
 
         # ~~~~~~~~~~~~~~~~~~ Creating Major Spline/trigger values
         self.big_data.Major_spline = MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,

@@ -245,7 +245,7 @@ class SPLINE:
             if spline[i] >= upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                 sell_trigger = 1
 
-            if spline[i] <= max(list(upper_threshold[i-j] for j in range(20))) and sell_trigger == 1:   # Initiate sell trigger
+            if spline[i] <= max(list(upper_threshold[i-j] for j in range(10))) and sell_trigger == 1:   # Initiate sell trigger
                 sell_dates.append(big_data.data_slice_dates[dates_points.index(i)])
                 sell_spline.append(spline[i])
                 sell_trigger = 2
@@ -257,7 +257,7 @@ class SPLINE:
             if spline[i] <= lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                 buy_trigger = 1
 
-            if spline[i] >= min(list(lower_threshold[i-j] for j in range(20))) and buy_trigger == 1:    # Initiate sell trigger
+            if spline[i] >= min(list(lower_threshold[i-j] for j in range(10))) and buy_trigger == 1:    # Initiate sell trigger
                 buy_dates.append(big_data.data_slice_dates[dates_points.index(i)])
                 buy_spline.append(spline[i])
                 buy_trigger = 2
