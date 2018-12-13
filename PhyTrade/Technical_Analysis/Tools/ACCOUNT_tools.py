@@ -11,7 +11,7 @@ class ACCOUNT:
         self.funds_history = [initial_funds]
         self.assets_history = [0]
         self.net_worth_history = [initial_funds]
-    
+
     def convert_funds_to_assets(self, current_value, investment_per_trade):
 
         self.current_funds = self.current_funds - investment_per_trade
@@ -19,7 +19,7 @@ class ACCOUNT:
 
         self.funds_history.append(self.current_funds)
         self.assets_history.append(self.current_assets)
-        self.net_worth_history.append(self.current_funds+self.current_assets*current_value)
+        self.net_worth_history.append(self.current_funds + self.current_assets * current_value)
 
     def convert_assets_to_funds(self, current_value, investment_per_trade):
         self.current_funds = self.current_funds + investment_per_trade
@@ -30,6 +30,8 @@ class ACCOUNT:
         self.net_worth_history.append(self.current_funds + self.current_assets * current_value)
 
     def record_net_worth(self, current_value):
+        self.funds_history.append(self.current_funds)
+        self.assets_history.append(self.current_assets)
         self.net_worth_history.append(self.current_funds + self.current_assets * current_value)
 
     def calc_net_worth(self, current_value):
@@ -37,6 +39,11 @@ class ACCOUNT:
 
     def calc_net_profit(self, current_value):
         return self.current_funds+self.current_assets*current_value-self.initial_funds
+
+    def print_account_status(self, current_value):
+        print("Money =", self.current_funds, "$")
+        print("Share owned=", self.current_assets)
+        print("Total asset value=", self.calc_net_worth(current_value), "$")
 
     def plot_net_worth(self, dates):
         import matplotlib.pyplot as plt
@@ -48,7 +55,3 @@ class ACCOUNT:
         plt.title("Net worth over time")
         plt.xlabel("Trade date")
         plt.ylabel("Net worth ($)")
-
-
-
-

@@ -115,10 +115,6 @@ class SPLINE:
 
 
 
-
-
-
-
         """
     @staticmethod
     def calc_thresholds(big_data, spline, buffer=0.05, buffer_setting=0,

@@ -127,10 +127,6 @@ class RSI:
 
 
 
-
-
-
-
     """
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
@@ -198,10 +194,6 @@ class RSI:
         self.bb_signal = bb_signal_normalised
 
     """
-
-
-
-
 
 
 

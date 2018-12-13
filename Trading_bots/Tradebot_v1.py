@@ -25,10 +25,6 @@ class Tradebot_v1:
 
 
 
-
-
-
-
         """
         # ============================ TRADE PROTOCOL DEF ==============================
         # Define trade actions
