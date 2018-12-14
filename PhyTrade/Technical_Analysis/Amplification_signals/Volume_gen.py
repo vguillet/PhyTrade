@@ -8,7 +8,7 @@ Victor Guillet
 
 class VOLUME:
     def __init__(self, big_data, amplification_factor=1):
-        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH
 
         self.volume = big_data.volume
         self.amp_coef = []

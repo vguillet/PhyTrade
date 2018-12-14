@@ -67,7 +67,7 @@ class BIGDATA:
         self.open_values_gradient = open_values_gradient
 
         # -----------------Bear/Bullish continuous signal of dataset gradient
-        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH
 
         avg_gradient = []
 

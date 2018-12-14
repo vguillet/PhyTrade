@@ -66,7 +66,7 @@ class SMA:
             bb_signal.append((self.sma_1[i] - self.sma_2[i])/2)
 
         # Normalising sma bb signal values between -1 and 1
-        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH
 
         bb_signal_normalised = MATH().normalise_minus_one_one(bb_signal)
 

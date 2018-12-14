@@ -1,5 +1,4 @@
-from Analysis_protocols_V.Prototype_1 import Prototype_1
-from Analysis_protocols_V.Prototype_2 import Prototype_2
+from PhyTrade.Analysis_protocols_V.Prototype_2 import Prototype_2
 
 
 class Tradebot_v1:

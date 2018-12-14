@@ -179,7 +179,7 @@ class RSI:
         self.buy_dates = buy_dates
 
         # -----------------Bear/Bullish continuous signal
-        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH
 
         # Normalising rsi bb signal values between -1 and 1
         bb_signal_normalised = MATH().normalise_minus_one_one(self.rsi_values)

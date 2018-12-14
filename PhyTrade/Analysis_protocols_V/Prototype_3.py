@@ -8,7 +8,6 @@ Victor Guillet
 """
 
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
-from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
 
 from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
 from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
@@ -17,7 +16,7 @@ from PhyTrade.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
 from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.MAJOR_SPLINE_gen import MAJOR_SPLINE
-from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+from PhyTrade.Tools.MATH_tools import MATH
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 

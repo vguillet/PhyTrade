@@ -1,4 +1,4 @@
-from Analysis_protocols_V.Prototype_3 import Prototype_3
+from PhyTrade.Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
 import matplotlib.pyplot as plt
 

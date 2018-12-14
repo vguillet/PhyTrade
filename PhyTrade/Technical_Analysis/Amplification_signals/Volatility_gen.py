@@ -9,7 +9,7 @@ Victor Guillet
 class VOLATILITY:
     def __init__(self, big_data, timeframe=10, amplification_factor=1):
 
-        from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH
         import statistics as st
         import numpy as np
         
