@@ -1,21 +1,20 @@
-
 from Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
 import matplotlib.pyplot as plt
 
 
-class Tradebot_v2:
-    def __init__(self, parameters, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
+class Tradebot_v3:
+    def __init__(self, analysis_parameters, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
+        print_trade_process = False
         # -- Tradebot finance
         self.account = ACCOUNT(initial_funds=1000)
         self.stop_loss = stop_loss
         stop_loss_count = 0
 
         # -- Market analysis protocol
-        self.analysis = Prototype_3(parameters)
-
+        self.analysis = Prototype_3(analysis_parameters)
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=False)
 
         # -- Generate trade actions from analysis
@@ -36,7 +35,8 @@ class Tradebot_v2:
         """
         # ============================ TRADE PROTOCOL DEF ==============================
         for i in range(len(self.trade_actions)):
-            print("----------------- Day ", i)
+            if print_trade_process:
+                print("----------------- Day ", i)
 
             # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
             if investment_settings == 0:
@@ -76,37 +76,44 @@ class Tradebot_v2:
 
                 stop_loss_count += 1
 
-                print("==========================================================")
-                print("Stop-loss triggered")
-                self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
-                print("==========================================================")
+                if print_trade_process:
+                    print("==========================================================")
+                    print("Stop-loss triggered")
+                    self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+                    print("==========================================================")
 
             # -- Define hold action
             elif self.trade_actions[i] == "hold":
                 self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
-                print("->Hold")
+
+                if print_trade_process:
+                    print("->Hold")
 
             # -- Define buy action
             elif self.trade_actions[i] == "buy" and not self.account.current_funds == 0:
                 self.account.convert_funds_to_assets(
                     self.analysis.big_data.data_slice_open_values[i], investment_per_trade)
 
-                print("Trade action: Buy")
-                print("Investment =", investment_per_trade, "$")
-                self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+                if print_trade_process:
+                    print("Trade action: Buy")
+                    print("Investment =", investment_per_trade, "$")
+                    self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
 
             # -- Define sell action
             elif self.trade_actions[i] == "sell" and not self.account.current_assets == 0:
                 self.account.convert_assets_to_funds(
                     self.analysis.big_data.data_slice_open_values[i], assets_sold_per_trade)
 
-                print("Trade action: Sell")
-                print("Investment =", investment_per_trade, "$")
-                self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+                if print_trade_process:
+                    print("Trade action: Sell")
+                    print("Investment =", investment_per_trade, "$")
+                    self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
 
             else:
-                print("Trade action 'Sell' canceled because nothing to sell")
                 self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
+
+                if print_trade_process:
+                    print("Trade action 'Sell' canceled because nothing to sell")
 
         # ==============================================================================
         """
@@ -116,21 +123,22 @@ class Tradebot_v2:
 
         """
         # ============================ TRADE RESULTS/RECAP =============================
-        print("")
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Buy count =", len(self.analysis.big_data.Major_spline.buy_dates))
-        print("Sell count =", len(self.analysis.big_data.Major_spline.sell_dates))
-        print("Stop_loss_count =", stop_loss_count)
-        print("")
-        print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
-        print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
-        print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]) / 10)
-        print("Max worth:", max(self.account.net_worth_history))
-        print("Min worth:", min(self.account.net_worth_history))
+        if print_trade_process:
+            print("")
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print("Buy count =", len(self.analysis.big_data.Major_spline.buy_dates))
+            print("Sell count =", len(self.analysis.big_data.Major_spline.sell_dates))
+            print("Stop_loss_count =", stop_loss_count)
+            print("")
+            print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
+            print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
+            print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]) / 10)
+            print("Max worth:", max(self.account.net_worth_history))
+            print("Min worth:", min(self.account.net_worth_history))
 
-        print("")
-        print("1000$ simple initial investment:",
-              (1000 / self.analysis.big_data.data_slice_open_values[0]) * self.analysis.big_data.data_slice_open_values[
-                  -1])
-        self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
-        plt.show()
+            print("")
+            print("1000$ simple initial investment:",
+                  (1000 / self.analysis.big_data.data_slice_open_values[0]) * self.analysis.big_data.data_slice_open_values[
+                      -1])
+            self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
+            plt.show()

@@ -1,5 +1,5 @@
 """
-Prototype 2
+Prototype 3
 
 This prototype is based entirely on technical analysis, and is ment as a test for the genetic algorithm parameter
 optimisation algorithm
@@ -41,13 +41,27 @@ class Prototype_3:
         self.math_tools = MATH()
 
         # ------------------ Indicators initialisation
-        self.big_data.rsi = RSI(self.big_data, timeframe=parameters.)
-        self.big_data.sma_1 = SMA(self.big_data, timeperiod_1=parameters, timeperiod_2=parameters)
-        self.big_data.sma_2 = SMA(self.big_data, timeperiod_1=parameters, timeperiod_2=parameters)
-        self.big_data.sma_3 = SMA(self.big_data, timeperiod_1=parameters, timeperiod_2=parameters)
+        self.big_data.rsi = RSI(self.big_data,
+                                timeframe=parameters.rsi_1_timeframe)
 
-        self.big_data.volume = VOLUME(self.big_data, amplification_factor=parameters)
-        self.big_data.volatility = VOLATILITY(self.big_data, timeframe=parameters, amplification_factor=parameters)
+        self.big_data.sma_1 = SMA(self.big_data,
+                                  timeperiod_1=parameters.sma_1_timeperiod_1,
+                                  timeperiod_2=parameters.sma_1_timeperiod_2)
+
+        self.big_data.sma_2 = SMA(self.big_data,
+                                  timeperiod_1=parameters.sma_2_timeperiod_1,
+                                  timeperiod_2=parameters.sma_2_timeperiod_2)
+
+        self.big_data.sma_3 = SMA(self.big_data,
+                                  timeperiod_1=parameters.sma_3_timeperiod_1,
+                                  timeperiod_2=parameters.sma_3_timeperiod_2)
+
+        self.big_data.volume = VOLUME(self.big_data,
+                                      amplification_factor=parameters.volume_amplification_factor)
+
+        self.big_data.volatility = VOLATILITY(self.big_data,
+                                              timeframe=parameters.volatility_timeframe,
+                                              amplification_factor=parameters.volatility_amplification_factor)
 
         # ================================================================================
         """
@@ -66,26 +80,31 @@ class Prototype_3:
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # -- Creating splines from signals
         self.big_data.spline_rsi = \
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.rsi.bb_signal, smoothing_factor=parameters)
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.rsi.bb_signal,
+                                                    smoothing_factor=parameters.rsi_1_spline_smoothing_factor)
 
         self.big_data.spline_oc_avg_gradient = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.oc_avg_gradient_bb_signal,
-                                                    smoothing_factor=parameters)
+                                                    smoothing_factor=parameters.oc_avg_gradient_spline_smoothing_factor)
 
         self.big_data.spline_sma_1 = \
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_1.bb_signal, smoothing_factor=parameters)
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_1.bb_signal,
+                                                    smoothing_factor=parameters.sma_1_spline_smoothing_factor)
         self.big_data.spline_sma_2 = \
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_2.bb_signal, smoothing_factor=parameters)
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_2.bb_signal,
+                                                    smoothing_factor=parameters.sma_2_spline_smoothing_factor)
         self.big_data.spline_sma_3 = \
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_3.bb_signal, smoothing_factor=parameters)
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_3.bb_signal,
+                                                    smoothing_factor=parameters.sma_3_spline_smoothing_factor)
 
         # -- Generating amplification signals
         self.big_data.spline_volume = \
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef, smoothing_factor=parameters)
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
+                                                    smoothing_factor=parameters.volume_spline_smoothing_factor)
 
         self.big_data.spline_volatility = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
-                                                    smoothing_factor=parameters)
+                                                    smoothing_factor=parameters.volatility_spline_smoothing_factor)
 
         # -- Tuning separate signals
         self.big_data.spline_sma_3 = self.spline_tools.flip_spline(self.big_data.spline_sma_3)
@@ -98,11 +117,11 @@ class Prototype_3:
                                               self.big_data.spline_sma_1,
                                               self.big_data.spline_sma_2,
                                               self.big_data.spline_sma_3,
-                                              weight_1=parameters,
-                                              weight_2=parameters,
-                                              weight_3=parameters,
-                                              weight_4=parameters,
-                                              weight_5=parameters)
+                                              weight_1=parameters.rsi_1_spline_weight,
+                                              weight_2=parameters.oc_avg_gradient_spline_weight,
+                                              weight_3=parameters.sma_1_spline_weight,
+                                              weight_4=parameters.sma_2_spline_weight,
+                                              weight_5=parameters.sma_3_spline_weight)
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \
