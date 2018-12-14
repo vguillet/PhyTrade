@@ -119,7 +119,7 @@ class Individual:
 
         self.oc_avg_gradient_spline_weight = self.ga_random.weight_gen()
 
-        self.weights_lst = [self.rsi_1_spline_weight,
+        self.spline_weights_lst = [self.rsi_1_spline_weight,
                             self.rsi_2_spline_weight,
                             self.rsi_3_spline_weight,
                             self.sma_1_spline_weight,
@@ -132,22 +132,15 @@ class Individual:
                                 + len(self.sma_parameters_lst) \
                                 + len(self.volume_parameters_lst) \
                                 + len(self.volatility_parameters_lst) \
-                                + len(self.weights_lst) + 1
-
-        self.parameter_lsts = self.rsi_parameters_lst \
-                              + self.sma_parameters_lst \
-                              + self.volume_parameters_lst \
-                              + self.volatility_parameters_lst \
-                              + self.weights_lst \
-                              + [self.oc_avg_gradient_spline_smoothing_factor]
+                                + len(self.spline_weights_lst) + 1
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Further parameter classification
         self.timeframes_lst = self.rsi_timeframes_lst \
                               + self.sma_timeframes_lst \
                               + [self.volatility_timeframe]
 
-        self.standard_upper_thresholds_lst = self.rsi_standard_upper_thresholds_lst
-        self.standard_lower_thresholds_lst = self.rsi_standard_lower_thresholds_lst
+        self.rsi_standard_upper_thresholds_lst = self.rsi_standard_upper_thresholds_lst
+        self.rsi_standard_lower_thresholds_lst = self.rsi_standard_lower_thresholds_lst
 
         self.smoothing_factors_lst = self.rsi_smoothing_factors_lst \
                                      + self.sma_smoothing_factors_lst \
@@ -159,13 +152,20 @@ class Individual:
                                         + [self.volatility_amplification_factor]
 
         self.list_combined = self.timeframes_lst \
-                             + self.standard_upper_thresholds_lst \
-                             + self.standard_lower_thresholds_lst \
+                             + self.rsi_standard_upper_thresholds_lst \
+                             + self.rsi_standard_lower_thresholds_lst \
                              + self.smoothing_factors_lst \
                              + self.amplification_factor_lst \
-                             + self.weights_lst
+                             + self.spline_weights_lst
 
-        assert len(self.parameter_lsts) == self.nb_of_parameters
         assert len(self.list_combined) == self.nb_of_parameters
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Creating parameter dictionary
+        self.parameter_dictionary = {"timeframe": self.timeframes_lst,
+                                     "rsi_standard_upper_thresholds": self.rsi_standard_upper_thresholds_lst,
+                                     "rsi_standard_lower_thresholds": self.rsi_standard_lower_thresholds_lst,
+                                     "smoothing_factors": self.smoothing_factors_lst,
+                                     "self.amplification_factor": self.amplification_factor_lst,
+                                     "weights": self.spline_weights_lst}
 
 
