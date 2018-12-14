@@ -4,19 +4,19 @@ class Individual:
         import random
 
         # RSI parameters:
-        self.rsi_1_timeframe = random.randint(0, 100)
+        self.rsi_1_timeframe = random.randint(2, 100)
 
         self.rsi_1_spline_smoothing_factor = random.uniform(0.0, 2.0)
 
         # SMA parameters:
-        self.sma_1_timeperiod_1 = random.randint(0, 100)
-        self.sma_1_timeperiod_2 = random.randint(0, 100)
+        self.sma_1_timeperiod_1 = random.randint(2, 100)
+        self.sma_1_timeperiod_2 = random.randint(2, 100)
 
-        self.sma_2_timeperiod_1 = random.randint(0, 100)
-        self.sma_2_timeperiod_2 = random.randint(0, 100)
+        self.sma_2_timeperiod_1 = random.randint(2, 100)
+        self.sma_2_timeperiod_2 = random.randint(2, 100)
 
-        self.sma_3_timeperiod_1 = random.randint(0, 100)
-        self.sma_3_timeperiod_2 = random.randint(0, 100)
+        self.sma_3_timeperiod_1 = random.randint(2, 100)
+        self.sma_3_timeperiod_2 = random.randint(2, 100)
 
         self.sma_1_spline_smoothing_factor = random.uniform(0.0, 2.0)
         self.sma_2_spline_smoothing_factor = random.uniform(0.0, 2.0)
@@ -31,7 +31,7 @@ class Individual:
         self.volume_spline_smoothing_factor = random.uniform(0.0, 2.0)
 
         # Volatility parameters:
-        self.volatility_timeframe = random.randint(0, 100)
+        self.volatility_timeframe = random.randint(2, 100)
         self.volatility_amplification_factor = random.uniform(0.0, 3.0)
 
         self.volatility_spline_smoothing_factor = random.uniform(0.0, 2.0)

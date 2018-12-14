@@ -7,7 +7,7 @@ class MATH:
         signal_normalised = []
         
         for i in range(len(signal)):
-            signal_normalised.append((signal[i]-min(signal))/(max(signal)-min(signal)))
+            signal_normalised.append((signal[i]-min(signal))/((max(signal)-min(signal)) or 1))
         
         return signal_normalised
     
@@ -17,7 +17,7 @@ class MATH:
         signal_normalised = []
 
         for i in range(len(signal)):
-            signal_normalised.append(2*(signal[i] - min(signal)) / (max(signal) - min(signal))-1)
+            signal_normalised.append(2*(signal[i] - min(signal)) / ((max(signal) - min(signal)) or 1)-1)
 
         return signal_normalised
 

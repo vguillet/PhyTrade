@@ -21,13 +21,20 @@ from PhyTrade.Technical_Analysis.Tools.MATH_tools import MATH
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 
+import pandas
+
 
 class Prototype_3:
     def __init__(self, parameters):
 
         # ========================= DATA COLLECTION INITIALISATION =======================
         ticker = 'AAPL'  # Ticker selected for Yahoo data collection
-        data = pull_yahoo_data(ticker)  # Pull data from Yahoo
+        # data = pull_yahoo_data(ticker)  # Pull data from Yahoo
+
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Steffegium\Data\AAPL_Yahoo_data.csv".replace(
+            '\\', '/')
+
+        data = pandas.read_csv(path)
 
         # ========================= ANALYSIS INITIALISATION ==============================
         data_slice_start_ind = -400
