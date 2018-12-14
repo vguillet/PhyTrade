@@ -9,4 +9,4 @@
 # ============================ GENETICALY-OPTIMISED TRADING====================
 from PhyTrade.GA_optimisation.GA_algo import GA_optimiser
 
-GA_optimisation = GA_optimiser(population_size=10, nb_of_generations=1)
+GA_optimisation = GA_optimiser(population_size=5, nb_of_generations=1, mutation_rate=0.2)
