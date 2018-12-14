@@ -1,10 +1,11 @@
-from Analysis_protocols_V.Prototype_2 import Prototype_2
+
+from Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
 import matplotlib.pyplot as plt
 
 
 class Tradebot_v2:
-    def __init__(self, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
+    def __init__(self, parameters, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         # -- Tradebot finance
@@ -13,11 +14,12 @@ class Tradebot_v2:
         stop_loss_count = 0
 
         # -- Market analysis protocol
-        self.analysis = Prototype_2()
-        self.analysis.plot(plot_1=False, plot_2=False, plot_3=True)
+        self.analysis = Prototype_3(parameters)
+
+        self.analysis.plot(plot_1=False, plot_2=False, plot_3=False)
 
         # -- Generate trade actions from analysis
-        self.trade_actions = ["hold"]*len(self.analysis.big_data.data_slice_dates)
+        self.trade_actions = ["hold"] * len(self.analysis.big_data.data_slice_dates)
 
         for i in self.analysis.big_data.Major_spline.sell_dates:
             self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = "sell"
@@ -51,15 +53,15 @@ class Tradebot_v2:
                 assets_sold_per_trade = self.account.current_assets
 
             elif cash_in_settings == 1:
-                assets_sold_per_trade = self.account.current_assets*0.5
+                assets_sold_per_trade = self.account.current_assets * 0.5
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
             if i % 100 == 0 and not self.stop_loss == 0.97:
                 self.stop_loss += 0.01
 
             """
-            
-            
+
+
             """
             # ~~~~~~~~~~~~~~~~~~ Define trade protocol
             # -- Define stop-loss action
@@ -122,12 +124,13 @@ class Tradebot_v2:
         print("")
         print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
         print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
-        print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1])/10)
+        print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]) / 10)
         print("Max worth:", max(self.account.net_worth_history))
         print("Min worth:", min(self.account.net_worth_history))
 
         print("")
         print("1000$ simple initial investment:",
-              (1000/self.analysis.big_data.data_slice_open_values[0])*self.analysis.big_data.data_slice_open_values[-1])
+              (1000 / self.analysis.big_data.data_slice_open_values[0]) * self.analysis.big_data.data_slice_open_values[
+                  -1])
         self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
         plt.show()
