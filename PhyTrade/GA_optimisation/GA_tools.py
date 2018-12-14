@@ -27,9 +27,9 @@ class GA_tools:
     def select_from_population(fitness_evaluation, population, selection_method=0, number_of_selected_ind=3):
 
         # -- Determine fitness ratio
-        fitness_ratios = []
-        for i in range(len(fitness_evaluation)):
-            fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
+        fitness_ratios = fitness_evaluation
+        # for i in range(len(fitness_evaluation)):
+        #     fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
         # -- Select individuals
         selected_individuals = []

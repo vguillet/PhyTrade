@@ -51,13 +51,16 @@ class GA_optimiser():
             self.parents = self.ga_tools.select_from_population(self.fitness_evaluation,
                                                                 self.population,
                                                                 selection_method=0,
-                                                                number_of_selected_ind=3)
+                                                                number_of_selected_ind=2)
 
             # ------------------ Generate offsprings with mutations
             self.new_population = self.ga_tools.generate_offsprings(self.population_size,
                                                                     self.parents,
                                                                     self.mutation_rate)
 
+            print("")
+            print("New population generated")
+            print("")
             self.population = self.new_population
 
         print(self.best_individual_per_gen)
