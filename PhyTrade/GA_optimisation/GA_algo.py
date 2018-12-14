@@ -23,12 +23,12 @@ class GA_optimiser():
         self.mutation_rate = mutation_rate
         # ------------------ Tools and GA parameters initialisation
         self.ga_tools = GA_tools()
+        self.best_individual_per_gen = []
 
         # ------------------ Initialise population
         self.population = self.ga_tools.gen_initial_population(self.population_size)
 
         print("Population initialised")
-        print(self.population[0].parameter_lsts)
         # ==============================================================================
         """
 
@@ -43,16 +43,28 @@ class GA_optimiser():
             # ------------------ Evaluate population
             self.fitness_evaluation = self.ga_tools.evaluate_population(self.population)
 
+            self.best_individual_per_gen.append(max(self.fitness_evaluation))
+            print(max(self.fitness_evaluation))
+
             print("==================== Generation", i + 1, "====================")
             # ------------------ Select individuals from current generation
             self.parents = self.ga_tools.select_from_population(self.fitness_evaluation,
                                                                 self.population,
                                                                 selection_method=0,
                                                                 number_of_selected_ind=3)
-            print(self.parents)
 
             # ------------------ Generate offsprings with mutations
-            self.new_population = self.ga_tools.generate_offsprings(self.parents, self.mutation_rate)
+            self.new_population = self.ga_tools.generate_offsprings(self.population_size,
+                                                                    self.parents,
+                                                                    self.mutation_rate)
+
+            self.population = self.new_population
+
+        print(self.best_individual_per_gen)
+        import matplotlib.pyplot as plt
+
+        plt.plot(range(len(self.best_individual_per_gen)), self.best_individual_per_gen)
+        plt.show()
 
 
 

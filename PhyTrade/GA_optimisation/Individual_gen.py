@@ -120,12 +120,12 @@ class Individual:
         self.oc_avg_gradient_spline_weight = self.ga_random.weight_gen()
 
         self.spline_weights_lst = [self.rsi_1_spline_weight,
-                            self.rsi_2_spline_weight,
-                            self.rsi_3_spline_weight,
-                            self.sma_1_spline_weight,
-                            self.sma_2_spline_weight,
-                            self.sma_3_spline_weight,
-                            self.oc_avg_gradient_spline_weight]
+                                   self.rsi_2_spline_weight,
+                                   self.rsi_3_spline_weight,
+                                   self.sma_1_spline_weight,
+                                   self.sma_2_spline_weight,
+                                   self.sma_3_spline_weight,
+                                   self.oc_avg_gradient_spline_weight]
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Individual properties
         self.nb_of_parameters = len(self.rsi_parameters_lst) \
@@ -165,7 +165,7 @@ class Individual:
                                      "rsi_standard_upper_thresholds": self.rsi_standard_upper_thresholds_lst,
                                      "rsi_standard_lower_thresholds": self.rsi_standard_lower_thresholds_lst,
                                      "smoothing_factors": self.smoothing_factors_lst,
-                                     "self.amplification_factor": self.amplification_factor_lst,
+                                     "amplification_factor": self.amplification_factor_lst,
                                      "weights": self.spline_weights_lst}
 
 
