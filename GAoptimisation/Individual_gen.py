@@ -5,8 +5,20 @@ class Individual:
 
         # RSI parameters:
         self.rsi_1_timeframe = random.randint(2, 100)
+        self.rsi_1_standard_upper_threshold = random.randint(51, 100)
+        self.rsi_1_standard_lower_threshold = random.randint(1, 49)
+
+        self.rsi_2_timeframe = random.randint(2, 100)
+        self.rsi_2_standard_upper_threshold = random.randint(51, 100)
+        self.rsi_2_standard_lower_threshold = random.randint(1, 49)
+
+        self.rsi_3_timeframe = random.randint(2, 100)
+        self.rsi_3_standard_upper_threshold = random.randint(51, 100)
+        self.rsi_3_standard_lower_threshold = random.randint(1, 49)
 
         self.rsi_1_spline_smoothing_factor = random.uniform(0.0, 2.0)
+        self.rsi_2_spline_smoothing_factor = random.uniform(0.0, 2.0)
+        self.rsi_3_spline_smoothing_factor = random.uniform(0.0, 2.0)
 
         # SMA parameters:
         self.sma_1_timeperiod_1 = random.randint(2, 100)
@@ -38,6 +50,8 @@ class Individual:
 
         # Spline weights:
         self.rsi_1_spline_weight = random.uniform(0.0, 10.0)
+        self.rsi_2_spline_weight = random.uniform(0.0, 10.0)
+        self.rsi_3_spline_weight = random.uniform(0.0, 10.0)
 
         self.sma_1_spline_weight = random.uniform(0.0, 10.0)
         self.sma_2_spline_weight = random.uniform(0.0, 10.0)

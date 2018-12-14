@@ -74,15 +74,15 @@ class Prototype_1:
                 self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef, smoothing_factor=0.5))
     
         # -- Adding signals together
-        setattr(self.big_data, "combined_spline", self.spline_tools.combine_splines(self.big_data,
-                                                                                    self.big_data.spline_rsi,
-                                                                                    self.big_data.spline_oc_avg_gradient,
-                                                                                    self.big_data.spline_sma_1,
-                                                                                    self.big_data.spline_sma_2,
-                                                                                    weight_1=1,
-                                                                                    weight_2=3,
-                                                                                    weight_3=4,
-                                                                                    weight_4=3))
+        setattr(self.big_data, "combined_spline", self.spline_tools.combine_5_splines(self.big_data,
+                                                                                      self.big_data.spline_rsi,
+                                                                                      self.big_data.spline_oc_avg_gradient,
+                                                                                      self.big_data.spline_sma_1,
+                                                                                      self.big_data.spline_sma_2,
+                                                                                      weight_1=1,
+                                                                                      weight_2=3,
+                                                                                      weight_3=4,
+                                                                                      weight_4=3))
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \

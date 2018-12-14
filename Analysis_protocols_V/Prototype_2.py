@@ -91,7 +91,7 @@ class Prototype_2:
 
         # -- Adding signals together
         self.big_data.combined_spline = \
-            self.spline_tools.combine_splines(self.big_data,
+            self.spline_tools.combine_5_splines(self.big_data,
                                               self.big_data.spline_rsi,
                                               self.big_data.spline_oc_avg_gradient,
                                               self.big_data.spline_sma_1,
