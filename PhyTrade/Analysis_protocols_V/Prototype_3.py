@@ -49,41 +49,41 @@ class Prototype_3:
         # ------------------ Indicators initialisation
         # -- RSI initialisation
         self.big_data.rsi_1 = RSI(self.big_data,
-                                  timeframe=parameters["timeframe"][0],
-                                  standard_upper_threshold=parameters["rsi_standard_upper_thresholds"][0],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"][0])
+                                  timeframe=parameters["timeframe"]["rsi_1_timeframe"],
+                                  standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_1_standard_upper_threshold"],
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_1_standard_lower_threshold"])
 
         self.big_data.rsi_2 = RSI(self.big_data,
-                                  timeframe=parameters["timeframe"][1],
-                                  standard_upper_threshold=parameters["rsi_standard_upper_thresholds"][1],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"][1])
+                                  timeframe=parameters["timeframe"]["rsi_2_timeframe"],
+                                  standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_2_standard_upper_threshold"],
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_2_standard_lower_threshold"])
 
         self.big_data.rsi_3 = RSI(self.big_data,
-                                  timeframe=parameters["timeframe"][2],
-                                  standard_upper_threshold=parameters["rsi_standard_upper_thresholds"][2],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"][2])
+                                  timeframe=parameters["timeframe"]["rsi_3_timeframe"],
+                                  standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_3_standard_upper_threshold"],
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_3_standard_lower_threshold"])
 
         # -- SMA initialisation
         self.big_data.sma_1 = SMA(self.big_data,
-                                  timeperiod_1=parameters["timeframe"][3],
-                                  timeperiod_2=parameters["timeframe"][6])
+                                  timeperiod_1=parameters["timeframe"]["sma_1_timeperiod_1"],
+                                  timeperiod_2=parameters["timeframe"]["sma_1_timeperiod_2"])
 
         self.big_data.sma_2 = SMA(self.big_data,
-                                  timeperiod_1=parameters["timeframe"][4],
-                                  timeperiod_2=parameters["timeframe"][7])
+                                  timeperiod_1=parameters["timeframe"]["sma_2_timeperiod_1"],
+                                  timeperiod_2=parameters["timeframe"]["sma_2_timeperiod_2"])
 
         self.big_data.sma_3 = SMA(self.big_data,
-                                  timeperiod_1=parameters["timeframe"][5],
-                                  timeperiod_2=parameters["timeframe"][8])
+                                  timeperiod_1=parameters["timeframe"]["sma_3_timeperiod_1"],
+                                  timeperiod_2=parameters["timeframe"]["sma_3_timeperiod_2"])
 
         # -- Volume initialisation
         self.big_data.volume = VOLUME(self.big_data,
-                                      amplification_factor=parameters["amplification_factor"][0])
+                                      amplification_factor=parameters["amplification_factor"]["volume_amplification_factor"])
 
         # -- Volatility initialisation
         self.big_data.volatility = VOLATILITY(self.big_data,
-                                              timeframe=parameters["timeframe"][9],
-                                              amplification_factor=parameters["amplification_factor"][1])
+                                              timeframe=parameters["timeframe"]["volatility_timeframe"],
+                                              amplification_factor=parameters["amplification_factor"]["volatility_amplification_factor"])
 
         # ================================================================================
         """
@@ -109,40 +109,40 @@ class Prototype_3:
         # - RSI
         self.big_data.spline_rsi_1 = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.rsi_1.bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][0])
+                                                    smoothing_factor=parameters["smoothing_factors"]["rsi_1_spline_smoothing_factor"])
 
         self.big_data.spline_rsi_2 = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.rsi_2.bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][1])
+                                                    smoothing_factor=parameters["smoothing_factors"]["rsi_2_spline_smoothing_factor"])
 
         self.big_data.spline_rsi_3 = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.rsi_3.bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][2])
+                                                    smoothing_factor=parameters["smoothing_factors"]["rsi_3_spline_smoothing_factor"])
 
         # - SMA
         self.big_data.spline_sma_1 = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_1.bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][3])
+                                                    smoothing_factor=parameters["smoothing_factors"]["sma_1_spline_smoothing_factor"])
         self.big_data.spline_sma_2 = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_2.bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][4])
+                                                    smoothing_factor=parameters["smoothing_factors"]["sma_2_spline_smoothing_factor"])
         self.big_data.spline_sma_3 = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.sma_3.bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][5])
+                                                    smoothing_factor=parameters["smoothing_factors"]["sma_3_spline_smoothing_factor"])
 
         # - OC avg gradient
         self.big_data.spline_oc_avg_gradient = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.oc_avg_gradient_bb_signal,
-                                                    smoothing_factor=parameters["smoothing_factors"][6])
+                                                    smoothing_factor=parameters["smoothing_factors"]["oc_avg_gradient_spline_smoothing_factor"])
 
         # -- Generating amplification signals
-        self.big_data.spline_volatility = \
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
-                                                    smoothing_factor=parameters["smoothing_factors"][7])
-
         self.big_data.spline_volume = \
             self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
-                                                    smoothing_factor=parameters["smoothing_factors"][8])
+                                                    smoothing_factor=parameters["smoothing_factors"]["volume_spline_smoothing_factor"])
+
+        self.big_data.spline_volatility = \
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
+                                                    smoothing_factor=parameters["smoothing_factors"]["volatility_spline_smoothing_factor"])
 
         # -- Tuning separate signals
         self.big_data.spline_sma_3 = self.spline_tools.flip_spline(self.big_data.spline_sma_3)
@@ -150,20 +150,20 @@ class Prototype_3:
         # -- Adding signals together
         self.big_data.combined_spline = \
             self.spline_tools.combine_7_splines(self.big_data,
-                                                self.big_data.spline_oc_avg_gradient,
                                                 self.big_data.spline_rsi_1,
                                                 self.big_data.spline_rsi_2,
                                                 self.big_data.spline_rsi_3,
                                                 self.big_data.spline_sma_1,
                                                 self.big_data.spline_sma_2,
                                                 self.big_data.spline_sma_3,
-                                                weight_1=parameters["weights"][6],
-                                                weight_2=parameters["weights"][0],
-                                                weight_3=parameters["weights"][1],
-                                                weight_4=parameters["weights"][2],
-                                                weight_5=parameters["weights"][3],
-                                                weight_6=parameters["weights"][4],
-                                                weight_7=parameters["weights"][5])
+                                                self.big_data.spline_oc_avg_gradient,
+                                                weight_2=parameters["weights"]["rsi_1_spline_weight"],
+                                                weight_3=parameters["weights"]["rsi_2_spline_weight"],
+                                                weight_4=parameters["weights"]["rsi_3_spline_weight"],
+                                                weight_5=parameters["weights"]["sma_1_spline_weight"],
+                                                weight_6=parameters["weights"]["sma_2_spline_weight"],
+                                                weight_7=parameters["weights"]["sma_3_spline_weight"],
+                                                weight_1=parameters["weights"]["oc_avg_gradient_spline_weight"])
 
         # -- Tuning combined signal
         self.big_data.combined_spline = \

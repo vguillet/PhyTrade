@@ -23,35 +23,22 @@ class Individual:
         self.rsi_2_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
         self.rsi_3_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
 
-        self.rsi_parameters_lst = [self.rsi_1_timeframe,
-                                   self.rsi_1_standard_upper_threshold,
-                                   self.rsi_1_standard_lower_threshold,
-                                   self.rsi_2_timeframe,
-                                   self.rsi_2_standard_upper_threshold,
-                                   self.rsi_2_standard_lower_threshold,
-                                   self.rsi_3_timeframe,
-                                   self.rsi_3_standard_upper_threshold,
-                                   self.rsi_3_standard_lower_threshold,
-                                   self.rsi_1_spline_smoothing_factor,
-                                   self.rsi_2_spline_smoothing_factor,
-                                   self.rsi_3_spline_smoothing_factor]
-
         # -- Classifying parameter types
-        self.rsi_timeframes_lst = [self.rsi_1_timeframe,
-                                   self.rsi_2_timeframe,
-                                   self.rsi_3_timeframe]
+        self.rsi_timeframes_dic = {"rsi_1_timeframe": self.rsi_1_timeframe,
+                                   "rsi_2_timeframe": self.rsi_2_timeframe,
+                                   "rsi_3_timeframe": self.rsi_3_timeframe}
 
-        self.rsi_standard_upper_thresholds_lst = [self.rsi_1_standard_upper_threshold,
-                                                  self.rsi_2_standard_upper_threshold,
-                                                  self.rsi_3_standard_upper_threshold]
+        self.rsi_standard_upper_thresholds_dic = {"rsi_1_standard_upper_threshold": self.rsi_1_standard_upper_threshold,
+                                                  "rsi_2_standard_upper_threshold": self.rsi_2_standard_upper_threshold,
+                                                  "rsi_3_standard_upper_threshold": self.rsi_3_standard_upper_threshold}
 
-        self.rsi_standard_lower_thresholds_lst = [self.rsi_1_standard_lower_threshold,
-                                                  self.rsi_2_standard_lower_threshold,
-                                                  self.rsi_3_standard_lower_threshold]
+        self.rsi_standard_lower_thresholds_dic = {"rsi_1_standard_lower_threshold": self.rsi_1_standard_lower_threshold,
+                                                  "rsi_2_standard_lower_threshold": self.rsi_2_standard_lower_threshold,
+                                                  "rsi_3_standard_lower_threshold": self.rsi_3_standard_lower_threshold}
 
-        self.rsi_smoothing_factors_lst = [self.rsi_1_spline_smoothing_factor,
-                                          self.rsi_2_spline_smoothing_factor,
-                                          self.rsi_3_spline_smoothing_factor]
+        self.rsi_smoothing_factors_dic = {"rsi_1_spline_smoothing_factor": self.rsi_1_spline_smoothing_factor,
+                                          "rsi_2_spline_smoothing_factor": self.rsi_2_spline_smoothing_factor,
+                                          "rsi_3_spline_smoothing_factor": self.rsi_3_spline_smoothing_factor}
 
         # ========================================================== SMA parameters:
         self.sma_1_timeperiod_1 = self.ga_random.timeframe_random_gen()
@@ -67,46 +54,50 @@ class Individual:
         self.sma_2_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
         self.sma_3_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
 
-        self.sma_parameters_lst = [self.sma_1_timeperiod_1,
-                                   self.sma_1_timeperiod_2,
-                                   self.sma_2_timeperiod_1,
-                                   self.sma_2_timeperiod_2,
-                                   self.sma_3_timeperiod_1,
-                                   self.sma_3_timeperiod_2,
-                                   self.sma_1_spline_smoothing_factor,
-                                   self.sma_2_spline_smoothing_factor,
-                                   self.sma_3_spline_smoothing_factor]
-
         # -- Classifying parameter types
-        self.sma_timeframes_lst = [self.sma_1_timeperiod_1,
-                                   self.sma_2_timeperiod_1,
-                                   self.sma_3_timeperiod_1,
-                                   self.sma_1_timeperiod_2,
-                                   self.sma_2_timeperiod_2,
-                                   self.sma_3_timeperiod_2]
+        self.sma_timeframes_dic = {"sma_1_timeperiod_1": self.sma_1_timeperiod_1,
+                                   "sma_2_timeperiod_1": self.sma_2_timeperiod_1,
+                                   "sma_3_timeperiod_1": self.sma_3_timeperiod_1,
+                                   "sma_1_timeperiod_2": self.sma_1_timeperiod_2,
+                                   "sma_2_timeperiod_2": self.sma_2_timeperiod_2,
+                                   "sma_3_timeperiod_2": self.sma_3_timeperiod_2}
 
-        self.sma_smoothing_factors_lst = [self.sma_1_spline_smoothing_factor,
-                                          self.sma_2_spline_smoothing_factor,
-                                          self.sma_3_spline_smoothing_factor]
+        self.sma_smoothing_factors_dic = {"sma_1_spline_smoothing_factor": self.sma_1_spline_smoothing_factor,
+                                          "sma_2_spline_smoothing_factor": self.sma_2_spline_smoothing_factor,
+                                          "sma_3_spline_smoothing_factor": self.sma_3_spline_smoothing_factor}
 
         # ========================================================== OC parameters:
         self.oc_avg_gradient_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
+
+        # -- Classifying parameter types
+        self.oc_avg_gradient_spline_smoothing_factor_dic = \
+            {"oc_avg_gradient_spline_smoothing_factor": self.oc_avg_gradient_spline_smoothing_factor}
 
         # ========================================================== Volume parameters:
         self.volume_amplification_factor = self.ga_random.amplification_factor_random_gen()
         self.volume_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
 
-        self.volume_parameters_lst = [self.volume_amplification_factor,
-                                      self.volume_spline_smoothing_factor]
+        # -- Classifying parameter types
+        self.volume_amplification_factor_dic = \
+            {"volume_amplification_factor": self.volume_amplification_factor}
+
+        self.volume_spline_smoothing_factor_dic = \
+            {"volume_spline_smoothing_factor": self.volume_spline_smoothing_factor}
 
         # ========================================================== Volatility parameters:
         self.volatility_timeframe = self.ga_random.timeframe_random_gen()
         self.volatility_amplification_factor = self.ga_random.amplification_factor_random_gen()
         self.volatility_spline_smoothing_factor = self.ga_random.smoothing_factor_random_gen()
 
-        self.volatility_parameters_lst = [self.volatility_timeframe,
-                                          self.volatility_amplification_factor,
-                                          self.volatility_spline_smoothing_factor]
+        # -- Classifying parameter types
+        self.volatility_timeframe_dic = \
+            {"volatility_timeframe": self.volatility_timeframe}
+
+        self.volatility_amplification_factor_dic = \
+            {"volatility_amplification_factor": self.volatility_amplification_factor}
+
+        self.volatility_spline_smoothing_factor_dic = \
+            {"volatility_spline_smoothing_factor": self.volatility_spline_smoothing_factor}
 
         # ========================================================== Spline weights:
         self.rsi_1_spline_weight = self.ga_random.weight_random_gen()
@@ -119,53 +110,41 @@ class Individual:
 
         self.oc_avg_gradient_spline_weight = self.ga_random.weight_random_gen()
 
-        self.spline_weights_lst = [self.rsi_1_spline_weight,
-                                   self.rsi_2_spline_weight,
-                                   self.rsi_3_spline_weight,
-                                   self.sma_1_spline_weight,
-                                   self.sma_2_spline_weight,
-                                   self.sma_3_spline_weight,
-                                   self.oc_avg_gradient_spline_weight]
-
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Individual properties
-        self.nb_of_parameters = len(self.rsi_parameters_lst) \
-                                + len(self.sma_parameters_lst) \
-                                + len(self.volume_parameters_lst) \
-                                + len(self.volatility_parameters_lst) \
-                                + len(self.spline_weights_lst) + 1
+        # -- Classifying parameter types
+        self.spline_weights_dic = {"rsi_1_spline_weight": self.rsi_1_spline_weight,
+                                   "rsi_2_spline_weight": self.rsi_2_spline_weight,
+                                   "rsi_3_spline_weight": self.rsi_3_spline_weight,
+                                   "sma_1_spline_weight": self.sma_1_spline_weight,
+                                   "sma_2_spline_weight": self.sma_2_spline_weight,
+                                   "sma_3_spline_weight": self.sma_3_spline_weight,
+                                   "oc_avg_gradient_spline_weight": self.oc_avg_gradient_spline_weight}
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Further parameter classification
-        self.timeframes_lst = self.rsi_timeframes_lst \
-                              + self.sma_timeframes_lst \
-                              + [self.volatility_timeframe]
+        self.timeframes_dic = dict(self.rsi_timeframes_dic,
+                                   **self.sma_timeframes_dic,
+                                   **self.volatility_timeframe_dic)
 
-        self.rsi_standard_upper_thresholds_lst = self.rsi_standard_upper_thresholds_lst
-        self.rsi_standard_lower_thresholds_lst = self.rsi_standard_lower_thresholds_lst
+        self.amplification_factor_dic = dict(self.volume_amplification_factor_dic,
+                                             **self.volatility_amplification_factor_dic)
 
-        self.smoothing_factors_lst = self.rsi_smoothing_factors_lst \
-                                     + self.sma_smoothing_factors_lst \
-                                     + [self.oc_avg_gradient_spline_smoothing_factor] \
-                                     + [self.volatility_spline_smoothing_factor] \
-                                     + [self.volume_spline_smoothing_factor]
-
-        self.amplification_factor_lst = [self.volume_amplification_factor] \
-                                        + [self.volatility_amplification_factor]
-
-        self.list_combined = self.timeframes_lst \
-                             + self.rsi_standard_upper_thresholds_lst \
-                             + self.rsi_standard_lower_thresholds_lst \
-                             + self.smoothing_factors_lst \
-                             + self.amplification_factor_lst \
-                             + self.spline_weights_lst
-
-        assert len(self.list_combined) == self.nb_of_parameters
+        self.smoothing_factors_dic = dict(self.rsi_smoothing_factors_dic,
+                                          **self.sma_smoothing_factors_dic,
+                                          **self.oc_avg_gradient_spline_smoothing_factor_dic,
+                                          **self.volume_spline_smoothing_factor_dic,
+                                          **self.volatility_spline_smoothing_factor_dic)
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Creating parameter dictionary
-        self.parameter_dictionary = {"timeframe": self.timeframes_lst,
-                                     "rsi_standard_upper_thresholds": self.rsi_standard_upper_thresholds_lst,
-                                     "rsi_standard_lower_thresholds": self.rsi_standard_lower_thresholds_lst,
-                                     "smoothing_factors": self.smoothing_factors_lst,
-                                     "amplification_factor": self.amplification_factor_lst,
-                                     "weights": self.spline_weights_lst}
+        self.parameter_dictionary = {"timeframe": self.timeframes_dic,
+                                     "rsi_standard_upper_thresholds": self.rsi_standard_upper_thresholds_dic,
+                                     "rsi_standard_lower_thresholds": self.rsi_standard_lower_thresholds_dic,
+                                     "smoothing_factors": self.smoothing_factors_dic,
+                                     "amplification_factor": self.amplification_factor_dic,
+                                     "weights": self.spline_weights_dic}
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
+        self.nb_of_parameters = 0
+        for i in self.parameter_dictionary:
+            for j in range(len(self.parameter_dictionary[i])):
+                self.nb_of_parameters += 1
 
 
