@@ -34,6 +34,8 @@ class GA_optimiser():
         self.population = self.ga_tools.gen_initial_population(self.population_size)
 
         print("~~~~~~~~~~~~~~~~~~~~~~")
+        print("GA_v1")
+        print("")
         time.ctime()  # 'Mon Oct 18 13:35:29 2010'
         print("Start time:", time.strftime('%X %x %Z'))
         print("~~~~~~~~~~~~~~~~~~~~~~")
@@ -86,6 +88,9 @@ class GA_optimiser():
             print("Parameter sets evolution completed (Darwin put in charge)")
             print("New population generated")
             print("")
+
+            assert self.parents[0] == self.new_population[0]
+
             self.population = self.new_population
 
             # ------------------ Evaluate new population
@@ -100,6 +105,7 @@ class GA_optimiser():
             end = time.time()
             print("Time elapsed:", end-start)
             print("")
+
 
         print(self.best_individual_per_gen)
         import matplotlib.pyplot as plt

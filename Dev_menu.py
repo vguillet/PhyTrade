@@ -3,7 +3,6 @@ from PhyTrade.Trading_bots.Tradebot_v2 import Tradebot_v2
 
 # Trader_1 = Tradebot_v1()
 # Trader_2 = Tradebot_v2()
-# Trader_3 = Tradebot_v3()
 
 # dev_prototype()
 

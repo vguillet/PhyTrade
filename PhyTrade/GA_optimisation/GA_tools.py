@@ -28,6 +28,7 @@ class GA_tools:
 
         # -- Determine fitness ratio
         fitness_ratios = fitness_evaluation
+
         # for i in range(len(fitness_evaluation)):
         #     fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
@@ -38,10 +39,11 @@ class GA_tools:
             scanned_fitness_ratios = fitness_ratios
 
             for i in range(nb_parents):
-                individual = max(scanned_fitness_ratios)
-                parents.append(population[fitness_ratios.index(individual)])
+                individual = scanned_fitness_ratios.index(max(scanned_fitness_ratios))
+                parents.append(population[individual])
 
-                scanned_fitness_ratios.remove(individual)
+                population.pop(individual)
+                scanned_fitness_ratios.pop(individual)
 
         return parents
 
@@ -50,70 +52,67 @@ class GA_tools:
         from PhyTrade.GA_optimisation.GA_random_gen import GA_random_gen
         from PhyTrade.GA_optimisation.Individual_gen import Individual
         import random
+        from copy import deepcopy
 
         ga_random_gen = GA_random_gen
 
         nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate)
 
+        # -- Save parents to new population
         new_population = []
         for parent in parents:
             new_population.append(parent)
 
+        # -- Generate offsprings from parents with mutations
         cycling = -1
-
         for i in range(population_size-nb_parents-random_ind):
 
             cycling += 1
             if cycling >= nb_parents:
                 cycling = 0
-            offspring = parents[cycling]
+            offspring = deepcopy(parents[cycling])
 
             for j in range(nb_of_parameters_to_mutate):
                 parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
 
                 if parameter_type_to_modify == "timeframe":
-                    parameter = offspring.parameter_dictionary["timeframe"].index(
-                        random.choice(offspring.parameter_dictionary["timeframe"]))
+                    parameter = random.choice(list(offspring.parameter_dictionary["timeframe"]))
 
                     offspring.parameter_dictionary["timeframe"][parameter] = \
                         ga_random_gen.timeframe_gen(offspring.parameter_dictionary["timeframe"][parameter])
 
                 elif parameter_type_to_modify == "rsi_standard_upper_thresholds":
-                    parameter = offspring.parameter_dictionary["rsi_standard_upper_thresholds"].index(
-                        random.choice(offspring.parameter_dictionary["rsi_standard_upper_thresholds"]))
+                    parameter = random.choice(list(offspring.parameter_dictionary["rsi_standard_upper_thresholds"]))
 
                     offspring.parameter_dictionary["rsi_standard_upper_thresholds"][parameter] = \
                         ga_random_gen.timeframe_gen(offspring.parameter_dictionary["rsi_standard_upper_thresholds"][parameter])
 
                 elif parameter_type_to_modify == "rsi_standard_lower_thresholds":
-                    parameter = offspring.parameter_dictionary["rsi_standard_lower_thresholds"].index(
-                        random.choice(offspring.parameter_dictionary["rsi_standard_lower_thresholds"]))
+                    parameter = random.choice(list(offspring.parameter_dictionary["rsi_standard_lower_thresholds"]))
 
                     offspring.parameter_dictionary["rsi_standard_lower_thresholds"][parameter] = \
                         ga_random_gen.timeframe_gen(offspring.parameter_dictionary["rsi_standard_lower_thresholds"][parameter])
 
                 elif parameter_type_to_modify == "smoothing_factors":
-                    parameter = offspring.parameter_dictionary["smoothing_factors"].index(
-                        random.choice(offspring.parameter_dictionary["smoothing_factors"]))
+                    parameter = random.choice(list(offspring.parameter_dictionary["smoothing_factors"]))
 
                     offspring.parameter_dictionary["smoothing_factors"][parameter] = \
                         ga_random_gen.timeframe_gen(offspring.parameter_dictionary["smoothing_factors"][parameter])
 
                 elif parameter_type_to_modify == "amplification_factor":
-                    parameter = offspring.parameter_dictionary["amplification_factor"].index(
-                        random.choice(offspring.parameter_dictionary["amplification_factor"]))
+                    parameter = random.choice(list(offspring.parameter_dictionary["amplification_factor"]))
 
                     offspring.parameter_dictionary["amplification_factor"][parameter] = \
                         ga_random_gen.timeframe_gen(offspring.parameter_dictionary["amplification_factor"][parameter])
 
                 elif parameter_type_to_modify == "weights":
-                    parameter = offspring.parameter_dictionary["weights"].index(
-                        random.choice(offspring.parameter_dictionary["weights"]))
+                    parameter = random.choice(list(offspring.parameter_dictionary["weights"]))
 
                     offspring.parameter_dictionary["weights"][parameter] = \
                         ga_random_gen.timeframe_gen(offspring.parameter_dictionary["weights"][parameter])
             new_population.append(offspring)
 
+        # -- Create random_ind number of random individuals and add to new population
         for i in range(random_ind):
             new_population.append(Individual())
 
