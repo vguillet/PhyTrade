@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 class Tradebot_v2:
-    def __init__(self, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
+    def __init__(self, investment_settings=1, cash_in_settings=0, stop_loss=0.92):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         # -- Tradebot finance
