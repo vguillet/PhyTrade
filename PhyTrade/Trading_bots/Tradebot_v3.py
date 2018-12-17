@@ -1,10 +1,12 @@
 from PhyTrade.Analysis_protocols_V.Prototype_3 import Prototype_3
+from PhyTrade.Analysis_protocols_V.Prototype_4 import Prototype_4
+
 from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
 import matplotlib.pyplot as plt
 
 
 class Tradebot_v3:
-    def __init__(self, analysis_parameters, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
+    def __init__(self, analysis_parameters, data_slice_info, investment_settings=1, cash_in_settings=0, stop_loss=0.94):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         print_trade_process = False
@@ -14,7 +16,8 @@ class Tradebot_v3:
         stop_loss_count = 0
 
         # -- Market analysis protocol
-        self.analysis = Prototype_3(analysis_parameters)
+        self.analysis = Prototype_3(analysis_parameters, data_slice_info)
+        # self.analysis = Prototype_4(analysis_parameters)
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=False)
 
         # -- Generate trade actions from analysis

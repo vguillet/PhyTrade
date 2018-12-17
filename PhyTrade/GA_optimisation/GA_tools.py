@@ -11,26 +11,34 @@ class GA_tools:
         return population_lst
 
     @staticmethod
-    def evaluate_population(population_lst):
+    def evaluate_population(population_lst, data_slice_info, max_worker_threads=8):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
+        from PhyTrade.Tools.MULTI_THREADING_tools import multi_thread_loops
 
         performance_lst = []
+
+        # -- Multi-thread evaluation
+        # def evaluation_func(item):
+        #     performance_lst.append(Tradebot_v3(item.parameter_dictionary, data_slice_info).account.net_worth_history[-1])
+
+        # multi_thread_loops(population_lst, evaluation_func, max_worker_threads=max_worker_threads)
+
+        # -- List based evaluation
         for i in range(len(population_lst)):
-            performance_lst.append(Tradebot_v3(population_lst[i].parameter_dictionary).account.net_worth_history[-1])
+            performance_lst.append(Tradebot_v3(population_lst[i].parameter_dictionary, data_slice_info).account.net_worth_history[-1])
             print("Parameter set", i+1, "evaluation completed")
 
         # performance_lst = MATH().normalise_zero_one(performance_lst)
-
         return performance_lst
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
 
         # -- Determine fitness ratio
-        fitness_ratios = fitness_evaluation
+        fitness_ratios = []
 
-        # for i in range(len(fitness_evaluation)):
-        #     fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
+        for i in range(len(fitness_evaluation)):
+            fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
         # -- Select individuals
         parents = []
@@ -70,6 +78,7 @@ class GA_tools:
             cycling += 1
             if cycling >= nb_parents:
                 cycling = 0
+
             offspring = deepcopy(parents[cycling])
 
             for j in range(nb_of_parameters_to_mutate):
