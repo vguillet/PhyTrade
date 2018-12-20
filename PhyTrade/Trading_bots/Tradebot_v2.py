@@ -14,7 +14,7 @@ class Tradebot_v2:
 
         # -- Market analysis protocol
         self.analysis = Prototype_2()
-        self.analysis.plot(plot_1=False, plot_2=False, plot_3=True)
+        self.analysis.plot(plot_1=False, plot_2=False, plot_3=False)
 
         # -- Generate trade actions from analysis
         self.trade_actions = ["hold"]*len(self.analysis.big_data.data_slice_dates)

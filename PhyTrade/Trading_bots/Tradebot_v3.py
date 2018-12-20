@@ -1,3 +1,7 @@
+"""
+This Trade bot is optimised for the GA parameter optimisation
+
+"""
 from PhyTrade.Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.Analysis_protocols_V.Prototype_4 import Prototype_4
 

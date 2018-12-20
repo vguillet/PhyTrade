@@ -32,7 +32,7 @@ class Prototype_2:
 
         # ========================= ANALYSIS INITIALISATION ==============================
         data_slice_start_ind = -400
-        data_slice_stop_ind = len(data)
+        data_slice_stop_ind = len(data)-200
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -120,7 +120,7 @@ class Prototype_2:
             self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
                                               buffer=0.05, buffer_setting=1,
                                               standard_upper_threshold=0.45,
-                                              standard_lower_threshold=-0.5)
+                                              standard_lower_threshold=-0.55)
 
         # -- Modulating threshold with SMA 3 value
         # upper_threshold = self.spline_tools.modulate_amplitude_spline(

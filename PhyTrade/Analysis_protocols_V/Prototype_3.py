@@ -37,7 +37,7 @@ class Prototype_3:
 
         # ========================= ANALYSIS INITIALISATION ==============================
         data_slice_start_ind = data_slice_info.start_index
-        data_slice_stop_ind = len(data) + data_slice_info.stop_index
+        data_slice_stop_ind = data_slice_info.stop_index
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
