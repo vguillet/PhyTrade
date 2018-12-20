@@ -24,6 +24,8 @@ class GA_optimiser():
         print_ga_parameters_per_gen = True
         print_evaluation_status = True
 
+        plot_signal_triggers = False
+
         # -- Generations settings
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
 
@@ -47,10 +49,14 @@ class GA_optimiser():
 
         self.mutation_rate = mutation_rate
 
-        # -- Initialise data slice
+        # -- Initialise data slice for gen
         self.data_slice_info = data_slice_info(data_slice_start_index,
                                                data_slice_size,
                                                data_slice_shift_per_gen)
+
+        # -- Initialise benchmark data slice
+
+        self.benchmark_data_slice = data_slice_info(-400, 200, 0)
 
         # -- Initialise tools
         self.ga_tools = GA_tools()
@@ -68,7 +74,6 @@ class GA_optimiser():
         print("Selected random individual function:", decay_functions[random_ind_decay_function])
         print("")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
         # ======================== GA INITIAL POPULATION GENERATION =====================
         print("\n==================== INITIAL GENERATION ========================")
         generation_start_time = time.time()
@@ -81,7 +86,8 @@ class GA_optimiser():
         self.fitness_evaluation = self.ga_tools.evaluate_population(self.population,
                                                                     self.data_slice_info,
                                                                     max_worker_threads=max_worker_threads,
-                                                                    print_evaluation_status=print_evaluation_status)
+                                                                    print_evaluation_status=print_evaluation_status,
+                                                                    plot_3=plot_signal_triggers)
 
         self.best_individual_per_gen.append(max(self.fitness_evaluation))
 
@@ -138,7 +144,8 @@ class GA_optimiser():
             self.fitness_evaluation = self.ga_tools.evaluate_population(self.population,
                                                                         self.data_slice_info,
                                                                         max_worker_threads=max_worker_threads,
-                                                                        print_evaluation_status=print_evaluation_status)
+                                                                        print_evaluation_status=print_evaluation_status,
+                                                                        plot_3=plot_signal_triggers)
 
             self.best_individual_per_gen.append(max(self.fitness_evaluation))
 
@@ -150,23 +157,23 @@ class GA_optimiser():
             print("\nTime elapsed:", generation_end_time-generation_start_time)
 
             if self.data_slice_info.stop_index >= 0:
-                print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                print("All data processed")
-                print("Number of data points processed:")
-                print("Parameter optimisation completed")
-                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
                 break
 
         # ===============================================================================
-        """
-
-
-
-
-        """
+        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("All data processed")
+        print("Number of data points processed:")
+        print("Parameter optimisation completed")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # ========================= GA OPTIMISATION RESULTS =============================
-        print(self.best_individual_per_gen)
+        self.best_individual = self.ga_tools.select_from_population(self.fitness_evaluation,
+                                                                    self.population,
+                                                                    selection_method=parents_selection_method,
+                                                                    nb_parents=1)
 
+        self.best_individual[0].perform_trade_run(self.benchmark_data_slice, plot_3=True)
+
+        print("\n-- RUN SUMMARY: --")
         optimisation_end_time = time.time()
         print("\nEnd time:", time.strftime('%X %x %Z'))
         print("Optimisation run time:", optimisation_end_time - optimisation_start_time)

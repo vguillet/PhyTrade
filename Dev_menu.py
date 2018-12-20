@@ -15,15 +15,15 @@ data_slice_info = data_slice_info(-400, -200, 50)
 # ============================ GENETICALY-OPTIMISED TRADING ===================
 from PhyTrade.GA_optimisation.GA_algo import GA_optimiser
 
-GA_optimisation = GA_optimiser(population_size=20,
-                               nb_of_generations=20,
+GA_optimisation = GA_optimiser(population_size=10,
+                               nb_of_generations=3,
 
-                               mutation_rate=0.4,
-                               nb_parents=10,
-                               nb_random_ind=5,
+                               mutation_rate=0.5,
+                               nb_parents=4,
+                               nb_random_ind=3,
 
-                               exploitation_phase_len=5,
+                               exploitation_phase_len=0,
 
-                               data_slice_start_index=-3000,
-                               data_slice_size=200,
+                               data_slice_start_index=-1000,
+                               data_slice_size=100,
                                data_slice_shift_per_gen=50)

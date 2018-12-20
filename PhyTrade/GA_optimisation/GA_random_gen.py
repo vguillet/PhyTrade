@@ -13,6 +13,7 @@ class GA_random_gen:
         if new_parameter < 3:
             new_parameter = 2
         return new_parameter
+
     # ------- Smoothing factor
     @staticmethod
     def smoothing_factor_random_gen():

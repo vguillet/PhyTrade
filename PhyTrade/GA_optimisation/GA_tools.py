@@ -11,24 +11,26 @@ class GA_tools:
         return population_lst
 
     @staticmethod
-    def evaluate_population(population_lst, data_slice_info, max_worker_threads=8, print_evaluation_status=False):
+    def evaluate_population(population_lst, data_slice_info, max_worker_threads=8,
+                            print_evaluation_status=False, plot_3=False):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
         from PhyTrade.Tools.MULTI_THREADING_tools import multi_thread_loops
 
         performance_lst = []
+
+        # -- List based evaluation
+        for i in range(len(population_lst)):
+            population_lst[i].perform_trade_run(data_slice_info, plot_3=plot_3)
+            performance_lst.append(population_lst[i].account.net_worth_history[-1])
+
+            if print_evaluation_status:
+                print("Parameter set", i + 1, "evaluation completed")
 
         # -- Multi-thread evaluation
         # def evaluation_func(item):
         #     performance_lst.append(Tradebot_v3(item.parameter_dictionary, data_slice_info).account.net_worth_history[-1])
 
         # multi_thread_loops(population_lst, evaluation_func, max_worker_threads=max_worker_threads)
-
-        # -- List based evaluation
-        for i in range(len(population_lst)):
-            performance_lst.append(Tradebot_v3(population_lst[i].parameter_dictionary, data_slice_info).account.net_worth_history[-1])
-
-            if print_evaluation_status:
-                print("Parameter set", i+1, "evaluation completed")
 
         # performance_lst = MATH().normalise_zero_one(performance_lst)
         return performance_lst
@@ -139,6 +141,8 @@ class GA_tools:
             interval = max_value - min_value
 
             interval_size = round(nb_of_generations/interval)
+            if interval_size <= 0:
+                return max_value
 
             throttled_value = round(-(1/interval_size)*current_generation + max_value)
 

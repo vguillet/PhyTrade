@@ -147,4 +147,9 @@ class Individual:
             for j in range(len(self.parameter_dictionary[i])):
                 self.nb_of_parameters += 1
 
+    def perform_trade_run(self, data_slice_info, plot_3=False):
+        from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
+
+        self.account = Tradebot_v3(self.parameter_dictionary, data_slice_info, plot_3=plot_3).account
+
 
