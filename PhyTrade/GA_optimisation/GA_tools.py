@@ -11,26 +11,36 @@ class GA_tools:
         return population_lst
 
     @staticmethod
-    def evaluate_population(population_lst):
+    def evaluate_population(population_lst, data_slice_info, max_worker_threads=8, print_evaluation_status=False):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
+        from PhyTrade.Tools.MULTI_THREADING_tools import multi_thread_loops
 
         performance_lst = []
+
+        # -- Multi-thread evaluation
+        # def evaluation_func(item):
+        #     performance_lst.append(Tradebot_v3(item.parameter_dictionary, data_slice_info).account.net_worth_history[-1])
+
+        # multi_thread_loops(population_lst, evaluation_func, max_worker_threads=max_worker_threads)
+
+        # -- List based evaluation
         for i in range(len(population_lst)):
-            performance_lst.append(Tradebot_v3(population_lst[i].parameter_dictionary).account.net_worth_history[-1])
-            print("Parameter set", i+1, "evaluation completed")
+            performance_lst.append(Tradebot_v3(population_lst[i].parameter_dictionary, data_slice_info).account.net_worth_history[-1])
+
+            if print_evaluation_status:
+                print("Parameter set", i+1, "evaluation completed")
 
         # performance_lst = MATH().normalise_zero_one(performance_lst)
-
         return performance_lst
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
 
         # -- Determine fitness ratio
-        fitness_ratios = fitness_evaluation
+        fitness_ratios = []
 
-        # for i in range(len(fitness_evaluation)):
-        #     fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
+        for i in range(len(fitness_evaluation)):
+            fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
         # -- Select individuals
         parents = []
@@ -70,6 +80,7 @@ class GA_tools:
             cycling += 1
             if cycling >= nb_parents:
                 cycling = 0
+
             offspring = deepcopy(parents[cycling])
 
             for j in range(nb_of_parameters_to_mutate):
@@ -119,19 +130,60 @@ class GA_tools:
         return new_population
 
     @staticmethod
-    def throttle(selected_ind, nb_of_generations, decay_rate):
+    def throttle(current_generation, nb_of_generations, max_value, min_value=1, decay_function=0):
 
-        selected_ind = selected_ind
+        if decay_function == 0:
+            return max_value
 
-        decay_nb = selected_ind/decay_rate
+        elif decay_function == 1:     # Linear decrease
+            interval = max_value - min_value
 
-        decay_per_generation = round(nb_of_generations/decay_nb)
+            interval_size = round(nb_of_generations/interval)
 
-        selected_ind = selected_ind-decay_per_generation
-        if selected_ind == 0:
-            selected_ind = 1
+            throttled_value = round(-(1/interval_size)*current_generation + max_value)
 
-        return selected_ind
+            if throttled_value <= min_value:
+                throttled_value = min_value
+
+            return throttled_value
+
+    @staticmethod
+    def determine_evolving_gen_parameters(data_slice_info,
+                                          current_generation,
+                                          nb_of_generations,
+                                          initial_nb_parents,
+                                          initial_nb_random_ind,
+                                          parents_decay_function=0,
+                                          random_ind_decay_function=0,
+                                          print_ga_parameters_per_gen=False):
+
+        # ------------------ Define the data slice to be used by the generation
+        # data_slice_info.get_next_data_slice()
+        data_slice_info.get_shifted_data_slice()
+
+        # ------------------ Throttle the individual count to be used by the generation
+        nb_parents = GA_tools().throttle(current_generation,
+                                         nb_of_generations,
+                                         initial_nb_parents,
+                                         min_value=1,
+                                         decay_function=parents_decay_function)
+
+        nb_random_ind = GA_tools().throttle(current_generation,
+                                            nb_of_generations,
+                                            initial_nb_random_ind,
+                                            min_value=0,
+                                            decay_function=random_ind_decay_function)
+
+        if print_ga_parameters_per_gen:
+            print("~~~~~~~~~~~")
+            print("Data slice analysed:", data_slice_info.start_index, "-->", data_slice_info.stop_index, "\n")
+            print("Number of parents selected for this generation", nb_parents)
+            print("Number of random individuals generated for this generation", nb_random_ind)
+            print("~~~~~~~~~~~")
+
+        return data_slice_info, nb_parents, nb_random_ind
+
+
 
 
 

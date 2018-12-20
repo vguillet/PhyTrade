@@ -1,80 +1,125 @@
 from PhyTrade.GA_optimisation.GA_tools import GA_tools
+from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 import time
-
-"""""
-begin
-    count = 0                                   \done
-    initialize population                       \done
-    evaluate population                         \done
-    while not termination condition do
-    begin
-        count = count + 1
-        select individuals for reproduction
-        apply variation operators
-        evaluate offspring
-    end
-end
-"""""
 
 
 class GA_optimiser():
-    def __init__(self, population_size=10, nb_of_generations=5, mutation_rate=0.2, nb_parents=4, nb_random_ind=4):
-        # ========================= GA OPTIMISATION INITIALISATION =======================
-        self.nb_of_generations = nb_of_generations
+    def __init__(self,
+                 population_size=10,
+                 nb_of_generations=5,
 
-        self.population_size = population_size
-        self.nb_parents = nb_parents
-        self.nb_random_ind = nb_random_ind
-        self.mutation_rate = mutation_rate
+                 mutation_rate=0.2,
+                 nb_parents=4,
+                 nb_random_ind=3,
+
+                 exploitation_phase_len=3,
+
+                 data_slice_start_index=-7000,
+                 data_slice_size=200,
+                 data_slice_shift_per_gen=100):
+
+        # ======================== GA OPTIMISATION INITIALISATION =======================
+        # ------------------ User settings
+        # -- Print parameters
+        print_ga_parameters_per_gen = True
+        print_evaluation_status = True
+
+        # -- Generations settings
+        decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
+
+        parents_decay_function = 1
+        random_ind_decay_function = 1
+
+        parents_selection_method = 0
+
+        max_worker_threads = 4
         # ------------------ Tools and GA parameters initialisation
+        # -- Initialise population and generation parameters
+        self.nb_of_generations = nb_of_generations
+        self.population_size = population_size
+
+        # -- Initialise population evolution parameters
+        self.initial_nb_parents = nb_parents
+        self.nb_parents = nb_parents
+
+        self.initial_nb_random_ind = nb_random_ind
+        self.nb_random_ind = nb_random_ind
+
+        self.mutation_rate = mutation_rate
+
+        # -- Initialise data slice
+        self.data_slice_info = data_slice_info(data_slice_start_index,
+                                               data_slice_size,
+                                               data_slice_shift_per_gen)
+
+        # -- Initialise tools
         self.ga_tools = GA_tools()
+
+        # -- Initialise records
         self.best_individual_per_gen = []
 
+        # ===============================================================================
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("GA_v2 \n")
+        optimisation_start_time = time.time()
+        print("Start time:", time.strftime('%X %x %Z'), "\n")
+        print("-- Settings selected --")
+        print("Selected parent function:", decay_functions[parents_decay_function])
+        print("Selected random individual function:", decay_functions[random_ind_decay_function])
+        print("")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+        # ======================== GA INITIAL POPULATION GENERATION =====================
+        print("\n==================== INITIAL GENERATION ========================")
+        generation_start_time = time.time()
+
         # ------------------ Initialise population
+        print("\nData slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index, "\n")
         self.population = self.ga_tools.gen_initial_population(self.population_size)
 
-        print("~~~~~~~~~~~~~~~~~~~~~~")
-        print("GA_v1")
-        print("")
-        time.ctime()  # 'Mon Oct 18 13:35:29 2010'
-        print("Start time:", time.strftime('%X %x %Z'))
-        print("~~~~~~~~~~~~~~~~~~~~~~")
-        print("")
-
         # ------------------ Evaluate initial population
-        self.fitness_evaluation = self.ga_tools.evaluate_population(self.population)
+        self.fitness_evaluation = self.ga_tools.evaluate_population(self.population,
+                                                                    self.data_slice_info,
+                                                                    max_worker_threads=max_worker_threads,
+                                                                    print_evaluation_status=print_evaluation_status)
 
         self.best_individual_per_gen.append(max(self.fitness_evaluation))
-        print("")
-        print("Max net achieved:", max(self.fitness_evaluation))
+
+        print("\nMax net achieved:", max(self.fitness_evaluation))
         print("Max profit achieved:", (max(self.fitness_evaluation) - 1000) / 10)
 
-        # ==============================================================================
+        generation_end_time = time.time()
+        print("\nTime elapsed:", generation_end_time - generation_start_time)
+
+        # ===============================================================================
         """
 
 
 
 
         """
-        # ========================= GA OPTIMISATION PROCESS ==============================
+        # ========================= GA OPTIMISATION PROCESS =============================
         # Run for # nb of generations:
-        for i in range(nb_of_generations):
-            start = time.time()
+        for gen in range(nb_of_generations):
 
-            print("==================== Generation", i + 1, "====================")
-            print("")
-            # -- Throttle the number of parents according to the generation
-            self.nb_parents = self.ga_tools.throttle(self.nb_parents, nb_of_generations, 0.1)
-            print("Number of parents selected:", self.nb_parents)
+            print("\n==================== Generation", gen + 1, "====================")
+            generation_start_time = time.time()
 
-            # -- Throttle the number of random individual according to the generation
-            self.nb_random_ind = self.ga_tools.throttle(self.nb_random_ind, nb_of_generations, 0.2)
-            print("Number of random individuals included:", self.nb_random_ind)
+            # ------------------ Determine new generation GA parameters
+            self.data_slice_info, self.nb_parents, self.nb_random_ind = \
+                self.ga_tools.determine_evolving_gen_parameters(self.data_slice_info,
+                                                                gen,
+                                                                self.nb_of_generations-exploitation_phase_len,
+                                                                self.initial_nb_parents,
+                                                                self.initial_nb_random_ind,
+                                                                parents_decay_function=parents_decay_function,
+                                                                random_ind_decay_function=random_ind_decay_function,
+                                                                print_ga_parameters_per_gen=print_ga_parameters_per_gen)
 
-            # ------------------ Select individuals from current generation
+            # ------------------ Select individuals from previous generation
             self.parents = self.ga_tools.select_from_population(self.fitness_evaluation,
                                                                 self.population,
-                                                                selection_method=0,
+                                                                selection_method=parents_selection_method,
                                                                 nb_parents=self.nb_parents)
 
             # ------------------ Generate offsprings with mutations
@@ -84,30 +129,49 @@ class GA_optimiser():
                                                                     self.nb_random_ind,
                                                                     self.mutation_rate)
 
-            print("")
-            print("Parameter sets evolution completed (Darwin put in charge)")
-            print("New population generated")
-            print("")
-
-            assert self.parents[0] == self.new_population[0]
+            print("\nParameter sets evolution completed (Darwin put in charge)")
+            print("New population generated\n")
 
             self.population = self.new_population
 
             # ------------------ Evaluate new population
-            self.fitness_evaluation = self.ga_tools.evaluate_population(self.population)
+            self.fitness_evaluation = self.ga_tools.evaluate_population(self.population,
+                                                                        self.data_slice_info,
+                                                                        max_worker_threads=max_worker_threads,
+                                                                        print_evaluation_status=print_evaluation_status)
 
             self.best_individual_per_gen.append(max(self.fitness_evaluation))
-            print("")
-            print("-- Generation", i + 1, "population evaluation completed --")
+
+            generation_end_time = time.time()
+
+            print("\n-- Generation", gen + 1, "population evaluation completed --")
             print("Max net achieved:", max(self.fitness_evaluation))
             print("Max profit achieved:", (max(self.fitness_evaluation)-1000)/10)
-            print("")
-            end = time.time()
-            print("Time elapsed:", end-start)
-            print("")
+            print("\nTime elapsed:", generation_end_time-generation_start_time)
+
+            if self.data_slice_info.stop_index >= 0:
+                print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print("All data processed")
+                print("Number of data points processed:")
+                print("Parameter optimisation completed")
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+                break
+
+        # ===============================================================================
+        """
 
 
+
+
+        """
+        # ========================= GA OPTIMISATION RESULTS =============================
         print(self.best_individual_per_gen)
+
+        optimisation_end_time = time.time()
+        print("\nEnd time:", time.strftime('%X %x %Z'))
+        print("Optimisation run time:", optimisation_end_time - optimisation_start_time)
+        print("")
+
         import matplotlib.pyplot as plt
 
         plt.plot(range(len(self.best_individual_per_gen)), self.best_individual_per_gen)

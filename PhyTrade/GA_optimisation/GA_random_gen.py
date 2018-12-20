@@ -5,7 +5,7 @@ class GA_random_gen:
     # ------- Timeframe
     @staticmethod
     def timeframe_random_gen():
-        return random.randint(2, 100)
+        return random.randint(2, 252)
 
     @staticmethod
     def timeframe_gen(current_parameter):

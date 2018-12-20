@@ -1,10 +1,9 @@
 """
-Prototype 3
+Prototype 4
 
-This prototype is based entirely on technical analysis, and is ment as a test for the genetic algorithm parameter
-optimisation algorithm
+This prototype is based entirely on technical analysis, and has been configured for multi-threading task management
 Victor Guillet
-12/14/2018
+12/17/2018
 """
 
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
@@ -16,15 +15,17 @@ from PhyTrade.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
 from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.MAJOR_SPLINE_gen import MAJOR_SPLINE
-from PhyTrade.Tools.MATH_tools import MATH
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 
+from PhyTrade.Tools.MATH_tools import MATH
+
 import pandas
+import threading
 
 
-class Prototype_3:
-    def __init__(self, parameters, data_slice_info):
+class Prototype_4:
+    def __init__(self, parameters):
 
         # ========================= DATA COLLECTION INITIALISATION =======================
         ticker = 'AAPL'  # Ticker selected for Yahoo data collection
@@ -36,8 +37,8 @@ class Prototype_3:
         data = pandas.read_csv(path)
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = data_slice_info.start_index
-        data_slice_stop_ind = data_slice_info.stop_index
+        data_slice_start_ind = -400
+        data_slice_stop_ind = len(data)-200
 
         self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
 
@@ -95,14 +96,38 @@ class Prototype_3:
         # ========================= DATA GENERATION AND PROCESSING =======================
         # ~~~~~~~~~~~~~~~~~~ Indicators output generation
         # - RSI
-        self.big_data.rsi_1.get_output(self.big_data, include_triggers_in_bb_signal=True)
-        self.big_data.rsi_2.get_output(self.big_data, include_triggers_in_bb_signal=True)
-        self.big_data.rsi_3.get_output(self.big_data, include_triggers_in_bb_signal=True)
+        t1 = threading.Thread(target=self.big_data.rsi_1.get_output, args=(self.big_data,))
+        t2 = threading.Thread(target=self.big_data.rsi_2.get_output, args=(self.big_data,))
+        t3 = threading.Thread(target=self.big_data.rsi_3.get_output, args=(self.big_data,))
+
+        t1.start()
+        t2.start()
+        t3.start()
+
+        t1.join()
+        t2.join()
+        t3.join()
+
+        # self.big_data.rsi_1.get_output(self.big_data, include_triggers_in_bb_signal=True)
+        # self.big_data.rsi_2.get_output(self.big_data, include_triggers_in_bb_signal=True)
+        # self.big_data.rsi_3.get_output(self.big_data, include_triggers_in_bb_signal=True)
 
         # - SMA
-        self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.sma_3.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        t1 = threading.Thread(target=self.big_data.sma_1.get_output, args=(self.big_data,))
+        t2 = threading.Thread(target=self.big_data.sma_2.get_output, args=(self.big_data,))
+        t3 = threading.Thread(target=self.big_data.sma_3.get_output, args=(self.big_data,))
+
+        t1.start()
+        t2.start()
+        t3.start()
+
+        t1.join()
+        t2.join()
+        t3.join()
+
+        # self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        # self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        # self.big_data.sma_3.get_output(self.big_data, include_triggers_in_bb_signal=False)
 
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # -- Creating splines from signals
