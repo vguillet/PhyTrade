@@ -48,17 +48,17 @@ class MetaLabeling:
             labels.append(0)
             return labels
 
-        self.open_values_metalabels = simple_metalabel_data(self.data_open_values,
-                                                            self.upper_barrier,
-                                                            self.lower_barrier,
-                                                            self.look_ahead)
+        # self.open_values_metalabels = simple_metalabel_data(self.data_open_values,
+        #                                                     self.upper_barrier,
+        #                                                     self.lower_barrier,
+        #                                                     self.look_ahead)
 
         self.close_values_metalabels = simple_metalabel_data(self.data_close_values,
                                                              self.upper_barrier,
                                                              self.lower_barrier,
                                                              self.look_ahead)
 
-        print(len(self.open_values_metalabels))
-        print(self.open_values_metalabels)
+        # print(len(self.open_values_metalabels))
+        # print(self.open_values_metalabels)
         print(len(self.close_values_metalabels))
         print(self.close_values_metalabels)

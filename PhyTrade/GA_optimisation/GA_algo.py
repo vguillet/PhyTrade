@@ -39,9 +39,9 @@ class GA_optimiser():
         max_worker_threads = 4
 
         # -- Metalabels settings:
-        upper_barrier = 20
-        lower_barrier = 20
-        look_ahead = 3
+        upper_barrier = 8
+        lower_barrier = -8
+        look_ahead = 20
 
         # ------------------ Tools and GA parameters initialisation
         # -- Initialise population and generation parameters

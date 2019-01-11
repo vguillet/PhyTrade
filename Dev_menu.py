@@ -16,12 +16,12 @@ from PhyTrade.GA_optimisation.GA_algo import GA_optimiser
 GA_optimisation = GA_optimiser(population_size=20,
                                nb_of_generations=20,
 
-                               mutation_rate=0.4,
+                               mutation_rate=0.5,
                                nb_parents=7,
                                nb_random_ind=7,
 
                                exploitation_phase_len=5,
 
-                               data_slice_start_index=-7000,
+                               data_slice_start_index=-400,
                                data_slice_size=100,
-                               data_slice_shift_per_gen=50)
+                               data_slice_shift_per_gen=0)

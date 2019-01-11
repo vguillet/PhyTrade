@@ -23,8 +23,8 @@ class GA_tools:
         for i in range(len(population_lst)):
             population_lst[i].perform_trade_run(data_slice_info, plot_3=plot_3)
 
-            accuracy_close_values = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
-                                                              data_slice_info.metalabels.close_values_metalabels)
+            Confusion_matrix = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
+                                                         data_slice_info.metalabels.close_values_metalabels)
 
             # accuracy_open_values = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
             #                                                  data_slice_info.metalabels.open_values_metalabels)

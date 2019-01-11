@@ -7,6 +7,11 @@ class Confusion_matrix_analysis:
         self.model_predictions = model_predictions
         self.metalabels = metalabels
 
+        # init = {"Metalabels": self.metalabels, "Model Predictions": self.model_predictions}
+        # df = pd.DataFrame(data=init)
+        # print(df)
+
+
         # ------------------ Confusion matrix
 
         init = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -16,9 +21,9 @@ class Confusion_matrix_analysis:
 
         for i in range(len(model_predictions)):
             if model_predictions[i] == metalabels[i]:
-                if model_predictions == 1:
+                if model_predictions[i] == 1:
                     confusion_matrix.at['Sell', 'Sell'] += 1
-                elif model_predictions == -1:
+                elif model_predictions[i] == -1:
                     confusion_matrix.at['Buy', 'Buy'] += 1
                 else:
                     confusion_matrix.at['Hold', 'Hold'] += 1
@@ -42,7 +47,7 @@ class Confusion_matrix_analysis:
                 elif model_predictions[i] == 0 and metalabels[i] == -1:
                     confusion_matrix.at['Hold', 'Buy'] += 1
 
-        print(confusion_matrix)
+        print("Confusion matrix:\n", confusion_matrix, "\n")
         # ------------------ Confusion table
         # True positive count:
         tp_count = 0
