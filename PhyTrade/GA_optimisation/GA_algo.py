@@ -1,5 +1,7 @@
-from PhyTrade.GA_optimisation.GA_tools import GA_tools
+from PhyTrade.GA_optimisation.GA_tools.GA_tools import GA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
+from PhyTrade.GA_optimisation.GA_tools.METALABELING_gen import MetaLabeling
+
 import time
 
 
@@ -35,6 +37,12 @@ class GA_optimiser():
         parents_selection_method = 0
 
         max_worker_threads = 4
+
+        # -- Metalabels settings:
+        upper_barrier = 20
+        lower_barrier = 20
+        look_ahead = 3
+
         # ------------------ Tools and GA parameters initialisation
         # -- Initialise population and generation parameters
         self.nb_of_generations = nb_of_generations
@@ -49,14 +57,16 @@ class GA_optimiser():
 
         self.mutation_rate = mutation_rate
 
-        # -- Initialise data slice for gen
+        # -- Initialise data slice for gen and metalabels
         self.data_slice_info = data_slice_info(data_slice_start_index,
                                                data_slice_size,
-                                               data_slice_shift_per_gen)
+                                               data_slice_shift_per_gen,
+                                               upper_barrier,
+                                               lower_barrier,
+                                               look_ahead)
 
         # -- Initialise benchmark data slice
-
-        self.benchmark_data_slice = data_slice_info(-400, 200, 0)
+        self.benchmark_data_slice = data_slice_info(-253, 252, 0, upper_barrier, lower_barrier, look_ahead)
 
         # -- Initialise tools
         self.ga_tools = GA_tools()
@@ -164,14 +174,18 @@ class GA_optimiser():
         print("All data processed")
         print("Number of data points processed:")
         print("Parameter optimisation completed")
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= GA OPTIMISATION RESULTS =============================
         self.best_individual = self.ga_tools.select_from_population(self.fitness_evaluation,
                                                                     self.population,
                                                                     selection_method=parents_selection_method,
-                                                                    nb_parents=1)
+                                                                    nb_parents=1)[0]
+        # ------------------ Results benchmarking
+        print("\n-- Results benchmarking --")
+        self.best_individual.perform_trade_run(self.benchmark_data_slice, plot_3=True)
+        print("Net worth:", self.best_individual.account.net_worth_history[-1])
 
-        self.best_individual[0].perform_trade_run(self.benchmark_data_slice, plot_3=True)
+        # self.best_individual.save_parameters_to_csv()
 
         print("\n-- RUN SUMMARY: --")
         optimisation_end_time = time.time()

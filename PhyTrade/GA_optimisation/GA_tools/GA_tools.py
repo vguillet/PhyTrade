@@ -13,27 +13,35 @@ class GA_tools:
     @staticmethod
     def evaluate_population(population_lst, data_slice_info, max_worker_threads=8,
                             print_evaluation_status=False, plot_3=False):
+        from PhyTrade.GA_optimisation.GA_tools.GA_benchmark_tool import Confusion_matrix_analysis
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
         from PhyTrade.Tools.MULTI_THREADING_tools import multi_thread_loops
 
-        performance_lst = []
+        profit_achieved = []
 
         # -- List based evaluation
         for i in range(len(population_lst)):
             population_lst[i].perform_trade_run(data_slice_info, plot_3=plot_3)
-            performance_lst.append(population_lst[i].account.net_worth_history[-1])
+
+            accuracy_close_values = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
+                                                              data_slice_info.metalabels.close_values_metalabels)
+
+            # accuracy_open_values = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
+            #                                                  data_slice_info.metalabels.open_values_metalabels)
+
+            profit_achieved.append(population_lst[i].account.net_worth_history[-1])
 
             if print_evaluation_status:
                 print("Parameter set", i + 1, "evaluation completed")
 
         # -- Multi-thread evaluation
         # def evaluation_func(item):
-        #     performance_lst.append(Tradebot_v3(item.parameter_dictionary, data_slice_info).account.net_worth_history[-1])
+        #     profit_achieved.append(Tradebot_v3(item.parameter_dictionary, data_slice_info).account.net_worth_history[-1])
 
         # multi_thread_loops(population_lst, evaluation_func, max_worker_threads=max_worker_threads)
 
-        # performance_lst = MATH().normalise_zero_one(performance_lst)
-        return performance_lst
+        # profit_achieved = MATH().normalise_zero_one(profit_achieved)
+        return profit_achieved
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
@@ -98,31 +106,46 @@ class GA_tools:
                     parameter = random.choice(list(offspring.parameter_dictionary["rsi_standard_upper_thresholds"]))
 
                     offspring.parameter_dictionary["rsi_standard_upper_thresholds"][parameter] = \
-                        ga_random_gen.timeframe_gen(offspring.parameter_dictionary["rsi_standard_upper_thresholds"][parameter])
+                        ga_random_gen.rsi_upper_threshold_gen(offspring.parameter_dictionary["rsi_standard_upper_thresholds"][parameter])
 
                 elif parameter_type_to_modify == "rsi_standard_lower_thresholds":
                     parameter = random.choice(list(offspring.parameter_dictionary["rsi_standard_lower_thresholds"]))
 
                     offspring.parameter_dictionary["rsi_standard_lower_thresholds"][parameter] = \
-                        ga_random_gen.timeframe_gen(offspring.parameter_dictionary["rsi_standard_lower_thresholds"][parameter])
+                        ga_random_gen.rsi_lower_threshold_gen(offspring.parameter_dictionary["rsi_standard_lower_thresholds"][parameter])
 
                 elif parameter_type_to_modify == "smoothing_factors":
                     parameter = random.choice(list(offspring.parameter_dictionary["smoothing_factors"]))
 
                     offspring.parameter_dictionary["smoothing_factors"][parameter] = \
-                        ga_random_gen.timeframe_gen(offspring.parameter_dictionary["smoothing_factors"][parameter])
+                        ga_random_gen.smoothing_factor_gen(offspring.parameter_dictionary["smoothing_factors"][parameter])
 
                 elif parameter_type_to_modify == "amplification_factor":
                     parameter = random.choice(list(offspring.parameter_dictionary["amplification_factor"]))
 
                     offspring.parameter_dictionary["amplification_factor"][parameter] = \
-                        ga_random_gen.timeframe_gen(offspring.parameter_dictionary["amplification_factor"][parameter])
+                        ga_random_gen.amplification_factor_gen(offspring.parameter_dictionary["amplification_factor"][parameter])
 
                 elif parameter_type_to_modify == "weights":
                     parameter = random.choice(list(offspring.parameter_dictionary["weights"]))
 
                     offspring.parameter_dictionary["weights"][parameter] = \
-                        ga_random_gen.timeframe_gen(offspring.parameter_dictionary["weights"][parameter])
+                        ga_random_gen.weight_gen(offspring.parameter_dictionary["weights"][parameter])
+
+                elif parameter_type_to_modify == "major_spline_standard_upper_thresholds":
+                    parameter = random.choice(list(offspring.parameter_dictionary["major_spline_standard_upper_thresholds"]))
+
+                    offspring.parameter_dictionary["major_spline_standard_upper_thresholds"][parameter] = \
+                        ga_random_gen.major_spline_upper_threshold_gen(
+                            offspring.parameter_dictionary["major_spline_standard_upper_thresholds"][parameter])
+
+                elif parameter_type_to_modify == "major_spline_standard_lower_thresholds":
+                    parameter = random.choice(list(offspring.parameter_dictionary["major_spline_standard_lower_thresholds"]))
+
+                    offspring.parameter_dictionary["major_spline_standard_lower_thresholds"][parameter] = \
+                        ga_random_gen.major_spline_lower_threshold_gen(
+                            offspring.parameter_dictionary["major_spline_standard_lower_thresholds"][parameter])
+
             new_population.append(offspring)
 
         # -- Create random_ind number of random individuals and add to new population

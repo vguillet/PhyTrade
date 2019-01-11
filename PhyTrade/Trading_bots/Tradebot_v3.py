@@ -55,14 +55,14 @@ class Tradebot_v3:
                     investment_per_trade = self.account.current_funds
 
             elif investment_settings == 1:
-                investment_per_trade = self.account.current_funds * 0.5
+                investment_per_trade = self.account.current_funds * 0.3
 
             # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
             if cash_in_settings == 0:
                 assets_sold_per_trade = self.account.current_assets
 
             elif cash_in_settings == 1:
-                assets_sold_per_trade = self.account.current_assets * 0.5
+                assets_sold_per_trade = self.account.current_assets * 0.3
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
             if i % 100 == 0 and not self.stop_loss == 0.97:

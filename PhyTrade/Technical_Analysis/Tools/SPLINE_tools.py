@@ -43,8 +43,8 @@ class SPLINE:
 
     @staticmethod
     def combine_5_splines(big_data,
-                        spline_1, spline_2, spline_3, spline_4, spline_5,
-                        weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1):
+                          spline_1, spline_2, spline_3, spline_4, spline_5,
+                          weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1):
 
         combined_splines = []
         for i in range(big_data.spline_length):

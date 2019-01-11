@@ -20,7 +20,7 @@ from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
 
 from PhyTrade.Tools.MATH_tools import MATH
 
-import pandas
+import pandas as pd
 import threading
 
 
@@ -34,7 +34,7 @@ class Prototype_4:
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Steffegium\Data\AAPL_Yahoo_data.csv".replace(
             '\\', '/')
 
-        data = pandas.read_csv(path)
+        data = pd.read_csv(path)
 
         # ========================= ANALYSIS INITIALISATION ==============================
         data_slice_start_ind = -400

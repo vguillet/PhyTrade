@@ -181,8 +181,8 @@ class Prototype_3:
         upper_threshold, lower_threshold = \
             self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
                                               buffer=0.05, buffer_setting=1,
-                                              standard_upper_threshold=0.45,
-                                              standard_lower_threshold=-0.5)
+                                              standard_upper_threshold=parameters["major_spline_standard_upper_thresholds"]["major_spline_standard_upper_threshold"],
+                                              standard_lower_threshold=parameters["major_spline_standard_lower_thresholds"]["major_spline_standard_lower_threshold"])
 
         # -- Modulating threshold with SMA 3 value
         # upper_threshold = self.spline_tools.modulate_amplitude_spline(

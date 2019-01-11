@@ -20,3 +20,12 @@ class MAJOR_SPLINE:
         self.sell_values, self.buy_values = \
             oc_tools.calc_trigger_values(big_data, self.sell_dates, self.buy_dates)
 
+        # -- Generate trade signal
+        self.trade_signal = [0] * len(big_data.data_slice_dates)
+
+        for i in self.sell_dates:
+            self.trade_signal[big_data.data_slice_dates.index(i)] = 1
+        for i in self.buy_dates:
+            self.trade_signal[big_data.data_slice_dates.index(i)] = -1
+
+

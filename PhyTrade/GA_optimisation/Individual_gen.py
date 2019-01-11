@@ -8,22 +8,22 @@ class Individual:
 
         # ========================================================== RSI parameters:
         self.rsi_1_timeframe = ga_random.timeframe_random_gen()
-        self.rsi_1_standard_upper_threshold = random.randint(51, 100)
-        self.rsi_1_standard_lower_threshold = random.randint(1, 49)
+        self.rsi_1_standard_upper_threshold = ga_random.rsi_upper_threshold_random_gen()
+        self.rsi_1_standard_lower_threshold = ga_random.rsi_lower_threshold_random_gen()
 
         self.rsi_2_timeframe = ga_random.timeframe_random_gen()
-        self.rsi_2_standard_upper_threshold = random.randint(51, 100)
-        self.rsi_2_standard_lower_threshold = random.randint(1, 49)
+        self.rsi_2_standard_upper_threshold = ga_random.rsi_upper_threshold_random_gen()
+        self.rsi_2_standard_lower_threshold = ga_random.rsi_lower_threshold_random_gen()
 
         self.rsi_3_timeframe = ga_random.timeframe_random_gen()
-        self.rsi_3_standard_upper_threshold = random.randint(51, 100)
-        self.rsi_3_standard_lower_threshold = random.randint(1, 49)
+        self.rsi_3_standard_upper_threshold = ga_random.rsi_upper_threshold_random_gen()
+        self.rsi_3_standard_lower_threshold = ga_random.rsi_lower_threshold_random_gen()
 
         self.rsi_1_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
         self.rsi_2_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
         self.rsi_3_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
-        # -- Classifying parameter types
+        # -- Labeling/Classifying parameter types
         self.rsi_timeframes_dic = {"rsi_1_timeframe": self.rsi_1_timeframe,
                                    "rsi_2_timeframe": self.rsi_2_timeframe,
                                    "rsi_3_timeframe": self.rsi_3_timeframe}
@@ -54,7 +54,7 @@ class Individual:
         self.sma_2_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
         self.sma_3_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
-        # -- Classifying parameter types
+        # -- Labeling/Classifying parameter types
         self.sma_timeframes_dic = {"sma_1_timeperiod_1": self.sma_1_timeperiod_1,
                                    "sma_2_timeperiod_1": self.sma_2_timeperiod_1,
                                    "sma_3_timeperiod_1": self.sma_3_timeperiod_1,
@@ -69,7 +69,7 @@ class Individual:
         # ========================================================== OC parameters:
         self.oc_avg_gradient_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
-        # -- Classifying parameter types
+        # -- Labeling/Classifying parameter types
         self.oc_avg_gradient_spline_smoothing_factor_dic = \
             {"oc_avg_gradient_spline_smoothing_factor": self.oc_avg_gradient_spline_smoothing_factor}
 
@@ -77,7 +77,7 @@ class Individual:
         self.volume_amplification_factor = ga_random.amplification_factor_random_gen()
         self.volume_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
-        # -- Classifying parameter types
+        # -- Labeling/Classifying parameter types
         self.volume_amplification_factor_dic = \
             {"volume_amplification_factor": self.volume_amplification_factor}
 
@@ -89,7 +89,7 @@ class Individual:
         self.volatility_amplification_factor = ga_random.amplification_factor_random_gen()
         self.volatility_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
-        # -- Classifying parameter types
+        # -- Labeling/Classifying parameter types
         self.volatility_timeframe_dic = \
             {"volatility_timeframe": self.volatility_timeframe}
 
@@ -110,7 +110,7 @@ class Individual:
 
         self.oc_avg_gradient_spline_weight = ga_random.weight_random_gen()
 
-        # -- Classifying parameter types
+        # -- Labeling/Classifying parameter types
         self.spline_weights_dic = {"rsi_1_spline_weight": self.rsi_1_spline_weight,
                                    "rsi_2_spline_weight": self.rsi_2_spline_weight,
                                    "rsi_3_spline_weight": self.rsi_3_spline_weight,
@@ -118,6 +118,17 @@ class Individual:
                                    "sma_2_spline_weight": self.sma_2_spline_weight,
                                    "sma_3_spline_weight": self.sma_3_spline_weight,
                                    "oc_avg_gradient_spline_weight": self.oc_avg_gradient_spline_weight}
+
+        # ========================================================== Dynamic threshold values:
+        self.major_spline_standard_upper_threshold = ga_random.major_spline_upper_threshold_random_gen()
+        self.major_spline_standard_lower_threshold = ga_random.major_spline_lower_threshold_random_gen()
+
+        # -- Labeling/Classifying parameter types
+        self.major_spline_standard_upper_threshold_dic = \
+            {"major_spline_standard_upper_threshold": self.major_spline_standard_upper_threshold}
+
+        self.major_spline_standard_lower_threshold_dic = \
+            {"major_spline_standard_lower_threshold": self.major_spline_standard_lower_threshold}
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Further parameter classification
         self.timeframes_dic = dict(self.rsi_timeframes_dic,
@@ -139,7 +150,9 @@ class Individual:
                                      "rsi_standard_lower_thresholds": self.rsi_standard_lower_thresholds_dic,
                                      "smoothing_factors": self.smoothing_factors_dic,
                                      "amplification_factor": self.amplification_factor_dic,
-                                     "weights": self.spline_weights_dic}
+                                     "weights": self.spline_weights_dic,
+                                     "major_spline_standard_upper_thresholds": self.major_spline_standard_upper_threshold_dic,
+                                     "major_spline_standard_lower_thresholds": self.major_spline_standard_lower_threshold_dic}
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
         self.nb_of_parameters = 0
@@ -150,6 +163,7 @@ class Individual:
     def perform_trade_run(self, data_slice_info, plot_3=False):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
 
-        self.account = Tradebot_v3(self.parameter_dictionary, data_slice_info, plot_3=plot_3).account
+        tradebot = Tradebot_v3(self.parameter_dictionary, data_slice_info, plot_3=plot_3)
 
-
+        self.account = tradebot.account
+        self.big_data = tradebot.analysis.big_data
