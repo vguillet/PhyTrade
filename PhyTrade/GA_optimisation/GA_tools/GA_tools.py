@@ -58,9 +58,14 @@ class GA_tools:
         if selection_method == 0:
             scanned_fitness_ratios = fitness_ratios
 
+            best_individual_printed = False
+
             for i in range(nb_parents):
                 individual = scanned_fitness_ratios.index(max(scanned_fitness_ratios))
                 parents.append(population[individual])
+                if best_individual_printed is False:
+                    print("Best Individual number from previous generation:", individual)
+                    best_individual_printed = True
 
                 population.pop(individual)
                 scanned_fitness_ratios.pop(individual)

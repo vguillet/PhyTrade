@@ -48,15 +48,80 @@ class MetaLabeling:
             labels.append(0)
             return labels
 
+        def peak_dip_metalabel_data(data_lst, look_ahead):
+
+            labels = []
+
+            for i in range(len(data_lst)-1):
+                j = i + 1
+                max_percent_difference = (data_lst[j]-data_lst[i])/data_lst[i] * 100
+
+                while j - i != look_ahead:
+                    j += 1
+                    if j >= len(data_lst):
+                        break
+
+                    percent_difference = (data_lst[j] - data_lst[i]) / data_lst[i] * 100
+
+                    if abs(percent_difference) > abs(max_percent_difference):
+                        max_percent_difference = percent_difference
+
+                labels.append(max_percent_difference)
+
+            labels.append(0)
+
+            # Initialise trend tracking
+            if labels[1] > labels[0]:
+                trend = "UP"
+            elif labels[1] == labels[0]:
+                trend = "NEUTRAL"
+            else:
+                trend = "DOWN"
+
+            value = labels[0]
+
+            # Locate peaks and dips
+            for i in range(len(labels)-1):
+                if trend == "UP":
+                    if labels[i+1] >= value:
+                        labels[i] = 0
+
+                        value = labels[i+1]
+                    else:
+                        labels[i] = 1
+                        trend = "DOWN"
+
+                        value = labels[i + 1]
+
+                elif trend == "NEUTRAL":
+                    labels[i] = 0
+                    value = labels[i + 1]
+
+                elif trend == "DOWN":
+                    if labels[i+1] <= value:
+                        labels[i] = 0
+                        value = labels[i+1]
+                    else:
+                        labels[i] = -1
+                        trend = "UP"
+
+            return labels
+
         # self.open_values_metalabels = simple_metalabel_data(self.data_open_values,
         #                                                     self.upper_barrier,
         #                                                     self.lower_barrier,
         #                                                     self.look_ahead)
 
-        self.close_values_metalabels = simple_metalabel_data(self.data_close_values,
-                                                             self.upper_barrier,
-                                                             self.lower_barrier,
-                                                             self.look_ahead)
+        # self.close_values_metalabels = simple_metalabel_data(self.data_close_values,
+        #                                                      self.upper_barrier,
+        #                                                      self.lower_barrier,
+        #                                                      self.look_ahead)
+
+        # self.open_values_metalabels = peak_dip_metalabel_data(self.data_open_values,
+        #                                                       self.look_ahead)
+
+        self.close_values_metalabels = peak_dip_metalabel_data(self.data_close_values,
+                                                               self.look_ahead)
 
         # print(len(self.open_values_metalabels))
         # print(self.open_values_metalabels)
