@@ -4,7 +4,7 @@ from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_y
 from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
-from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
+from PhyTrade.Tools.SPLINE_tools import SPLINE
 
 
 class dev_prototype:
@@ -23,7 +23,7 @@ class dev_prototype:
         self.oc_tools = OC()
         self.spline_tools = SPLINE(self.big_data)
 
-        # ------------------ Indicators initialisation
+        # ------------------ Technical_Indicators initialisation
         setattr(self.big_data, "volatility", VOLATILITY(self.big_data))
         self.big_data.volatility.get_output(self.big_data)
 

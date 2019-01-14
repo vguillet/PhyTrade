@@ -1,5 +1,5 @@
 from PhyTrade.Analysis_protocols_V.Prototype_2 import Prototype_2
-from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
+from PhyTrade.Tools.ACCOUNT_tools import ACCOUNT
 import matplotlib.pyplot as plt
 
 

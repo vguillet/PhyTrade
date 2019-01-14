@@ -13,8 +13,8 @@ from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 # ============================ GENETICALY-OPTIMISED TRADING ===================
 from PhyTrade.GA_optimisation.GA_algo import GA_optimiser
 
-GA_optimisation = GA_optimiser(population_size=60,
-                               nb_of_generations=50,
+GA_optimisation = GA_optimiser(population_size=20,
+                               nb_of_generations=5,
 
                                mutation_rate=0.5,
                                nb_parents=20,
@@ -24,4 +24,4 @@ GA_optimisation = GA_optimiser(population_size=60,
 
                                data_slice_start_index=-7000,
                                data_slice_size=200,
-                               data_slice_shift_per_gen=100)
+                               data_slice_shift_per_gen=0)

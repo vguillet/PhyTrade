@@ -11,9 +11,20 @@ class Confusion_matrix_analysis:
         # df = pd.DataFrame(data=init)
         # print(df)
 
+        # ------------------ Accuracy calculations
+        correct_prediction = 0
+        wrong_prediction = 0
+
+        for i in range(len(self.model_predictions)):
+            if self.model_predictions[i] == self.metalabels[i]:
+                correct_prediction += 1
+            else:
+                wrong_prediction += 4
+
+        self.overall_accuracy = correct_prediction/len(self.model_predictions) * 100
+        print(self.overall_accuracy)
 
         # ------------------ Confusion matrix
-
         init = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
         # confusion_matrix = pd.DataFrame(init, columns=[1, 0, -1], index=[1, 0, -1])
@@ -48,6 +59,13 @@ class Confusion_matrix_analysis:
                     confusion_matrix.at['Hold', 'Buy'] += 1
 
         print("Confusion matrix:\n", confusion_matrix, "\n")
+
+        # -- Accuracy calculation
+        self.ACC = (confusion_matrix.at['Sell', 'Sell'] + confusion_matrix.at['Buy', 'Buy']) / \
+                   (confusion_matrix.at['Sell', 'Sell'] + confusion_matrix.at['Buy', 'Buy'] +
+                    (confusion_matrix.at['Sell', 'Buy'] + confusion_matrix.at['Buy', 'Sell']))
+        # print(self.ACC)
+
         # ------------------ Confusion table
         # True positive count:
         tp_count = 0

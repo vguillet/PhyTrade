@@ -23,13 +23,12 @@ class GA_tools:
         for i in range(len(population_lst)):
             population_lst[i].perform_trade_run(data_slice_info, plot_3=plot_3)
 
-            Confusion_matrix = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
-                                                         data_slice_info.metalabels.close_values_metalabels)
-
-            # accuracy_open_values = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
-            #                                                  data_slice_info.metalabels.open_values_metalabels)
+            # Confusion_matrix = Confusion_matrix_analysis(population_lst[i].big_data.Major_spline.trade_signal,
+            #                                              data_slice_info.metalabels.close_values_metalabels)
 
             profit_achieved.append(population_lst[i].account.net_worth_history[-1])
+
+            # profit_achieved.append(Confusion_matrix.overall_accuracy)
 
             if print_evaluation_status:
                 print("Parameter set", i + 1, "evaluation completed")

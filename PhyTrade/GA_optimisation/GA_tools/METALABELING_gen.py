@@ -25,6 +25,7 @@ class MetaLabeling:
             self.data_open_values.append(row['Open'])
 
         # --------------------- MetaLabel all dates
+        # TODO fix metalabels to allow for searching dates outside of data slice
         def simple_metalabel_data(data_lst, upper_barrier, lower_barrier, look_ahead):
 
             labels = []
@@ -125,5 +126,5 @@ class MetaLabeling:
 
         # print(len(self.open_values_metalabels))
         # print(self.open_values_metalabels)
-        print(len(self.close_values_metalabels))
-        print(self.close_values_metalabels)
+        # print(len(self.close_values_metalabels))
+        # print(self.close_values_metalabels)

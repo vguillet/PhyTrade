@@ -11,8 +11,8 @@ Victor Guillet
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
 
-from PhyTrade.Technical_Analysis.Indicators.RSI_gen import RSI
-from PhyTrade.Technical_Analysis.Indicators.SMA_gen import SMA
+from PhyTrade.Technical_Analysis.Technical_Indicators.RSI_gen import RSI
+from PhyTrade.Technical_Analysis.Technical_Indicators.SMA_gen import SMA
 
 from PhyTrade.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
 from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
@@ -20,7 +20,7 @@ from PhyTrade.Technical_Analysis.Amplification_signals.Volatility_gen import VOL
 from PhyTrade.Technical_Analysis.Data_Collection_preparation.MAJOR_SPLINE_gen import MAJOR_SPLINE
 from PhyTrade.Tools.MATH_tools import MATH
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
-from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
+from PhyTrade.Tools.SPLINE_tools import SPLINE
 
 
 class Prototype_2:
@@ -41,7 +41,7 @@ class Prototype_2:
         self.spline_tools = SPLINE(self.big_data)
         self.math_tools = MATH()
 
-        # ------------------ Indicators initialisation
+        # ------------------ Technical_Indicators initialisation
         self.big_data.rsi = RSI(self.big_data, timeframe=14)
         self.big_data.sma_1 = SMA(self.big_data, timeperiod_1=5, timeperiod_2=15)
         self.big_data.sma_2 = SMA(self.big_data, timeperiod_1=10, timeperiod_2=25)
@@ -58,7 +58,7 @@ class Prototype_2:
         
         """
         # ========================= DATA GENERATION AND PROCESSING =======================
-        # ~~~~~~~~~~~~~~~~~~ Indicators output generation
+        # ~~~~~~~~~~~~~~~~~~ Technical_Indicators output generation
         self.big_data.rsi.get_output(self.big_data, include_triggers_in_bb_signal=True)
         self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
         self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=False)

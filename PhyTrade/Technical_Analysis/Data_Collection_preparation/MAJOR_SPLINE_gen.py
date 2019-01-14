@@ -1,4 +1,4 @@
-from PhyTrade.Technical_Analysis.Tools.SPLINE_tools import SPLINE
+from PhyTrade.Tools.SPLINE_tools import SPLINE
 from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
 
 

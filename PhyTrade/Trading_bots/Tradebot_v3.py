@@ -3,9 +3,8 @@ This Trade bot is optimised for the GA parameter optimisation
 
 """
 from PhyTrade.Analysis_protocols_V.Prototype_3 import Prototype_3
-from PhyTrade.Analysis_protocols_V.Prototype_4 import Prototype_4
 
-from PhyTrade.Technical_Analysis.Tools.ACCOUNT_tools import ACCOUNT
+from PhyTrade.Tools.ACCOUNT_tools import ACCOUNT
 import matplotlib.pyplot as plt
 
 
