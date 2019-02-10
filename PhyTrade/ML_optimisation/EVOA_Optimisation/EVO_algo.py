@@ -1,6 +1,5 @@
-from PhyTrade.GA_optimisation.GA_tools.GA_tools import GA_tools
+from PhyTrade.ML_optimisation.GA_Optimisation.GA_tools.GA_tools import GA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
-from PhyTrade.GA_optimisation.GA_tools.METALABELING_gen import MetaLabeling
 
 import time
 
@@ -66,7 +65,7 @@ class GA_optimiser():
                                                look_ahead)
 
         # -- Initialise benchmark data slice
-        self.benchmark_data_slice = data_slice_info(-253, 252, 0, upper_barrier, lower_barrier, look_ahead)
+        self.benchmark_data_slice = data_slice_info(-453, 252, 0, upper_barrier, lower_barrier, look_ahead)
 
         # -- Initialise tools
         self.ga_tools = GA_tools()

@@ -1,6 +1,5 @@
 """
 This script enables computing the RSI indicator
-It is currently optimised for Quandl data
 
 Victor Guillet
 11/28/2018
@@ -21,7 +20,7 @@ class RSI:
         
         for i in range(len(big_data.data_slice)):
 
-            # ------------------Calculate open and close values falling in rsi_timeframe
+            # -- Collect open and close values falling in rsi_timeframe
             timeframe_open_values = []
             timeframe_close_values = []
 
@@ -29,7 +28,7 @@ class RSI:
                 timeframe_open_values.append(big_data.data_open_values[big_data.data_slice_start_ind + (i - j)])
                 timeframe_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + (i - j)])
 
-            # ------------------ Calculate gains and losses in timeframe
+            # -- Calculate gains and losses in timeframe
             # Calculate the net loss or gain for each date falling
             # in the data frame and store them in gains and loss lists
             gains = []
@@ -41,7 +40,7 @@ class RSI:
                 elif net < 0:
                     losses.append(net)
             
-            # ------------------Calculate rs and rsi values for data_slice
+            # -- Calculate rs and rsi values for data_slice
             
             if gains:                       # If gains != Null, calculate rsi_value, else rsi_value = 50
                 avg_gain = sum(gains)/len(gains)

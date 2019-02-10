@@ -1,10 +1,9 @@
 
 class Individual:
     def __init__(self):
-        import random
-        from PhyTrade.GA_optimisation.GA_random_gen import GA_random_gen
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
 
-        ga_random = GA_random_gen()
+        ga_random = EVOA_random_gen()
 
         # ========================================================== RSI parameters:
         self.rsi_1_timeframe = ga_random.timeframe_random_gen()
@@ -160,10 +159,19 @@ class Individual:
             for j in range(len(self.parameter_dictionary[i])):
                 self.nb_of_parameters += 1
 
-    def perform_trade_run(self, data_slice_info, plot_3=False):
+    def gen_economic_model(self, data_slice_info, plot_3=False):
+        from PhyTrade.Analysis_protocols_V.Prototype_3 import Prototype_3
+        from PhyTrade.Analysis_protocols_V.Prototype_4 import Prototype_4
+
+        self.analysis = Prototype_3(self.parameter_dictionary, data_slice_info)
+        # self.analysis = Prototype_4(self.parameter_dictionary, data_slice_info)
+
+        self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
+
+    def perform_trade_run(self):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
 
-        tradebot = Tradebot_v3(self.parameter_dictionary, data_slice_info, plot_3=plot_3)
+        tradebot = Tradebot_v3(self.analysis)
 
         self.account = tradebot.account
-        self.big_data = tradebot.analysis.big_data
+        # self.big_data = tradebot.analysis.big_data

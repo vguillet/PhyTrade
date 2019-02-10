@@ -1,7 +1,7 @@
 """
 This script contains the data_slice class used by the genetic algorithm parameter optimisation
 """
-from PhyTrade.GA_optimisation.GA_tools.METALABELING_gen import MetaLabeling
+from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.METALABELING_gen import MetaLabeling
 
 
 class data_slice_info:

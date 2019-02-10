@@ -3,6 +3,11 @@ Prototype 3
 
 This prototype is based entirely on technical analysis, and is ment as a test for the genetic algorithm parameter
 optimisation algorithm
+
+The following parameters still require manual input:
+- include trigger in signals (Technical_Indicators output generation)
+- buffer and buffer settings (Threshold determination)
+
 Victor Guillet
 12/14/2018
 """

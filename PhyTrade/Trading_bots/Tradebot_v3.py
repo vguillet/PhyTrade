@@ -9,9 +9,8 @@ import matplotlib.pyplot as plt
 
 
 class Tradebot_v3:
-    def __init__(self, analysis_parameters, data_slice_info,
-                 investment_settings=1, cash_in_settings=0, stop_loss=0.94,
-                 plot_3=False):
+    def __init__(self, analysis,
+                 investment_settings=1, cash_in_settings=0, stop_loss=0.94):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         print_trade_process = False
@@ -21,9 +20,7 @@ class Tradebot_v3:
         stop_loss_count = 0
 
         # -- Market analysis protocol
-        self.analysis = Prototype_3(analysis_parameters, data_slice_info)
-        # self.analysis = Prototype_4(analysis_parameters)
-        self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
+        self.analysis = analysis
 
         # -- Generate trade actions from analysis
         self.trade_actions = ["hold"] * len(self.analysis.big_data.data_slice_dates)
