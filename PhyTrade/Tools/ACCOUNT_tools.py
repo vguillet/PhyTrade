@@ -1,4 +1,6 @@
-
+"""
+Contains information about a Tradebot's account, along with it's transaction history etc...
+"""
 
 class ACCOUNT:
     def __init__(self, initial_funds=1000):

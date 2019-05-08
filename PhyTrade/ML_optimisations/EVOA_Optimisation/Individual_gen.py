@@ -1,7 +1,7 @@
 
 class Individual:
     def __init__(self):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
 
         ga_random = EVOA_random_gen()
 

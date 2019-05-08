@@ -3,7 +3,7 @@
 class EVOA_tools:
     @staticmethod
     def gen_initial_population(population_size=10):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.Individual_gen import Individual
+        from PhyTrade.ML_optimisations.EVOA_Optimisation.Individual_gen import Individual
 
         population_lst = []
         for i in range(population_size):
@@ -15,8 +15,9 @@ class EVOA_tools:
     def evaluate_population(population_lst, data_slice_info, max_worker_processes=1,
                             print_evaluation_status=False, plot_3=False):
 
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
-        accuracy_achieved = []
+        from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+        accuracies_achieved = []
+        confusion_matrices = []
 
         # -- List based evaluation
         for i in range(len(population_lst)):
@@ -32,7 +33,9 @@ class EVOA_tools:
                                                          data_slice_info.metalabels.close_values_metalabels,
                                                          print_benchmark_results=print_evaluation_status)
 
-            accuracy_achieved.append(confusion_matrix.overall_accuracy_bs)
+            confusion_matrices.append(confusion_matrix)
+            accuracies_achieved.append(confusion_matrix.overall_accuracy_bs)
+
 
         # -- Multi-process evaluation
         # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
@@ -42,11 +45,11 @@ class EVOA_tools:
         #     return Confusion_matrix_analysis(individual.big_data.Major_spline.trade_signal,
         #                                      data_slice_info.metalabels.close_values_metalabels)
         #
-        # accuracy_achieved = multi_process_pool(population_lst, eval_function, max_worker_processes=max_worker_processes)
+        # accuracies_achieved = multi_process_pool(population_lst, eval_function, max_worker_processes=max_worker_processes)
         #
-        # accuracy_achieved = MATH().normalise_zero_one(profit_achieved)
+        # accuracies_achieved = MATH().normalise_zero_one(profit_achieved)
 
-        return accuracy_achieved
+        return accuracies_achieved, confusion_matrices
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
@@ -61,11 +64,12 @@ class EVOA_tools:
         parents = []
 
         if selection_method == 0:
+            # Elitic selection
             scanned_fitness_ratios = fitness_ratios
 
             best_individual_printed = False
 
-            for i in range(nb_parents):
+            for _ in range(nb_parents):
                 individual = scanned_fitness_ratios.index(max(scanned_fitness_ratios))
                 parents.append(population[individual])
                 if best_individual_printed is False:
@@ -79,8 +83,8 @@ class EVOA_tools:
 
     @staticmethod
     def generate_offsprings(population_size, nb_parents, parents, nb_random_ind, mutation_rate=0.2):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.Individual_gen import Individual
+        from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.ML_optimisations.EVOA_Optimisation.Individual_gen import Individual
         import random
         from copy import deepcopy
 
@@ -122,6 +126,8 @@ class EVOA_tools:
 
         elif decay_function == 1:     # Linear decrease
             interval = max_value - min_value
+            if interval == 0:
+                interval = 1
 
             interval_size = round(nb_of_generations/interval)
             if interval_size <= 0:

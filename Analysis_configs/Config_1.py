@@ -15,14 +15,15 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # EVO_algo main parameters
-        self.population_size = 40
-        self.nb_of_generations = 60
+        self.population_size = 3
+        self.nb_of_generations = 1
 
-        self.mutation_rate = 0.5
-        self.nb_parents = 15
-        self.nb_random_ind = 15
+        self.mutation_rate = 0.6
+        self.nb_parents = 1
+        self.nb_random_ind = 1
 
-        self.exploitation_phase_len = 15
+        self.exploitation_phase_len_percent = .3
+        self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200

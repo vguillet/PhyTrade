@@ -79,7 +79,7 @@ class EVO_optimiser:
         # Run for # nb of generations:
         for gen in range(config.nb_of_generations):
 
-            print("\n==================== Generation", gen + 1, "====================")
+            print("\n========================== Generation", gen + 1, "==========================")
             generation_start_time = time.time()
 
             # ------------------ Determine new generation GA parameters
@@ -144,8 +144,10 @@ class EVO_optimiser:
                                                                       self.population,
                                                                       selection_method=config.parents_selection_method,
                                                                       nb_parents=1)[0]
-        # ------------------ Results benchmarking
+        # ------------------ Final results benchmarking
         print("\n-- Results benchmarking --")
+
+        # Select best individual from final population
         self.best_individual.perform_trade_run(self.benchmark_data_slice, plot_3=True)
         print("Net worth:", self.best_individual.account.net_worth_history[-1])
 

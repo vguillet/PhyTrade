@@ -35,7 +35,7 @@ class Prototype_3:
         ticker = 'AAPL'  # Ticker selected for Yahoo data collection
         # data = pull_yahoo_data(ticker)  # Pull data from Yahoo
 
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Steffegium\Data\AAPL_Yahoo_data.csv".replace(
+        path = r"Data\AAPL_Yahoo_data.csv".replace(
             '\\', '/')
 
         data = pandas.read_csv(path)

@@ -1,0 +1,39 @@
+====================== Test_run ======================
+
+~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
+-----------> EVO_algo main parameters:
+population_size = 3
+nb_of_generations = 1
+
+mutation_rate = 0.6
+nb_parents = 1
+nb_random_ind = 1
+
+exploitation_phase_len_percent = 0.3
+
+data_slice_start_index = -7000
+data_slice_size = 200
+data_slice_shift_per_gen = 100
+
+-----------> Metalabeling settings:
+upper_barrier = 20
+lower_barrier = -20
+look_ahead = 10
+
+-----------> Benchmarking data slice settings:
+benchmark_data_slice_start = -453
+benchmark_data_slice_stop = 252
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Run stats: 
+End time: 21:56:59 05/07/19 W. Europe Daylight Time
+Run time: 4.89s
+
+Average computing time per generation: 4.89s
+
+Number of data points processed: 300
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Benchmark results: 
+Fitness achieved: 0.0
+

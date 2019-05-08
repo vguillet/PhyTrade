@@ -9,10 +9,10 @@ def save_df_to_csv(df, file_name):
 
 
 if __name__ == "__main__":
-    ticker = "AAPL"
+    ticker = "NVDA"
 
     data = pull_yahoo_data(ticker)
     # data = pull_quandl_data(ticker)
 
-    file_name = "AAPL_Yahoo_data.csv"
+    file_name = ticker+"_Yahoo_data.csv"
     save_df_to_csv(data, file_name)
