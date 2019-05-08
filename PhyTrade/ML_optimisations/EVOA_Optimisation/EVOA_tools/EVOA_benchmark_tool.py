@@ -1,4 +1,5 @@
 import pandas as pd
+from math import *
 
 
 class Confusion_matrix_analysis:
@@ -7,11 +8,12 @@ class Confusion_matrix_analysis:
         self.model_predictions = model_predictions
         self.metalabels = metalabels
 
-        # ------------------ Confusion matrix
-        init = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        # ------------------------------------------------- Confusion matrix
+        cm_init = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
+        """Confusion_matrix columns = Metalabels, rows = Prediction"""
         # confusion_matrix = pd.DataFrame(init, columns=[1, 0, -1], index=[1, 0, -1])
-        confusion_matrix = pd.DataFrame(init, columns=["Sell", "Hold", "Buy"], index=["Sell", "Hold", "Buy"])
+        confusion_matrix = pd.DataFrame(cm_init, columns=["Sell", "Hold", "Buy"], index=["Sell", "Hold", "Buy"])
 
         for i in range(len(model_predictions)):
             if model_predictions[i] == metalabels[i]:
@@ -41,18 +43,79 @@ class Confusion_matrix_analysis:
                 elif model_predictions[i] == 0 and metalabels[i] == -1:
                     confusion_matrix.at['Hold', 'Buy'] += 1
 
-        # ------------------ Confusion table
-        # True positive count:
-        tp_count = 0
-        # True negative count:
-        tn_count = 0
+        self.confusion_matrix = confusion_matrix
 
-        # False positive count:
-        fp_count = 0
-        # False negative count:
-        fn_count = 0
+        # ------------------------------------------------- Confusion tables
+        ct_init = [["", ""], ["", ""]]
+        # ---> Reference table
+        self.confusion_table_ref = pd.DataFrame(ct_init, columns=["Condition Positive 0", "Condition Negative 1"],
+                                                index=["Predicted Condition Positive 0", "Predicted Condition Negative 1"])
+        # True positive
+        self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Positive'] = 'True positive'
+        # True negative
+        self.confusion_table_ref.at['Predicted Condition Negative', 'Condition Negative'] = 'True negative'
+        # False Positive
+        self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Negative'] = 'False positive'
+        # False Negative
+        self.confusion_table_ref.at['Predicted Condition Negative', 'Condition Positive'] = 'False Negative'
 
-        # ------------------ Accuracy calculations
+        ct_init = [[0, 0], [0, 0]]
+
+        # ---> Sell
+        self.confusion_table_sell = pd.DataFrame(ct_init, columns=["Sell", "Non-Sell"], index=["Sell", "Non-Sell"])
+
+        # True Positive
+        self.confusion_table_sell.at['Sell', 'Sell'] = confusion_matrix.at['Sell', 'Sell']
+        # True Negative
+        self.confusion_table_sell.at['Non-Sell', 'Non-Sell'] = confusion_matrix.at['Hold', 'Hold'] + \
+                                                               confusion_matrix.at['Buy', 'Buy'] + \
+                                                               confusion_matrix.at['Hold', 'Buy'] + \
+                                                               confusion_matrix.at['Buy', 'Hold']
+        # False Positive
+        self.confusion_table_sell.at['Sell', 'Non-Sell'] = confusion_matrix.at['Sell', 'Hold'] + \
+                                                           confusion_matrix.at['Sell', 'Buy']
+
+        # False Negative
+        self.confusion_table_sell.at['Non-Sell', 'Sell'] = confusion_matrix.at['Hold', 'Sell'] + \
+                                                           confusion_matrix.at['Buy', 'Sell']
+
+        # ---> Buy
+        self.confusion_table_buy = pd.DataFrame(ct_init, columns=["Buy", "Non-Buy"], index=["Buy", "Non-Buy"])
+
+        # True Positive
+        self.confusion_table_buy.at['Buy', 'Buy'] = confusion_matrix.at['Buy', 'Buy']
+        # True Negative
+        self.confusion_table_buy.at['Non-Buy', 'Non-Buy'] = confusion_matrix.at['Hold', 'Hold'] + \
+                                                             confusion_matrix.at['Sell', 'Sell'] + \
+                                                             confusion_matrix.at['Hold', 'Sell'] + \
+                                                             confusion_matrix.at['Sell', 'Hold']
+        # False Positive
+        self.confusion_table_buy.at['Buy', 'Non-Buy'] = confusion_matrix.at['Buy', 'Hold'] + \
+                                                         confusion_matrix.at['Buy', 'Sell']
+
+        # False Negative
+        self.confusion_table_buy.at['Non-Buy', 'Buy'] = confusion_matrix.at['Hold', 'Buy'] + \
+                                                         confusion_matrix.at['Sell', 'Buy']
+
+        # ---> Hold
+        self.confusion_table_hold = pd.DataFrame(ct_init, columns=["Hold", "Non-Hold"], index=["Hold", "Non-Hold"])
+
+        # True Positive
+        self.confusion_table_hold.at['Hold', 'Hold'] = confusion_matrix.at['Hold', 'Hold']
+        # True Negative
+        self.confusion_table_hold.at['Non-Hold', 'Non-Hold'] = confusion_matrix.at['Sell', 'Sell'] + \
+                                                               confusion_matrix.at['Buy', 'Buy'] + \
+                                                               confusion_matrix.at['Sell', 'Buy'] + \
+                                                               confusion_matrix.at['Buy', 'Sell']
+        # False Positive
+        self.confusion_table_hold.at['Hold', 'Non-Hold'] = confusion_matrix.at['Hold', 'Sell'] + \
+                                                           confusion_matrix.at['Hold', 'Buy']
+
+        # False Negative
+        self.confusion_table_hold.at['Non-Hold', 'Hold'] = confusion_matrix.at['Sell', 'Hold'] + \
+                                                           confusion_matrix.at['Buy', 'Hold']
+
+        # ------------------------------------------------- Accuracy calculations
         # -- Overall accuracy
         correct_prediction = 0
         wrong_prediction = 0
@@ -76,18 +139,95 @@ class Confusion_matrix_analysis:
         self.overall_accuracy = correct_prediction / len(self.model_predictions) * 100
         self.overall_accuracy_bs = correct_prediction_bs / (correct_prediction_bs + wrong_prediction_bs) * 100
 
-        # -- Confusion matrix accuracy
-        self.ACC = (confusion_matrix.at['Sell', 'Sell'] + confusion_matrix.at['Buy', 'Buy']) / \
-                   (confusion_matrix.at['Sell', 'Sell'] + confusion_matrix.at['Buy', 'Buy'] +
-                    (confusion_matrix.at['Sell', 'Buy'] + confusion_matrix.at['Buy', 'Sell']))
-
-        # print(self.ACC)
-
         if print_benchmark_results:
             print("Overall accuracy achieved:", round(self.overall_accuracy))
             print("Overall accuracy achieved (excluding hold):", round(self.overall_accuracy_bs))
             print("\nConfusion matrix:\n", confusion_matrix, "\n")
 
-        # init = {"Metalabels": self.metalabels, "Model Predictions": self.model_predictions}
-        # df = pd.DataFrame(data=init)
-        # print(df)
+    @staticmethod
+    def calc_TPR(cm):
+        tp = cm.ix[0, 0]
+        fn = cm.ix[1, 0]
+
+        return tp/(tp+fn)
+
+    @staticmethod
+    def calc_TNR(cm):
+        tn = cm.ix[1, 1]
+        fp = cm.ix[0, 1]
+        return tn/(tn+fp)
+
+    @staticmethod
+    def calc_PPV(cm):
+        tp = cm.ix[0, 0]
+        fp = cm.ix[0, 1]
+        return tp/(tp+fp)
+
+    @staticmethod
+    def calc_NPV(cm):
+        tn = cm.ix[1, 1]
+        fn = cm.ix[1, 0]
+        return tn/(tn+fn)
+
+    @staticmethod
+    def calc_FNR(cm):
+        tp = cm.ix[0, 0]
+        fn = cm.ix[1, 0]
+        return fn/(fn+tp)
+
+    @staticmethod
+    def calc_FPR(cm):
+        tn = cm.ix[1, 1]
+        fp = cm.ix[0, 1]
+        return fp/(fp+tn)
+
+    @staticmethod
+    def calc_FDR(cm):
+        tp = cm.ix[0, 0]
+        fp = cm.ix[0, 1]
+        return fp/(fp+tp)
+
+    @staticmethod
+    def calc_FOR(cm):
+        tn = cm.ix[1, 1]
+        fn = cm.ix[1, 0]
+        return fn/(fn+tn)
+
+    @staticmethod
+    def calc_ACC(cm):
+        tp = cm.ix[0, 0]
+        tn = cm.ix[1, 1]
+        fp = cm.ix[0, 1]
+        fn = cm.ix[1, 0]
+        return (tp+tn)/(tp+tn+fp+fn)
+
+    @staticmethod
+    def calc_F1(cm):
+        tp = cm.ix[0, 0]
+        fp = cm.ix[0, 1]
+        fn = cm.ix[1, 0]
+        return 2*tp/(2*tp+fp+fn)
+
+    @staticmethod
+    def calc_MCC(cm):
+        tp = cm.ix[0, 0]
+        tn = cm.ix[1, 1]
+        fp = cm.ix[0, 1]
+        fn = cm.ix[1, 0]
+        return (tp*tn-fp*fn)/(sqrt((tp+fp)(tp+fn)(tn+fp)(tn+fn)))
+
+    @staticmethod
+    def calc_BM(cm):
+        tp = cm.ix[0, 0]
+        tn = cm.ix[1, 1]
+        fp = cm.ix[0, 1]
+        fn = cm.ix[1, 0]
+        return tp/(tp+fn) + tn/(tn+fp) - 1
+
+    @staticmethod
+    def calc_MK(cm):
+        tp = cm.ix[0, 0]
+        tn = cm.ix[1, 1]
+        fp = cm.ix[0, 1]
+        fn = cm.ix[1, 0]
+        return tp/(tp+fp) + tn/(tn+fn) - 1

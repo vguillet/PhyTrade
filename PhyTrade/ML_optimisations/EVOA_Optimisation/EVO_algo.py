@@ -1,4 +1,4 @@
-from PhyTrade.ML_optimisation.GA_Optimisation.GA_tools.GA_tools import GA_tools
+from PhyTrade.ML_optimisations.GA_Optimisation.GA_tools.GA_tools import GA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 
 import time

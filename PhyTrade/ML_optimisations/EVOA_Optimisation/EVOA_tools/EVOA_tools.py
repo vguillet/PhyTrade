@@ -17,7 +17,7 @@ class EVOA_tools:
 
         from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
         accuracies_achieved = []
-        confusion_matrices = []
+        confusion_matrix_analysis = []
 
         # -- List based evaluation
         for i in range(len(population_lst)):
@@ -29,13 +29,12 @@ class EVOA_tools:
             population_lst[i].gen_economic_model(data_slice_info, plot_3=plot_3)
             # population_lst[i].perform_trade_run()
 
-            confusion_matrix = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
-                                                         data_slice_info.metalabels.close_values_metalabels,
-                                                         print_benchmark_results=print_evaluation_status)
+            individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
+                                                                             data_slice_info.metalabels.close_values_metalabels,
+                                                                             print_benchmark_results=print_evaluation_status)
 
-            confusion_matrices.append(confusion_matrix)
-            accuracies_achieved.append(confusion_matrix.overall_accuracy_bs)
-
+            confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
+            accuracies_achieved.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
 
         # -- Multi-process evaluation
         # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
@@ -49,7 +48,7 @@ class EVOA_tools:
         #
         # accuracies_achieved = MATH().normalise_zero_one(profit_achieved)
 
-        return accuracies_achieved, confusion_matrices
+        return accuracies_achieved, confusion_matrix_analysis
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
