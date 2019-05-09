@@ -9,7 +9,7 @@ import time
 
 
 class EVOA_optimiser:
-    def __init__(self, config, run_label=None):
+    def __init__(self, config):
 
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
@@ -33,8 +33,7 @@ class EVOA_optimiser:
         self.evoa_tools = EVOA_tools()
 
         # -- Initialise records
-        self.best_individual_per_gen = []
-        self.results = EVOA_results_gen(config, run_label)
+        self.results = EVOA_results_gen(config, config.config_name)
 
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
@@ -62,8 +61,9 @@ class EVOA_optimiser:
                                                                          print_evaluation_status=config.print_evaluation_status,
                                                                          plot_3=config.plot_signal_triggers)
 
-        self.best_gen_individual = self.fitness_evaluation.index(max(self.fitness_evaluation))
-        self.best_individual_per_gen.append(deepcopy(self.population[self.best_gen_individual]))
+        # ------------------ Collect generation data
+        self.results.best_individual_per_gen.append(max(self.fitness_evaluation))
+        self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation) / len(self.fitness_evaluation))
 
         # print("\nMax net achieved:", max(self.fitness_evaluation))
         # print("Max profit achieved:", (max(self.fitness_evaluation) - 1000) / 10)
@@ -86,6 +86,7 @@ class EVOA_optimiser:
             generation_start_time = time.time()
 
             # ------------------ Determine new generation GA parameters
+            # TODO: Fix determine_evolving_gen_parameters()
             self.data_slice_info, self.nb_parents, self.nb_random_ind = \
                 self.evoa_tools.determine_evolving_gen_parameters(self.data_slice_info,
                                                                   gen,
@@ -123,11 +124,11 @@ class EVOA_optimiser:
                                                                              print_evaluation_status=config.print_evaluation_status,
                                                                              plot_3=config.plot_signal_triggers)
 
-            self.best_gen_individual = self.fitness_evaluation.index(max(self.fitness_evaluation))
-            self.best_individual_per_gen.append(deepcopy(self.population[self.best_gen_individual]))
+            # ------------------ Collect generation data
+            self.results.best_individual_per_gen.append(max(self.fitness_evaluation))
+            self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation)/len(self.fitness_evaluation))
 
             generation_end_time = time.time()
-
             print("\n-- Generation", gen + 1, "population evaluation completed --")
             # print("Max net achieved:", max(self.fitness_evaluation))
             # print("Max profit achieved:", (max(self.fitness_evaluation)-1000)/10)
@@ -140,10 +141,10 @@ class EVOA_optimiser:
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("All data processed")
         total_data_points_processed = -config.data_slice_start_index + self.data_slice_info.stop_index
-        self.results.total_data_points_processed = total_data_points_processed
         print("Number of data points processed:", total_data_points_processed)
         print("Parameter optimisation completed")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        self.results.total_data_points_processed = total_data_points_processed
         # ========================= EVOA OPTIMISATION RESULTS =============================
         self.results.run_stop_time = time.time()
         print("\nEnd time:", time.strftime('%X %x %Z'), "\n")
@@ -156,6 +157,7 @@ class EVOA_optimiser:
                                                                       nb_parents=1)[0]
         _, benchmark_confusion_matrix_analysis = self.evoa_tools.evaluate_population([self.best_individual],
                                                                                      self.benchmark_data_slice,
+                                                                                     calculate_stats=True,
                                                                                      print_evaluation_status=False,
                                                                                      plot_3=False)
         self.best_individual.perform_trade_run()
@@ -166,8 +168,4 @@ class EVOA_optimiser:
 
         self.results.gen_result_recap_file()
         self.results.gen_parameters_json()
-
-        # import matplotlib.pyplot as plt
-        #
-        # plt.plot(range(len(self.best_individual_per_gen[0])), self.best_individual_per_gen[0])
-        # plt.show()
+        self.results.plot_results()

@@ -8,7 +8,7 @@ import pandas as pd
 class MetaLabeling:
     def __init__(self, upper_barrier, lower_barrier, look_ahead, data_slice_start_ind, data_slice_stop_ind):
         # TODO Streamline csv reading process
-        path = r"Data\AAPL_Yahoo_data.csv".replace(
+        path = r"Research\Data\AAPL_Yahoo_data.csv".replace(
             '\\', '/')
 
         data = pd.read_csv(path)

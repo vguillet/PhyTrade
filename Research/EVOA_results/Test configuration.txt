@@ -1,22 +1,22 @@
-====================== Test_run ======================
+====================== Test configuration ======================
 
 ~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
 
 Configuration file: Test configuration
 
 -----------> EVO_algo main parameters:
-population_size = 3
-nb_of_generations = 1
+population_size = 20
+nb_of_generations = 20
 
-mutation_rate = 0.6
-nb_parents = 1
-nb_random_ind = 1
+mutation_rate = 0.5
+nb_parents = 5
+nb_random_ind = 7
 
 exploitation_phase_len_percent = 0.3
 
 data_slice_start_index = -7000
 data_slice_size = 200
-data_slice_shift_per_gen = 100
+data_slice_shift_per_gen = 0
 
 -----------> Metalabeling settings:
 upper_barrier = 20
@@ -29,22 +29,22 @@ benchmark_data_slice_stop = 252
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 21:05:50 05/09/19 W. Europe Daylight Time
-Run time: 12.598s
+End time: 23:19:57 05/09/19 W. Europe Daylight Time
+Run time: 373.768s
 
-Average computing time per generation: 12.598s
+Average computing time per generation: 18.688s
 
-Number of data points processed: 300
+Number of data points processed: 200
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 55.158730158730165
+Fitness achieved: 56.74603174603175
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     5    2
-Hold    50   139   51
-Buy      3     2    0
+Sell     0     1    0
+Hold    50   140   50
+Buy      3     5    3
 
 -----------> Benchmark Confusion tables: 
 
@@ -57,62 +57,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         7
-Non-Sell    53       192
+Sell         0         1
+Non-Sell    53       198
 
 TPR = 0.0
-TNR = 0.965
+TNR = 0.995
 PPV = 0.0
-NPV = 0.784
+NPV = 0.789
 FNR = 1.0
-FPR = 0.035
+FPR = 0.005
 FDR = 1.0
-FOR = 0.216
-ACC = 0.762
+FOR = 0.211
+ACC = 0.786
 F1 = 0.0
-MCC = -0.087
-BM = -0.035
-MK = -0.216
+MCC = -0.033
+BM = -0.005
+MK = -0.211
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        0        5
-Non-Buy   53      194
+Buy        3        8
+Non-Buy   50      191
 
-TPR = 0.0
-TNR = 0.975
-PPV = 0.0
-NPV = 0.785
-FNR = 1.0
-FPR = 0.025
-FDR = 1.0
-FOR = 0.215
+TPR = 0.057
+TNR = 0.96
+PPV = 0.273
+NPV = 0.793
+FNR = 0.943
+FPR = 0.04
+FDR = 0.727
+FOR = 0.207
 ACC = 0.77
-F1 = 0.0
-MCC = -0.073
-BM = -0.025
-MK = -0.215
+F1 = 0.094
+MCC = 0.033
+BM = 0.016
+MK = 0.065
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       139       101
-Non-Hold     7         5
+Hold       140       100
+Non-Hold     6         6
 
-TPR = 0.952
-TNR = 0.047
-PPV = 0.579
-NPV = 0.417
-FNR = 0.048
-FPR = 0.953
-FDR = 0.421
-FOR = 0.583
-ACC = 0.571
-F1 = 0.72
-MCC = -0.002
-BM = -0.001
-MK = -0.004
+TPR = 0.959
+TNR = 0.057
+PPV = 0.583
+NPV = 0.5
+FNR = 0.041
+FPR = 0.943
+FDR = 0.417
+FOR = 0.5
+ACC = 0.579
+F1 = 0.725
+MCC = 0.036
+BM = 0.016
+MK = 0.083
 

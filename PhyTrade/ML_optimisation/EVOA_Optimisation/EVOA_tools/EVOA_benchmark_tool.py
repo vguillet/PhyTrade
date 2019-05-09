@@ -3,7 +3,7 @@ from math import *
 
 
 class Confusion_matrix_analysis:
-    def __init__(self, model_predictions, metalabels, print_benchmark_results=False):
+    def __init__(self, model_predictions, metalabels, calculate_stats = False, print_benchmark_results=False):
 
         self.model_predictions = model_predictions
         self.metalabels = metalabels
@@ -45,83 +45,6 @@ class Confusion_matrix_analysis:
 
         self.confusion_matrix = confusion_matrix
 
-        # ------------------------------------------------- Confusion tables
-        ct_init = [["", ""], ["", ""]]
-        # ---> Reference table
-        self.confusion_table_ref = pd.DataFrame(ct_init, columns=["Condition Positive", "Condition Negative"],
-                                                index=["Predicted Condition Positive", "Predicted Condition Negative"])
-        # True positive
-        self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Positive'] = 'True positive'
-        # True negative
-        self.confusion_table_ref.at['Predicted Condition Negative', 'Condition Negative'] = 'True negative'
-        # False Positive
-        self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Negative'] = 'False positive'
-        # False Negative
-        self.confusion_table_ref.at['Predicted Condition Negative', 'Condition Positive'] = 'False Negative'
-
-        ct_init = [[0, 0], [0, 0]]
-
-        # ---> Sell
-        self.confusion_table_sell = pd.DataFrame(ct_init, columns=["Sell", "Non-Sell"], index=["Sell", "Non-Sell"])
-
-        # True Positive
-        self.confusion_table_sell.at['Sell', 'Sell'] = confusion_matrix.at['Sell', 'Sell']
-        # True Negative
-        self.confusion_table_sell.at['Non-Sell', 'Non-Sell'] = confusion_matrix.at['Hold', 'Hold'] + \
-                                                               confusion_matrix.at['Buy', 'Buy'] + \
-                                                               confusion_matrix.at['Hold', 'Buy'] + \
-                                                               confusion_matrix.at['Buy', 'Hold']
-        # False Positive
-        self.confusion_table_sell.at['Sell', 'Non-Sell'] = confusion_matrix.at['Sell', 'Hold'] + \
-                                                           confusion_matrix.at['Sell', 'Buy']
-
-        # False Negative
-        self.confusion_table_sell.at['Non-Sell', 'Sell'] = confusion_matrix.at['Hold', 'Sell'] + \
-                                                           confusion_matrix.at['Buy', 'Sell']
-        # Calc stats
-        self.sell_stats = self.calc_stats(self.confusion_table_sell)
-
-        # ---> Buy
-        self.confusion_table_buy = pd.DataFrame(ct_init, columns=["Buy", "Non-Buy"], index=["Buy", "Non-Buy"])
-
-        # True Positive
-        self.confusion_table_buy.at['Buy', 'Buy'] = confusion_matrix.at['Buy', 'Buy']
-        # True Negative
-        self.confusion_table_buy.at['Non-Buy', 'Non-Buy'] = confusion_matrix.at['Hold', 'Hold'] + \
-                                                             confusion_matrix.at['Sell', 'Sell'] + \
-                                                             confusion_matrix.at['Hold', 'Sell'] + \
-                                                             confusion_matrix.at['Sell', 'Hold']
-        # False Positive
-        self.confusion_table_buy.at['Buy', 'Non-Buy'] = confusion_matrix.at['Buy', 'Hold'] + \
-                                                         confusion_matrix.at['Buy', 'Sell']
-
-        # False Negative
-        self.confusion_table_buy.at['Non-Buy', 'Buy'] = confusion_matrix.at['Hold', 'Buy'] + \
-                                                         confusion_matrix.at['Sell', 'Buy']
-        # Calc stats
-        self.buy_stats = self.calc_stats(self.confusion_table_buy)
-
-        # ---> Hold
-        self.confusion_table_hold = pd.DataFrame(ct_init, columns=["Hold", "Non-Hold"], index=["Hold", "Non-Hold"])
-
-        # True Positive
-        self.confusion_table_hold.at['Hold', 'Hold'] = confusion_matrix.at['Hold', 'Hold']
-        # True Negative
-        self.confusion_table_hold.at['Non-Hold', 'Non-Hold'] = confusion_matrix.at['Sell', 'Sell'] + \
-                                                               confusion_matrix.at['Buy', 'Buy'] + \
-                                                               confusion_matrix.at['Sell', 'Buy'] + \
-                                                               confusion_matrix.at['Buy', 'Sell']
-        # False Positive
-        self.confusion_table_hold.at['Hold', 'Non-Hold'] = confusion_matrix.at['Hold', 'Sell'] + \
-                                                           confusion_matrix.at['Hold', 'Buy']
-
-        # False Negative
-        self.confusion_table_hold.at['Non-Hold', 'Hold'] = confusion_matrix.at['Sell', 'Hold'] + \
-                                                           confusion_matrix.at['Buy', 'Hold']
-        # Calc stats
-        self.hold_stats = self.calc_stats(self.confusion_table_hold)
-        print(self.hold_stats)
-
         # ------------------------------------------------- Accuracy calculations
         # -- Overall accuracy
         correct_prediction = 0
@@ -145,6 +68,84 @@ class Confusion_matrix_analysis:
 
         self.overall_accuracy = correct_prediction / len(self.model_predictions) * 100
         self.overall_accuracy_bs = correct_prediction_bs / (correct_prediction_bs + wrong_prediction_bs) * 100
+        
+        if calculate_stats:
+            # ------------------------------------------------- Confusion tables
+            ct_init = [["", ""], ["", ""]]
+            # ---> Reference table
+            self.confusion_table_ref = pd.DataFrame(ct_init, columns=["Condition Positive", "Condition Negative"],
+                                                    index=["Predicted Condition Positive", "Predicted Condition Negative"])
+            # True positive
+            self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Positive'] = 'True positive'
+            # True negative
+            self.confusion_table_ref.at['Predicted Condition Negative', 'Condition Negative'] = 'True negative'
+            # False Positive
+            self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Negative'] = 'False positive'
+            # False Negative
+            self.confusion_table_ref.at['Predicted Condition Negative', 'Condition Positive'] = 'False Negative'
+
+            ct_init = [[0, 0], [0, 0]]
+
+            # ---> Sell
+            self.confusion_table_sell = pd.DataFrame(ct_init, columns=["Sell", "Non-Sell"], index=["Sell", "Non-Sell"])
+
+            # True Positive
+            self.confusion_table_sell.at['Sell', 'Sell'] = confusion_matrix.at['Sell', 'Sell']
+            # True Negative
+            self.confusion_table_sell.at['Non-Sell', 'Non-Sell'] = confusion_matrix.at['Hold', 'Hold'] + \
+                                                                   confusion_matrix.at['Buy', 'Buy'] + \
+                                                                   confusion_matrix.at['Hold', 'Buy'] + \
+                                                                   confusion_matrix.at['Buy', 'Hold']
+            # False Positive
+            self.confusion_table_sell.at['Sell', 'Non-Sell'] = confusion_matrix.at['Sell', 'Hold'] + \
+                                                               confusion_matrix.at['Sell', 'Buy']
+
+            # False Negative
+            self.confusion_table_sell.at['Non-Sell', 'Sell'] = confusion_matrix.at['Hold', 'Sell'] + \
+                                                               confusion_matrix.at['Buy', 'Sell']
+            # Calc stats
+            self.sell_stats = self.calc_stats(self.confusion_table_sell)
+
+            # ---> Buy
+            self.confusion_table_buy = pd.DataFrame(ct_init, columns=["Buy", "Non-Buy"], index=["Buy", "Non-Buy"])
+
+            # True Positive
+            self.confusion_table_buy.at['Buy', 'Buy'] = confusion_matrix.at['Buy', 'Buy']
+            # True Negative
+            self.confusion_table_buy.at['Non-Buy', 'Non-Buy'] = confusion_matrix.at['Hold', 'Hold'] + \
+                                                                 confusion_matrix.at['Sell', 'Sell'] + \
+                                                                 confusion_matrix.at['Hold', 'Sell'] + \
+                                                                 confusion_matrix.at['Sell', 'Hold']
+            # False Positive
+            self.confusion_table_buy.at['Buy', 'Non-Buy'] = confusion_matrix.at['Buy', 'Hold'] + \
+                                                             confusion_matrix.at['Buy', 'Sell']
+
+            # False Negative
+            self.confusion_table_buy.at['Non-Buy', 'Buy'] = confusion_matrix.at['Hold', 'Buy'] + \
+                                                             confusion_matrix.at['Sell', 'Buy']
+            # Calc stats
+            self.buy_stats = self.calc_stats(self.confusion_table_buy)
+
+            # ---> Hold
+            self.confusion_table_hold = pd.DataFrame(ct_init, columns=["Hold", "Non-Hold"], index=["Hold", "Non-Hold"])
+
+            # True Positive
+            self.confusion_table_hold.at['Hold', 'Hold'] = confusion_matrix.at['Hold', 'Hold']
+            # True Negative
+            self.confusion_table_hold.at['Non-Hold', 'Non-Hold'] = confusion_matrix.at['Sell', 'Sell'] + \
+                                                                   confusion_matrix.at['Buy', 'Buy'] + \
+                                                                   confusion_matrix.at['Sell', 'Buy'] + \
+                                                                   confusion_matrix.at['Buy', 'Sell']
+            # False Positive
+            self.confusion_table_hold.at['Hold', 'Non-Hold'] = confusion_matrix.at['Hold', 'Sell'] + \
+                                                               confusion_matrix.at['Hold', 'Buy']
+
+            # False Negative
+            self.confusion_table_hold.at['Non-Hold', 'Hold'] = confusion_matrix.at['Sell', 'Hold'] + \
+                                                               confusion_matrix.at['Buy', 'Hold']
+            # Calc stats
+            self.hold_stats = self.calc_stats(self.confusion_table_hold)
+            print(self.hold_stats)
 
         if print_benchmark_results:
             print("Overall accuracy achieved:", round(self.overall_accuracy))

@@ -1,3 +1,13 @@
+"""
+This script contains the EVOA_tool class, used by the EVO_algo classes to perform EVOA optimisations
+The class contains:
+    - gen_initial_population()
+    - evaluate_population()
+    - select_from_population()
+    - generate_offsprings()
+    - throttle()
+    - determine_evolving_gen_parameters()
+"""
 
 
 class EVOA_tools:
@@ -12,7 +22,7 @@ class EVOA_tools:
         return population_lst
 
     @staticmethod
-    def evaluate_population(population_lst, data_slice_info, max_worker_processes=1,
+    def evaluate_population(population_lst, data_slice_info, max_worker_processes=1, calculate_stats=False,
                             print_evaluation_status=False, plot_3=False):
 
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
@@ -31,6 +41,7 @@ class EVOA_tools:
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
                                                                              data_slice_info.metalabels.close_values_metalabels,
+                                                                             calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
 
             confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
@@ -54,29 +65,31 @@ class EVOA_tools:
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
 
         # -- Determine fitness ratio
-        fitness_ratios = []
-
-        for i in range(len(fitness_evaluation)):
-            fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
+        # fitness_ratios = []
+        # for i in range(len(fitness_evaluation)):
+        #     fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
+        # scanned_fitness_ratios = fitness_ratios
 
         # -- Select individuals
         parents = []
 
         if selection_method == 0:
             # Elitic selection
-            scanned_fitness_ratios = fitness_ratios
+            sorted_fitness_ratios = fitness_evaluation
+            sorted_population = population
 
-            best_individual_printed = False
+            # Use bubblesort to sort population and fitness_ratios
+            for _ in range(len(sorted_fitness_ratios)):
+                for i in range(len(sorted_fitness_ratios) - 1):
+                    if sorted_fitness_ratios[i] < sorted_fitness_ratios[i + 1]:
+                        sorted_fitness_ratios[i], sorted_fitness_ratios[i + 1] = sorted_fitness_ratios[i + 1], sorted_fitness_ratios[i]
+                        sorted_population[i], sorted_population[i + 1] = sorted_population[i + 1], sorted_population[i]
 
-            for _ in range(nb_parents):
-                individual = scanned_fitness_ratios.index(max(scanned_fitness_ratios))
-                parents.append(population[individual])
-                if best_individual_printed is False:
-                    print("Best Individual number from previous generation:", individual)
-                    best_individual_printed = True
+            print("Best Individual fitness from previous generation:", round(sorted_fitness_ratios[0], 3))
+            print("Average fitness from previous generation:", sum(fitness_evaluation)/len(fitness_evaluation))
 
-                population.pop(individual)
-                scanned_fitness_ratios.pop(individual)
+            for i in range(nb_parents):
+                parents.append(sorted_population[i])
 
         return parents
 
@@ -96,7 +109,7 @@ class EVOA_tools:
 
         # -- Generate offsprings from parents with mutations
         cycling = -1
-        for i in range(population_size - nb_parents - nb_random_ind):
+        for _ in range(population_size - nb_parents - nb_random_ind):
 
             cycling += 1
             if cycling >= nb_parents:
@@ -104,7 +117,7 @@ class EVOA_tools:
 
             offspring = deepcopy(parents[cycling])
 
-            for j in range(nb_of_parameters_to_mutate):
+            for _ in range(nb_of_parameters_to_mutate):
                 parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
 
                 offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify)
@@ -112,7 +125,7 @@ class EVOA_tools:
             new_population.append(offspring)
 
         # -- Create random_ind number of random individuals and add to new population
-        for i in range(nb_random_ind):
+        for _ in range(nb_random_ind):
             new_population.append(Individual())
 
         return new_population

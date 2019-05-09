@@ -33,9 +33,9 @@ class Prototype_3:
 
         # ========================= DATA COLLECTION INITIALISATION =======================
         # data = pull_yahoo_data(ticker)  # Pull data from Yahoo
+        # data_csv = "Research\Data\ " + ticker + "_Yahoo_data.csv"
 
-        path = r"Data\AAPL_Yahoo_data.csv".replace(
-            '\\', '/')
+        path = r"Research\Data\AAPL_Yahoo_data.csv".replace('\\', '/')
 
         data = pandas.read_csv(path)
 

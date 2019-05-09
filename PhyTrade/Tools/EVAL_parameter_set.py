@@ -28,7 +28,7 @@ class EVAL_parameter_set:
         self.results = EVAL_parameter_set_results_gen(eval_name)
         self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(self.model.big_data.Major_spline.trade_signal,
                                                                                      self.data_slice.metalabels.close_values_metalabels,
-                                                                                     print_benchmark_results=True)
+                                                                                     print_benchmark_results=False)
         self.results.total_data_points_processed = self.data_slice_size
         self.results.look_ahead = self.look_ahead
         self.results.benchmark_data_slice_start = self.data_slice_start
@@ -62,7 +62,7 @@ class EVAL_parameter_set_results_gen:
 
         self.results_file.write("\n-----------> Benchmarking data slice settings:" + "\n")
         self.results_file.write("benchmark_data_slice_start = " + str(self.benchmark_data_slice_start) + "\n")
-        self.results_file.write("benchmark_data_slice_length = " + str(self.benchmark_data_slice_stop) + "\n")
+        self.results_file.write("benchmark_data_slice_stop = " + str(self.benchmark_data_slice_stop) + "\n")
 
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
@@ -103,4 +103,5 @@ class EVAL_parameter_set_results_gen:
         self.results_file.write(str() + "\n")
 
         self.results_file.close()
+        return
 

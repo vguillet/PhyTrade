@@ -19,10 +19,13 @@ class EVOA_results_gen:
 
         self.total_data_points_processed = None
 
+        self.best_individual_per_gen = []
+        self.avg_fitness_per_gen = []
+
     def gen_parameters_json(self):
         import json
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results".replace('\\', '/')
-        file_name = path + '/' + self.run_label + ".csv"
+        file_name = path + '/' + self.run_label + ".json"
 
         with open(file_name, 'w') as fout:
             json.dump(self.individual.parameter_dictionary, fout)
@@ -82,6 +85,8 @@ class EVOA_results_gen:
 
         self.results_file.write("-----------> Validation benchmark results: \n")
         self.results_file.write("Fitness achieved: " + str(self.benchmark_confusion_matrix_analysis.overall_accuracy) + "\n")
+        self.results_file.write("Fitness achieved bs: " + str(self.benchmark_confusion_matrix_analysis.overall_accuracy_bs) + "\n")
+
         self.results_file.write("\nConfusion Matrix: \n" + self.benchmark_confusion_matrix_analysis.confusion_matrix.to_string() + "\n")
 
         self.results_file.write("\n-----------> Benchmark Confusion tables: \n")
@@ -114,4 +119,16 @@ class EVOA_results_gen:
 
         print("EVOA run results summary successfully generated")
         self.results_file.close()
+        return
+
+    def plot_results(self):
+        import matplotlib.pyplot as plt
+
+        plt.plot(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen, label="Average fitness per gen")
+        plt.plot(range(len(self.best_individual_per_gen)), self.best_individual_per_gen, label="Best individual per gen")
+
+        plt.legend()
+        plt.grid()
+
+        plt.show()
 
