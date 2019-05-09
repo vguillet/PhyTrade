@@ -165,6 +165,7 @@ class EVOA_optimiser:
         self.results.benchmark_confusion_matrix_analysis = benchmark_confusion_matrix_analysis[0]
 
         self.results.gen_result_recap_file()
+        self.results.gen_parameters_json()
 
         # import matplotlib.pyplot as plt
 

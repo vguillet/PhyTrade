@@ -29,22 +29,22 @@ benchmark_data_slice_stop = 252
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 16:28:46 05/09/19 W. Europe Daylight Time
-Run time: 5.556s
+End time: 17:01:02 05/09/19 W. Europe Daylight Time
+Run time: 5.844s
 
-Average computing time per generation: 5.556s
+Average computing time per generation: 5.844s
 
 Number of data points processed: 300
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 56.74603174603175
+Fitness achieved: 54.36507936507936
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     1    0
-Hold    49   143   53
-Buy      4     2    0
+Sell     3    12    4
+Hold    49   133   48
+Buy      1     1    1
 
 -----------> Benchmark Confusion tables: 
 
@@ -57,62 +57,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         1
-Non-Sell    53       198
+Sell         3        16
+Non-Sell    50       183
 
-TPR = 0.0
-TNR = 0.995
-PPV = 0.0
-NPV = 0.789
-FNR = 1.0
-FPR = 0.005
-FDR = 1.0
-FOR = 0.211
-ACC = 0.786
-F1 = 0.0
-MCC = -0.033
-BM = -0.005
-MK = -0.211
+TPR = 0.057
+TNR = 0.92
+PPV = 0.158
+NPV = 0.785
+FNR = 0.943
+FPR = 0.08
+FDR = 0.842
+FOR = 0.215
+ACC = 0.738
+F1 = 0.083
+MCC = -0.037
+BM = -0.024
+MK = -0.057
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        0        6
-Non-Buy   53      193
+Buy        1        2
+Non-Buy   52      197
 
-TPR = 0.0
-TNR = 0.97
-PPV = 0.0
-NPV = 0.785
-FNR = 1.0
-FPR = 0.03
-FDR = 1.0
-FOR = 0.215
-ACC = 0.766
-F1 = 0.0
-MCC = -0.081
-BM = -0.03
-MK = -0.215
+TPR = 0.019
+TNR = 0.99
+PPV = 0.333
+NPV = 0.791
+FNR = 0.981
+FPR = 0.01
+FDR = 0.667
+FOR = 0.209
+ACC = 0.786
+F1 = 0.036
+MCC = 0.033
+BM = 0.009
+MK = 0.124
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       143       102
-Non-Hold     3         4
+Hold       133        97
+Non-Hold    13         9
 
-TPR = 0.979
-TNR = 0.038
-PPV = 0.584
-NPV = 0.571
-FNR = 0.021
-FPR = 0.962
-FDR = 0.416
-FOR = 0.429
-ACC = 0.583
-F1 = 0.731
-MCC = 0.052
-BM = 0.017
-MK = 0.155
+TPR = 0.911
+TNR = 0.085
+PPV = 0.578
+NPV = 0.409
+FNR = 0.089
+FPR = 0.915
+FDR = 0.422
+FOR = 0.591
+ACC = 0.563
+F1 = 0.707
+MCC = -0.007
+BM = -0.004
+MK = -0.013
 

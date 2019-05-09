@@ -19,6 +19,17 @@ class EVOA_results_gen:
 
         self.total_data_points_processed = None
 
+    def gen_parameters_json(self):
+        import json
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\PhyTrade\ML_optimisations\EVOA_Optimisation\EVOA_results".replace(
+            '\\', '/')
+        file_name = path + '/' + self.run_label + ".csv"
+
+        with open(file_name, 'w') as fout:
+            json.dump(self.individual.parameter_dictionary, fout)
+
+        return
+
     def gen_result_recap_file(self):
         # -- Create results file
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\PhyTrade\ML_optimisations\EVOA_Optimisation\EVOA_results".replace('\\', '/')
