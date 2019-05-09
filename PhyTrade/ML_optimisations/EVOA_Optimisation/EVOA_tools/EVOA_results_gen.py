@@ -19,7 +19,7 @@ class EVOA_results_gen:
 
         self.total_data_points_processed = None
 
-    def gen_result_file(self):
+    def gen_result_recap_file(self):
         # -- Create results file
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\PhyTrade\ML_optimisations\EVOA_Optimisation\EVOA_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
@@ -31,7 +31,9 @@ class EVOA_results_gen:
         self.results_file.write("====================== " + self.run_label + " ======================\n")
         self.results_file.write("\n~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~\n")
 
-        self.results_file.write("-----------> EVO_algo main parameters:" + "\n")
+        self.results_file.write("\nConfiguration file: " + self.config.config_name + "\n")
+
+        self.results_file.write("\n-----------> EVO_algo main parameters:" + "\n")
         self.results_file.write("population_size = " + str(self.config.population_size) + "\n")
         self.results_file.write("nb_of_generations = " + str(self.config.nb_of_generations) + "\n")
 
@@ -57,7 +59,7 @@ class EVOA_results_gen:
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
         self.results_file.write("-----------> Run stats: \n")
-        # self.results_file.write("Start time:" + run_start_time.strftime('%X %x %Z') + "\n")
+        # self.results_file.write("Start time:" + self.run_start_time.strftime('%X %x %Z') + "\n")
         self.results_file.write("End time: " + time.strftime('%X %x %Z') + "\n")
         self.results_file.write("Run time: " + str(round(self.run_stop_time - self.run_start_time, 3)) + "s\n")
 
@@ -74,17 +76,29 @@ class EVOA_results_gen:
 
         self.results_file.write("\n-----------> Benchmark Confusion tables: \n")
 
-        self.results_file.write("----------------------------------------")
         self.results_file.write("\nReference Confusion Table: \n" +
                                 self.benchmark_confusion_matrix_analysis.confusion_table_ref.to_string() + "\n")
-        self.results_file.write("----------------------------------------\n")
 
+        self.results_file.write("\n-----------> Sell classification results: \n")
         self.results_file.write("\nSell Confusion Table: \n" +
-                                self.benchmark_confusion_matrix_analysis.confusion_table_sell.to_string() + "\n")
+                                self.benchmark_confusion_matrix_analysis.confusion_table_sell.to_string() + "\n\n")
+
+        for key in self.benchmark_confusion_matrix_analysis.sell_stats:
+            self.results_file.write(str(key) + " = " + str(round(self.benchmark_confusion_matrix_analysis.sell_stats[key], 3)) + "\n")
+
+        self.results_file.write("\n-----------> Buy classification results: \n")
         self.results_file.write("\nBuy Confusion Table: \n" +
-                                self.benchmark_confusion_matrix_analysis.confusion_table_buy.to_string() + "\n")
+                                self.benchmark_confusion_matrix_analysis.confusion_table_buy.to_string() + "\n\n")
+
+        for key in self.benchmark_confusion_matrix_analysis.buy_stats:
+            self.results_file.write(str(key) + " = " + str(round(self.benchmark_confusion_matrix_analysis.buy_stats[key], 3)) + "\n")
+
+        self.results_file.write("\n-----------> Hold classification results: \n")
         self.results_file.write("\nHold Confusion Table: \n" +
-                                self.benchmark_confusion_matrix_analysis.confusion_table_hold.to_string() + "\n")
+                                self.benchmark_confusion_matrix_analysis.confusion_table_hold.to_string() + "\n\n")
+
+        for key in self.benchmark_confusion_matrix_analysis.hold_stats:
+            self.results_file.write(str(key) + " = " + str(round(self.benchmark_confusion_matrix_analysis.hold_stats[key], 3)) + "\n")
 
         self.results_file.write(str() + "\n")
 

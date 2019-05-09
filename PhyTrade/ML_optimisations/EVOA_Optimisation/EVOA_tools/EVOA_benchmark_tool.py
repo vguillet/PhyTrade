@@ -48,8 +48,8 @@ class Confusion_matrix_analysis:
         # ------------------------------------------------- Confusion tables
         ct_init = [["", ""], ["", ""]]
         # ---> Reference table
-        self.confusion_table_ref = pd.DataFrame(ct_init, columns=["Condition Positive 0", "Condition Negative 1"],
-                                                index=["Predicted Condition Positive 0", "Predicted Condition Negative 1"])
+        self.confusion_table_ref = pd.DataFrame(ct_init, columns=["Condition Positive", "Condition Negative"],
+                                                index=["Predicted Condition Positive", "Predicted Condition Negative"])
         # True positive
         self.confusion_table_ref.at['Predicted Condition Positive', 'Condition Positive'] = 'True positive'
         # True negative
@@ -78,6 +78,8 @@ class Confusion_matrix_analysis:
         # False Negative
         self.confusion_table_sell.at['Non-Sell', 'Sell'] = confusion_matrix.at['Hold', 'Sell'] + \
                                                            confusion_matrix.at['Buy', 'Sell']
+        # Calc stats
+        self.sell_stats = self.calc_stats(self.confusion_table_sell)
 
         # ---> Buy
         self.confusion_table_buy = pd.DataFrame(ct_init, columns=["Buy", "Non-Buy"], index=["Buy", "Non-Buy"])
@@ -96,6 +98,8 @@ class Confusion_matrix_analysis:
         # False Negative
         self.confusion_table_buy.at['Non-Buy', 'Buy'] = confusion_matrix.at['Hold', 'Buy'] + \
                                                          confusion_matrix.at['Sell', 'Buy']
+        # Calc stats
+        self.buy_stats = self.calc_stats(self.confusion_table_buy)
 
         # ---> Hold
         self.confusion_table_hold = pd.DataFrame(ct_init, columns=["Hold", "Non-Hold"], index=["Hold", "Non-Hold"])
@@ -114,6 +118,9 @@ class Confusion_matrix_analysis:
         # False Negative
         self.confusion_table_hold.at['Non-Hold', 'Hold'] = confusion_matrix.at['Sell', 'Hold'] + \
                                                            confusion_matrix.at['Buy', 'Hold']
+        # Calc stats
+        self.hold_stats = self.calc_stats(self.confusion_table_hold)
+        print(self.hold_stats)
 
         # ------------------------------------------------- Accuracy calculations
         # -- Overall accuracy
@@ -144,90 +151,92 @@ class Confusion_matrix_analysis:
             print("Overall accuracy achieved (excluding hold):", round(self.overall_accuracy_bs))
             print("\nConfusion matrix:\n", confusion_matrix, "\n")
 
-    @staticmethod
-    def calc_TPR(cm):
-        tp = cm.ix[0, 0]
-        fn = cm.ix[1, 0]
-
+    def calc_TPR(self, cm):
+        tp = float(cm.ix[0, 0])
+        fn = float(cm.ix[1, 0])
         return tp/(tp+fn)
 
-    @staticmethod
-    def calc_TNR(cm):
-        tn = cm.ix[1, 1]
-        fp = cm.ix[0, 1]
+    def calc_TNR(self, cm):
+        tn = float(cm.ix[1, 1])
+        fp = float(cm.ix[0, 1])
         return tn/(tn+fp)
 
-    @staticmethod
-    def calc_PPV(cm):
-        tp = cm.ix[0, 0]
-        fp = cm.ix[0, 1]
+    def calc_PPV(self, cm):
+        tp = float(cm.ix[0, 0])
+        fp = float(cm.ix[0, 1])
         return tp/(tp+fp)
 
-    @staticmethod
-    def calc_NPV(cm):
-        tn = cm.ix[1, 1]
-        fn = cm.ix[1, 0]
+    def calc_NPV(self, cm):
+        tn = float(cm.ix[1, 1])
+        fn = float(cm.ix[1, 0])
         return tn/(tn+fn)
 
-    @staticmethod
-    def calc_FNR(cm):
-        tp = cm.ix[0, 0]
-        fn = cm.ix[1, 0]
+    def calc_FNR(self, cm):
+        tp = float(cm.ix[0, 0])
+        fn = float(cm.ix[1, 0])
         return fn/(fn+tp)
 
-    @staticmethod
-    def calc_FPR(cm):
-        tn = cm.ix[1, 1]
-        fp = cm.ix[0, 1]
+    def calc_FPR(self, cm):
+        tn = float(cm.ix[1, 1])
+        fp = float(cm.ix[0, 1])
         return fp/(fp+tn)
 
-    @staticmethod
-    def calc_FDR(cm):
-        tp = cm.ix[0, 0]
-        fp = cm.ix[0, 1]
+    def calc_FDR(self, cm):
+        tp = float(cm.ix[0, 0])
+        fp = float(cm.ix[0, 1])
         return fp/(fp+tp)
 
-    @staticmethod
-    def calc_FOR(cm):
-        tn = cm.ix[1, 1]
-        fn = cm.ix[1, 0]
+    def calc_FOR(self, cm):
+        tn = float(cm.ix[1, 1])
+        fn = float(cm.ix[1, 0])
         return fn/(fn+tn)
 
-    @staticmethod
-    def calc_ACC(cm):
-        tp = cm.ix[0, 0]
-        tn = cm.ix[1, 1]
-        fp = cm.ix[0, 1]
-        fn = cm.ix[1, 0]
+    def calc_ACC(self, cm):
+        tp = float(cm.ix[0, 0])
+        tn = float(cm.ix[1, 1])
+        fp = float(cm.ix[0, 1])
+        fn = float(cm.ix[1, 0])
         return (tp+tn)/(tp+tn+fp+fn)
 
-    @staticmethod
-    def calc_F1(cm):
-        tp = cm.ix[0, 0]
-        fp = cm.ix[0, 1]
-        fn = cm.ix[1, 0]
+    def calc_F1(self, cm):
+        tp = float(cm.ix[0, 0])
+        fp = float(cm.ix[0, 1])
+        fn = float(cm.ix[1, 0])
         return 2*tp/(2*tp+fp+fn)
 
-    @staticmethod
-    def calc_MCC(cm):
-        tp = cm.ix[0, 0]
-        tn = cm.ix[1, 1]
-        fp = cm.ix[0, 1]
-        fn = cm.ix[1, 0]
-        return (tp*tn-fp*fn)/(sqrt((tp+fp)(tp+fn)(tn+fp)(tn+fn)))
+    def calc_MCC(self, cm):
+        tp = float(cm.ix[0, 0])
+        tn = float(cm.ix[1, 1])
+        fp = float(cm.ix[0, 1])
+        fn = float(cm.ix[1, 0])
+        return (tp*tn-fp*fn)/sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
 
-    @staticmethod
-    def calc_BM(cm):
-        tp = cm.ix[0, 0]
-        tn = cm.ix[1, 1]
-        fp = cm.ix[0, 1]
-        fn = cm.ix[1, 0]
+    def calc_BM(self, cm):
+        tp = float(cm.ix[0, 0])
+        tn = float(cm.ix[1, 1])
+        fp = float(cm.ix[0, 1])
+        fn = float(cm.ix[1, 0])
         return tp/(tp+fn) + tn/(tn+fp) - 1
 
-    @staticmethod
-    def calc_MK(cm):
-        tp = cm.ix[0, 0]
-        tn = cm.ix[1, 1]
-        fp = cm.ix[0, 1]
-        fn = cm.ix[1, 0]
+    def calc_MK(self, cm):
+        tp = float(cm.ix[0, 0])
+        tn = float(cm.ix[1, 1])
+        fp = float(cm.ix[0, 1])
+        fn = float(cm.ix[1, 0])
         return tp/(tp+fp) + tn/(tn+fn) - 1
+    
+    def calc_stats(self, cm):
+        return {"TPR": self.calc_TPR(cm),
+                "TNR": self.calc_TNR(cm),
+                "PPV": self.calc_PPV(cm),
+                "NPV": self.calc_NPV(cm),
+                "FNR": self.calc_FNR(cm),
+                "FPR": self.calc_FPR(cm),
+                "FDR": self.calc_FDR(cm),
+                "FOR": self.calc_FOR(cm),
+                "ACC": self.calc_ACC(cm),
+                "F1": self.calc_F1(cm),
+                "MCC": self.calc_MCC(cm),
+                "BM": self.calc_BM(cm),
+                "MK": self.calc_MK(cm)}
+

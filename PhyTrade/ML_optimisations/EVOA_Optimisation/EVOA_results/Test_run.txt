@@ -1,6 +1,9 @@
 ====================== Test_run ======================
 
 ~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
+
+Configuration file: Test configuration
+
 -----------> EVO_algo main parameters:
 population_size = 3
 nb_of_generations = 1
@@ -26,45 +29,90 @@ benchmark_data_slice_stop = 252
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 13:15:58 05/08/19 W. Europe Daylight Time
-Run time: 5.733s
+End time: 16:28:46 05/09/19 W. Europe Daylight Time
+Run time: 5.556s
 
-Average computing time per generation: 5.733s
+Average computing time per generation: 5.556s
 
 Number of data points processed: 300
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 52.77777777777778
+Fitness achieved: 56.74603174603175
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     1    11    6
-Hold    46   131   46
-Buy      6     4    1
+Sell     0     1    0
+Hold    49   143   53
+Buy      4     2    0
 
 -----------> Benchmark Confusion tables: 
-----------------------------------------
+
 Reference Confusion Table: 
-                               Condition Positive 0 Condition Negative 1 Condition Positive Condition Negative
-Predicted Condition Positive 0                                                          NaN                NaN
-Predicted Condition Negative 1                                                          NaN                NaN
-Predicted Condition Positive                    NaN                  NaN      True positive     False positive
-Predicted Condition Negative                    NaN                  NaN     False Negative      True negative
-----------------------------------------
+                             Condition Positive Condition Negative
+Predicted Condition Positive      True positive     False positive
+Predicted Condition Negative     False Negative      True negative
+
+-----------> Sell classification results: 
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         1        17
-Non-Sell    52       182
+Sell         0         1
+Non-Sell    53       198
+
+TPR = 0.0
+TNR = 0.995
+PPV = 0.0
+NPV = 0.789
+FNR = 1.0
+FPR = 0.005
+FDR = 1.0
+FOR = 0.211
+ACC = 0.786
+F1 = 0.0
+MCC = -0.033
+BM = -0.005
+MK = -0.211
+
+-----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        1       10
-Non-Buy   52      189
+Buy        0        6
+Non-Buy   53      193
+
+TPR = 0.0
+TNR = 0.97
+PPV = 0.0
+NPV = 0.785
+FNR = 1.0
+FPR = 0.03
+FDR = 1.0
+FOR = 0.215
+ACC = 0.766
+F1 = 0.0
+MCC = -0.081
+BM = -0.03
+MK = -0.215
+
+-----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       131        92
-Non-Hold    15        14
+Hold       143       102
+Non-Hold     3         4
+
+TPR = 0.979
+TNR = 0.038
+PPV = 0.584
+NPV = 0.571
+FNR = 0.021
+FPR = 0.962
+FDR = 0.416
+FOR = 0.429
+ACC = 0.583
+F1 = 0.731
+MCC = 0.052
+BM = 0.017
+MK = 0.155
 
