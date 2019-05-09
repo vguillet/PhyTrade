@@ -13,4 +13,6 @@ EVO_optimisation = EVOA_optimiser(config, run_label="Test_run")
 
 # ============================ ECONOMIC ANALYSIS ===============================
 
-# from PhyTrade.
+from PhyTrade.Tools.EVAL_parameter_set import EVAL_parameter_set
+
+# parameter_set =

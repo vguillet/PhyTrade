@@ -19,7 +19,8 @@ class data_slice_info:
         self.lower_barrier = lower_barrier
         self.look_ahead = look_ahead
 
-        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier, self.look_ahead,
+        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier,
+                                       self.look_ahead,
                                        self.start_index, self.stop_index)
 
     def get_next_data_slice(self):

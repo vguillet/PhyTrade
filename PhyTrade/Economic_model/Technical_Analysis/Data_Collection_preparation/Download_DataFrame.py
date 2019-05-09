@@ -2,7 +2,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Yaho
 
 
 def save_df_to_csv(df, file_name):
-    path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Steffegium\Data".replace('\\', '/')
+    path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\Data".replace('\\', '/')
     full_file_name = path + '/' + file_name
     df.to_csv(full_file_name)
 

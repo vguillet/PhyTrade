@@ -161,6 +161,7 @@ class Individual:
 
     def gen_economic_model(self, data_slice_info, plot_3=False):
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
+        from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_4 import Prototype_4
 
         self.analysis = Prototype_3(self.parameter_dictionary, data_slice_info)
         # self.analysis = Prototype_4(self.parameter_dictionary, data_slice_info)

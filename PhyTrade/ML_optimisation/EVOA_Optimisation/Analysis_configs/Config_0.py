@@ -8,6 +8,7 @@ class Config_0:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
+        self.config_name = "Test configuration"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 

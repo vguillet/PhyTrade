@@ -1,7 +1,7 @@
 """
 Prototype 3
 
-This prototype is based entirely on technical analysis, and is ment as a test for the genetic algorithm parameter
+This prototype is based entirely on technical analysis, and is ment as a test for the evolutionary algorithm parameter
 optimisation algorithm
 
 The following parameters still require manual input:
@@ -29,10 +29,9 @@ import pandas
 
 
 class Prototype_3:
-    def __init__(self, parameters, data_slice_info):
+    def __init__(self, parameters, data_slice_info, ticker='AAPL'):
 
         # ========================= DATA COLLECTION INITIALISATION =======================
-        ticker = 'AAPL'  # Ticker selected for Yahoo data collection
         # data = pull_yahoo_data(ticker)  # Pull data from Yahoo
 
         path = r"Data\AAPL_Yahoo_data.csv".replace(

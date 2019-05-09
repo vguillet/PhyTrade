@@ -167,7 +167,7 @@ class EVOA_optimiser:
         self.results.gen_result_recap_file()
         self.results.gen_parameters_json()
 
-        import matplotlib.pyplot as plt
-
-        plt.plot(range(len(self.best_individual_per_gen[0])), self.best_individual_per_gen[0])
-        plt.show()
+        # import matplotlib.pyplot as plt
+        #
+        # plt.plot(range(len(self.best_individual_per_gen[0])), self.best_individual_per_gen[0])
+        # plt.show()
