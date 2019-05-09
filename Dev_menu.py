@@ -1,32 +1,16 @@
-# ============================ DIRECT TRADERS ==================================
+"""
+The Dev_menu script is used to initiate all economic analysis, trading simulations,
+and economic model parameters optimisations.
+"""
 
-
-# Trader_1 = Tradebot_v1()
-# Trader_2 = Tradebot_v2()
-
-# dev_prototype()
-
-# ============================ GENETICALY-OPTIMISED TRADING ===================
-# from PhyTrade.ML_optimisations.EVOA_Optimisation.EVO_algo import EVO_optimiser
-#
-#
-# EVO_optimisation = EVO_optimiser(population_size=20,
-#                                  nb_of_generations=60,
-#
-#                                  mutation_rate=0.5,
-#                                  nb_parents=20,
-#                                  nb_random_ind=20,
-#
-#                                  exploitation_phase_len=20,
-#
-#                                  data_slice_start_index=-7000
-#                                  data_slice_shift_per_gen=100)
-
-# -------------------
-from PhyTrade.ML_optimisations.EVOA_Optimisation.EVO_algo_2 import EVOA_optimiser
-from Analysis_configs.Config_1 import Config_1
-from Analysis_configs.Config_0 import Config_0
+# ============================ EVOLUTION-OPTIMISER =============================
+from PhyTrade.ML_optimisation.EVOA_Optimisation.EVO_algo_2 import EVOA_optimiser
+from PhyTrade.ML_optimisation.EVOA_Optimisation.Analysis_configs.Config_1 import Config_1
 
 config = Config_1()
 
 EVO_optimisation = EVOA_optimiser(config, run_label="Test_run")
+
+# ============================ ECONOMIC ANALYSIS ===============================
+
+# from PhyTrade.

@@ -135,7 +135,7 @@ class SPLINE:
     def calc_thresholds(big_data, spline, buffer=0.05, buffer_setting=0,
                         standard_upper_threshold=0.5, standard_lower_threshold=-0.5):
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
-        from PhyTrade.Technical_Analysis.Data_Collection_preparation.Google_trends import pull_google_trends_data
+        from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Google_trends import pull_google_trends_data
         import pandas as pd
 
         """        

@@ -1,7 +1,7 @@
 
 class Individual:
     def __init__(self):
-        from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
 
         ga_random = EVOA_random_gen()
 
@@ -160,8 +160,7 @@ class Individual:
                 self.nb_of_parameters += 1
 
     def gen_economic_model(self, data_slice_info, plot_3=False):
-        from PhyTrade.Analysis_protocols_V.Prototype_3 import Prototype_3
-        from PhyTrade.Analysis_protocols_V.Prototype_4 import Prototype_4
+        from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
 
         self.analysis = Prototype_3(self.parameter_dictionary, data_slice_info)
         # self.analysis = Prototype_4(self.parameter_dictionary, data_slice_info)

@@ -1,5 +1,5 @@
-from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_tools.EVOA_tools import EVOA_tools
-from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_tools.EVOA_results_gen import EVOA_results_gen
+from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_tools import EVOA_tools
+from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 
 
@@ -157,7 +157,7 @@ class EVOA_optimiser:
         _, benchmark_confusion_matrix_analysis = self.evoa_tools.evaluate_population([self.best_individual],
                                                                                      self.benchmark_data_slice,
                                                                                      print_evaluation_status=False,
-                                                                                     plot_3=True)
+                                                                                     plot_3=False)
         self.best_individual.perform_trade_run()
 
         # Generate run results summary
@@ -167,7 +167,7 @@ class EVOA_optimiser:
         self.results.gen_result_recap_file()
         self.results.gen_parameters_json()
 
-        # import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt
 
-        # plt.plot(range(len(self.best_individual_per_gen[0])), self.best_individual_per_gen[0])
-        # plt.show()
+        plt.plot(range(len(self.best_individual_per_gen[0])), self.best_individual_per_gen[0])
+        plt.show()

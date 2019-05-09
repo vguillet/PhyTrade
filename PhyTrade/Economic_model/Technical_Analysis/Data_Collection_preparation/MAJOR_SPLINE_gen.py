@@ -1,5 +1,5 @@
 from PhyTrade.Tools.SPLINE_tools import SPLINE
-from PhyTrade.Technical_Analysis.Tools.OC_tools import OC
+from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 
 
 class MAJOR_SPLINE:

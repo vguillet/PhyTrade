@@ -3,7 +3,7 @@
 class EVOA_tools:
     @staticmethod
     def gen_initial_population(population_size=10):
-        from PhyTrade.ML_optimisations.EVOA_Optimisation.Individual_gen import Individual
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.Individual_gen import Individual
 
         population_lst = []
         for i in range(population_size):
@@ -15,7 +15,7 @@ class EVOA_tools:
     def evaluate_population(population_lst, data_slice_info, max_worker_processes=1,
                             print_evaluation_status=False, plot_3=False):
 
-        from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
         accuracies_achieved = []
         confusion_matrix_analysis = []
 
@@ -82,8 +82,8 @@ class EVOA_tools:
 
     @staticmethod
     def generate_offsprings(population_size, nb_parents, parents, nb_random_ind, mutation_rate=0.2):
-        from PhyTrade.ML_optimisations.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
-        from PhyTrade.ML_optimisations.EVOA_Optimisation.Individual_gen import Individual
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.Individual_gen import Individual
         import random
         from copy import deepcopy
 

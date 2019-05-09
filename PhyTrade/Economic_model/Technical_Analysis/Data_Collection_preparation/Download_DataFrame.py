@@ -1,5 +1,4 @@
-from PhyTrade.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
-from PhyTrade.Technical_Analysis.Data_Collection_preparation.Quandl import pull_quandl_data
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
 
 
 def save_df_to_csv(df, file_name):
