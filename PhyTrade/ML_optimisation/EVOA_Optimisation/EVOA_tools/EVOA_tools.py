@@ -33,7 +33,14 @@ class EVOA_tools:
 
         # -- List based evaluation
         for i in range(len(population_lst)):
+
             population_lst[i].gen_economic_model(data_slice_info, plot_3=plot_3)
+            population_lst[i].perform_trade_run()
+
+            if print_evaluation_status:
+                print("\n ----------------------------------------------")
+                print("Parameter set", i + 1, "evaluation completed:\n")
+                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
                                                                              data_slice_info.metalabels.close_values_metalabels,
@@ -42,16 +49,7 @@ class EVOA_tools:
 
             confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
             metalabel_accuracies.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
-
-            population_lst[i].perform_trade_run()
-
             net_worth.append(population_lst[i].account.net_worth_history[-1])
-
-            if print_evaluation_status:
-                print("\n ----------------------------------------------")
-                print("Parameter set", i + 1, "evaluation completed:\n")
-                print("Trade run completed")
-                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$")
 
         # -- Multi-process evaluation
         # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
@@ -93,13 +91,6 @@ class EVOA_tools:
                         sorted_fitness_ratios[i], sorted_fitness_ratios[i + 1] = sorted_fitness_ratios[i + 1], sorted_fitness_ratios[i]
                         sorted_population[i], sorted_population[i + 1] = sorted_population[i + 1], sorted_population[i]
                         sorted_fitness_evaluation[i], sorted_fitness_evaluation[i + 1] = sorted_fitness_evaluation[i + 1], sorted_fitness_evaluation[i]
-
-            print("Best Individual fitness from previous generation:", round(sorted_fitness_evaluation[0], 3))
-            print("Average fitness from previous generation:", sum(fitness_evaluation)/len(fitness_evaluation))
-            print("\n")
-            print("Best Individual fitness ratio from previous generation:", round(sorted_fitness_ratios[0], 3))
-            print("Average fitness from previous generation:", sum(fitness_ratios) / len(fitness_ratios))
-            print("\n")
 
             for i in range(nb_parents):
                 parents.append(sorted_population[i])

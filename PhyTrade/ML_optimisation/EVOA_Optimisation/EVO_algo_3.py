@@ -48,9 +48,12 @@ class EVOA_optimiser:
         self.results.run_start_time = time.time()
         print("Start time:", time.strftime('%X %x %Z'), "\n")
         print("-- Settings selected --")
-        print("Selected parent function:", decay_functions[config.parents_decay_function])
-        print("Selected random individual function:", decay_functions[config.random_ind_decay_function])
+        print("Selected evaluation method:", config.evaluation_methods[config.evaluation_method])
         print("")
+        print("Selected parent function:", config.decay_functions[config.parents_decay_function])
+        print("Selected random individual function:", config.decay_functions[config.random_ind_decay_function])
+        print("")
+        print("Configuration sheet:", config.config_name)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= EVO OPTIMISATION PROCESS =============================
         # Run for # nb of generations:
@@ -115,9 +118,17 @@ class EVOA_optimiser:
 
             # ------------------ Return generation info
             generation_end_time = time.time()
-            print("\n-- Generation", gen + 1, "population evaluation completed --")
             print("\nTime elapsed:", generation_end_time-generation_start_time)
+            print("\n-- Generation", gen + 1, "population evaluation completed --\n")
 
+            print("Best Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
+            print("Average fitness from previous generation:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
+            print("\n")
+            print("Best Individual net worth from previous generation:", round(max(self.net_worth), 3))
+            print("Average net worth from previous generation:", round((sum(self.net_worth) / len(self.net_worth)), 3))
+            print("\n")
+
+            # ------------------ Exit optimiser if end of dataset is reached
             if self.data_slice_info.stop_index >= 0:
                 break
 
