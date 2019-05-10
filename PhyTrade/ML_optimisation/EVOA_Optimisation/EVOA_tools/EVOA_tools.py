@@ -13,7 +13,7 @@ The class contains:
 class EVOA_tools:
     @staticmethod
     def gen_initial_population(population_size=10):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.Individual_gen import Individual
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
 
         population_lst = []
         for i in range(population_size):
@@ -22,8 +22,10 @@ class EVOA_tools:
         return population_lst
 
     @staticmethod
-    def evaluate_population(population_lst, data_slice_info, max_worker_processes=1, calculate_stats=False,
-                            print_evaluation_status=False, plot_3=False):
+    def evaluate_population(population_lst, data_slice_info,
+                            max_worker_processes=1,
+                            evaluation_method=1,
+                            calculate_stats=False, print_evaluation_status=False, plot_3=False):
 
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
         accuracies_achieved = []
@@ -31,21 +33,26 @@ class EVOA_tools:
 
         # -- List based evaluation
         for i in range(len(population_lst)):
+            population_lst[i].gen_economic_model(data_slice_info, plot_3=plot_3)
 
             if print_evaluation_status:
                 print("\n ----------------------------------------------")
                 print("Parameter set", i + 1, "evaluation completed:\n")
 
-            population_lst[i].gen_economic_model(data_slice_info, plot_3=plot_3)
-            # population_lst[i].perform_trade_run()
+            if evaluation_method == 1:
+                population_lst[i].perform_trade_run()
+                print("Trade run completed")
+                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$")
+                accuracies_achieved.append(population_lst[i].account.net_worth_history[-1])
 
-            individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
-                                                                             data_slice_info.metalabels.close_values_metalabels,
-                                                                             calculate_stats=calculate_stats,
-                                                                             print_benchmark_results=print_evaluation_status)
+            elif evaluation_method == 2:
+                individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
+                                                                                 data_slice_info.metalabels.close_values_metalabels,
+                                                                                 calculate_stats=calculate_stats,
+                                                                                 print_benchmark_results=print_evaluation_status)
 
-            confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
-            accuracies_achieved.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
+                confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
+                accuracies_achieved.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
 
         # -- Multi-process evaluation
         # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
@@ -65,28 +72,35 @@ class EVOA_tools:
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
 
         # -- Determine fitness ratio
-        # fitness_ratios = []
-        # for i in range(len(fitness_evaluation)):
-        #     fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
-        # scanned_fitness_ratios = fitness_ratios
+        fitness_ratios = []
+        for i in range(len(fitness_evaluation)):
+            fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
         # -- Select individuals
         parents = []
 
+        # TODO: Implement alternative selection methods
         if selection_method == 0:
             # Elitic selection
-            sorted_fitness_ratios = fitness_evaluation
+            # sorted_fitness_ratios = fitness_evaluation
+            sorted_fitness_ratios = fitness_ratios
             sorted_population = population
+            sorted_fitness_evaluation = fitness_evaluation
 
-            # Use bubblesort to sort population and fitness_ratios
+            # Use bubblesort to sort population, fitness_evaluation, and fitness_ratios according to fitness_ratio
             for _ in range(len(sorted_fitness_ratios)):
                 for i in range(len(sorted_fitness_ratios) - 1):
                     if sorted_fitness_ratios[i] < sorted_fitness_ratios[i + 1]:
                         sorted_fitness_ratios[i], sorted_fitness_ratios[i + 1] = sorted_fitness_ratios[i + 1], sorted_fitness_ratios[i]
                         sorted_population[i], sorted_population[i + 1] = sorted_population[i + 1], sorted_population[i]
+                        sorted_fitness_evaluation[i], sorted_fitness_evaluation[i + 1] = sorted_fitness_evaluation[i + 1], sorted_fitness_evaluation[i]
 
-            print("Best Individual fitness from previous generation:", round(sorted_fitness_ratios[0], 3))
+            print("Best Individual fitness from previous generation:", round(sorted_fitness_evaluation[0], 3))
             print("Average fitness from previous generation:", sum(fitness_evaluation)/len(fitness_evaluation))
+            print("\n")
+            print("Best Individual fitness ratio from previous generation:", round(sorted_fitness_ratios[0], 3))
+            print("Average fitness from previous generation:", sum(fitness_ratios) / len(fitness_ratios))
+            print("\n")
 
             for i in range(nb_parents):
                 parents.append(sorted_population[i])
@@ -96,7 +110,7 @@ class EVOA_tools:
     @staticmethod
     def generate_offsprings(population_size, nb_parents, parents, nb_random_ind, mutation_rate=0.2):
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.Individual_gen import Individual
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
         import random
         from copy import deepcopy
 

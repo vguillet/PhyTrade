@@ -4,12 +4,12 @@ and economic model parameters optimisations.
 """
 
 # ============================ EVOLUTION-OPTIMISER =============================
-from PhyTrade.ML_optimisation.EVOA_Optimisation.EVO_algo_2 import EVOA_optimiser
+from PhyTrade.ML_optimisation.EVOA_Optimisation.EVO_algo_3 import EVOA_optimiser
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Analysis_configs.Config_0 import Config_0
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Analysis_configs.Config_1 import Config_1
 
 
-config = Config_1()
+config = Config_0()
 EVO_optimisation = EVOA_optimiser(config)
 
 # ============================ ECONOMIC ANALYSIS ===============================

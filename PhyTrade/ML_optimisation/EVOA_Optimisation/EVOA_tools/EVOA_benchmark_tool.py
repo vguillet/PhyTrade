@@ -155,77 +155,119 @@ class Confusion_matrix_analysis:
     def calc_TPR(self, cm):
         tp = float(cm.ix[0, 0])
         fn = float(cm.ix[1, 0])
-        return tp/(tp+fn)
+
+        try:
+            return tp / (tp + fn)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_TNR(self, cm):
         tn = float(cm.ix[1, 1])
         fp = float(cm.ix[0, 1])
-        return tn/(tn+fp)
+
+        try:
+            return tn / (tn + fp)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_PPV(self, cm):
         tp = float(cm.ix[0, 0])
         fp = float(cm.ix[0, 1])
-        return tp/(tp+fp)
+
+        try:
+            return tp / (tp + fp)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_NPV(self, cm):
         tn = float(cm.ix[1, 1])
         fn = float(cm.ix[1, 0])
-        return tn/(tn+fn)
+        try:
+            return tn / (tn + fn)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_FNR(self, cm):
         tp = float(cm.ix[0, 0])
         fn = float(cm.ix[1, 0])
-        return fn/(fn+tp)
+        try:
+            return fn / (fn + tp)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_FPR(self, cm):
         tn = float(cm.ix[1, 1])
         fp = float(cm.ix[0, 1])
-        return fp/(fp+tn)
+        try:
+            return fp / (fp + tn)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_FDR(self, cm):
         tp = float(cm.ix[0, 0])
         fp = float(cm.ix[0, 1])
-        return fp/(fp+tp)
+        try:
+            return fp / (fp + tp)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_FOR(self, cm):
         tn = float(cm.ix[1, 1])
         fn = float(cm.ix[1, 0])
-        return fn/(fn+tn)
+        try:
+            return fn / (fn + tn)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_ACC(self, cm):
         tp = float(cm.ix[0, 0])
         tn = float(cm.ix[1, 1])
         fp = float(cm.ix[0, 1])
         fn = float(cm.ix[1, 0])
-        return (tp+tn)/(tp+tn+fp+fn)
+        try:
+            return (tp + tn) / (tp + tn + fp + fn)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_F1(self, cm):
         tp = float(cm.ix[0, 0])
         fp = float(cm.ix[0, 1])
         fn = float(cm.ix[1, 0])
-        return 2*tp/(2*tp+fp+fn)
+        try:
+            return 2 * tp / (2 * tp + fp + fn)
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_MCC(self, cm):
         tp = float(cm.ix[0, 0])
         tn = float(cm.ix[1, 1])
         fp = float(cm.ix[0, 1])
         fn = float(cm.ix[1, 0])
-        return (tp*tn-fp*fn)/sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
+        try:
+            return (tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_BM(self, cm):
         tp = float(cm.ix[0, 0])
         tn = float(cm.ix[1, 1])
         fp = float(cm.ix[0, 1])
         fn = float(cm.ix[1, 0])
-        return tp/(tp+fn) + tn/(tn+fp) - 1
+        try:
+            return tp / (tp + fn) + tn / (tn + fp) - 1
+        except ZeroDivisionError:
+            return float('Inf')
 
     def calc_MK(self, cm):
         tp = float(cm.ix[0, 0])
         tn = float(cm.ix[1, 1])
         fp = float(cm.ix[0, 1])
         fn = float(cm.ix[1, 0])
-        return tp/(tp+fp) + tn/(tn+fn) - 1
-    
+        try:
+            return tp / (tp + fp) + tn / (tn + fn) - 1
+        except ZeroDivisionError:
+            return float('Inf')
+
     def calc_stats(self, cm):
         return {"TPR": self.calc_TPR(cm),
                 "TNR": self.calc_TNR(cm),

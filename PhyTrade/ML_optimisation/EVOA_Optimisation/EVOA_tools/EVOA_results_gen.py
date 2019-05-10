@@ -3,6 +3,7 @@ This class contains the results_gen class, used to generate results form the var
 """
 
 import time
+from PhyTrade.Tools.MATH_tools import MATH
 
 
 class EVOA_results_gen:
@@ -19,8 +20,21 @@ class EVOA_results_gen:
 
         self.total_data_points_processed = None
 
-        self.best_individual_per_gen = []
+        self.best_individual_fitness_per_gen = []
         self.avg_fitness_per_gen = []
+
+    def gen_stats(self):
+        # ------------ Generating further informations
+        # -------- Determine best fit lines
+        # solve for a and b
+        a_avg_f, b_avg_f = MATH().best_fit(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen)
+        a_best_i, b_best_i = MATH().best_fit(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen)
+        
+        self.gradient_bestfit_avg_f = b_avg_f
+        self.gradient_bestfit_best_i = b_best_i
+
+        self.yfit_avg_f = [a_avg_f + b_avg_f * xi for xi in range(len(self.avg_fitness_per_gen))]
+        self.yfit_best_f = [a_best_i + b_best_i * xi for xi in range(len(self.avg_fitness_per_gen))]
 
     def gen_parameters_json(self):
         import json
@@ -80,6 +94,11 @@ class EVOA_results_gen:
                                 + str(round((self.run_stop_time - self.run_start_time)/self.config.nb_of_generations, 3)) + "s\n")
 
         self.results_file.write("\nNumber of data points processed: " + str(self.total_data_points_processed) + "\n")
+        self.results_file.write("\nMax average fitness achieved: " + str(max(self.avg_fitness_per_gen)) + "\n")
+        self.results_file.write("Max individual fitness achieved: " + str(max(self.best_individual_fitness_per_gen)) + "\n")
+
+        self.results_file.write("\nAverage fitness best fit line gradient achieved: " + str(self.gradient_bestfit_avg_f) + "\n")
+        self.results_file.write("Individual fitness best fit line gradient achieved: " + str(self.gradient_bestfit_best_i) + "\n")
 
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
@@ -125,8 +144,12 @@ class EVOA_results_gen:
         import matplotlib.pyplot as plt
 
         plt.plot(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen, label="Average fitness per gen")
-        plt.plot(range(len(self.best_individual_per_gen)), self.best_individual_per_gen, label="Best individual per gen")
+        plt.plot(range(len(self.avg_fitness_per_gen)), self.yfit_avg_f, "k", dashes=[6, 2])
+        plt.plot(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen, label="Best individual per gen")
+        plt.plot(range(len(self.avg_fitness_per_gen)), self.yfit_best_f, "k", dashes=[6, 2])
 
+        plt.ylabel("Fitness %")
+        plt.xlabel("Generation #")
         plt.legend()
         plt.grid()
 

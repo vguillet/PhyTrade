@@ -19,9 +19,9 @@ class Config_0:
         self.population_size = 20
         self.nb_of_generations = 20
 
-        self.mutation_rate = 0.5
-        self.nb_parents = 5
-        self.nb_random_ind = 7
+        self.mutation_rate = 0.3
+        self.nb_parents = 8
+        self.nb_random_ind = 5
 
         self.exploitation_phase_len_percent = .3
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)

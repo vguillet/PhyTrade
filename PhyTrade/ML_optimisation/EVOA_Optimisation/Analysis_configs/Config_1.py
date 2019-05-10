@@ -8,7 +8,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Config_1"
+        self.config_name = "Config_2"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -16,19 +16,19 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # EVO_algo main parameters
-        self.population_size = 40
-        self.nb_of_generations = 60
+        self.population_size = 20
+        self.nb_of_generations = 100
 
         self.mutation_rate = 0.3
-        self.nb_parents = 15
-        self.nb_random_ind = 10
+        self.nb_parents = 8
+        self.nb_random_ind = 5
 
         self.exploitation_phase_len_percent = .3
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 100
+        self.data_slice_shift_per_gen = 50
 
         # ____________________________________________________________________________________________________
         # -- Generations settings
