@@ -72,11 +72,16 @@ class EVOA_optimiser:
                                                                       print_evoa_parameters_per_gen=config.print_evoa_parameters_per_gen)
 
                 # ------------------ Select individuals from previous generation
-                self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
-                                                                      self.population,
-                                                                      selection_method=config.parents_selection_method,
-                                                                      nb_parents=config.nb_parents)
-
+                if config.evaluation_method == 0:
+                    self.parents = self.evoa_tools.select_from_population(self.net_worth,
+                                                                          self.population,
+                                                                          selection_method=config.parents_selection_method,
+                                                                          nb_parents=config.nb_parents)
+                elif config.evaluation_method == 1:
+                    self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
+                                                                          self.population,
+                                                                          selection_method=config.parents_selection_method,
+                                                                          nb_parents=config.nb_parents)
                 # ------------------ Generate offsprings with mutations
                 self.new_population = self.evoa_tools.generate_offsprings(config.population_size,
                                                                           self.nb_parents,
@@ -92,16 +97,21 @@ class EVOA_optimiser:
                 self.population = self.new_population
 
             # ------------------ Evaluate population
-            self.fitness_evaluation, _ = self.evoa_tools.evaluate_population(self.population,
-                                                                             self.data_slice_info,
-                                                                             max_worker_processes=config.max_worker_processes,
-                                                                             evaluation_method=1,
-                                                                             print_evaluation_status=config.print_evaluation_status,
-                                                                             plot_3=config.plot_signal_triggers)
+            self.fitness_evaluation, _, self.net_worth = self.evoa_tools.evaluate_population(self.population,
+                                                                                             self.data_slice_info,
+                                                                                             max_worker_processes=config.max_worker_processes,
+                                                                                             print_evaluation_status=config.print_evaluation_status,
+                                                                                             plot_3=config.plot_signal_triggers)
 
             # ------------------ Collect generation data
             self.results.best_individual_fitness_per_gen.append(max(self.fitness_evaluation))
             self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation)/len(self.fitness_evaluation))
+
+            self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
+            self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
+
+            # self.data_slice_info.perform_trade_run()
+            # self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
 
             # ------------------ Return generation info
             generation_end_time = time.time()
@@ -129,13 +139,11 @@ class EVOA_optimiser:
                                                                       self.population,
                                                                       selection_method=config.parents_selection_method,
                                                                       nb_parents=1)[0]
-        _, benchmark_confusion_matrix_analysis = self.evoa_tools.evaluate_population([self.best_individual],
-                                                                                     self.benchmark_data_slice,
-                                                                                     evaluation_method=2,
-                                                                                     calculate_stats=True,
-                                                                                     print_evaluation_status=False,
-                                                                                     plot_3=False)
-        self.best_individual.perform_trade_run()
+        _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
+                                                                                        self.benchmark_data_slice,
+                                                                                        calculate_stats=True,
+                                                                                        print_evaluation_status=False,
+                                                                                        plot_3=True)
 
         # Generate run results summary
         self.results.individual = self.best_individual

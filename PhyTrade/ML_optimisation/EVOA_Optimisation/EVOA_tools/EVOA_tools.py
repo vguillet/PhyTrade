@@ -24,35 +24,34 @@ class EVOA_tools:
     @staticmethod
     def evaluate_population(population_lst, data_slice_info,
                             max_worker_processes=1,
-                            evaluation_method=1,
                             calculate_stats=False, print_evaluation_status=False, plot_3=False):
-
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
-        accuracies_achieved = []
+
+        metalabel_accuracies = []
         confusion_matrix_analysis = []
+        net_worth = []
 
         # -- List based evaluation
         for i in range(len(population_lst)):
             population_lst[i].gen_economic_model(data_slice_info, plot_3=plot_3)
 
+            individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
+                                                                             data_slice_info.metalabels.close_values_metalabels,
+                                                                             calculate_stats=calculate_stats,
+                                                                             print_benchmark_results=print_evaluation_status)
+
+            confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
+            metalabel_accuracies.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
+
+            population_lst[i].perform_trade_run()
+
+            net_worth.append(population_lst[i].account.net_worth_history[-1])
+
             if print_evaluation_status:
                 print("\n ----------------------------------------------")
                 print("Parameter set", i + 1, "evaluation completed:\n")
-
-            if evaluation_method == 1:
-                population_lst[i].perform_trade_run()
                 print("Trade run completed")
                 print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$")
-                accuracies_achieved.append(population_lst[i].account.net_worth_history[-1])
-
-            elif evaluation_method == 2:
-                individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
-                                                                                 data_slice_info.metalabels.close_values_metalabels,
-                                                                                 calculate_stats=calculate_stats,
-                                                                                 print_benchmark_results=print_evaluation_status)
-
-                confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
-                accuracies_achieved.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
 
         # -- Multi-process evaluation
         # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
@@ -66,7 +65,7 @@ class EVOA_tools:
         #
         # accuracies_achieved = MATH().normalise_zero_one(profit_achieved)
 
-        return accuracies_achieved, confusion_matrix_analysis
+        return metalabel_accuracies, confusion_matrix_analysis, net_worth
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):

@@ -8,7 +8,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Config_2"
+        self.config_name = "Config_4"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -17,13 +17,13 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # EVO_algo main parameters
         self.population_size = 20
-        self.nb_of_generations = 100
+        self.nb_of_generations = 40
 
         self.mutation_rate = 0.3
         self.nb_parents = 8
         self.nb_random_ind = 5
 
-        self.exploitation_phase_len_percent = .3
+        self.exploitation_phase_len_percent = 0.3
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
@@ -32,8 +32,10 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # -- Generations settings
-        self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
+        self.evaluation_methods = ["Profit based", "MetaLabels"]
+        self.evaluation_method = 0
 
+        self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
 

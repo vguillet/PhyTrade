@@ -34,6 +34,7 @@ class data_slice_info:
         # -- Obtain new metalabels
         self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier, self.look_ahead,
                                        self.start_index, self.stop_index)
+        return
 
     def get_shifted_data_slice(self):
         # -- Determine new start/stop indexes
@@ -46,3 +47,12 @@ class data_slice_info:
         # -- Obtain new metalabels
         self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier, self.look_ahead,
                                        self.start_index, self.stop_index)
+        return
+
+    def perform_trade_run(self):
+        from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
+
+        tradebot = Tradebot_v3(self.metalabels)
+
+        self.metalabels_account = tradebot.account
+        return

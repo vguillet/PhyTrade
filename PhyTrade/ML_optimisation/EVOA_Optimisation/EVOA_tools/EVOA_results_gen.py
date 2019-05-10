@@ -23,18 +23,34 @@ class EVOA_results_gen:
         self.best_individual_fitness_per_gen = []
         self.avg_fitness_per_gen = []
 
+        self.best_individual_net_worth_per_gen = []
+        self.avg_net_worth_per_gen = []
+
+        self.data_slice_metalabel_pp = []
+
     def gen_stats(self):
         # ------------ Generating further informations
         # -------- Determine best fit lines
-        # solve for a and b
+        # --> For average fitness
         a_avg_f, b_avg_f = MATH().best_fit(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen)
-        a_best_i, b_best_i = MATH().best_fit(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen)
-        
         self.gradient_bestfit_avg_f = b_avg_f
-        self.gradient_bestfit_best_i = b_best_i
-
         self.yfit_avg_f = [a_avg_f + b_avg_f * xi for xi in range(len(self.avg_fitness_per_gen))]
-        self.yfit_best_f = [a_best_i + b_best_i * xi for xi in range(len(self.avg_fitness_per_gen))]
+
+        # --> For best fitness individual
+        a_best_f, b_best_f = MATH().best_fit(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen)
+        self.gradient_bestfit_best_f = b_best_f
+        self.yfit_best_f = [a_best_f + b_best_f * xi for xi in range(len(self.avg_fitness_per_gen))]
+
+        # --> For average net worth
+        a_avg_nw, b_avg_nw = MATH().best_fit(range(len(self.avg_net_worth_per_gen)), self.avg_net_worth_per_gen)
+        self.gradient_bestfit_avg_nw = b_avg_nw
+        self.yfit_avg_nw = [a_avg_nw + b_avg_nw * xi for xi in range(len(self.avg_net_worth_per_gen))]
+
+        # --> FOr best net worth individual
+        a_best_nw, b_best_nw = MATH().best_fit(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen)
+        self.gradient_bestfit_best_nw = b_best_nw
+        self.yfit_best_nw = [a_best_nw + b_best_nw * xi for xi in range(len(self.best_individual_net_worth_per_gen))]
+
 
     def gen_parameters_json(self):
         import json
@@ -68,11 +84,19 @@ class EVOA_results_gen:
         self.results_file.write("nb_parents = " + str(self.config.nb_parents) + "\n")
         self.results_file.write("nb_random_ind = " + str(self.config.nb_random_ind) + "\n")
 
-        self.results_file.write("\nexploitation_phase_len_percent = " + str(self.config.exploitation_phase_len_percent) + "\n")
+        self.results_file.write("\nexploitation_phase_len_percent = " + str(self.config.exploitation_phase_len_percent*100) + "\n")
 
         self.results_file.write("\ndata_slice_start_index = " + str(self.config.data_slice_start_index) + "\n")
         self.results_file.write("data_slice_size = " + str(self.config.data_slice_size) + "\n")
         self.results_file.write("data_slice_shift_per_gen = " + str(self.config.data_slice_shift_per_gen) + "\n")
+
+        self.results_file.write("\n-----------> Generations settings:" + "\n")
+        self.results_file.write("Evaluation method: " + self.config.evaluation_methods[self.config.evaluation_method] + "\n")
+
+        self.results_file.write("\nParents # decay function: " + self.config.decay_functions[self.config.parents_decay_function] + "\n")
+        self.results_file.write("Random individual # decay function: " + self.config.decay_functions[self.config.parents_decay_function] + "\n")
+
+        self.results_file.write("data_slice_size = " + str(self.config.data_slice_size) + "\n")
 
         self.results_file.write("\n-----------> Metalabeling settings:" + "\n")
         self.results_file.write("upper_barrier = " + str(self.config.upper_barrier) + "\n")
@@ -94,11 +118,20 @@ class EVOA_results_gen:
                                 + str(round((self.run_stop_time - self.run_start_time)/self.config.nb_of_generations, 3)) + "s\n")
 
         self.results_file.write("\nNumber of data points processed: " + str(self.total_data_points_processed) + "\n")
-        self.results_file.write("\nMax average fitness achieved: " + str(max(self.avg_fitness_per_gen)) + "\n")
+
+        self.results_file.write("\n-----------> Fitness results:" + "\n")
+        self.results_file.write("Max average fitness achieved: " + str(max(self.avg_fitness_per_gen)) + "\n")
         self.results_file.write("Max individual fitness achieved: " + str(max(self.best_individual_fitness_per_gen)) + "\n")
 
         self.results_file.write("\nAverage fitness best fit line gradient achieved: " + str(self.gradient_bestfit_avg_f) + "\n")
-        self.results_file.write("Individual fitness best fit line gradient achieved: " + str(self.gradient_bestfit_best_i) + "\n")
+        self.results_file.write("Individual fitness best fit line gradient achieved: " + str(self.gradient_bestfit_best_f) + "\n")
+
+        self.results_file.write("\n-----------> Net Worth results:" + "\n")
+        self.results_file.write("Max average net worth achieved: " + str(max(self.avg_net_worth_per_gen)) + "\n")
+        self.results_file.write("Max individual net worth achieved: " + str(max(self.best_individual_net_worth_per_gen)) + "\n")
+
+        self.results_file.write("\nAverage net worth best fit line gradient achieved: " + str(self.gradient_bestfit_avg_nw) + "\n")
+        self.results_file.write("Individual net worth best fit line gradient achieved: " + str(self.gradient_bestfit_best_nw) + "\n")
 
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
@@ -143,10 +176,12 @@ class EVOA_results_gen:
     def plot_results(self):
         import matplotlib.pyplot as plt
 
+        # --> Fitness plot
         plt.plot(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen, label="Average fitness per gen")
         plt.plot(range(len(self.avg_fitness_per_gen)), self.yfit_avg_f, "k", dashes=[6, 2])
-        plt.plot(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen, label="Best individual per gen")
-        plt.plot(range(len(self.avg_fitness_per_gen)), self.yfit_best_f, "k", dashes=[6, 2])
+
+        plt.plot(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen, label="Best individual fitness per gen")
+        plt.plot(range(len(self.best_individual_fitness_per_gen)), self.yfit_best_f, "k", dashes=[6, 2])
 
         plt.ylabel("Fitness %")
         plt.xlabel("Generation #")
@@ -154,4 +189,19 @@ class EVOA_results_gen:
         plt.grid()
 
         plt.show()
+
+        # --> Net Worth plot
+        plt.plot(range(len(self.avg_net_worth_per_gen)), self.avg_net_worth_per_gen, label="Average net worth per gen")
+        plt.plot(range(len(self.avg_net_worth_per_gen)), self.yfit_avg_nw, "k", dashes=[6, 2])
+
+        plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen, label="Best individual net worth per gen")
+        plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.yfit_best_nw, "k", dashes=[6, 2])
+
+        plt.ylabel("Net worth $")
+        plt.xlabel("Generation #")
+        plt.legend()
+        plt.grid()
+
+        plt.show()
+
 

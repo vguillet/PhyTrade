@@ -8,7 +8,7 @@ def save_df_to_csv(df, file_name):
 
 
 if __name__ == "__main__":
-    ticker = "NVDA"
+    ticker = "AAPL"
 
     data = pull_yahoo_data(ticker)
     # data = pull_quandl_data(ticker)
