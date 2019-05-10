@@ -33,7 +33,7 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # -- Generations settings
         self.evaluation_methods = ["Profit based", "MetaLabels"]
-        self.evaluation_method = 0
+        self.evaluation_method = 1
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1

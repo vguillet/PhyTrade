@@ -16,12 +16,12 @@ class Config_0:
 
         # ____________________________________________________________________________________________________
         # EVO_algo main parameters
-        self.population_size = 5
-        self.nb_of_generations = 3
+        self.population_size = 20
+        self.nb_of_generations = 10
 
         self.mutation_rate = 0.3
-        self.nb_parents = 2
-        self.nb_random_ind = 1
+        self.nb_parents = 8
+        self.nb_random_ind = 5
 
         self.exploitation_phase_len_percent = 0.3
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
