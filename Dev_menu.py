@@ -16,8 +16,6 @@ EVO_optimisation = EVOA_optimiser(config)
 from PhyTrade.Tools.EVAL_parameter_set import EVAL_parameter_set
 import json
 
-# path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_run.json".replace('\\', '/')
-# parameter_set_json = open(path)
-# parameter_set = json.load(parameter_set_json)
+# parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_run.json".replace('\\', '/')))
 
 # evaluation = EVAL_parameter_set("1", parameter_set, "AAPL", -500, 450, 20)

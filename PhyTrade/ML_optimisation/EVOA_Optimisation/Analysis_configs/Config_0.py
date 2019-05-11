@@ -2,6 +2,7 @@
 Config_1
 """
 import multiprocessing
+import json
 
 
 class Config_0:
@@ -15,13 +16,13 @@ class Config_0:
         self.plot_signal_triggers = False
 
         # ____________________________________________________________________________________________________
-        # EVO_algo main parameters
-        self.population_size = 20
+        # -- EVO_algo main parameters
+        self.population_size = 10
         self.nb_of_generations = 10
 
         self.mutation_rate = 0.3
-        self.nb_parents = 8
-        self.nb_random_ind = 5
+        self.nb_parents = 3
+        self.nb_random_ind = 3
 
         self.exploitation_phase_len_percent = 0.3
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
@@ -31,14 +32,20 @@ class Config_0:
         self.data_slice_shift_per_gen = 0
 
         # ____________________________________________________________________________________________________
+        # -- Generation 0 settings
+        # Set to None if random initial population wanted
+        # self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Config_5.json".replace('\\', '/')))
+        self.starting_parameters = None
+
         # -- Generations settings
-        self.evaluation_methods = ["Profit based", "MetaLabels"]
-        self.evaluation_method = 0
+        self.evaluation_methods = ["Profit", "MetaLabels"]
+        self.evaluation_method = 1
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
 
+        self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0
 
         # -- max_worker_processes

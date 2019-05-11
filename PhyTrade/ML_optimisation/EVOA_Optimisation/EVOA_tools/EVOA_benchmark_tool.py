@@ -3,7 +3,7 @@ from math import *
 
 
 class Confusion_matrix_analysis:
-    def __init__(self, model_predictions, metalabels, calculate_stats = False, print_benchmark_results=False):
+    def __init__(self, model_predictions, metalabels, calculate_stats=False, print_benchmark_results=False):
 
         self.model_predictions = model_predictions
         self.metalabels = metalabels

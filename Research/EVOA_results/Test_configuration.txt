@@ -5,12 +5,12 @@
 Configuration file: Test_configuration
 
 -----------> EVO_algo main parameters:
-population_size = 20
+population_size = 10
 nb_of_generations = 10
 
 mutation_rate = 0.3
-nb_parents = 8
-nb_random_ind = 5
+nb_parents = 3
+nb_random_ind = 3
 
 exploitation_phase_len_percent = 30.0
 
@@ -19,7 +19,7 @@ data_slice_size = 200
 data_slice_shift_per_gen = 0
 
 -----------> Generations settings:
-Evaluation method: Profit based
+Evaluation method: MetaLabels
 
 Parents # decay function: Linear decay
 Random individual # decay function: Linear decay
@@ -36,37 +36,37 @@ benchmark_data_slice_stop = 252
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 14:34:14 05/10/19 W. Europe Daylight Time
-Run time: 203.021s
+End time: 20:22:57 05/11/19 W. Europe Daylight Time
+Run time: 90.962s
 
-Average computing time per generation: 20.302s
+Average computing time per generation: 9.096s
 
 Number of data points processed: 200
 
 -----------> Fitness results:
-Max average fitness achieved: 18.113779561502522
-Max individual fitness achieved: 40.0
+Max average fitness achieved: 22.785825285825286
+Max individual fitness achieved: 42.857142857142854
 
-Average fitness best fit line gradient achieved: -0.0352400826413476
-Individual fitness best fit line gradient achieved: -0.6879523984787118
+Average fitness best fit line gradient achieved: 0.41248332459984816
+Individual fitness best fit line gradient achieved: 0.7792207792207798
 
 -----------> Net Worth results:
-Max average net worth achieved: 1218.1018236658074
-Max individual net worth achieved: 1337.9870608158747
+Max average net worth achieved: 1080.073970409158
+Max individual net worth achieved: 1200.2221058197997
 
-Average net worth best fit line gradient achieved: 17.176027592305566
-Individual net worth best fit line gradient achieved: 7.93001791455992
+Average net worth best fit line gradient achieved: 3.1418916259318808
+Individual net worth best fit line gradient achieved: 7.2181515636711
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 52.77777777777778
-Fitness achieved bs: 9.375
+Fitness achieved: 58.333333333333336
+Fitness achieved bs: 0.0
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     2    16    4
-Hold    44   130   46
-Buy      4     5    1
+Sell     0     4    1
+Hold    49   147   50
+Buy      1     0    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -79,62 +79,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         2        20
-Non-Sell    48       182
+Sell         0         5
+Non-Sell    50       197
 
-TPR = 0.04
-TNR = 0.901
-PPV = 0.091
-NPV = 0.791
-FNR = 0.96
-FPR = 0.099
-FDR = 0.909
-FOR = 0.209
-ACC = 0.73
-F1 = 0.056
-MCC = -0.083
-BM = -0.059
-MK = -0.118
+TPR = 0.0
+TNR = 0.975
+PPV = 0.0
+NPV = 0.798
+FNR = 1.0
+FPR = 0.025
+FDR = 1.0
+FOR = 0.202
+ACC = 0.782
+F1 = 0.0
+MCC = -0.071
+BM = -0.025
+MK = -0.202
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        1        9
-Non-Buy   50      192
+Buy        0        1
+Non-Buy   51      200
 
-TPR = 0.02
-TNR = 0.955
-PPV = 0.1
-NPV = 0.793
-FNR = 0.98
-FPR = 0.045
-FDR = 0.9
-FOR = 0.207
-ACC = 0.766
-F1 = 0.033
-MCC = -0.052
-BM = -0.025
-MK = -0.107
+TPR = 0.0
+TNR = 0.995
+PPV = 0.0
+NPV = 0.797
+FNR = 1.0
+FPR = 0.005
+FDR = 1.0
+FOR = 0.203
+ACC = 0.794
+F1 = 0.0
+MCC = -0.032
+BM = -0.005
+MK = -0.203
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       130        90
-Non-Hold    21        11
+Hold       147        99
+Non-Hold     4         2
 
-TPR = 0.861
-TNR = 0.109
-PPV = 0.591
-NPV = 0.344
-FNR = 0.139
-FPR = 0.891
-FDR = 0.409
-FOR = 0.656
-ACC = 0.56
-F1 = 0.701
-MCC = -0.044
-BM = -0.03
-MK = -0.065
+TPR = 0.974
+TNR = 0.02
+PPV = 0.598
+NPV = 0.333
+FNR = 0.026
+FPR = 0.98
+FDR = 0.402
+FOR = 0.667
+ACC = 0.591
+F1 = 0.741
+MCC = -0.021
+BM = -0.007
+MK = -0.069
 

@@ -46,7 +46,7 @@ class EVOA_results_gen:
         self.gradient_bestfit_avg_nw = b_avg_nw
         self.yfit_avg_nw = [a_avg_nw + b_avg_nw * xi for xi in range(len(self.avg_net_worth_per_gen))]
 
-        # --> FOr best net worth individual
+        # --> For best net worth individual
         a_best_nw, b_best_nw = MATH().best_fit(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen)
         self.gradient_bestfit_best_nw = b_best_nw
         self.yfit_best_nw = [a_best_nw + b_best_nw * xi for xi in range(len(self.best_individual_net_worth_per_gen))]
@@ -197,6 +197,7 @@ class EVOA_results_gen:
         plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen, label="Best individual net worth per gen")
         plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.yfit_best_nw, "k", dashes=[6, 2])
 
+        plt.plot(range(len(self.data_slice_metalabel_pp)), self.data_slice_metalabel_pp, label="Metalabel net worth per gen")
         plt.ylabel("Net worth $")
         plt.xlabel("Generation #")
         plt.legend()

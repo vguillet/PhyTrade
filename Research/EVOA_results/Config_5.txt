@@ -1,0 +1,140 @@
+====================== Config_5 ======================
+
+~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
+
+Configuration file: Config_5
+
+-----------> EVO_algo main parameters:
+population_size = 30
+nb_of_generations = 70
+
+mutation_rate = 0.3
+nb_parents = 10
+nb_random_ind = 5
+
+exploitation_phase_len_percent = 30.0
+
+data_slice_start_index = -7000
+data_slice_size = 200
+data_slice_shift_per_gen = 50
+
+-----------> Generations settings:
+Evaluation method: Profit based
+
+Parents # decay function: Linear decay
+Random individual # decay function: Linear decay
+data_slice_size = 200
+
+-----------> Metalabeling settings:
+upper_barrier = 20
+lower_barrier = -20
+look_ahead = 10
+
+-----------> Benchmarking data slice settings:
+benchmark_data_slice_start = -453
+benchmark_data_slice_stop = 252
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Run stats: 
+End time: 18:09:16 05/10/19 W. Europe Daylight Time
+Run time: 1969.788s
+
+Average computing time per generation: 28.14s
+
+Number of data points processed: 3700
+
+-----------> Fitness results:
+Max average fitness achieved: 23.31149619611158
+Max individual fitness achieved: 60.0
+
+Average fitness best fit line gradient achieved: 0.0002724430517871471
+Individual fitness best fit line gradient achieved: 0.12610914308021534
+
+-----------> Net Worth results:
+Max average net worth achieved: 1196.4598715436446
+Max individual net worth achieved: 1785.7373782947966
+
+Average net worth best fit line gradient achieved: 1.0545333978321183
+Individual net worth best fit line gradient achieved: 3.018463628110023
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Validation benchmark results: 
+Fitness achieved: 58.333333333333336
+Fitness achieved bs: 6.25
+
+Confusion Matrix: 
+      Sell  Hold  Buy
+Sell     1     5    6
+Hold    45   146   45
+Buy      4     0    0
+
+-----------> Benchmark Confusion tables: 
+
+Reference Confusion Table: 
+                             Condition Positive Condition Negative
+Predicted Condition Positive      True positive     False positive
+Predicted Condition Negative     False Negative      True negative
+
+-----------> Sell classification results: 
+
+Sell Confusion Table: 
+          Sell  Non-Sell
+Sell         1        11
+Non-Sell    49       191
+
+TPR = 0.02
+TNR = 0.946
+PPV = 0.083
+NPV = 0.796
+FNR = 0.98
+FPR = 0.054
+FDR = 0.917
+FOR = 0.204
+ACC = 0.762
+F1 = 0.032
+MCC = -0.065
+BM = -0.034
+MK = -0.121
+
+-----------> Buy classification results: 
+
+Buy Confusion Table: 
+         Buy  Non-Buy
+Buy        0        4
+Non-Buy   51      197
+
+TPR = 0.0
+TNR = 0.98
+PPV = 0.0
+NPV = 0.794
+FNR = 1.0
+FPR = 0.02
+FDR = 1.0
+FOR = 0.206
+ACC = 0.782
+F1 = 0.0
+MCC = -0.064
+BM = -0.02
+MK = -0.206
+
+-----------> Hold classification results: 
+
+Hold Confusion Table: 
+          Hold  Non-Hold
+Hold       146        90
+Non-Hold     5        11
+
+TPR = 0.967
+TNR = 0.109
+PPV = 0.619
+NPV = 0.688
+FNR = 0.033
+FPR = 0.891
+FDR = 0.381
+FOR = 0.312
+ACC = 0.623
+F1 = 0.755
+MCC = 0.152
+BM = 0.076
+MK = 0.306
+

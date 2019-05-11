@@ -29,6 +29,8 @@ class BIGDATA:
         self.sell_trigger_dates = []
         self.buy_trigger_dates = []
 
+        self.buy_sell_labels = None
+
         # --------------------- List close/open values
         # ... in data
         self.data_open_values = []

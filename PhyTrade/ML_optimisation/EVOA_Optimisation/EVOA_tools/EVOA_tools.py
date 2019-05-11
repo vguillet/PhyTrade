@@ -8,6 +8,7 @@ The class contains:
     - throttle()
     - determine_evolving_gen_parameters()
 """
+import sys
 
 
 class EVOA_tools:
@@ -77,9 +78,13 @@ class EVOA_tools:
         parents = []
 
         # TODO: Implement alternative selection methods
+        # -- Exit program if incorrect settings used
+        if selection_method > 0:
+            print("Invalid parent selection method reference")
+            sys.exit()
+
         if selection_method == 0:
             # Elitic selection
-            # sorted_fitness_ratios = fitness_evaluation
             sorted_fitness_ratios = fitness_ratios
             sorted_population = population
             sorted_fitness_evaluation = fitness_evaluation
@@ -98,7 +103,7 @@ class EVOA_tools:
         return parents
 
     @staticmethod
-    def generate_offsprings(population_size, nb_parents, parents, nb_random_ind, mutation_rate=0.2):
+    def generate_offsprings(population_size, parents, nb_random_ind, mutation_rate=0.2):
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
         import random
@@ -113,10 +118,9 @@ class EVOA_tools:
 
         # -- Generate offsprings from parents with mutations
         cycling = -1
-        for _ in range(population_size - nb_parents - nb_random_ind):
-
+        for _ in range(population_size - len(parents) - nb_random_ind):
             cycling += 1
-            if cycling >= nb_parents:
+            if cycling >= len(parents):
                 cycling = 0
 
             offspring = deepcopy(parents[cycling])
@@ -136,11 +140,15 @@ class EVOA_tools:
 
     @staticmethod
     def throttle(current_generation, nb_of_generations, max_value, min_value=1, decay_function=0):
+        # -- Exit program if incorrect settings used
+        if decay_function > 3:
+            print("Invalid throttle decay function reference")
+            sys.exit()
 
-        if decay_function == 0:
+        if decay_function == 0:       # Fixed value
             return max_value
 
-        elif decay_function == 1:     # Linear decrease
+        elif decay_function == 1:     # Linear decay
             interval = max_value - min_value
             if interval == 0:
                 interval = 1
@@ -157,18 +165,13 @@ class EVOA_tools:
             return throttled_value
 
     @staticmethod
-    def determine_evolving_gen_parameters(data_slice_info,
-                                          current_generation,
+    def determine_evolving_gen_parameters(current_generation,
                                           nb_of_generations,
                                           initial_nb_parents,
                                           initial_nb_random_ind,
                                           parents_decay_function=0,
                                           random_ind_decay_function=0,
                                           print_evoa_parameters_per_gen=False):
-
-        # ------------------ Define the data slice to be used by the generation
-        # data_slice_info.get_next_data_slice()
-        data_slice_info.get_shifted_data_slice()
 
         # ------------------ Throttle the individual count to be used by the generation
         nb_parents = EVOA_tools().throttle(current_generation,
@@ -185,9 +188,8 @@ class EVOA_tools:
 
         if print_evoa_parameters_per_gen:
             print("~~~~~~~~~~~")
-            print("Data slice analysed:", data_slice_info.start_index, "-->", data_slice_info.stop_index, "\n")
             print("Number of parents selected for this generation", nb_parents)
             print("Number of random individuals generated for this generation", nb_random_ind)
             print("~~~~~~~~~~~")
 
-        return data_slice_info, nb_parents, nb_random_ind
+        return nb_parents, nb_random_ind

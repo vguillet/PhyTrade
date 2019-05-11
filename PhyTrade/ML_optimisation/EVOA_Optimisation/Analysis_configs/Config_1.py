@@ -8,7 +8,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Config_4"
+        self.config_name = "Config_5"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -17,7 +17,7 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # EVO_algo main parameters
         self.population_size = 30
-        self.nb_of_generations = 40
+        self.nb_of_generations = 70
 
         self.mutation_rate = 0.3
         self.nb_parents = 10
@@ -33,7 +33,7 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # -- Generations settings
         self.evaluation_methods = ["Profit based", "MetaLabels"]
-        self.evaluation_method = 1
+        self.evaluation_method = 0
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1

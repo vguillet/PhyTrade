@@ -23,6 +23,12 @@ class data_slice_info:
                                        self.look_ahead,
                                        self.start_index, self.stop_index)
 
+    def gen_slice_metalabels(self):
+        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier,
+                                       self.look_ahead,
+                                       self.start_index, self.stop_index)
+        return
+
     def get_next_data_slice(self):
         # -- Determine new start/stop indexes
         self.start_index = self.start_index + self.slice_size
@@ -31,9 +37,8 @@ class data_slice_info:
         if self.stop_index >= 0:
             self.stop_index = 0
 
-        # -- Obtain new metalabels
-        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier, self.look_ahead,
-                                       self.start_index, self.stop_index)
+        # -- Generate new metalabels
+        self.gen_slice_metalabels()
         return
 
     def get_shifted_data_slice(self):
@@ -44,15 +49,29 @@ class data_slice_info:
         if self.stop_index >= 0:
             self.stop_index = 0
 
-        # -- Obtain new metalabels
-        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier, self.look_ahead,
-                                       self.start_index, self.stop_index)
+        # -- Generate new metalabels
+        self.gen_slice_metalabels()
         return
 
     def perform_trade_run(self):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
+        from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
+        import pandas
 
-        tradebot = Tradebot_v3(self.metalabels)
+        # TODO: Streamline data topic selection
+        path = r"Research\Data\AAPL_Yahoo_data.csv".replace('\\', '/')
+        data = pandas.read_csv(path)
 
+        analysis = mock()
+        analysis.big_data = BIGDATA(data, "AAPL", self.start_index, self.stop_index)
+        # TODO: Add open/close value selection
+        analysis.big_data.buy_sell_labels = self.metalabels.close_values_metalabels
+        tradebot = Tradebot_v3(analysis)
         self.metalabels_account = tradebot.account
+
+        return
+
+
+class mock:
+    def __init__(self):
         return

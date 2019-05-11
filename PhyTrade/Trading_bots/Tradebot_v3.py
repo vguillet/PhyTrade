@@ -13,6 +13,7 @@ class Tradebot_v3:
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         print_trade_process = False
+
         # -- Tradebot finance
         self.account = ACCOUNT(initial_funds=1000)
         self.stop_loss = stop_loss
@@ -24,11 +25,20 @@ class Tradebot_v3:
         # -- Generate trade actions from analysis
         self.trade_actions = ["hold"] * len(self.analysis.big_data.data_slice_dates)
 
-        for i in self.analysis.big_data.Major_spline.sell_dates:
-            self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = "sell"
+        if analysis.big_data.buy_sell_labels is None:
+            for i in self.analysis.big_data.Major_spline.sell_dates:
+                self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = "sell"
 
-        for i in self.analysis.big_data.Major_spline.buy_dates:
-            self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = "buy"
+            for i in self.analysis.big_data.Major_spline.buy_dates:
+                self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = "buy"
+
+        else:
+            for i in range(len(analysis.big_data.buy_sell_labels)):
+                if analysis.big_data.buy_sell_labels[i] == 1:
+                    self.trade_actions[i] = "sell"
+
+                elif analysis.big_data.buy_sell_labels[i] == -1:
+                    self.trade_actions[i] = "buy"
 
         # ==============================================================================
         """

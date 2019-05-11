@@ -4,12 +4,13 @@ This script contains the EVOA_optimiser class, which is a refactored and optimis
 
 from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_tools import EVOA_tools
 from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_results_gen import EVOA_results_gen
+from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 
 from copy import deepcopy
 
 import time
-
+import sys
 
 class EVOA_optimiser:
     def __init__(self, config):
@@ -38,9 +39,6 @@ class EVOA_optimiser:
         # -- Initialise records
         self.results = EVOA_results_gen(config, config.config_name)
 
-        # -- Initialise population
-        self.population = self.evoa_tools.gen_initial_population(config.population_size)
-
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -56,17 +54,30 @@ class EVOA_optimiser:
         print("Configuration sheet:", config.config_name)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= EVO OPTIMISATION PROCESS =============================
-        # Run for # nb of generations:
+        # ------------------ Initialise population
+        if config.starting_parameters is None:
+            self.population = self.evoa_tools.gen_initial_population(config.population_size)
+        else:
+            self.population = self.evoa_tools.generate_offsprings(config.population_size,
+                                                                  [Individual(parameter_set=config.starting_parameters)],
+                                                                  config.nb_random_ind,
+                                                                  config.mutation_rate)
+
+            # ------------------ Run for # nb of generations:
         for gen in range(config.nb_of_generations+1):
             print("\n==================================== Generation", gen, "====================================")
             generation_start_time = time.time()
 
             if gen != 0:
+                # ------------------ Define the data slice to be used by the generation
+                # data_slice_info.get_next_data_slice()
+                self.data_slice_info.get_shifted_data_slice()
+                print("Data slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index, "\n")
+
                 # ------------------ Determine new generation GA parameters
-                # TODO: Fix determine_evolving_gen_parameters()
-                self.data_slice_info, self.nb_parents, self.nb_random_ind = \
-                    self.evoa_tools.determine_evolving_gen_parameters(self.data_slice_info,
-                                                                      gen,
+                print("---------------> Determining new generation parameters")
+                self.nb_parents, self.nb_random_ind = \
+                    self.evoa_tools.determine_evolving_gen_parameters(gen,
                                                                       config.nb_of_generations-config.exploitation_phase_len,
                                                                       config.nb_parents,
                                                                       config.nb_random_ind,
@@ -75,27 +86,33 @@ class EVOA_optimiser:
                                                                       print_evoa_parameters_per_gen=config.print_evoa_parameters_per_gen)
 
                 # ------------------ Select individuals from previous generation
+                print("---------------> Selecting individuals from previous generation")
+                # -- Exit program if incorrect settings used
+                if config.parents_decay_function > 1:
+                    print("Invalid evaluation method reference")
+                    sys.exit()
+
                 if config.evaluation_method == 0:
                     self.parents = self.evoa_tools.select_from_population(self.net_worth,
                                                                           self.population,
                                                                           selection_method=config.parents_selection_method,
-                                                                          nb_parents=config.nb_parents)
+                                                                          nb_parents=self.nb_parents)
+
                 elif config.evaluation_method == 1:
                     self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
                                                                           self.population,
                                                                           selection_method=config.parents_selection_method,
-                                                                          nb_parents=config.nb_parents)
+                                                                          nb_parents=self.nb_parents)
+
                 # ------------------ Generate offsprings with mutations
+                print("---------------> Generating offsprings with mutations")
                 self.new_population = self.evoa_tools.generate_offsprings(config.population_size,
-                                                                          self.nb_parents,
                                                                           self.parents,
                                                                           self.nb_random_ind,
                                                                           config.mutation_rate)
 
-                print("Length new pop", len(self.new_population))
-
                 print("\nParameter sets evolution completed (Darwin put in charge)")
-                print(" -- New population successfully generated --")
+                print("Length new pop", len(self.new_population))
 
                 self.population = self.new_population
 
@@ -113,14 +130,15 @@ class EVOA_optimiser:
             self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
             self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
 
-            # self.data_slice_info.perform_trade_run()
-            # self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
+            self.data_slice_info.perform_trade_run()
+            self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
 
             # ------------------ Return generation info
             generation_end_time = time.time()
             print("\nTime elapsed:", generation_end_time-generation_start_time)
             print("\n-- Generation", gen + 1, "population evaluation completed --\n")
-
+            print("Metalabel net worth from previous generation:", round(self.results.data_slice_metalabel_pp[-1], 3))
+            print("\n")
             print("Best Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
             print("Average fitness from previous generation:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
             print("\n")
