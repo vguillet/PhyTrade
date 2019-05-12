@@ -17,25 +17,26 @@ class Config_0:
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 10
-        self.nb_of_generations = 10
+        self.population_size = 20
+        self.nb_of_generations = 20
 
         self.mutation_rate = 0.3
-        self.nb_parents = 3
-        self.nb_random_ind = 3
+        self.nb_parents = 8
+        self.nb_random_ind = 5
 
         self.exploitation_phase_len_percent = 0.3
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 0
+        self.data_slice_shift_per_gen = 100
+        self.data_slice_cycle_count = 3
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
-        # self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Config_5.json".replace('\\', '/')))
-        self.starting_parameters = None
+        self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Config_5.json".replace('\\', '/')))
+        # self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]
