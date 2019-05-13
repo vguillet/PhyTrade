@@ -109,7 +109,8 @@ class EVOA_tools:
         return parents
 
     @staticmethod
-    def generate_offsprings(population_size, parents, nb_random_ind, mutation_rate=0.2):
+    def generate_offsprings(current_generation, nb_of_generations, decay_function,
+                            population_size, parents, nb_random_ind, mutation_rate=0.2):
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
         import random
@@ -134,7 +135,8 @@ class EVOA_tools:
             for _ in range(nb_of_parameters_to_mutate):
                 parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
 
-                offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify)
+                offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify,
+                                                           current_generation, nb_of_generations, decay_function)
 
             new_population.append(offspring)
 
@@ -147,50 +149,49 @@ class EVOA_tools:
     @staticmethod
     def throttle(current_generation, nb_of_generations, max_value, min_value=1, decay_function=0):
         # -- Exit program if incorrect settings used
-        if decay_function > 3:
+        if decay_function > 2:
             print("Invalid throttle decay function reference")
             sys.exit()
 
-        if decay_function == 0:       # Fixed value
-            return max_value
-
-        elif decay_function == 1:     # Linear decay
-            interval = max_value - min_value
-            if interval == 0:
-                interval = 1
-
-            interval_size = round(nb_of_generations/interval)
-            if interval_size <= 0:
+        if current_generation <= nb_of_generations:
+            if decay_function == 0:       # Fixed value
                 return max_value
 
-            throttled_value = round(-(1/interval_size)*current_generation + max_value)
+            elif decay_function == 1:     # Linear decay
+                interval = max_value - min_value
+                if interval == 0:
+                    interval = 1
 
-            if throttled_value <= min_value:
-                throttled_value = min_value
+                interval_size = nb_of_generations/interval
+                if interval_size <= 0:
+                    return max_value
 
-            return throttled_value
+                throttled_value = -(1/interval_size)*current_generation + max_value
+
+                if throttled_value <= min_value:
+                    throttled_value = min_value
+        else:
+            throttled_value = min_value
+
+        return throttled_value
 
     @staticmethod
     def determine_evolving_gen_parameters(current_generation,
-                                          nb_of_generations,
-                                          initial_nb_parents,
-                                          initial_nb_random_ind,
-                                          parents_decay_function=0,
-                                          random_ind_decay_function=0,
+                                          config,
                                           print_evoa_parameters_per_gen=False):
 
         # ------------------ Throttle the individual count to be used by the generation
-        nb_parents = EVOA_tools().throttle(current_generation,
-                                           nb_of_generations,
-                                           initial_nb_parents,
-                                           min_value=1,
-                                           decay_function=parents_decay_function)
+        nb_parents = round(EVOA_tools().throttle(current_generation,
+                                                 config.nb_of_generations-config.exploitation_phase_len,
+                                                 config.nb_parents,
+                                                 min_value=1,
+                                                 decay_function=config.parents_decay_function))
 
-        nb_random_ind = EVOA_tools().throttle(current_generation,
-                                              nb_of_generations,
-                                              initial_nb_random_ind,
-                                              min_value=0,
-                                              decay_function=random_ind_decay_function)
+        nb_random_ind = round(EVOA_tools().throttle(current_generation,
+                                                    config.nb_of_generations-config.exploitation_phase_len,
+                                                    config.nb_random_ind,
+                                                    min_value=0,
+                                                    decay_function=config.random_ind_decay_function))
 
         if print_evoa_parameters_per_gen:
             print("~~~~~~~~~~~")

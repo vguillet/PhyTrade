@@ -40,37 +40,38 @@ benchmark_data_slice_stop = 252
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 15:34:26 05/12/19 W. Europe Daylight Time
-Run time: 22.368s
+End time: 12:28:08 05/13/19 W. Europe Daylight Time
+Run time: 21.328s
 
-Average computing time per generation: 5.592s
+Average computing time per generation: 5.332s
 
 Number of data points processed: 500
+Number of invalid data slices: 1
 
 -----------> Fitness results:
-Max average fitness achieved: 22.126662810873334
-Max individual fitness achieved: 35.714285714285715
+Max average fitness achieved: 23.636363636363637
+Max individual fitness achieved: 27.27272727272727
 
-Average fitness best fit line gradient achieved: 2.760982911137705
-Individual fitness best fit line gradient achieved: 7.398496240601503
+Average fitness best fit line gradient achieved: 1.2374637127578296
+Individual fitness best fit line gradient achieved: 1.5151515151515127
 
 -----------> Net Worth results:
-Max average net worth achieved: 1142.0243471524045
-Max individual net worth achieved: 1226.369310228139
+Max average net worth achieved: 1126.3097031354916
+Max individual net worth achieved: 1377.643586184628
 
-Average net worth best fit line gradient achieved: 15.55203342801542
-Individual net worth best fit line gradient achieved: -21.08637307013596
+Average net worth best fit line gradient achieved: -56.16226120305582
+Individual net worth best fit line gradient achieved: -98.96379054485388
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 55.952380952380956
-Fitness achieved bs: 17.857142857142858
+Fitness achieved: 57.14285714285714
+Fitness achieved bs: 14.285714285714285
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     1    3
-Hold    45   136   43
-Buy      5    14    5
+Sell     0     1    0
+Hold    47   142   49
+Buy      3     8    2
 
 -----------> Benchmark Confusion tables: 
 
@@ -83,62 +84,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         4
-Non-Sell    50       198
+Sell         0         1
+Non-Sell    50       201
 
 TPR = 0.0
-TNR = 0.98
+TNR = 0.995
 PPV = 0.0
-NPV = 0.798
+NPV = 0.801
 FNR = 1.0
-FPR = 0.02
+FPR = 0.005
 FDR = 1.0
-FOR = 0.202
-ACC = 0.786
+FOR = 0.199
+ACC = 0.798
 F1 = 0.0
-MCC = -0.063
-BM = -0.02
-MK = -0.202
+MCC = -0.031
+BM = -0.005
+MK = -0.199
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        5       19
-Non-Buy   46      182
+Buy        2       11
+Non-Buy   49      190
 
-TPR = 0.098
-TNR = 0.905
-PPV = 0.208
-NPV = 0.798
-FNR = 0.902
-FPR = 0.095
-FDR = 0.792
-FOR = 0.202
-ACC = 0.742
-F1 = 0.133
-MCC = 0.005
-BM = 0.004
-MK = 0.007
+TPR = 0.039
+TNR = 0.945
+PPV = 0.154
+NPV = 0.795
+FNR = 0.961
+FPR = 0.055
+FDR = 0.846
+FOR = 0.205
+ACC = 0.762
+F1 = 0.062
+MCC = -0.028
+BM = -0.016
+MK = -0.051
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       136        88
-Non-Hold    15        13
+Hold       142        96
+Non-Hold     9         5
 
-TPR = 0.901
-TNR = 0.129
-PPV = 0.607
-NPV = 0.464
-FNR = 0.099
-FPR = 0.871
-FDR = 0.393
-FOR = 0.536
-ACC = 0.591
-F1 = 0.725
-MCC = 0.046
-BM = 0.029
-MK = 0.071
+TPR = 0.94
+TNR = 0.05
+PPV = 0.597
+NPV = 0.357
+FNR = 0.06
+FPR = 0.95
+FDR = 0.403
+FOR = 0.643
+ACC = 0.583
+F1 = 0.73
+MCC = -0.022
+BM = -0.01
+MK = -0.046
 

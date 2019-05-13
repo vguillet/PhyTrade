@@ -60,10 +60,13 @@ class EVOA_optimiser:
         if config.starting_parameters is None:
             self.population = self.evoa_tools.gen_initial_population(config.population_size)
         else:
-            self.population = self.evoa_tools.generate_offsprings(config.population_size,
+            self.population = self.evoa_tools.generate_offsprings(1,
+                                                                  1,
+                                                                  0,
+                                                                  config.population_size,
                                                                   [Individual(parameter_set=config.starting_parameters)],
                                                                   config.nb_random_ind,
-                                                                  config.mutation_rate)
+                                                                  mutation_rate=config.mutation_rate)
 
         # ------------------ Run for # nb of generations:
         for gen in range(config.nb_of_generations+1):
@@ -86,11 +89,7 @@ class EVOA_optimiser:
                 print("---------------> Determining new generation parameters")
                 self.nb_parents, self.nb_random_ind = \
                     self.evoa_tools.determine_evolving_gen_parameters(gen,
-                                                                      config.nb_of_generations-config.exploitation_phase_len,
-                                                                      config.nb_parents,
-                                                                      config.nb_random_ind,
-                                                                      parents_decay_function=config.parents_decay_function,
-                                                                      random_ind_decay_function=config.random_ind_decay_function,
+                                                                      config,
                                                                       print_evoa_parameters_per_gen=config.print_evoa_parameters_per_gen)
 
                 if sum(self.fitness_evaluation) != 0:
@@ -115,10 +114,13 @@ class EVOA_optimiser:
 
                     # ------------------ Generate offsprings with mutations
                     print("---------------> Generating offsprings with mutations")
-                    self.new_population = self.evoa_tools.generate_offsprings(config.population_size,
+                    self.new_population = self.evoa_tools.generate_offsprings(gen,
+                                                                              config.nb_of_generations-config.exploitation_phase_len,
+                                                                              config.mutation_decay_function,
+                                                                              config.population_size,
                                                                               self.parents,
                                                                               self.nb_random_ind,
-                                                                              config.mutation_rate)
+                                                                              mutation_rate=config.mutation_rate)
 
                     print("\nParameter sets evolution completed (Darwin put in charge)")
                     print("Length new pop", len(self.new_population))

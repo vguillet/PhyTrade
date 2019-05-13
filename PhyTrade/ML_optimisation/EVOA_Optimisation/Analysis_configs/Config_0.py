@@ -36,8 +36,8 @@ class Config_0:
         # -- Generation 0 settings
         # Set to None if random initial population wanted
         self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json"
-        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
-        # self.starting_parameters = None
+        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]
@@ -46,6 +46,7 @@ class Config_0:
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
+        self.mutation_decay_function = 1
 
         self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0
