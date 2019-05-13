@@ -17,14 +17,14 @@ class Config_0:
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 5
-        self.nb_of_generations = 4
+        self.population_size = 10
+        self.nb_of_generations = 10
 
         self.mutation_rate = 0.3
-        self.nb_parents = 2
-        self.nb_random_ind = 2
+        self.nb_parents = 4
+        self.nb_random_ind = 3
 
-        self.exploitation_phase_len_percent = 0.25
+        self.exploitation_phase_len_percent = 0.1
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
@@ -46,7 +46,7 @@ class Config_0:
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
-        self.mutation_decay_function = 1
+        self.mutation_decay_function = 0
 
         self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0

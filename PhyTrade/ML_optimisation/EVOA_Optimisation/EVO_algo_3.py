@@ -12,6 +12,7 @@ from copy import deepcopy
 import time
 import sys
 
+
 class EVOA_optimiser:
     def __init__(self, config):
 
@@ -46,11 +47,14 @@ class EVOA_optimiser:
         print("EVOA_v2 \n")
         self.results.run_start_time = time.time()
         print("Start time:", time.strftime('%X %x %Z'), "\n")
+        print("Estimated run time:", (config.nb_of_generations*config.population_size*1.4)/60, "minutes\n")
+
         print("-- Settings selected --")
         print("Selected evaluation method:", config.evaluation_methods[config.evaluation_method])
         print("")
         print("Selected parent function:", config.decay_functions[config.parents_decay_function])
         print("Selected random individual function:", config.decay_functions[config.random_ind_decay_function])
+        print("Selected mutation range function:", config.decay_functions[config.mutation_decay_function])
         print("")
         print("Configuration sheet:", config.config_name)
         print("Starting parameters:", config.starting_parameters)
@@ -68,10 +72,15 @@ class EVOA_optimiser:
                                                                   config.nb_random_ind,
                                                                   mutation_rate=config.mutation_rate)
 
+        print("---------------> Initial population generated successfully")
+
         # ------------------ Run for # nb of generations:
         for gen in range(config.nb_of_generations+1):
             print("\n==================================== Generation", gen, "====================================")
             generation_start_time = time.time()
+
+            if gen == config.nb_of_generations-config.exploitation_phase_len-1:
+                print("-------------> Exploration phase completed, starting exploitation phase <-------------")
 
             if gen != 0:
                 # ------------------ Define the data slice to be used by the generation
@@ -115,7 +124,7 @@ class EVOA_optimiser:
                     # ------------------ Generate offsprings with mutations
                     print("---------------> Generating offsprings with mutations")
                     self.new_population = self.evoa_tools.generate_offsprings(gen,
-                                                                              config.nb_of_generations-config.exploitation_phase_len,
+                                                                              config.nb_of_generations,
                                                                               config.mutation_decay_function,
                                                                               config.population_size,
                                                                               self.parents,
