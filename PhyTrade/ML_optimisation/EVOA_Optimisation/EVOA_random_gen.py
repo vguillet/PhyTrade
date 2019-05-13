@@ -68,6 +68,7 @@ class EVOA_random_gen:
     @staticmethod
     def timeframe_gen(current_parameter):
         new_parameter = current_parameter + random.randint(-6, 6)
+
         if new_parameter < 3:
             new_parameter = 2
         return new_parameter
@@ -80,6 +81,7 @@ class EVOA_random_gen:
     @staticmethod
     def smoothing_factor_gen(current_parameter):
         new_parameter = current_parameter + random.uniform(-1.0, 1.0)
+
         if new_parameter < 0:
             new_parameter = 0
         return new_parameter
@@ -92,6 +94,7 @@ class EVOA_random_gen:
     @staticmethod
     def amplification_factor_gen(current_parameter):
         new_parameter = current_parameter + random.uniform(-1.5, 1.5)
+
         if new_parameter < 0:
             new_parameter = 0
         return new_parameter
@@ -104,6 +107,7 @@ class EVOA_random_gen:
     @staticmethod
     def weight_gen(current_parameter):
         new_parameter = current_parameter + random.uniform(-4.0, 4.0)
+
         if new_parameter < 0:
             new_parameter = 0
         return new_parameter
@@ -120,6 +124,7 @@ class EVOA_random_gen:
     @staticmethod
     def rsi_upper_threshold_gen(current_parameter):
         new_parameter = current_parameter + random.randint(-20, 20)
+
         if new_parameter < 51:
             new_parameter = 51
 
@@ -131,6 +136,7 @@ class EVOA_random_gen:
     @staticmethod
     def rsi_lower_threshold_gen(current_parameter):
         new_parameter = current_parameter + random.randint(-20, 20)
+
         if new_parameter > 49:
             new_parameter = 49
 
@@ -162,6 +168,7 @@ class EVOA_random_gen:
     @staticmethod
     def major_spline_lower_threshold_gen(current_parameter):
         new_parameter = current_parameter + random.uniform(-0.2, 0.2)
+
         if new_parameter > -0.3:
             new_parameter = -0.3
 

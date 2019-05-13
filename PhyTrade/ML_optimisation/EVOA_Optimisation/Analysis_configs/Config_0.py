@@ -17,30 +17,31 @@ class Config_0:
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 20
-        self.nb_of_generations = 20
+        self.population_size = 5
+        self.nb_of_generations = 4
 
         self.mutation_rate = 0.3
-        self.nb_parents = 8
-        self.nb_random_ind = 5
+        self.nb_parents = 2
+        self.nb_random_ind = 2
 
-        self.exploitation_phase_len_percent = 0.3
+        self.exploitation_phase_len_percent = 0.25
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 3
+        self.data_slice_cycle_count = 1
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
-        self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Config_5.json".replace('\\', '/')))
+        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json"
+        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
         # self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]
-        self.evaluation_method = 1
+        self.evaluation_method = 0
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1

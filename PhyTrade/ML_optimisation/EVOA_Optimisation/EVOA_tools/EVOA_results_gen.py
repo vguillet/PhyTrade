@@ -28,6 +28,8 @@ class EVOA_results_gen:
 
         self.data_slice_metalabel_pp = []
 
+        self.invalid_slice_count = 0
+
     def gen_stats(self):
         # ------------ Generating further informations
         # -------- Determine best fit lines
@@ -89,6 +91,10 @@ class EVOA_results_gen:
         self.results_file.write("\ndata_slice_start_index = " + str(self.config.data_slice_start_index) + "\n")
         self.results_file.write("data_slice_size = " + str(self.config.data_slice_size) + "\n")
         self.results_file.write("data_slice_shift_per_gen = " + str(self.config.data_slice_shift_per_gen) + "\n")
+        self.results_file.write("data_slice_cycle_count = " + str(self.config.data_slice_cycle_count) + "\n")
+
+        self.results_file.write("\n-----------> Generation 0 settings:" + "\n")
+        self.results_file.write("starting_parameters: " + str(self.config.path) + "\n")
 
         self.results_file.write("\n-----------> Generations settings:" + "\n")
         self.results_file.write("Evaluation method: " + self.config.evaluation_methods[self.config.evaluation_method] + "\n")
@@ -118,6 +124,7 @@ class EVOA_results_gen:
                                 + str(round((self.run_stop_time - self.run_start_time)/self.config.nb_of_generations, 3)) + "s\n")
 
         self.results_file.write("\nNumber of data points processed: " + str(self.total_data_points_processed) + "\n")
+        self.results_file.write("Number of invalid data slices: " + str(self.invalid_slice_count) + "\n")
 
         self.results_file.write("\n-----------> Fitness results:" + "\n")
         self.results_file.write("Max average fitness achieved: " + str(max(self.avg_fitness_per_gen)) + "\n")

@@ -53,6 +53,7 @@ class EVOA_optimiser:
         print("Selected random individual function:", config.decay_functions[config.random_ind_decay_function])
         print("")
         print("Configuration sheet:", config.config_name)
+        print("Starting parameters:", config.starting_parameters)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= EVO OPTIMISATION PROCESS =============================
         # ------------------ Initialise population
@@ -64,7 +65,7 @@ class EVOA_optimiser:
                                                                   config.nb_random_ind,
                                                                   config.mutation_rate)
 
-            # ------------------ Run for # nb of generations:
+        # ------------------ Run for # nb of generations:
         for gen in range(config.nb_of_generations+1):
             print("\n==================================== Generation", gen, "====================================")
             generation_start_time = time.time()
@@ -76,10 +77,11 @@ class EVOA_optimiser:
                     # data_slice_info.get_next_data_slice()
                     self.data_slice_info.get_shifted_data_slice()
 
-                    self.data_slice_cycle_count = 0
+                    self.data_slice_cycle_count = 1
 
                 print("Data slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index)
-                print("Data slide analysis cycle:", self.data_slice_cycle_count, "\n")
+                print("Data slice analysis cycle:", self.data_slice_cycle_count, "\n")
+
                 # ------------------ Determine new generation GA parameters
                 print("---------------> Determining new generation parameters")
                 self.nb_parents, self.nb_random_ind = \
@@ -91,36 +93,37 @@ class EVOA_optimiser:
                                                                       random_ind_decay_function=config.random_ind_decay_function,
                                                                       print_evoa_parameters_per_gen=config.print_evoa_parameters_per_gen)
 
-                # ------------------ Select individuals from previous generation
-                print("---------------> Selecting individuals from previous generation")
-                # -- Exit program if incorrect settings used
-                if config.parents_decay_function > 1:
-                    print("Invalid evaluation method reference")
-                    sys.exit()
+                if sum(self.fitness_evaluation) != 0:
+                    # ------------------ Select individuals from previous generation
+                    print("---------------> Selecting individuals from previous generation")
+                    # -- Exit program if incorrect settings used
+                    if config.parents_decay_function > 1:
+                        print("Invalid evaluation method reference")
+                        sys.exit()
 
-                if config.evaluation_method == 0:
-                    self.parents = self.evoa_tools.select_from_population(self.net_worth,
-                                                                          self.population,
-                                                                          selection_method=config.parents_selection_method,
-                                                                          nb_parents=self.nb_parents)
+                    if config.evaluation_method == 0:
+                        self.parents = self.evoa_tools.select_from_population(self.net_worth,
+                                                                              self.population,
+                                                                              selection_method=config.parents_selection_method,
+                                                                              nb_parents=self.nb_parents)
 
-                elif config.evaluation_method == 1:
-                    self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
-                                                                          self.population,
-                                                                          selection_method=config.parents_selection_method,
-                                                                          nb_parents=self.nb_parents)
+                    elif config.evaluation_method == 1:
+                        self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
+                                                                              self.population,
+                                                                              selection_method=config.parents_selection_method,
+                                                                              nb_parents=self.nb_parents)
 
-                # ------------------ Generate offsprings with mutations
-                print("---------------> Generating offsprings with mutations")
-                self.new_population = self.evoa_tools.generate_offsprings(config.population_size,
-                                                                          self.parents,
-                                                                          self.nb_random_ind,
-                                                                          config.mutation_rate)
+                    # ------------------ Generate offsprings with mutations
+                    print("---------------> Generating offsprings with mutations")
+                    self.new_population = self.evoa_tools.generate_offsprings(config.population_size,
+                                                                              self.parents,
+                                                                              self.nb_random_ind,
+                                                                              config.mutation_rate)
 
-                print("\nParameter sets evolution completed (Darwin put in charge)")
-                print("Length new pop", len(self.new_population))
+                    print("\nParameter sets evolution completed (Darwin put in charge)")
+                    print("Length new pop", len(self.new_population))
 
-                self.population = self.new_population
+                    self.population = self.new_population
 
             # ------------------ Evaluate population
             self.fitness_evaluation, _, self.net_worth = self.evoa_tools.evaluate_population(self.population,
@@ -129,28 +132,34 @@ class EVOA_optimiser:
                                                                                              print_evaluation_status=config.print_evaluation_status,
                                                                                              plot_3=config.plot_signal_triggers)
 
-            # ------------------ Collect generation data
-            self.results.best_individual_fitness_per_gen.append(max(self.fitness_evaluation))
-            self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation)/len(self.fitness_evaluation))
+            if sum(self.fitness_evaluation) != 0:
+                # ------------------ Collect generation data
+                self.results.best_individual_fitness_per_gen.append(max(self.fitness_evaluation))
+                self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation)/len(self.fitness_evaluation))
 
-            self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
-            self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
+                self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
+                self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
 
-            self.data_slice_info.perform_trade_run()
-            self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
+                self.data_slice_info.perform_trade_run()
+                self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
 
-            # ------------------ Return generation info
-            generation_end_time = time.time()
-            print("\nTime elapsed:", generation_end_time-generation_start_time)
-            print("\n-- Generation", gen + 1, "population evaluation completed --\n")
-            print("Metalabel net worth from previous generation:", round(self.results.data_slice_metalabel_pp[-1], 3))
-            print("\n")
-            print("Best Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
-            print("Average fitness from previous generation:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
-            print("\n")
-            print("Best Individual net worth from previous generation:", round(max(self.net_worth), 3))
-            print("Average net worth from previous generation:", round((sum(self.net_worth) / len(self.net_worth)), 3))
-            print("\n")
+                # ------------------ Return generation info
+                generation_end_time = time.time()
+                print("\nTime elapsed:", generation_end_time-generation_start_time)
+                print("\n-- Generation", gen + 1, "population evaluation completed --\n")
+                print("Metalabel net worth from previous generation:", round(self.results.data_slice_metalabel_pp[-1], 3))
+                print("\n")
+                print("Best Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
+                print("Average fitness from previous generation:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
+                print("\n")
+                print("Best Individual net worth from previous generation:", round(max(self.net_worth), 3))
+                print("Average net worth from previous generation:", round((sum(self.net_worth) / len(self.net_worth)), 3))
+                print("\n")
+
+            else:
+                self.results.invalid_slice_count += 1
+                self.data_slice_cycle_count = config.data_slice_cycle_count
+                print("Data slice invalid for training, proceed to next data slice")
 
             # ------------------ Exit optimiser if end of dataset is reached
             if self.data_slice_info.stop_index >= 0:

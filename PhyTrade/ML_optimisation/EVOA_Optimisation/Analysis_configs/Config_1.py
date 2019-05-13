@@ -2,43 +2,52 @@
 Config_1
 """
 import multiprocessing
+import json
 
 
 class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Config_5"
+        self.config_name = "Run 2"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
         self.plot_signal_triggers = False
 
         # ____________________________________________________________________________________________________
-        # EVO_algo main parameters
-        self.population_size = 30
-        self.nb_of_generations = 70
+        # -- EVO_algo main parameters
+        self.population_size = 40
+        self.nb_of_generations = 120
 
         self.mutation_rate = 0.3
-        self.nb_parents = 10
-        self.nb_random_ind = 5
+        self.nb_parents = 15
+        self.nb_random_ind = 10
 
-        self.exploitation_phase_len_percent = 0.3
+        self.exploitation_phase_len_percent = 0.25
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 50
+        self.data_slice_shift_per_gen = 100
+        self.data_slice_cycle_count = 2
 
         # ____________________________________________________________________________________________________
+        # -- Generation 0 settings
+        # Set to None if random initial population wanted
+        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json"
+        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        self.starting_parameters = None
+
         # -- Generations settings
-        self.evaluation_methods = ["Profit based", "MetaLabels"]
-        self.evaluation_method = 0
+        self.evaluation_methods = ["Profit", "MetaLabels"]
+        self.evaluation_method = 1
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
 
+        self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0
 
         # -- max_worker_processes
@@ -48,7 +57,7 @@ class Config_1:
         # -- Metalabeling settings:
         self.upper_barrier = 20
         self.lower_barrier = -20
-        self.look_ahead = 10
+        self.look_ahead = 20
 
         # ____________________________________________________________________________________________________
         # -- Benchmarking data slice settings

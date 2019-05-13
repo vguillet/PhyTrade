@@ -68,37 +68,43 @@ class EVOA_tools:
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
+        print(fitness_evaluation)
 
-        # -- Determine fitness ratio
-        fitness_ratios = []
-        for i in range(len(fitness_evaluation)):
-            fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
+        if sum(fitness_evaluation) != 0:
+            # -- Determine fitness ratio
+            fitness_ratios = []
+            for i in range(len(fitness_evaluation)):
+                fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
-        # -- Select individuals
-        parents = []
+            # -- Select individuals
+            parents = []
 
-        # TODO: Implement alternative selection methods
-        # -- Exit program if incorrect settings used
-        if selection_method > 0:
-            print("Invalid parent selection method reference")
-            sys.exit()
+            # TODO: Implement alternative selection methods
+            # -- Exit program if incorrect settings used
+            if selection_method > 0:
+                print("Invalid parent selection method reference")
+                sys.exit()
 
-        if selection_method == 0:
-            # Elitic selection
-            sorted_fitness_ratios = fitness_ratios
-            sorted_population = population
-            sorted_fitness_evaluation = fitness_evaluation
+            if selection_method == 0:
+                # Elitic selection
+                sorted_fitness_ratios = fitness_ratios
+                sorted_population = population
+                sorted_fitness_evaluation = fitness_evaluation
 
-            # Use bubblesort to sort population, fitness_evaluation, and fitness_ratios according to fitness_ratio
-            for _ in range(len(sorted_fitness_ratios)):
-                for i in range(len(sorted_fitness_ratios) - 1):
-                    if sorted_fitness_ratios[i] < sorted_fitness_ratios[i + 1]:
-                        sorted_fitness_ratios[i], sorted_fitness_ratios[i + 1] = sorted_fitness_ratios[i + 1], sorted_fitness_ratios[i]
-                        sorted_population[i], sorted_population[i + 1] = sorted_population[i + 1], sorted_population[i]
-                        sorted_fitness_evaluation[i], sorted_fitness_evaluation[i + 1] = sorted_fitness_evaluation[i + 1], sorted_fitness_evaluation[i]
+                # Use bubblesort to sort population, fitness_evaluation, and fitness_ratios according to fitness_ratio
+                for _ in range(len(sorted_fitness_ratios)):
+                    for i in range(len(sorted_fitness_ratios) - 1):
+                        if sorted_fitness_ratios[i] < sorted_fitness_ratios[i + 1]:
+                            sorted_fitness_ratios[i], sorted_fitness_ratios[i + 1] = sorted_fitness_ratios[i + 1], sorted_fitness_ratios[i]
+                            sorted_population[i], sorted_population[i + 1] = sorted_population[i + 1], sorted_population[i]
+                            sorted_fitness_evaluation[i], sorted_fitness_evaluation[i + 1] = sorted_fitness_evaluation[i + 1], sorted_fitness_evaluation[i]
 
-            for i in range(nb_parents):
-                parents.append(sorted_population[i])
+                for i in range(nb_parents):
+                    parents.append(sorted_population[i])
+
+        else:
+            # -- Select individuals randomly
+            parents = None
 
         return parents
 
