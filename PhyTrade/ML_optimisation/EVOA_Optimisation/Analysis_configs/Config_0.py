@@ -22,14 +22,14 @@ class Config_0:
 
         self.mutation_rate = 0.3
         self.nb_parents = 4
-        self.nb_random_ind = 3
+        self.nb_random_ind = 2
 
-        self.exploitation_phase_len_percent = 0.1
+        self.exploitation_phase_len_percent = 0.2
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 100
+        self.data_slice_shift_per_gen = 0
         self.data_slice_cycle_count = 1
 
         # ____________________________________________________________________________________________________
@@ -46,7 +46,7 @@ class Config_0:
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
-        self.mutation_decay_function = 0
+        self.mutation_decay_function = 1
 
         self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0

@@ -72,7 +72,7 @@ class EVOA_optimiser:
                                                                   config.nb_random_ind,
                                                                   mutation_rate=config.mutation_rate)
 
-        print("---------------> Initial population generated successfully")
+        print("\n---------------> Initial population generated successfully")
 
         # ------------------ Run for # nb of generations:
         for gen in range(config.nb_of_generations+1):

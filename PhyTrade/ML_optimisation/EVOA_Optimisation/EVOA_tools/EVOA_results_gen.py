@@ -101,8 +101,7 @@ class EVOA_results_gen:
 
         self.results_file.write("\nParents # decay function: " + self.config.decay_functions[self.config.parents_decay_function] + "\n")
         self.results_file.write("Random individual # decay function: " + self.config.decay_functions[self.config.parents_decay_function] + "\n")
-
-        self.results_file.write("data_slice_size = " + str(self.config.data_slice_size) + "\n")
+        self.results_file.write("Mutation variation range # decay function: " + self.config.decay_functions[self.config.mutation_decay_function] + "\n")
 
         self.results_file.write("\n-----------> Metalabeling settings:" + "\n")
         self.results_file.write("upper_barrier = " + str(self.config.upper_barrier) + "\n")
@@ -190,6 +189,10 @@ class EVOA_results_gen:
         plt.plot(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen, label="Best individual fitness per gen")
         plt.plot(range(len(self.best_individual_fitness_per_gen)), self.yfit_best_f, "k", dashes=[6, 2])
 
+        plt.plot([self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count,
+                  self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count],
+                 [0, 100], label="End of exploration phase")
+
         plt.ylabel("Fitness %")
         plt.xlabel("Generation #")
         plt.legend()
@@ -205,6 +208,10 @@ class EVOA_results_gen:
         plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.yfit_best_nw, "k", dashes=[6, 2])
 
         plt.plot(range(len(self.data_slice_metalabel_pp)), self.data_slice_metalabel_pp, label="Metalabel net worth per gen")
+        plt.plot([self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count,
+                  self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count],
+                 [min(self.avg_net_worth_per_gen), max(self.best_individual_net_worth_per_gen)], label="End of exploration phase")
+
         plt.ylabel("Net worth $")
         plt.xlabel("Generation #")
         plt.legend()
