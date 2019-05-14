@@ -17,8 +17,8 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 2
-        self.nb_of_generations = 10
+        self.population_size = 8
+        self.nb_of_generations = 12
 
         self.mutation_rate = 0.3
         self.nb_parents = 1

@@ -53,7 +53,6 @@ class EVOA_results_gen:
         self.gradient_bestfit_best_nw = b_best_nw
         self.yfit_best_nw = [a_best_nw + b_best_nw * xi for xi in range(len(self.best_individual_net_worth_per_gen))]
 
-
     def gen_parameters_json(self):
         import json
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results".replace('\\', '/')

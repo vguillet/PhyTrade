@@ -47,7 +47,7 @@ class EVOA_optimiser:
         print("EVOA_v2 \n")
         self.results.run_start_time = time.time()
         print("Start time:", time.strftime('%X %x %Z'), "\n")
-        print("Estimated run time:", (config.nb_of_generations*config.population_size*1.4)/60, "minutes\n")
+        print("Estimated run time:", (config.nb_of_generations*config.population_size*0.80 + config.nb_of_generations * 0.45), "minutes\n")
 
         print("-- Settings selected --")
         print("Selected evaluation method:", config.evaluation_methods[config.evaluation_method])
