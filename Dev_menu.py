@@ -9,7 +9,7 @@ from PhyTrade.ML_optimisation.EVOA_Optimisation.Analysis_configs.Config_0 import
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Analysis_configs.Config_1 import Config_1
 
 
-config = Config_0()
+config = Config_1()
 EVO_optimisation = EVOA_optimiser(config)
 
 # ============================ ECONOMIC ANALYSIS ===============================

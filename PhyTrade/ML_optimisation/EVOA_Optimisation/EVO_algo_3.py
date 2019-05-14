@@ -28,7 +28,7 @@ class EVOA_optimiser:
 
         # -- Initialise benchmark data slice
         self.benchmark_data_slice = data_slice_info(config.benchmark_data_slice_start,
-                                                    config.benchmark_data_slice_stop,
+                                                    config.benchmark_data_slice_size,
                                                     0,
                                                     config.upper_barrier,
                                                     config.lower_barrier,
@@ -171,10 +171,6 @@ class EVOA_optimiser:
                 self.results.invalid_slice_count += 1
                 self.data_slice_cycle_count = config.data_slice_cycle_count
                 print("Data slice invalid for training, proceed to next data slice")
-
-            # ------------------ Exit optimiser if end of dataset is reached
-            if self.data_slice_info.stop_index >= 0:
-                break
 
         # ===============================================================================
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

@@ -9,6 +9,8 @@ class data_slice_info:
     def __init__(self, start_slice, slice_size, data_slice_shift_per_gen,
                  upper_barrier, lower_barrier, look_ahead):
 
+        self.default_start_slice_index = start_slice
+
         self.start_index = start_slice
         self.stop_index = start_slice + slice_size
 
@@ -31,11 +33,17 @@ class data_slice_info:
 
     def get_next_data_slice(self):
         # -- Determine new start/stop indexes
-        self.start_index = self.start_index + self.slice_size
-        self.stop_index = self.stop_index + self.slice_size
+        self.start_index += self.slice_size
+        self.stop_index += self.slice_size
 
         if self.stop_index >= 0:
-            self.stop_index = 0
+            if self.start_index < 0:
+                self.stop_index = 0
+
+            else:
+                # ------------------ Loop back to beginning of dataset if end of dataset is reached
+                self.start_index = self.default_start_slice_index
+                self.stop_index = self.default_start_slice_index + self.slice_size
 
         # -- Generate new metalabels
         self.gen_slice_metalabels()
@@ -47,7 +55,16 @@ class data_slice_info:
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
 
         if self.stop_index >= 0:
-            self.stop_index = 0
+            if self.start_index < 0:
+                self.stop_index = -1
+
+            else:
+                # ------------------ Loop back to beginning of dataset if end of dataset is reached
+                self.start_index = self.default_start_slice_index
+                self.stop_index = self.default_start_slice_index + self.slice_size
+
+        print(self.start_index)
+        print(self.stop_index)
 
         # -- Generate new metalabels
         self.gen_slice_metalabels()

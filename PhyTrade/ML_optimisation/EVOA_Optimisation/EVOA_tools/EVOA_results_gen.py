@@ -110,7 +110,7 @@ class EVOA_results_gen:
 
         self.results_file.write("\n-----------> Benchmarking data slice settings:" + "\n")
         self.results_file.write("benchmark_data_slice_start = " + str(self.config.benchmark_data_slice_start) + "\n")
-        self.results_file.write("benchmark_data_slice_stop = " + str(self.config.benchmark_data_slice_stop) + "\n")
+        self.results_file.write("benchmark_data_slice_stop = " + str(self.config.benchmark_data_slice_start + self.config.benchmark_data_slice_size) + "\n")
 
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 

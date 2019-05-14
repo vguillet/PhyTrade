@@ -1,7 +1,7 @@
 """
 Prototype 3
 
-This prototype is based entirely on technical analysis, and is ment as a test for the evolutionary algorithm parameter
+This prototype is based entirely on technical analysis, and is ment as a test for the evolutionary parameter
 optimisation algorithm
 
 The following parameters still require manual input:

@@ -9,7 +9,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Run 2"
+        self.config_name = "Run_3"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -17,20 +17,20 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 40
-        self.nb_of_generations = 120
+        self.population_size = 2
+        self.nb_of_generations = 10
 
         self.mutation_rate = 0.3
-        self.nb_parents = 15
-        self.nb_random_ind = 10
+        self.nb_parents = 1
+        self.nb_random_ind = 0
 
-        self.exploitation_phase_len_percent = 0.25
+        self.exploitation_phase_len_percent = 0.2
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_index = -7000
+        self.data_slice_start_index = -500
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 2
+        self.data_slice_cycle_count = 1
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
@@ -41,11 +41,12 @@ class Config_1:
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]
-        self.evaluation_method = 1
+        self.evaluation_method = 0
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
         self.random_ind_decay_function = 1
+        self.mutation_decay_function = 1
 
         self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0
@@ -57,10 +58,10 @@ class Config_1:
         # -- Metalabeling settings:
         self.upper_barrier = 20
         self.lower_barrier = -20
-        self.look_ahead = 20
+        self.look_ahead = 10
 
         # ____________________________________________________________________________________________________
         # -- Benchmarking data slice settings
         self.benchmark_data_slice_start = -453
-        self.benchmark_data_slice_stop = 252
+        self.benchmark_data_slice_size = 200
 

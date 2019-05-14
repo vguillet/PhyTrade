@@ -1,0 +1,145 @@
+====================== Run_3 ======================
+
+~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
+
+Configuration file: Run_3
+
+-----------> EVO_algo main parameters:
+population_size = 2
+nb_of_generations = 10
+
+mutation_rate = 0.3
+nb_parents = 1
+nb_random_ind = 0
+
+exploitation_phase_len_percent = 20.0
+
+data_slice_start_index = -500
+data_slice_size = 200
+data_slice_shift_per_gen = 100
+data_slice_cycle_count = 1
+
+-----------> Generation 0 settings:
+starting_parameters: C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json
+
+-----------> Generations settings:
+Evaluation method: Profit
+
+Parents # decay function: Linear decay
+Random individual # decay function: Linear decay
+Mutation variation range # decay function: Linear decay
+
+-----------> Metalabeling settings:
+upper_barrier = 20
+lower_barrier = -20
+look_ahead = 10
+
+-----------> Benchmarking data slice settings:
+benchmark_data_slice_start = -453
+benchmark_data_slice_stop = -253
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Run stats: 
+End time: 13:56:34 05/14/19 W. Europe Daylight Time
+Run time: 21.48s
+
+Average computing time per generation: 2.148s
+
+Number of data points processed: 499
+Number of invalid data slices: 1
+
+-----------> Fitness results:
+Max average fitness achieved: 28.541666666666668
+Max individual fitness achieved: 43.75
+
+Average fitness best fit line gradient achieved: 0.6280877831756808
+Individual fitness best fit line gradient achieved: -0.10758013030740173
+
+-----------> Net Worth results:
+Max average net worth achieved: 1051.4286075098516
+Max individual net worth achieved: 1051.4286075098516
+
+Average net worth best fit line gradient achieved: 5.047172139580873
+Individual net worth best fit line gradient achieved: 4.798067364812331
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Validation benchmark results: 
+Fitness achieved: 56.00000000000001
+Fitness achieved bs: 10.0
+
+Confusion Matrix: 
+      Sell  Hold  Buy
+Sell     0     2    1
+Hold    34   110   36
+Buy      5    10    2
+
+-----------> Benchmark Confusion tables: 
+
+Reference Confusion Table: 
+                             Condition Positive Condition Negative
+Predicted Condition Positive      True positive     False positive
+Predicted Condition Negative     False Negative      True negative
+
+-----------> Sell classification results: 
+
+Sell Confusion Table: 
+          Sell  Non-Sell
+Sell         0         3
+Non-Sell    39       158
+
+TPR = 0.0
+TNR = 0.981
+PPV = 0.0
+NPV = 0.802
+FNR = 1.0
+FPR = 0.019
+FDR = 1.0
+FOR = 0.198
+ACC = 0.79
+F1 = 0.0
+MCC = -0.061
+BM = -0.019
+MK = -0.198
+
+-----------> Buy classification results: 
+
+Buy Confusion Table: 
+         Buy  Non-Buy
+Buy        2       15
+Non-Buy   37      146
+
+TPR = 0.051
+TNR = 0.907
+PPV = 0.118
+NPV = 0.798
+FNR = 0.949
+FPR = 0.093
+FDR = 0.882
+FOR = 0.202
+ACC = 0.74
+F1 = 0.071
+MCC = -0.06
+BM = -0.042
+MK = -0.085
+
+-----------> Hold classification results: 
+
+Hold Confusion Table: 
+          Hold  Non-Hold
+Hold       110        70
+Non-Hold    12         8
+
+TPR = 0.902
+TNR = 0.103
+PPV = 0.611
+NPV = 0.4
+FNR = 0.098
+FPR = 0.897
+FDR = 0.389
+FOR = 0.6
+ACC = 0.59
+F1 = 0.728
+MCC = 0.007
+BM = 0.004
+MK = 0.011
+

@@ -152,6 +152,7 @@ class EVOA_tools:
             print("Invalid throttle decay function reference")
             sys.exit()
 
+        # TODO: add decay functions (log/exponential etc...)
         if current_generation <= nb_of_generations:
             if decay_function == 0:       # Fixed value
                 return max_value
