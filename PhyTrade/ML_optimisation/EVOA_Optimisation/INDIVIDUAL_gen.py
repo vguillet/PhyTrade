@@ -66,6 +66,32 @@ class Individual:
                                               "sma_2_spline_smoothing_factor": self.sma_2_spline_smoothing_factor,
                                               "sma_3_spline_smoothing_factor": self.sma_3_spline_smoothing_factor}
 
+            # ========================================================== EMA parameters:
+            self.ema_1_timeperiod_1 = ga_random.timeframe_random_gen()
+            self.ema_1_timeperiod_2 = ga_random.timeframe_random_gen()
+
+            self.ema_2_timeperiod_1 = ga_random.timeframe_random_gen()
+            self.ema_2_timeperiod_2 = ga_random.timeframe_random_gen()
+
+            self.ema_3_timeperiod_1 = ga_random.timeframe_random_gen()
+            self.ema_3_timeperiod_2 = ga_random.timeframe_random_gen()
+
+            self.ema_1_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
+            self.ema_2_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
+            self.ema_3_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
+
+            # -- Labeling/Classifying parameter types
+            self.ema_timeframes_dic = {"ema_1_timeperiod_1": self.ema_1_timeperiod_1,
+                                       "ema_2_timeperiod_1": self.ema_2_timeperiod_1,
+                                       "ema_3_timeperiod_1": self.ema_3_timeperiod_1,
+                                       "ema_1_timeperiod_2": self.ema_1_timeperiod_2,
+                                       "ema_2_timeperiod_2": self.ema_2_timeperiod_2,
+                                       "ema_3_timeperiod_2": self.ema_3_timeperiod_2}
+
+            self.ema_smoothing_factors_dic = {"ema_1_spline_smoothing_factor": self.ema_1_spline_smoothing_factor,
+                                              "ema_2_spline_smoothing_factor": self.ema_2_spline_smoothing_factor,
+                                              "ema_3_spline_smoothing_factor": self.ema_3_spline_smoothing_factor}
+
             # ========================================================== OC parameters:
             self.oc_avg_gradient_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
@@ -108,6 +134,10 @@ class Individual:
             self.sma_2_spline_weight = ga_random.weight_random_gen()
             self.sma_3_spline_weight = ga_random.weight_random_gen()
 
+            self.ema_1_spline_weight = ga_random.weight_random_gen()
+            self.ema_2_spline_weight = ga_random.weight_random_gen()
+            self.ema_3_spline_weight = ga_random.weight_random_gen()
+
             self.oc_avg_gradient_spline_weight = ga_random.weight_random_gen()
 
             # -- Labeling/Classifying parameter types
@@ -117,6 +147,9 @@ class Individual:
                                        "sma_1_spline_weight": self.sma_1_spline_weight,
                                        "sma_2_spline_weight": self.sma_2_spline_weight,
                                        "sma_3_spline_weight": self.sma_3_spline_weight,
+                                       "ema_1_spline_weight": self.ema_1_spline_weight,
+                                       "ema_2_spline_weight": self.ema_2_spline_weight,
+                                       "ema_3_spline_weight": self.ema_3_spline_weight,
                                        "oc_avg_gradient_spline_weight": self.oc_avg_gradient_spline_weight}
 
             # ========================================================== Dynamic threshold values:
@@ -133,6 +166,7 @@ class Individual:
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Further parameter classification
             self.timeframes_dic = dict(self.rsi_timeframes_dic,
                                        **self.sma_timeframes_dic,
+                                       **self.ema_timeframes_dic,
                                        **self.volatility_timeframe_dic)
 
             self.amplification_factor_dic = dict(self.volume_amplification_factor_dic,
@@ -140,6 +174,7 @@ class Individual:
 
             self.smoothing_factors_dic = dict(self.rsi_smoothing_factors_dic,
                                               **self.sma_smoothing_factors_dic,
+                                              **self.ema_smoothing_factors_dic,
                                               **self.oc_avg_gradient_spline_smoothing_factor_dic,
                                               **self.volume_spline_smoothing_factor_dic,
                                               **self.volatility_spline_smoothing_factor_dic)
@@ -165,9 +200,9 @@ class Individual:
     def gen_economic_model(self, data_slice_info, plot_3=False):
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_4 import Prototype_4
+        from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
 
-        self.analysis = Prototype_3(self.parameter_dictionary, data_slice_info)
-        # self.analysis = Prototype_4(self.parameter_dictionary, data_slice_info)
+        self.analysis = Prototype_5(self.parameter_dictionary, data_slice_info)
 
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
 

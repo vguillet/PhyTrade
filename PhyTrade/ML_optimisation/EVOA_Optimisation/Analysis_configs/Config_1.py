@@ -9,7 +9,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Run_3"
+        self.config_name = "Run_4"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 

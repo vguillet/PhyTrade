@@ -35,6 +35,8 @@ class EVAL_parameter_set:
                                                                                      self.data_slice.metalabels.close_values_metalabels,
                                                                                      calculate_stats=True,
                                                                                      print_benchmark_results=False)
+
+        self.results.individual = self.individual
         self.results.total_data_points_processed = self.data_slice_size
         self.results.look_ahead = self.look_ahead
         self.results.benchmark_data_slice_start = self.data_slice_start
@@ -80,7 +82,7 @@ class EVAL_parameter_set_results_gen:
         self.results_file.write("-----------> Validation benchmark results: \n")
         self.results_file.write("---> Net worth: \n")
         self.results_file.write("Net worth achieved: " + str(self.individual.account.net_worth_history[-1]) + "\n")
-        
+
         self.results_file.write("\n---> Fitness: \n")
         self.results_file.write("Fitness achieved: " + str(self.benchmark_confusion_matrix_analysis.overall_accuracy) + "\n")
         self.results_file.write("\nConfusion Matrix: \n" + self.benchmark_confusion_matrix_analysis.confusion_matrix.to_string() + "\n")

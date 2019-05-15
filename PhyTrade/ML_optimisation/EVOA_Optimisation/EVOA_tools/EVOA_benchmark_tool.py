@@ -145,7 +145,6 @@ class Confusion_matrix_analysis:
                                                                confusion_matrix.at['Buy', 'Hold']
             # Calc stats
             self.hold_stats = self.calc_stats(self.confusion_table_hold)
-            print(self.hold_stats)
 
         if print_benchmark_results:
             print("Overall accuracy achieved:", round(self.overall_accuracy))

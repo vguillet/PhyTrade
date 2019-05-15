@@ -1,6 +1,5 @@
 """
 This script enables computing the SMA indicator
-It is currently optimised for Quandl data
 
 Victor Guillet
 11/28/2018
@@ -12,31 +11,30 @@ class SMA:
         self.timeperiod_1 = timeperiod_1
         self.timeperiod_2 = timeperiod_2
 
-        # --------------------------SMA CALCULATION---------------------------
+        # -------------------------- SMA CALCULATION ---------------------------
         self.sma_1 = []
         self.sma_2 = []
 
         for i in range(len(big_data.data_slice)):
 
-            # ------------------Calculate close values falling in timeperiod_1 and 2
+            # ------------------ Calculate close values falling in timeperiod_1 and 2
             timeperiod_1_close_values = []
             timeperiod_2_close_values = []
 
             for j in range(self.timeperiod_1):
-                timeperiod_1_close_values.append(big_data.data_open_values[big_data.data_slice_start_ind + i - j])
+                timeperiod_1_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
 
             for j in range(self.timeperiod_2):
-                timeperiod_2_close_values.append(big_data.data_open_values[big_data.data_slice_start_ind + i - j])
+                timeperiod_2_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
 
-            # ------------------Sum close values for timeperiod_1 and 2
-
+            # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
             self.sma_1.append(sum(timeperiod_1_close_values)/len(timeperiod_1_close_values))
             self.sma_2.append(sum(timeperiod_2_close_values)/len(timeperiod_2_close_values))
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
 
-        # -----------------Trigger points determination
+        # ----------------- Trigger points determination
         sell_dates = []
         buy_dates = []
 
@@ -59,7 +57,7 @@ class SMA:
         self.sell_dates = sell_dates
         self.buy_dates = buy_dates
 
-        # -----------------Bear/Bullish continuous signal
+        # ----------------- Bear/Bullish continuous signal
         bb_signal = []
 
         for i in range(len(big_data.data_slice)):
@@ -85,7 +83,7 @@ class SMA:
 
 
     """
-    # -------------------------PLOT SMA ----------------------------------
+    # ------------------------- PLOT SMA ----------------------------------
 
     def plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
         import matplotlib.pyplot as plt
