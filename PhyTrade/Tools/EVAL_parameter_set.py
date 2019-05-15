@@ -2,6 +2,7 @@
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
+from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
 from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
@@ -21,12 +22,16 @@ class EVAL_parameter_set:
         # ---- Generate data slice
         self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)
 
-        # ---- Generate economic model
-        self.model = Prototype_3(self.parameter_set, self.data_slice, ticker=self.ticker)
+        # ---- Generate Individual
+        self.individual = Individual(parameter_set=parameter_set)
 
-        # Generate evaluation summary
+        # ---- Generate economic model and perform trade run
+        self.individual.gen_economic_model(self.data_slice, plot_3=False)
+        self.individual.perform_trade_run()
+
+        # ---- Generate evaluation summary
         self.results = EVAL_parameter_set_results_gen(eval_name)
-        self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(self.model.big_data.Major_spline.trade_signal,
+        self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(self.individual.analysis.big_data.Major_spline.trade_signal,
                                                                                      self.data_slice.metalabels.close_values_metalabels,
                                                                                      calculate_stats=True,
                                                                                      print_benchmark_results=False)
@@ -43,6 +48,7 @@ class EVAL_parameter_set:
 class EVAL_parameter_set_results_gen:
     def __init__(self, run_label):
         self.run_label = "Evaluation_" + run_label
+        self.individual = None
         self.benchmark_confusion_matrix_analysis = None
         self.total_data_points_processed = None
         self.look_ahead = None
@@ -72,6 +78,10 @@ class EVAL_parameter_set_results_gen:
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
         self.results_file.write("-----------> Validation benchmark results: \n")
+        self.results_file.write("---> Net worth: \n")
+        self.results_file.write("Net worth achieved: " + str(self.individual.account.net_worth_history[-1]) + "\n")
+        
+        self.results_file.write("\n---> Fitness: \n")
         self.results_file.write("Fitness achieved: " + str(self.benchmark_confusion_matrix_analysis.overall_accuracy) + "\n")
         self.results_file.write("\nConfusion Matrix: \n" + self.benchmark_confusion_matrix_analysis.confusion_matrix.to_string() + "\n")
 
