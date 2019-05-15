@@ -28,6 +28,7 @@ class EVAL_parameter_set:
         self.results = EVAL_parameter_set_results_gen(eval_name)
         self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(self.model.big_data.Major_spline.trade_signal,
                                                                                      self.data_slice.metalabels.close_values_metalabels,
+                                                                                     calculate_stats=True,
                                                                                      print_benchmark_results=False)
         self.results.total_data_points_processed = self.data_slice_size
         self.results.look_ahead = self.look_ahead
