@@ -1,12 +1,11 @@
 """
-Prototype 3
-
+This script contains the Prototype_5 class
 This prototype is based entirely on technical analysis, and include new indicators, including:
-- EMA
+    - EMA
 
 The following parameters still require manual input:
-- include trigger in signals (Technical_Indicators output generation)
-- buffer and buffer settings (Threshold determination)
+    - include trigger in signals (Technical_Indicators output generation)
+    - buffer and buffer settings (Threshold determination)
 
 Victor Guillet
 12/14/2018
@@ -26,25 +25,22 @@ from PhyTrade.Tools.MATH_tools import MATH
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE
 
-import pandas
-
 
 class Prototype_5:
-    def __init__(self, parameters, data_slice_info, ticker='AAPL'):
+    def __init__(self, parameters, data_slice_info, data):
+        """
+        Generate a model containing all coded indicators, process and generate bullish/bearish signals
 
-        # ========================= DATA COLLECTION INITIALISATION =======================
-        # data = pull_yahoo_data(ticker)  # Pull data from Yahoo
-        # data_csv = "Research\Data\ " + ticker + "_Yahoo_data.csv"
-
-        path = r"Research\Data\AAPL_Yahoo_data.csv".replace('\\', '/')
-
-        data = pandas.read_csv(path)
+        :param parameters: Dictionary of dictionaries containing the values for all the variables of each signal
+        :param data_slice_info: data_slice_info class instance
+        :param data: Pandas dataframe
+        """
 
         # ========================= ANALYSIS INITIALISATION ==============================
         data_slice_start_ind = data_slice_info.start_index
         data_slice_stop_ind = data_slice_info.stop_index
 
-        self.big_data = BIGDATA(data, ticker, data_slice_start_ind, data_slice_stop_ind)
+        self.big_data = BIGDATA(data, data_slice_start_ind, data_slice_stop_ind)
 
         # ------------------ Tools initialisation
         self.oc_tools = OC()
@@ -179,7 +175,12 @@ class Prototype_5:
                                                     smoothing_factor=parameters["smoothing_factors"]["volatility_spline_smoothing_factor"])
 
         # -- Tuning separate signals
+        # self.big_data.spline_sma_1 = self.spline_tools.flip_spline(self.big_data.spline_sma_1)
+        self.big_data.spline_sma_2 = self.spline_tools.flip_spline(self.big_data.spline_sma_2)
         self.big_data.spline_sma_3 = self.spline_tools.flip_spline(self.big_data.spline_sma_3)
+
+        self.big_data.spline_ema_1 = self.spline_tools.flip_spline(self.big_data.spline_ema_1)
+        # self.big_data.spline_ema_2 = self.spline_tools.flip_spline(self.big_data.spline_ema_2)
         self.big_data.spline_ema_3 = self.spline_tools.flip_spline(self.big_data.spline_ema_3)
 
         # -- Adding signals together
@@ -248,6 +249,11 @@ class Prototype_5:
 
     # ========================= SIGNAL PLOTS =========================================
     def plot(self, plot_1=True, plot_2=True, plot_3=True):
+        """
+        :param plot_1: Plot Open/Close prices & RSI
+        :param plot_2: Plot Open/Close prices & SMA
+        :param plot_3: Plot Open/Close prices & Bullish/Bearish signal
+        """
         import matplotlib.pyplot as plt
 
         if plot_1:
@@ -284,16 +290,33 @@ class Prototype_5:
 
             # ------------------ Plot bb signal(s)
             ax6 = plt.subplot(212)
+            # ---> RSI signals
             # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_rsi, label="RSI bb spline")
+            #     self.big_data, self.big_data.spline_rsi_1, label="RSI bb spline")
+            # self.spline_tools.plot_spline(
+            #     self.big_data, self.big_data.spline_rsi_2, label="RSI bb spline")
+            # self.spline_tools.plot_spline(
+            #     self.big_data, self.big_data.spline_rsi_3, label="RSI bb spline")
+
+            # ---> OC gradient signals
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_oc_avg_gradient, label="OC gradient bb spline", color='m')
+
+            # ---> SMA signals
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='b')
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
             # self.spline_tools.plot_spline(
             #     self.big_data, self.big_data.spline_sma_3, label="SMA_3 bb spline", color='r')
+
+            # ---> EMA signals
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_ema_1, label="EMA_1 bb spline", color='b')
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_ema_2, label="EMA_2 bb spline", color='b')
+            self.spline_tools.plot_spline(
+                self.big_data, self.big_data.spline_ema_3, label="EMA_3 bb spline", color='r')
 
             self.spline_tools.plot_spline(
                 self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
@@ -307,6 +330,10 @@ class Prototype_5:
                 self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates,
                 self.big_data.Major_spline.buy_dates)
 
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volatility, label="Volatility", color='grey')
+            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
+            self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volatility, label="Volatility", color='grey')
+
+            plt.legend()
             plt.show()
+
+        return

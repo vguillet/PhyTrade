@@ -1,5 +1,3 @@
-# TODO create EMA indicator class
-
 """
 This script enables computing the EMA indicator
 
@@ -10,6 +8,13 @@ Victor Guillet
 
 class EMA:
     def __init__(self, big_data, timeperiod_1=12, timeperiod_2=26):
+        """
+        Generates an EMA indicator instance
+
+        :param big_data: BIGDATA class instance
+        :param timeperiod_1: First Timeframe parameter to be used
+        :param timeperiod_2: Second Timeframe parameter to be used
+        """
         self.timeperiod_1 = timeperiod_1
         self.timeperiod_2 = timeperiod_2
 
@@ -48,6 +53,12 @@ class EMA:
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
+        """
+        Generate EMA indicator output
+
+        :param big_data: BIGDATA class instance
+        :param include_triggers_in_bb_signal: Maximise/minimise bb signal when EMAs cross
+        """
 
         # ----------------- Trigger points determination
         sell_dates = []
@@ -99,26 +110,32 @@ class EMA:
 
     """
     # ------------------------- PLOT SMA ----------------------------------
-
     def plot_ema(self, big_data, plot_ema_1=True, plot_ema_2=True, plot_trigger_signals=True):
+        """
+        :param big_data: BIGDATA class instance
+        :param plot_ema_1: Plot EMA indicator based on timeperiod_1
+        :param plot_ema_2: Plot EMA indicator based on timeperiod_2
+        :param plot_trigger_signals: Include trigger signals in plot
+        """
+
         import matplotlib.pyplot as plt
 
         if plot_ema_1:
-            plt.plot(big_data.data_slice_dates, self.ema_1, label="SMA "+str(self.timeperiod_1)+" days")          # Plot SMA_1
+            plt.plot(big_data.data_slice_dates, self.ema_1, label="EMA "+str(self.timeperiod_1)+" days")          # Plot SMA_1
 
         if plot_ema_2:
-            plt.plot(big_data.data_slice_dates, self.ema_2, label="SMA "+str(self.timeperiod_2)+" days")          # Plot SMA_2
+            plt.plot(big_data.data_slice_dates, self.ema_2, label="EMA "+str(self.timeperiod_2)+" days")          # Plot SMA_2
 
         if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")       # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_SMA, label="Buy trigger")          # Plot buy signals
+            plt.scatter(self.sell_dates, self.sell_EMA, label="Sell trigger")       # Plot sell signals
+            plt.scatter(self.buy_dates, self.buy_EMA, label="Buy trigger")          # Plot buy signals
 
         plt.gcf().autofmt_xdate()
         plt.grid()
-        plt.title("SMA")
+        plt.title("EMA")
         plt.legend()
         plt.xlabel("Trade date")
-        plt.ylabel("SMI")
+        plt.ylabel("EMA")
 
 
 

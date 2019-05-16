@@ -9,6 +9,12 @@ Victor Guillet
 class OC:
     @staticmethod
     def calc_trigger_values(big_data, sell_dates, buy_dates):
+        """
+        :param big_data: BIGDATA class instance
+        :param sell_dates: Sell dates triggers
+        :param buy_dates: Buy dates triggers
+        :return:
+        """
 
         sell_values = []
         buy_values = []
@@ -25,6 +31,12 @@ class OC:
 
     @staticmethod
     def plot_oc_values(big_data, plot_close_values=True, plot_open_values=True):
+        """
+        :param big_data: BIGDATA class instance
+        :param plot_close_values: Plot close values
+        :param plot_open_values:  Plot open values
+        """
+
         import matplotlib.pyplot as plt
 
         if plot_close_values:
@@ -42,6 +54,12 @@ class OC:
 
     @staticmethod
     def plot_oc_values_diff(big_data):
+        """
+        Plot the difference in opening/closing prices
+
+        :param big_data: BIGDATA class instance
+        """
+
         import matplotlib.pyplot as plt
 
         plt.plot(big_data.data_slice_dates, big_data.values_fluctuation, linewidth=1, label="Values fluctuation")
@@ -55,6 +73,14 @@ class OC:
 
     @staticmethod
     def plot_trigger_values(big_data, sell_dates, buy_dates):
+        """
+        Plot inputted trigger values on open/close price plot
+
+        :param big_data: BIGDATA class instance
+        :param sell_dates: Sell dates triggers
+        :param buy_dates: Buy dates triggers
+        """
+
         import matplotlib.pyplot as plt
 
         sell_values, buy_values = OC().calc_trigger_values(big_data, sell_dates, buy_dates)

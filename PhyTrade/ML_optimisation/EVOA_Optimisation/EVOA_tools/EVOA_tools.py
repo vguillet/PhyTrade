@@ -68,7 +68,6 @@ class EVOA_tools:
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
-
         if sum(fitness_evaluation) != 0:
             # -- Determine fitness ratio
             fitness_ratios = []

@@ -9,7 +9,7 @@ class Config_0:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Test_configuration"
+        self.config_name = "Run_4"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -63,5 +63,5 @@ class Config_0:
         # ____________________________________________________________________________________________________
         # -- Benchmarking data slice settings
         self.benchmark_data_slice_start = -453
-        self.benchmark_data_slice_stop = 252
+        self.benchmark_data_slice_size = 200
 

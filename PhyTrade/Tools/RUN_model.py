@@ -7,7 +7,7 @@ from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
 
-class EVAL_parameter_set:
+class RUN_model:
     def __init__(self, eval_name,
                  parameter_set, ticker,
                  data_slice_start, data_slice_size, look_ahead):
@@ -19,6 +19,12 @@ class EVAL_parameter_set:
         self.data_slice_size = data_slice_size
         self.look_ahead = look_ahead
 
+        # ===============================================================================
+        decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("EVOA_parameter_evaluation \n")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
         # ---- Generate data slice
         self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)
 
@@ -26,7 +32,7 @@ class EVAL_parameter_set:
         self.individual = Individual(parameter_set=parameter_set)
 
         # ---- Generate economic model and perform trade run
-        self.individual.gen_economic_model(self.data_slice, plot_3=False)
+        self.individual.gen_economic_model(self.data_slice, plot_3=True)
         self.individual.perform_trade_run()
 
         # ---- Generate evaluation summary

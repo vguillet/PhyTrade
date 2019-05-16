@@ -9,6 +9,15 @@ Victor Guillet
 class RSI:
     def __init__(self, big_data, timeframe=14, buffer_setting=0,
                  standard_upper_threshold=70, standard_lower_threshold=30):
+        """
+        Generates an RSI indicator instance
+
+        :param big_data: BIGDATA class instance
+        :param timeframe: First Timeframe parameter to be used
+        :param buffer_setting: 0: no buffer, 1: fixed value buffer, 2: variable value buffer
+        :param standard_upper_threshold: Upper threshold for sell trigger points generation
+        :param standard_lower_threshold: Lower threshold for buy trigger points generation
+        """
 
         self.timeframe = timeframe
         self.buffer_setting = buffer_setting
@@ -129,6 +138,12 @@ class RSI:
     """
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
+        """
+        Generate RSI indicator output
+
+        :param big_data: BIGDATA class instance
+        :param include_triggers_in_bb_signal: Maximise/minimise bb signal when RSI crosses upper/lower bound
+        """
 
         # -----------------Trigger points determination
         sell_dates = []
@@ -199,8 +214,15 @@ class RSI:
 
     """
     # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
-
     def plot_rsi(self, big_data, plot_rsi=True, plot_upper_bound=True, plot_lower_bound=True, plot_trigger_signals=True):
+        """
+        :param big_data: BIGDATA class instance
+        :param plot_rsi: Plot RSI indicator
+        :param plot_upper_bound: Include RSI upper bound in plot
+        :param plot_lower_bound: Include RSI upper bound in plot
+        :param plot_trigger_signals: Include RSI trigger signals in plot
+        """
+
         import matplotlib.pyplot as plt
 
         if plot_rsi:

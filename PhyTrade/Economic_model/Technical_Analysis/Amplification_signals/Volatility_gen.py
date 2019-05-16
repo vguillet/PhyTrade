@@ -5,14 +5,21 @@ Victor Guillet
 11/12/2018
 """
 
+from PhyTrade.Tools.MATH_tools import MATH
+import statistics as st
+import numpy as np
+
 
 class VOLATILITY:
     def __init__(self, big_data, timeframe=10, amplification_factor=1):
+        """
+        Calculate and generates amp_coef list based on volatility to be used as an amplification signal
 
-        from PhyTrade.Tools.MATH_tools import MATH
-        import statistics as st
-        import numpy as np
-        
+        :param big_data: BIGDATA class instance
+        :param timeframe: Timeframe parameter to be used
+        :param amplification_factor: Amplification factor of the signal
+        """
+
         self.timeframe = timeframe
         self.volatility = []
 

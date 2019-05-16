@@ -1,7 +1,22 @@
+from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Download_DataFrame import save_df_to_csv
+
+import pandas
+
 
 class Individual:
-    def __init__(self, parameter_set=None):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+    def __init__(self, ticker, parameter_set=None):
+        # ========================= DATA COLLECTION INITIALISATION =======================
+        self.ticker = ticker
+
+        try:
+            path = r"Research\Data\**_Yahoo_data.csv".replace('\\', '/').replace('**', ticker)
+            self.data = pandas.read_csv(path)
+        except:
+            self.data = pull_yahoo_data(ticker)      # Pull data from Yahoo
+            file_name = ticker + "_Yahoo_data.csv"
+            save_df_to_csv(self.data, file_name)     # Save data to csv file
 
         if parameter_set is None:
             ga_random = EVOA_random_gen()
@@ -202,7 +217,7 @@ class Individual:
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_4 import Prototype_4
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
 
-        self.analysis = Prototype_5(self.parameter_dictionary, data_slice_info)
+        self.analysis = Prototype_5(self.parameter_dictionary, data_slice_info, self.data)
 
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
 

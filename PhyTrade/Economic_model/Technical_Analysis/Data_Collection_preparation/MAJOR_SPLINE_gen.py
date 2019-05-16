@@ -4,6 +4,15 @@ from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 
 class MAJOR_SPLINE:
     def __init__(self, big_data, spline, upper_threshold, lower_threshold):
+        """
+        Used to stored all the data relevant to the final result of the model.
+        It computes the buy and sell dates based on the inputted spline and upper/lower threshold
+
+        :param big_data:  BIGDATA class instance
+        :param spline: Spline to be used as the major spline
+        :param upper_threshold: Upper threshold for sell trigger points generation
+        :param lower_threshold: Lower threshold for buy trigger points generation
+        """
 
         oc_tools = OC()
         spline_tools = SPLINE(big_data)

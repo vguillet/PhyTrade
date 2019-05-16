@@ -44,7 +44,7 @@ class EVOA_optimiser:
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("EVOA_v2 \n")
+        print("EVOA_v3 \n")
         self.results.run_start_time = time.time()
         print("Start time:", time.strftime('%X %x %Z'), "\n")
         print("Estimated run time:", (config.nb_of_generations*config.population_size*0.80 + config.nb_of_generations * 0.45), "minutes\n")

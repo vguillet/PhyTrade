@@ -8,6 +8,13 @@ Victor Guillet
 
 class SMA:
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
+        """
+        Generates an SMA indicator instance
+
+        :param big_data: BIGDATA class instance
+        :param timeperiod_1: First Timeframe parameter to be used
+        :param timeperiod_2: Second Timeframe parameter to be used
+        """
         self.timeperiod_1 = timeperiod_1
         self.timeperiod_2 = timeperiod_2
 
@@ -33,6 +40,12 @@ class SMA:
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
+        """
+        Generate SMA indicator output
+
+        :param big_data: BIGDATA class instance
+        :param include_triggers_in_bb_signal: Maximise/minimise bb signal when SMAs cross
+        """
 
         # ----------------- Trigger points determination
         sell_dates = []
@@ -84,8 +97,14 @@ class SMA:
 
     """
     # ------------------------- PLOT SMA ----------------------------------
-
     def plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
+        """
+        :param big_data: BIGDATA class instance
+        :param plot_sma_1: Plot SMA indicator based on timeperiod_1
+        :param plot_sma_2: Plot SMA indicator based on timeperiod_2
+        :param plot_trigger_signals: Include trigger signals in plot
+        """
+
         import matplotlib.pyplot as plt
 
         if plot_sma_1:
@@ -103,4 +122,4 @@ class SMA:
         plt.title("SMA")
         plt.legend()
         plt.xlabel("Trade date")
-        plt.ylabel("SMI")
+        plt.ylabel("SMA")
