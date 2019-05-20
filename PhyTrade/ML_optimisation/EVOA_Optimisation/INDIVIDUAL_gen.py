@@ -61,56 +61,83 @@ class Individual:
                                               "rsi_3_spline_smoothing_factor": self.rsi_3_spline_smoothing_factor}
 
             # ========================================================== SMA parameters:
-            self.sma_1_timeperiod_1 = ga_random.timeframe_random_gen()
-            self.sma_1_timeperiod_2 = ga_random.timeframe_random_gen()
+            self.sma_1_timeframe_1 = ga_random.timeframe_random_gen()
+            self.sma_1_timeframe_2 = ga_random.timeframe_random_gen()
 
-            self.sma_2_timeperiod_1 = ga_random.timeframe_random_gen()
-            self.sma_2_timeperiod_2 = ga_random.timeframe_random_gen()
+            self.sma_2_timeframe_1 = ga_random.timeframe_random_gen()
+            self.sma_2_timeframe_2 = ga_random.timeframe_random_gen()
 
-            self.sma_3_timeperiod_1 = ga_random.timeframe_random_gen()
-            self.sma_3_timeperiod_2 = ga_random.timeframe_random_gen()
+            self.sma_3_timeframe_1 = ga_random.timeframe_random_gen()
+            self.sma_3_timeframe_2 = ga_random.timeframe_random_gen()
 
             self.sma_1_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
             self.sma_2_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
             self.sma_3_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
             # -- Labeling/Classifying parameter types
-            self.sma_timeframes_dic = {"sma_1_timeperiod_1": self.sma_1_timeperiod_1,
-                                       "sma_2_timeperiod_1": self.sma_2_timeperiod_1,
-                                       "sma_3_timeperiod_1": self.sma_3_timeperiod_1,
-                                       "sma_1_timeperiod_2": self.sma_1_timeperiod_2,
-                                       "sma_2_timeperiod_2": self.sma_2_timeperiod_2,
-                                       "sma_3_timeperiod_2": self.sma_3_timeperiod_2}
+            self.sma_timeframes_dic = {"sma_1_timeframe_1": self.sma_1_timeframe_1,
+                                       "sma_2_timeframe_1": self.sma_2_timeframe_1,
+                                       "sma_3_timeframe_1": self.sma_3_timeframe_1,
+                                       "sma_1_timeframe_2": self.sma_1_timeframe_2,
+                                       "sma_2_timeframe_2": self.sma_2_timeframe_2,
+                                       "sma_3_timeframe_2": self.sma_3_timeframe_2}
 
             self.sma_smoothing_factors_dic = {"sma_1_spline_smoothing_factor": self.sma_1_spline_smoothing_factor,
                                               "sma_2_spline_smoothing_factor": self.sma_2_spline_smoothing_factor,
                                               "sma_3_spline_smoothing_factor": self.sma_3_spline_smoothing_factor}
 
             # ========================================================== EMA parameters:
-            self.ema_1_timeperiod_1 = ga_random.timeframe_random_gen()
-            self.ema_1_timeperiod_2 = ga_random.timeframe_random_gen()
+            self.ema_1_timeframe_1 = ga_random.timeframe_random_gen()
+            self.ema_1_timeframe_2 = ga_random.timeframe_random_gen()
 
-            self.ema_2_timeperiod_1 = ga_random.timeframe_random_gen()
-            self.ema_2_timeperiod_2 = ga_random.timeframe_random_gen()
+            self.ema_2_timeframe_1 = ga_random.timeframe_random_gen()
+            self.ema_2_timeframe_2 = ga_random.timeframe_random_gen()
 
-            self.ema_3_timeperiod_1 = ga_random.timeframe_random_gen()
-            self.ema_3_timeperiod_2 = ga_random.timeframe_random_gen()
+            self.ema_3_timeframe_1 = ga_random.timeframe_random_gen()
+            self.ema_3_timeframe_2 = ga_random.timeframe_random_gen()
 
             self.ema_1_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
             self.ema_2_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
             self.ema_3_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
 
             # -- Labeling/Classifying parameter types
-            self.ema_timeframes_dic = {"ema_1_timeperiod_1": self.ema_1_timeperiod_1,
-                                       "ema_2_timeperiod_1": self.ema_2_timeperiod_1,
-                                       "ema_3_timeperiod_1": self.ema_3_timeperiod_1,
-                                       "ema_1_timeperiod_2": self.ema_1_timeperiod_2,
-                                       "ema_2_timeperiod_2": self.ema_2_timeperiod_2,
-                                       "ema_3_timeperiod_2": self.ema_3_timeperiod_2}
+            self.ema_timeframes_dic = {"ema_1_timeframe_1": self.ema_1_timeframe_1,
+                                       "ema_2_timeframe_1": self.ema_2_timeframe_1,
+                                       "ema_3_timeframe_1": self.ema_3_timeframe_1,
+                                       "ema_1_timeframe_2": self.ema_1_timeframe_2,
+                                       "ema_2_timeframe_2": self.ema_2_timeframe_2,
+                                       "ema_3_timeframe_2": self.ema_3_timeframe_2}
 
             self.ema_smoothing_factors_dic = {"ema_1_spline_smoothing_factor": self.ema_1_spline_smoothing_factor,
                                               "ema_2_spline_smoothing_factor": self.ema_2_spline_smoothing_factor,
                                               "ema_3_spline_smoothing_factor": self.ema_3_spline_smoothing_factor}
+
+            # ========================================================== LWMA parameters:
+            self.lwma_1_timeframe = ga_random.timeframe_random_gen()
+            self.lwma_1_max_weight = ga_random.lwma_max_weight_random_gen()
+
+            self.lwma_2_timeframe = ga_random.timeframe_random_gen()
+            self.lwma_2_max_weight = ga_random.lwma_max_weight_random_gen()
+
+            self.lwma_3_timeframe = ga_random.timeframe_random_gen()
+            self.lwma_3_max_weight = ga_random.lwma_max_weight_random_gen()
+
+            self.lwma_1_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
+            self.lwma_2_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
+            self.lwma_3_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
+
+            # -- Labeling/Classifying parameter types
+            self.lwma_timeframes_dic = {"lwma_1_timeframe": self.lwma_1_timeframe,
+                                        "lwma_2_timeframe": self.lwma_2_timeframe,
+                                        "lwma_3_timeframe": self.lwma_3_timeframe}
+
+            self.lwma_max_weights_dic = {"lwma_1_max_weight": self.lwma_1_max_weight,
+                                         "lwma_2_max_weight": self.lwma_2_max_weight,
+                                         "lwma_3_max_weight": self.lwma_3_max_weight}
+
+            self.lwma_smoothing_factors_dic = {"lwma_1_spline_smoothing_factor": self.lwma_1_spline_smoothing_factor,
+                                               "lwma_2_spline_smoothing_factor": self.lwma_2_spline_smoothing_factor,
+                                               "lwma_3_spline_smoothing_factor": self.lwma_3_spline_smoothing_factor}
 
             # ========================================================== OC parameters:
             self.oc_avg_gradient_spline_smoothing_factor = ga_random.smoothing_factor_random_gen()
@@ -158,6 +185,10 @@ class Individual:
             self.ema_2_spline_weight = ga_random.weight_random_gen()
             self.ema_3_spline_weight = ga_random.weight_random_gen()
 
+            self.lwma_1_spline_weight = ga_random.weight_random_gen()
+            self.lwma_2_spline_weight = ga_random.weight_random_gen()
+            self.lwma_3_spline_weight = ga_random.weight_random_gen()
+
             self.oc_avg_gradient_spline_weight = ga_random.weight_random_gen()
 
             # -- Labeling/Classifying parameter types
@@ -170,6 +201,9 @@ class Individual:
                                        "ema_1_spline_weight": self.ema_1_spline_weight,
                                        "ema_2_spline_weight": self.ema_2_spline_weight,
                                        "ema_3_spline_weight": self.ema_3_spline_weight,
+                                       "lwma_1_spline_weight": self.ema_1_spline_weight,
+                                       "lwma_2_spline_weight": self.ema_2_spline_weight,
+                                       "lwma_3_spline_weight": self.ema_3_spline_weight,
                                        "oc_avg_gradient_spline_weight": self.oc_avg_gradient_spline_weight}
 
             # ========================================================== Dynamic threshold values:
@@ -187,25 +221,28 @@ class Individual:
             self.timeframes_dic = dict(self.rsi_timeframes_dic,
                                        **self.sma_timeframes_dic,
                                        **self.ema_timeframes_dic,
+                                       **self.lwma_timeframes_dic,
                                        **self.volatility_timeframe_dic)
 
-            self.amplification_factor_dic = dict(self.volume_amplification_factor_dic,
-                                                 **self.volatility_amplification_factor_dic)
+            self.amplification_factors_dic = dict(self.volume_amplification_factor_dic,
+                                                  **self.volatility_amplification_factor_dic)
 
             self.smoothing_factors_dic = dict(self.rsi_smoothing_factors_dic,
                                               **self.sma_smoothing_factors_dic,
                                               **self.ema_smoothing_factors_dic,
+                                              **self.lwma_smoothing_factors_dic,
                                               **self.oc_avg_gradient_spline_smoothing_factor_dic,
                                               **self.volume_spline_smoothing_factor_dic,
                                               **self.volatility_spline_smoothing_factor_dic)
 
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Creating parameter dictionary
-            self.parameter_dictionary = {"timeframe": self.timeframes_dic,
+            self.parameter_dictionary = {"timeframes": self.timeframes_dic,
                                          "rsi_standard_upper_thresholds": self.rsi_standard_upper_thresholds_dic,
                                          "rsi_standard_lower_thresholds": self.rsi_standard_lower_thresholds_dic,
                                          "smoothing_factors": self.smoothing_factors_dic,
-                                         "amplification_factor": self.amplification_factor_dic,
+                                         "amplification_factor": self.amplification_factors_dic,
                                          "weights": self.spline_weights_dic,
+                                         "lwma_max_weights": self.lwma_max_weights_dic,
                                          "major_spline_standard_upper_thresholds": self.major_spline_standard_upper_threshold_dic,
                                          "major_spline_standard_lower_thresholds": self.major_spline_standard_lower_threshold_dic}
 

@@ -42,48 +42,64 @@ class SPLINE:
         return spline
 
     @staticmethod
-    def combine_5_splines(big_data,
-                          spline_1, spline_2, spline_3, spline_4, spline_5,
-                          weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1):
+    def combine_splines(big_data, splines, weights):
+
+        assert len(splines) == len(weights)
 
         combined_splines = []
         for i in range(big_data.spline_length):
-            combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
-                                     + spline_3[i]*weight_3 + spline_4[i]*weight_4
-                                     + spline_5[i]*weight_5) /
-                                    (weight_1+weight_2+weight_3+weight_4+weight_5))
+
+            splines_weighted_values = []
+            for j in range(len(splines)):
+                splines_weighted_values.append(splines[j][i]*weights[j])
+
+            combined_splines.append(sum(splines_weighted_values))
 
         return combined_splines
-
-    @staticmethod
-    def combine_7_splines(big_data,
-                          spline_1, spline_2, spline_3, spline_4, spline_5, spline_6, spline_7,
-                          weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1, weight_6=1, weight_7=1):
-
-        combined_splines = []
-        for i in range(big_data.spline_length):
-            combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
-                                     + spline_3[i]*weight_3 + spline_4[i]*weight_4
-                                     + spline_5[i]*weight_5 + spline_6[i]*weight_6
-                                     + spline_7[i]*weight_7) /
-                                    (weight_1+weight_2+weight_3+weight_4+weight_5+weight_6+weight_7))
-
-        return combined_splines
-
-    @staticmethod
-    def combine_10_splines(big_data,
-                           spline_1, spline_2, spline_3, spline_4, spline_5, spline_6, spline_7, spline_8, spline_9, spline_10,
-                           weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1, weight_6=1, weight_7=1, weight_8=1, weight_9=1, weight_10=1):
-
-        combined_splines = []
-        for i in range(big_data.spline_length):
-            combined_splines.append((spline_1[i] * weight_1 + spline_2[i] * weight_2
-                                     + spline_3[i] * weight_3 + spline_4[i] * weight_4
-                                     + spline_5[i] * weight_5 + spline_6[i] * weight_6
-                                     + spline_7[i] * weight_7) /
-                                    (weight_1 + weight_2 + weight_3 + weight_4 + weight_5 + weight_6 + weight_7))
-
-        return combined_splines
+    #
+    # @staticmethod
+    # def combine_5_splines(big_data,
+    #                       spline_1, spline_2, spline_3, spline_4, spline_5,
+    #                       weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1):
+    #
+    #     combined_splines = []
+    #     for i in range(big_data.spline_length):
+    #         combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
+    #                                  + spline_3[i]*weight_3 + spline_4[i]*weight_4
+    #                                  + spline_5[i]*weight_5) /
+    #                                 (weight_1+weight_2+weight_3+weight_4+weight_5))
+    #
+    #     return combined_splines
+    #
+    # @staticmethod
+    # def combine_7_splines(big_data,
+    #                       spline_1, spline_2, spline_3, spline_4, spline_5, spline_6, spline_7,
+    #                       weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1, weight_6=1, weight_7=1):
+    #
+    #     combined_splines = []
+    #     for i in range(big_data.spline_length):
+    #         combined_splines.append((spline_1[i]*weight_1 + spline_2[i]*weight_2
+    #                                  + spline_3[i]*weight_3 + spline_4[i]*weight_4
+    #                                  + spline_5[i]*weight_5 + spline_6[i]*weight_6
+    #                                  + spline_7[i]*weight_7) /
+    #                                 (weight_1+weight_2+weight_3+weight_4+weight_5+weight_6+weight_7))
+    #
+    #     return combined_splines
+    #
+    # @staticmethod
+    # def combine_10_splines(big_data,
+    #                        spline_1, spline_2, spline_3, spline_4, spline_5, spline_6, spline_7, spline_8, spline_9, spline_10,
+    #                        weight_1=1, weight_2=1, weight_3=1, weight_4=1, weight_5=1, weight_6=1, weight_7=1, weight_8=1, weight_9=1, weight_10=1):
+    #
+    #     combined_splines = []
+    #     for i in range(big_data.spline_length):
+    #         combined_splines.append((spline_1[i] * weight_1 + spline_2[i] * weight_2
+    #                                  + spline_3[i] * weight_3 + spline_4[i] * weight_4
+    #                                  + spline_5[i] * weight_5 + spline_6[i] * weight_6
+    #                                  + spline_7[i] * weight_7) /
+    #                                 (weight_1 + weight_2 + weight_3 + weight_4 + weight_5 + weight_6 + weight_7))
+    #
+    #     return combined_splines
 
     @staticmethod
     def shift_spline(spline, index_shift):

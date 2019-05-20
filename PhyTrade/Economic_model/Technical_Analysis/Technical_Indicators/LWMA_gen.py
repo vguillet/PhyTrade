@@ -31,11 +31,9 @@ class LWMA:
 
             # ---> Compute weights for each days based on max weight param and lookback period
             weights = [max_weight]
-            for j in range(1, self.lookback_period-1):
+            for j in range(1, self.lookback_period):
                 weights.append(max_weight-(max_weight/self.lookback_period)*j)
             weights.reverse()
-
-            assert len(weights) == lookback_period
 
             # ---> Compute weighted daily values
             weighted_values = []
@@ -44,6 +42,89 @@ class LWMA:
 
             self.lwma.append(sum(weighted_values)/sum(weights))
 
-        print(self.lwma)
+            # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    def get_output(self, big_data, include_triggers_in_bb_signal=False):
+        """
+        Generate LWMA indicator output
+
+        :param big_data: BIGDATA class instance
+        :param include_triggers_in_bb_signal: Maximise/minimise bb signal when LWMAs crosses daily value
+        """
+
+        self.data_values = big_data.data_slice_close_values
+
+        # ----------------- Trigger points determination
+        sell_dates = []
+        buy_dates = []
+
+        # lwma config can take two values, 0 for when lwma is higher than the close value, and 1 for the other way around
+        if self.lwma[0] > self.data_values[0]:
+            lwma_config = 0
+        else:
+            lwma_config = 1
+
+        for i in range(len(big_data.data_slice)):
+            if lwma_config == 0:
+                if self.data_values[i] > self.lwma[i]:
+                    sell_dates.append(big_data.data_slice_dates[i])
+                    lwma_config = 1
+            else:
+                if self.lwma[i] > self.data_values[i]:
+                    buy_dates.append(big_data.data_slice_dates[i])
+                    lwma_config = 0
+
+        self.sell_dates = sell_dates
+        self.buy_dates = buy_dates
+
+        # ----------------- Bear/Bullish continuous signal
+        bb_signal = []
+
+        for i in range(len(big_data.data_slice)):
+            bb_signal.append((self.lwma[i] - self.data_values[i]) / 2)
+
+        # Normalising lwma bb signal values between -1 and 1
+        from PhyTrade.Tools.MATH_tools import MATH
+
+        bb_signal_normalised = MATH().normalise_minus_one_one(bb_signal)
+
+        if include_triggers_in_bb_signal:
+            for date in self.sell_dates:
+                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+
+            for date in self.buy_dates:
+                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
+
+        self.bb_signal = bb_signal_normalised
+
+    """
+
+
+
+
+    """
+    # ------------------------- PLOT LWMA ----------------------------------
+    def plot_lwma(self, big_data, plot_lwma=True, plot_trigger_signals=True):
+        """
+        :param big_data: BIGDATA class instance
+        :param plot_lwma: Plot LWMA indicator
+        :param plot_trigger_signals: Include trigger signals in plot
+        """
+
+        import matplotlib.pyplot as plt
+
+        if plot_lwma:
+            plt.plot(big_data.data_slice_dates, self.lwma, label="LWMA " + str(self.lookback_period) + " days")  # Plot LWMA
+
+        if plot_trigger_signals:
+            plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")  # Plot sell signals
+            plt.scatter(self.buy_dates, self.buy_SMA, label="Buy trigger")  # Plot buy signals
+
+        plt.gcf().autofmt_xdate()
+        plt.grid()
+        plt.title("LWMA")
+        plt.legend()
+        plt.xlabel("Trade date")
+        plt.ylabel("LWMA")
+
 
 

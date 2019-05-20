@@ -37,12 +37,12 @@ class EVOA_random_gen:
                 self.smoothing_factor_gen(offspring.parameter_dictionary["smoothing_factors"][parameter],
                                           current_generation, nb_of_generations, decay_function)
 
-        elif parameter_type_to_modify == "amplification_factor":
-            parameter = random.choice(list(offspring.parameter_dictionary["amplification_factor"]))
+        elif parameter_type_to_modify == "amplification_factors":
+            parameter = random.choice(list(offspring.parameter_dictionary["amplification_factors"]))
 
-            offspring.parameter_dictionary["amplification_factor"][parameter] = \
+            offspring.parameter_dictionary["amplification_factors"][parameter] = \
                 self.amplification_factor_gen(
-                    offspring.parameter_dictionary["amplification_factor"][parameter],
+                    offspring.parameter_dictionary["amplification_factors"][parameter],
                     current_generation, nb_of_generations, decay_function)
 
         elif parameter_type_to_modify == "weights":
@@ -50,6 +50,13 @@ class EVOA_random_gen:
 
             offspring.parameter_dictionary["weights"][parameter] = \
                 self.weight_gen(offspring.parameter_dictionary["weights"][parameter],
+                                current_generation, nb_of_generations, decay_function)
+
+        elif parameter_type_to_modify == "lwma_max_weights":
+            parameter = random.choice(list(offspring.parameter_dictionary["lwma_max_weights"]))
+
+            offspring.parameter_dictionary["lwma_max_weights"][parameter] = \
+                self.weight_gen(offspring.parameter_dictionary["lwma_max_weights"][parameter],
                                 current_generation, nb_of_generations, decay_function)
 
         elif parameter_type_to_modify == "major_spline_standard_upper_thresholds":
@@ -74,7 +81,7 @@ class EVOA_random_gen:
     # ------- Timeframes
     @staticmethod
     def timeframe_random_gen():
-        return random.randint(2, 20)
+        return random.randint(2, 100)
 
     @staticmethod
     def timeframe_gen(current_parameter, current_generation, nb_of_generations, decay_function):
@@ -135,6 +142,24 @@ class EVOA_random_gen:
         # Throttle variation parameters
         throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
                                                 4, 0.01, decay_function)
+
+        # Update parameter using throttled ranges
+        new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
+
+        if new_parameter < 0:
+            new_parameter = 0
+        return new_parameter
+
+    # ------- LWMA max weight
+    @staticmethod
+    def lwma_max_weight_random_gen():
+        return random.randint(0, 100)
+
+    @staticmethod
+    def lwma_max_weight_gen(current_parameter, current_generation, nb_of_generations, decay_function):
+        # Throttle variation parameters
+        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
+                                                50, 1, decay_function)
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)

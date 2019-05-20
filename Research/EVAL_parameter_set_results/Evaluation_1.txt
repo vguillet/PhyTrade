@@ -1,5 +1,8 @@
 ====================== Evaluation_1 ======================
 
+-----------> Model settings:
+Ticker: AAPL
+
 -----------> Metalabeling settings:
 look_ahead = 20
 
@@ -14,16 +17,16 @@ Number of data points processed: 450
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 1016.3253433212099
+Net worth achieved: 977.4117470804689
 
 ---> Fitness: 
-Fitness achieved: 54.666666666666664
+Fitness achieved: 56.00000000000001
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     1     3    1
-Hold    90   243   92
-Buy      4    14    2
+Sell     0     9    3
+Hold    94   250   90
+Buy      1     1    2
 
 -----------> Benchmark Confusion tables: 
 
@@ -36,62 +39,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         1         4
-Non-Sell    94       351
+Sell         0        12
+Non-Sell    95       343
 
-TPR = 0.011
-TNR = 0.989
-PPV = 0.2
-NPV = 0.789
-FNR = 0.989
-FPR = 0.011
-FDR = 0.8
-FOR = 0.211
-ACC = 0.782
-F1 = 0.02
-MCC = -0.003
-BM = -0.001
-MK = -0.011
+TPR = 0.0
+TNR = 0.966
+PPV = 0.0
+NPV = 0.783
+FNR = 1.0
+FPR = 0.034
+FDR = 1.0
+FOR = 0.217
+ACC = 0.762
+F1 = 0.0
+MCC = -0.086
+BM = -0.034
+MK = -0.217
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        2       18
-Non-Buy   93      337
+Buy        2        2
+Non-Buy   93      353
 
 TPR = 0.021
-TNR = 0.949
-PPV = 0.1
-NPV = 0.784
+TNR = 0.994
+PPV = 0.5
+NPV = 0.791
 FNR = 0.979
-FPR = 0.051
-FDR = 0.9
-FOR = 0.216
-ACC = 0.753
-F1 = 0.035
-MCC = -0.059
-BM = -0.03
-MK = -0.116
+FPR = 0.006
+FDR = 0.5
+FOR = 0.209
+ACC = 0.789
+F1 = 0.04
+MCC = 0.067
+BM = 0.015
+MK = 0.291
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       243       182
-Non-Hold    17         8
+Hold       250       184
+Non-Hold    10         6
 
-TPR = 0.935
-TNR = 0.042
-PPV = 0.572
-NPV = 0.32
-FNR = 0.065
-FPR = 0.958
-FDR = 0.428
-FOR = 0.68
-ACC = 0.558
-F1 = 0.709
-MCC = -0.05
-BM = -0.023
-MK = -0.108
+TPR = 0.962
+TNR = 0.032
+PPV = 0.576
+NPV = 0.375
+FNR = 0.038
+FPR = 0.968
+FDR = 0.424
+FOR = 0.625
+ACC = 0.569
+F1 = 0.72
+MCC = -0.018
+BM = -0.007
+MK = -0.049
 
