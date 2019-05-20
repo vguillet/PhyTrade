@@ -3,8 +3,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Yaho
 
 def save_df_to_csv(df, file_name):
     """
-    Save Pandas dataframe to:
-     C:\\\Users\\\Victor Guillet\\\Google Drive\\\\2-Programing\\\Repos\\\Python\\\Steffegium\\\Research\\\Data
+    Save Pandas dataframe to Research folder
 
     :param df: Pandas dataframe
     :param file_name: Desired file name .csv

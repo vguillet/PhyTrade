@@ -35,6 +35,8 @@ class LWMA:
                 weights.append(max_weight-(max_weight/self.lookback_period)*j)
             weights.reverse()
 
+            assert len(weights) == lookback_period
+
             # ---> Compute weighted daily values
             weighted_values = []
             for j in range(self.lookback_period):
