@@ -16,6 +16,10 @@ class Config_1:
         self.plot_signal_triggers = False
 
         # ____________________________________________________________________________________________________
+        # -- Model settings
+        self.ticker = "AAPL"
+
+        # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 60
         self.nb_of_generations = 300

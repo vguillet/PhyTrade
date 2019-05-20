@@ -9,6 +9,7 @@ def save_df_to_csv(df, file_name):
     :param df: Pandas dataframe
     :param file_name: Desired file name .csv
     """
+
     path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\Data".replace('\\', '/')
     full_file_name = path + '/' + file_name
     df.to_csv(full_file_name)

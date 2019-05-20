@@ -62,9 +62,10 @@ class EVOA_optimiser:
         # ========================= EVO OPTIMISATION PROCESS =============================
         # ------------------ Initialise population
         if config.starting_parameters is None:
-            self.population = self.evoa_tools.gen_initial_population(config.population_size)
+            self.population = self.evoa_tools.gen_initial_population(config.ticker, config.population_size)
         else:
-            self.population = self.evoa_tools.generate_offsprings(1,
+            self.population = self.evoa_tools.generate_offsprings(config.ticker,
+                                                                  1,
                                                                   1,
                                                                   0,
                                                                   config.population_size,
@@ -123,7 +124,8 @@ class EVOA_optimiser:
 
                     # ------------------ Generate offsprings with mutations
                     print("---------------> Generating offsprings with mutations")
-                    self.new_population = self.evoa_tools.generate_offsprings(gen,
+                    self.new_population = self.evoa_tools.generate_offsprings(config.ticker,
+                                                                              gen,
                                                                               config.nb_of_generations,
                                                                               config.mutation_decay_function,
                                                                               config.population_size,

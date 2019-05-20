@@ -13,12 +13,12 @@ import sys
 
 class EVOA_tools:
     @staticmethod
-    def gen_initial_population(population_size=10):
+    def gen_initial_population(ticker, population_size=10):
         from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
 
         population_lst = []
         for i in range(population_size):
-            population_lst.append(Individual())
+            population_lst.append(Individual(ticker=ticker))
 
         return population_lst
 
@@ -107,7 +107,8 @@ class EVOA_tools:
         return parents
 
     @staticmethod
-    def generate_offsprings(current_generation, nb_of_generations, decay_function,
+    def generate_offsprings(ticker,
+                            current_generation, nb_of_generations, decay_function,
                             population_size, parents, nb_random_ind, mutation_rate=0.2):
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
@@ -140,7 +141,7 @@ class EVOA_tools:
 
         # -- Create random_ind number of random individuals and add to new population
         for _ in range(nb_random_ind):
-            new_population.append(Individual())
+            new_population.append(Individual(ticker=ticker))
 
         return new_population
 

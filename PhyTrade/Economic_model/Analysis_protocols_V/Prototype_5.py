@@ -2,6 +2,7 @@
 This script contains the Prototype_5 class
 This prototype is based entirely on technical analysis, and include new indicators, including:
     - EMA
+    - LWMA
 
 The following parameters still require manual input:
     - include trigger in signals (Technical_Indicators output generation)
@@ -13,13 +14,17 @@ Victor Guillet
 
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
 
+# ---> Import indicators
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen import RSI
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.SMA_gen import SMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.EMA_gen import EMA
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.LWMA_gen import LWMA
 
+# ---> Import amplification signals
 from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
 from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
+# ---> import general tools
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.MAJOR_SPLINE_gen import MAJOR_SPLINE
 from PhyTrade.Tools.MATH_tools import MATH
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
@@ -90,6 +95,10 @@ class Prototype_5:
                                   timeperiod_1=parameters["timeframe"]["ema_3_timeperiod_1"],
                                   timeperiod_2=parameters["timeframe"]["ema_3_timeperiod_2"])
 
+        # -- LWMA initialisation
+        self.big_data.lwma_1 = LWMA(self.big_data, lookback_period=10, max_weight=1)
+
+        # ------------------ Amplification signal initialisation
         # -- Volume initialisation
         self.big_data.volume = VOLUME(self.big_data,
                                       amplification_factor=parameters["amplification_factor"]["volume_amplification_factor"])

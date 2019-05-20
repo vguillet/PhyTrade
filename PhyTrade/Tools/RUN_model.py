@@ -29,7 +29,7 @@ class RUN_model:
         self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)
 
         # ---- Generate Individual
-        self.individual = Individual(parameter_set=parameter_set)
+        self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
 
         # ---- Generate economic model and perform trade run
         self.individual.gen_economic_model(self.data_slice, plot_3=True)
@@ -72,6 +72,9 @@ class EVAL_parameter_set_results_gen:
         self.results_file = open(full_file_name + ".txt", "w+")
 
         self.results_file.write("====================== " + self.run_label + " ======================\n")
+        self.results_file.write("\n-----------> Model settings:" + "\n")
+        self.results_file.write("Ticker: " + str(self.individual.ticker) + "\n")
+
         self.results_file.write("\n-----------> Metalabeling settings:" + "\n")
         self.results_file.write("look_ahead = " + str(self.look_ahead) + "\n")
 

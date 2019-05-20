@@ -6,7 +6,7 @@ import pandas
 
 
 class Individual:
-    def __init__(self, ticker, parameter_set=None):
+    def __init__(self, ticker="AAPL", parameter_set=None):
         # ========================= DATA COLLECTION INITIALISATION =======================
         self.ticker = ticker
 
@@ -17,6 +17,7 @@ class Individual:
             self.data = pull_yahoo_data(ticker)      # Pull data from Yahoo
             file_name = ticker + "_Yahoo_data.csv"
             save_df_to_csv(self.data, file_name)     # Save data to csv file
+
 
         if parameter_set is None:
             ga_random = EVOA_random_gen()
