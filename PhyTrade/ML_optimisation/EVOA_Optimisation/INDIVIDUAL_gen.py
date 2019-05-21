@@ -1,27 +1,12 @@
 from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Yahoo import pull_yahoo_data
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Download_DataFrame import save_df_to_csv
-
-import pandas
-import os
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 
 class Individual:
     def __init__(self, ticker="AAPL", parameter_set=None):
         # ========================= DATA COLLECTION INITIALISATION =======================
         self.ticker = ticker
-
-        path = r"Research\Data\**_Yahoo_data.csv".replace('\\', '/').replace('**', ticker)
-
-        # ---> Check if generated path data exists in database
-        if os.path.exists(path):
-            self.data = pandas.read_csv(path)
-
-        # --> Else, download data
-        else:
-            self.data = pull_yahoo_data(ticker)      # Pull data from Yahoo
-            file_name = ticker + "_Yahoo_data.csv"
-            save_df_to_csv(self.data, file_name)     # Save data to csv file
+        self.data = fetch_technical_data(self.ticker)
 
         if parameter_set is None:
             ga_random = EVOA_random_gen()

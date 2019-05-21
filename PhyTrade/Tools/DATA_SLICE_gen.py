@@ -70,17 +70,16 @@ class data_slice_info:
         self.gen_slice_metalabels()
         return
 
-    def perform_trade_run(self):
+    def perform_trade_run(self, ticker):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
-        import pandas
+        from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
-        # TODO: Streamline data topic selection
-        path = r"Research\Data\AAPL_Yahoo_data.csv".replace('\\', '/')
-        data = pandas.read_csv(path)
+        data = fetch_technical_data(ticker)
 
         analysis = mock()
-        analysis.big_data = BIGDATA(data, "AAPL", self.start_index, self.stop_index)
+        analysis.big_data = BIGDATA(data, self.start_index, self.stop_index)
+
         # TODO: Add open/close value selection
         analysis.big_data.buy_sell_labels = self.metalabels.close_values_metalabels
         tradebot = Tradebot_v3(analysis)

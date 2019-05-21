@@ -9,7 +9,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Run_4"
+        self.config_name = "Run_1"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -17,12 +17,12 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # -- Model settings
-        self.ticker = "AAPL"
+        self.tickers = ["AAPL"]
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 60
-        self.nb_of_generations = 300
+        self.nb_of_generations = 150
 
         self.mutation_rate = 0.3
         self.nb_parents = 20

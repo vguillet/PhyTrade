@@ -9,27 +9,31 @@ class Config_0:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Run_4"
+        self.config_name = "Test_run"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
         self.plot_signal_triggers = False
 
         # ____________________________________________________________________________________________________
+        # -- Model settings
+        self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
+
+        # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 10
-        self.nb_of_generations = 10
+        self.population_size = 2
+        self.nb_of_generations = 3
 
         self.mutation_rate = 0.3
-        self.nb_parents = 4
-        self.nb_random_ind = 2
+        self.nb_parents = 1
+        self.nb_random_ind = 1
 
         self.exploitation_phase_len_percent = 0.2
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -7000
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 0
+        self.data_slice_shift_per_gen = 100
         self.data_slice_cycle_count = 1
 
         # ____________________________________________________________________________________________________

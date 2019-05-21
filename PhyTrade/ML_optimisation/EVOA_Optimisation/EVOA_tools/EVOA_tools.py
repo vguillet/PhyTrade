@@ -102,7 +102,9 @@ class EVOA_tools:
 
         else:
             # -- Select individuals randomly
-            parents = None
+            parents = []
+            for i in range(nb_parents):
+                parents.append(population[i])
 
         return parents
 

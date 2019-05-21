@@ -7,14 +7,12 @@ from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_results_gen impo
 from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 
-from copy import deepcopy
-
 import time
 import sys
 
 
 class EVOA_optimiser:
-    def __init__(self, config):
+    def __init__(self, config, ticker="AAPL"):
 
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
@@ -39,12 +37,13 @@ class EVOA_optimiser:
         self.data_slice_cycle_count = 0
 
         # -- Initialise records
-        self.results = EVOA_results_gen(config, config.config_name)
+        self.results = EVOA_results_gen(config, config.config_name, ticker)
 
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("EVOA_v3 \n")
+        print("Evaluated ticker:", ticker)
         self.results.run_start_time = time.time()
         print("Start time:", time.strftime('%X %x %Z'), "\n")
         print("Estimated run time:", (config.nb_of_generations*config.population_size*0.80 + config.nb_of_generations * 0.45), "minutes\n")
@@ -62,9 +61,9 @@ class EVOA_optimiser:
         # ========================= EVO OPTIMISATION PROCESS =============================
         # ------------------ Initialise population
         if config.starting_parameters is None:
-            self.population = self.evoa_tools.gen_initial_population(config.ticker, config.population_size)
+            self.population = self.evoa_tools.gen_initial_population(ticker, config.population_size)
         else:
-            self.population = self.evoa_tools.generate_offsprings(config.ticker,
+            self.population = self.evoa_tools.generate_offsprings(ticker,
                                                                   1,
                                                                   1,
                                                                   0,
@@ -124,7 +123,7 @@ class EVOA_optimiser:
 
                     # ------------------ Generate offsprings with mutations
                     print("---------------> Generating offsprings with mutations")
-                    self.new_population = self.evoa_tools.generate_offsprings(config.ticker,
+                    self.new_population = self.evoa_tools.generate_offsprings(ticker,
                                                                               gen,
                                                                               config.nb_of_generations,
                                                                               config.mutation_decay_function,
@@ -153,7 +152,7 @@ class EVOA_optimiser:
                 self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
                 self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
 
-                self.data_slice_info.perform_trade_run()
+                self.data_slice_info.perform_trade_run(ticker)
                 self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
 
                 # ------------------ Return generation info
@@ -188,10 +187,14 @@ class EVOA_optimiser:
 
         # ------------------ Final results benchmarking
         # Select best individual from final population
+        if self.fitness_evaluation is None:
+            self.fitness_evaluation = [1]
+
         self.best_individual = self.evoa_tools.select_from_population(self.fitness_evaluation,
                                                                       self.population,
                                                                       selection_method=config.parents_selection_method,
                                                                       nb_parents=1)[0]
+
         _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
                                                                                         self.benchmark_data_slice,
                                                                                         calculate_stats=True,
@@ -206,3 +209,5 @@ class EVOA_optimiser:
         self.results.gen_result_recap_file()
         self.results.gen_parameters_json()
         self.results.plot_results()
+
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")

@@ -1,23 +1,23 @@
-====================== Run_3 ======================
+====================== Test_run ======================
 
 ~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
 
-Configuration file: Run_3
+Configuration file: Test_run
 
 -----------> EVO_algo main parameters:
-population_size = 60
-nb_of_generations = 300
+population_size = 2
+nb_of_generations = 3
 
 mutation_rate = 0.3
-nb_parents = 20
-nb_random_ind = 15
+nb_parents = 1
+nb_random_ind = 1
 
 exploitation_phase_len_percent = 20.0
 
-data_slice_start_index = -7000
+data_slice_start_index = -5339
 data_slice_size = 200
 data_slice_shift_per_gen = 100
-data_slice_cycle_count = 2
+data_slice_cycle_count = 1
 
 -----------> Generation 0 settings:
 starting_parameters: C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json
@@ -40,38 +40,38 @@ benchmark_data_slice_stop = -253
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 18:54:32 05/14/19 W. Europe Daylight Time
-Run time: 13304.68s
+End time: 15:02:41 05/21/19 W. Europe Daylight Time
+Run time: 6.859s
 
-Average computing time per generation: 44.349s
+Average computing time per generation: 2.286s
 
-Number of data points processed: 1300
-Number of invalid data slices: 3
+Number of data points processed: 400
+Number of invalid data slices: 2
 
 -----------> Fitness results:
-Max average fitness achieved: 38.06074481074481
-Max individual fitness achieved: 100.0
+Max average fitness achieved: 30.0
+Max individual fitness achieved: 40.0
 
-Average fitness best fit line gradient achieved: -0.019057127221451753
-Individual fitness best fit line gradient achieved: -0.08229487162687321
+Average fitness best fit line gradient achieved: 10.0
+Individual fitness best fit line gradient achieved: 20.0
 
 -----------> Net Worth results:
-Max average net worth achieved: 1530.644745084257
-Max individual net worth achieved: 1824.4195244943794
+Max average net worth achieved: 1038.3136232187703
+Max individual net worth achieved: 1088.374259151077
 
-Average net worth best fit line gradient achieved: -0.07713129154625653
-Individual net worth best fit line gradient achieved: -0.5917096657839146
+Average net worth best fit line gradient achieved: -4.223916381124127
+Individual net worth best fit line gradient achieved: 0.0
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 56.00000000000001
+Fitness achieved: 59.5
 Fitness achieved bs: 0.0
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     5    0
-Hold    34   112   39
-Buy      5     5    0
+Sell     0     2    1
+Hold    38   119   37
+Buy      0     3    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -84,62 +84,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         5
-Non-Sell    39       156
+Sell         0         3
+Non-Sell    38       159
 
 TPR = 0.0
-TNR = 0.969
+TNR = 0.981
 PPV = 0.0
-NPV = 0.8
+NPV = 0.807
 FNR = 1.0
-FPR = 0.031
+FPR = 0.019
 FDR = 1.0
-FOR = 0.2
-ACC = 0.78
+FOR = 0.193
+ACC = 0.795
 F1 = 0.0
-MCC = -0.079
-BM = -0.031
-MK = -0.2
+MCC = -0.06
+BM = -0.019
+MK = -0.193
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        0       10
-Non-Buy   39      151
+Buy        0        3
+Non-Buy   38      159
 
 TPR = 0.0
-TNR = 0.938
+TNR = 0.981
 PPV = 0.0
-NPV = 0.795
+NPV = 0.807
 FNR = 1.0
-FPR = 0.062
+FPR = 0.019
 FDR = 1.0
-FOR = 0.205
-ACC = 0.755
+FOR = 0.193
+ACC = 0.795
 F1 = 0.0
-MCC = -0.113
-BM = -0.062
-MK = -0.205
+MCC = -0.06
+BM = -0.019
+MK = -0.193
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       112        73
-Non-Hold    10         5
+Hold       119        75
+Non-Hold     5         1
 
-TPR = 0.918
-TNR = 0.064
-PPV = 0.605
-NPV = 0.333
-FNR = 0.082
-FPR = 0.936
-FDR = 0.395
-FOR = 0.667
-ACC = 0.585
-F1 = 0.73
-MCC = -0.033
-BM = -0.018
-MK = -0.061
+TPR = 0.96
+TNR = 0.013
+PPV = 0.613
+NPV = 0.167
+FNR = 0.04
+FPR = 0.987
+FDR = 0.387
+FOR = 0.833
+ACC = 0.6
+F1 = 0.748
+MCC = -0.077
+BM = -0.027
+MK = -0.22
 

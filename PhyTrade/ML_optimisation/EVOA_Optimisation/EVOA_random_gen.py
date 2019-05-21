@@ -153,7 +153,7 @@ class EVOA_random_gen:
     # ------- LWMA max weight
     @staticmethod
     def lwma_max_weight_random_gen():
-        return random.randint(0, 100)
+        return random.randint(1, 100)
 
     @staticmethod
     def lwma_max_weight_gen(current_parameter, current_generation, nb_of_generations, decay_function):
@@ -165,7 +165,7 @@ class EVOA_random_gen:
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
 
         if new_parameter < 0:
-            new_parameter = 0
+            new_parameter = 1
         return new_parameter
 
     # ------- RSI standard Upper/Lower thresholds
