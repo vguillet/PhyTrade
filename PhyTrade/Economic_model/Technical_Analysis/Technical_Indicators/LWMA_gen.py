@@ -30,9 +30,10 @@ class LWMA:
                 lookback_period_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
 
             # ---> Compute weights for each days based on max weight param and lookback period
-            weights = [max_weight]
-            for j in range(1, self.lookback_period):
+            weights = []
+            for j in range(self.lookback_period):
                 weights.append(max_weight-(max_weight/self.lookback_period)*j)
+            print(weights)
             weights.reverse()
 
             # ---> Compute weighted daily values

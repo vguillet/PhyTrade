@@ -164,7 +164,7 @@ class EVOA_random_gen:
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
 
-        if new_parameter < 0:
+        if new_parameter < 1:
             new_parameter = 1
         return new_parameter
 
