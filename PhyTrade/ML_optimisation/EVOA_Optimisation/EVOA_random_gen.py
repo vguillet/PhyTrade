@@ -56,8 +56,8 @@ class EVOA_random_gen:
             parameter = random.choice(list(offspring.parameter_dictionary["lwma_max_weights"]))
 
             offspring.parameter_dictionary["lwma_max_weights"][parameter] = \
-                self.weight_gen(offspring.parameter_dictionary["lwma_max_weights"][parameter],
-                                current_generation, nb_of_generations, decay_function)
+                self.lwma_max_weight_gen(offspring.parameter_dictionary["lwma_max_weights"][parameter],
+                                         current_generation, nb_of_generations, decay_function)
 
         elif parameter_type_to_modify == "major_spline_standard_upper_thresholds":
             parameter = random.choice(list(offspring.parameter_dictionary["major_spline_standard_upper_thresholds"]))
@@ -166,6 +166,7 @@ class EVOA_random_gen:
 
         if new_parameter < 1:
             new_parameter = 1
+
         return new_parameter
 
     # ------- RSI standard Upper/Lower thresholds

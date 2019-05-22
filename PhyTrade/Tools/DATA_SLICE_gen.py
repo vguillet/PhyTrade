@@ -21,17 +21,14 @@ class data_slice_info:
         self.lower_barrier = lower_barrier
         self.look_ahead = look_ahead
 
-        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier,
-                                       self.look_ahead,
-                                       self.start_index, self.stop_index)
-
-    def gen_slice_metalabels(self):
-        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier,
+    def gen_slice_metalabels(self, ticker):
+        self.metalabels = MetaLabeling(ticker,
+                                       self.upper_barrier, self.lower_barrier,
                                        self.look_ahead,
                                        self.start_index, self.stop_index)
         return
 
-    def get_next_data_slice(self):
+    def get_next_data_slice(self, ticker):
         # -- Determine new start/stop indexes
         self.start_index += self.slice_size
         self.stop_index += self.slice_size
@@ -46,10 +43,10 @@ class data_slice_info:
                 self.stop_index = self.default_start_slice_index + self.slice_size
 
         # -- Generate new metalabels
-        self.gen_slice_metalabels()
+        self.gen_slice_metalabels(ticker)
         return
 
-    def get_shifted_data_slice(self):
+    def get_shifted_data_slice(self, ticker):
         # -- Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
@@ -67,7 +64,7 @@ class data_slice_info:
         print(self.stop_index)
 
         # -- Generate new metalabels
-        self.gen_slice_metalabels()
+        self.gen_slice_metalabels(ticker)
         return
 
     def perform_trade_run(self, ticker):

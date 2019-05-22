@@ -2,16 +2,13 @@
 This script contains the MetaLabeling class, used for generating the metalabels for each day
 to be used by the EVOA Optimisation
 """
-import pandas as pd
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 
 class MetaLabeling:
-    def __init__(self, upper_barrier, lower_barrier, look_ahead, data_slice_start_ind, data_slice_stop_ind):
-        # TODO Streamline csv reading process
-        path = r"Research\Data\AAPL_Yahoo_data.csv".replace(
-            '\\', '/')
+    def __init__(self, ticker, upper_barrier, lower_barrier, look_ahead, data_slice_start_ind, data_slice_stop_ind):
 
-        data = pd.read_csv(path)
+        data = fetch_technical_data(ticker)
         self.data = data[data_slice_start_ind:data_slice_stop_ind]
 
         self.upper_barrier = upper_barrier

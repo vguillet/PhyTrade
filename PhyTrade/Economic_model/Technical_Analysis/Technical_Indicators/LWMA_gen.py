@@ -33,7 +33,7 @@ class LWMA:
             weights = []
             for j in range(self.lookback_period):
                 weights.append(max_weight-(max_weight/self.lookback_period)*j)
-            print(weights)
+            # print(weights)
             weights.reverse()
 
             # ---> Compute weighted daily values
