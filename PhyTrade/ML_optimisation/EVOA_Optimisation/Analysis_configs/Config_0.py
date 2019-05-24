@@ -11,30 +11,31 @@ class Config_0:
         # -- Print parameters
         self.config_name = "Test_run"
         self.print_evoa_parameters_per_gen = True
-        self.print_evaluation_status = True
+        self.print_evaluation_status = False
 
         self.plot_signal_triggers = False
 
         # ____________________________________________________________________________________________________
         # -- Model settings
-        self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
+        # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
+        self.tickers = ["AAPL"]
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 10
-        self.nb_of_generations = 10
+        self.population_size = 2
+        self.nb_of_generations = 40
 
         self.mutation_rate = 0.3
-        self.nb_parents = 4
-        self.nb_random_ind = 2
+        self.nb_parents = 1
+        self.nb_random_ind = 0
 
-        self.exploitation_phase_len_percent = 0.2
+        self.exploitation_phase_len_percent = 0.1
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = None
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 1
+        self.data_slice_shift_per_gen = 0
+        self.data_slice_cycle_count = 5
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings

@@ -17,24 +17,24 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # -- Model settings
-        self.tickers = ["AAPL"]
+        self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 60
-        self.nb_of_generations = 150
+        self.nb_of_generations = 120
 
         self.mutation_rate = 0.3
         self.nb_parents = 20
-        self.nb_random_ind = 15
+        self.nb_random_ind = 10
 
         self.exploitation_phase_len_percent = 0.2
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_index = -7000
+        self.data_slice_start_index = None
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 2
+        self.data_slice_cycle_count = 3
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings

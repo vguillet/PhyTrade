@@ -110,8 +110,11 @@ class EVOA_tools:
 
     @staticmethod
     def generate_offsprings(ticker,
-                            current_generation, nb_of_generations, decay_function,
+                            current_generation, nb_of_generations,
+                            current_slice_cycle, nb_of_slice_cycles,
+                            decay_function,
                             population_size, parents, nb_random_ind, mutation_rate=0.2):
+
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
         import random
@@ -137,7 +140,9 @@ class EVOA_tools:
                 parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
 
                 offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify,
-                                                           current_generation, nb_of_generations, decay_function)
+                                                           current_generation, nb_of_generations,
+                                                           current_slice_cycle, nb_of_slice_cycles,
+                                                           decay_function)
 
             new_population.append(offspring)
 

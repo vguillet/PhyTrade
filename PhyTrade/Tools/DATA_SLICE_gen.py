@@ -60,9 +60,6 @@ class data_slice_info:
                 self.start_index = self.default_start_slice_index
                 self.stop_index = self.default_start_slice_index + self.slice_size
 
-        print(self.start_index)
-        print(self.stop_index)
-
         # -- Generate new metalabels
         self.gen_slice_metalabels(ticker)
         return

@@ -357,12 +357,12 @@ class Prototype_5:
             #     self.big_data, self.big_data.spline_sma_3, label="SMA_3 bb spline", color='r')
 
             # # ---> EMA signals
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.spline_ema_1, label="EMA_1 bb spline", color='b')
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.spline_ema_2, label="EMA_2 bb spline", color='b')
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.spline_ema_3, label="EMA_3 bb spline", color='r')
+            # self.spline_tools.plot_spline(
+            #     self.big_data, self.big_data.spline_ema_1, label="EMA_1 bb spline", color='b')
+            # self.spline_tools.plot_spline(
+            #     self.big_data, self.big_data.spline_ema_2, label="EMA_2 bb spline", color='b')
+            # self.spline_tools.plot_spline(
+            #     self.big_data, self.big_data.spline_ema_3, label="EMA_3 bb spline", color='r')
 
             # ---> LWMA signals
             # self.spline_tools.plot_spline(

@@ -13,8 +13,13 @@ from PhyTrade.ML_optimisation.EVOA_Optimisation.Analysis_configs.Config_1 import
 config = Config_0()
 
 for ticker in config.tickers:
-    config.data_slice_start_index = -len(fetch_technical_data(ticker)) + config.data_slice_size
-    EVO_optimisation = EVOA_optimiser(config, ticker)
+    try:
+        config.data_slice_start_index = -len(fetch_technical_data(ticker)) + config.data_slice_size
+        EVO_optimisation = EVOA_optimiser(config, ticker)
+
+    except:
+        print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
+        continue
 
 # ============================ ECONOMIC ANALYSIS ===============================
 from PhyTrade.Tools.RUN_model import RUN_model
