@@ -250,8 +250,10 @@ class Individual:
 
     def perform_trade_run(self):
         from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
+        from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        tradebot = Tradebot_v3(self.analysis)
+        # tradebot = Tradebot_v3(self.analysis)
+        tradebot = Tradebot_v4(self.analysis)
 
         self.account = tradebot.account
         # self.big_data = tradebot.analysis.big_data

@@ -14,6 +14,9 @@ class EVOA_results_gen:
 
         self.individual = None
 
+        self.nb_parents = []
+        self.nb_random_ind = []
+
         self.benchmark_confusion_matrix_analysis = None
 
         self.run_start_time = None
@@ -193,6 +196,7 @@ class EVOA_results_gen:
                   self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count],
                  [0, 100], label="End of exploration phase")
 
+        plt.title("Fitness per gen; " + self.ticker + self.run_label)
         plt.ylabel("Fitness %")
         plt.xlabel("Generation #")
         plt.legend()
@@ -212,11 +216,25 @@ class EVOA_results_gen:
                   self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count],
                  [min(self.avg_net_worth_per_gen), max(self.best_individual_net_worth_per_gen)], label="End of exploration phase")
 
+        plt.title("Profit per gen; " + self.ticker + self.run_label)
         plt.ylabel("Net worth $")
         plt.xlabel("Generation #")
         plt.legend()
         plt.grid()
 
         plt.show()
+
+        plt.plot(range(len(self.nb_parents)), self.nb_parents, label="Number of parents selected per gen")
+        plt.plot(range(len(self.nb_random_ind)), self.nb_random_ind, label="Number of random individuals selected per gen")
+
+        plt.title("Number of individuals types per gen; " + self.ticker + self.run_label)
+        plt.ylabel("Number of individuals")
+        plt.xlabel("Generation #")
+        plt.legend()
+        plt.grid()
+
+        plt.show()
+
+
 
 

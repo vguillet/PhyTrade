@@ -184,19 +184,34 @@ class EVOA_tools:
 
     @staticmethod
     def determine_evolving_gen_parameters(current_generation,
+                                          data_slice_cycle_count,
                                           config,
                                           print_evoa_parameters_per_gen=False):
 
         # ------------------ Throttle the individual count to be used by the generation
+        # --> Based on generation count
         nb_parents = round(EVOA_tools().throttle(current_generation,
                                                  config.nb_of_generations-config.exploitation_phase_len,
                                                  config.nb_parents,
                                                  min_value=1,
                                                  decay_function=config.parents_decay_function))
+        # --> Based on cycle count
+        nb_parents = round(EVOA_tools().throttle(data_slice_cycle_count,
+                                                 config.data_slice_cycle_count,
+                                                 nb_parents,
+                                                 min_value=1,
+                                                 decay_function=config.parents_decay_function))
 
+        # --> Based on generation count
         nb_random_ind = round(EVOA_tools().throttle(current_generation,
                                                     config.nb_of_generations-config.exploitation_phase_len,
                                                     config.nb_random_ind,
+                                                    min_value=0,
+                                                    decay_function=config.random_ind_decay_function))
+        # --> Based on cycle count
+        nb_random_ind = round(EVOA_tools().throttle(data_slice_cycle_count,
+                                                    config.data_slice_cycle_count,
+                                                    nb_random_ind,
                                                     min_value=0,
                                                     decay_function=config.random_ind_decay_function))
 

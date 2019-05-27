@@ -94,11 +94,10 @@ class EVOA_random_gen:
         # Throttle variation parameters according to generation
         throttled_param = round(EVOA_tools().throttle(current_generation, nb_of_generations,
                                                       6, 1, decay_function))
-        print("throttled_param 1", throttled_param)
         # Throttle variation parameters according to slice cycle
         throttled_param = round(EVOA_tools().throttle(current_slice_cycle, nb_of_slice_cycles,
                                                       throttled_param, 1, decay_function))
-        print("throttled_param 2", throttled_param)
+
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.randint(-throttled_param, throttled_param)
 

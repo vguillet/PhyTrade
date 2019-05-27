@@ -11,25 +11,25 @@ class Config_0:
         # -- Print parameters
         self.config_name = "Test_run"
         self.print_evoa_parameters_per_gen = True
-        self.print_evaluation_status = False
+        self.print_evaluation_status = True
 
         self.plot_signal_triggers = False
 
         # ____________________________________________________________________________________________________
         # -- Model settings
         # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
-        self.tickers = ["AAPL"]
+        self.tickers = ["RACE"]
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 2
-        self.nb_of_generations = 40
+        self.population_size = 10
+        self.nb_of_generations = 50
 
         self.mutation_rate = 0.3
-        self.nb_parents = 1
-        self.nb_random_ind = 0
+        self.nb_parents = 5
+        self.nb_random_ind = 4
 
-        self.exploitation_phase_len_percent = 0.1
+        self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = None
@@ -40,9 +40,9 @@ class Config_0:
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
-        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json"
-        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
-        self.starting_parameters = None
+        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_run_AAPL.json"
+        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        # self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]

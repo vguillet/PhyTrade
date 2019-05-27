@@ -9,7 +9,7 @@ class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Run_1"
+        self.config_name = "Run_2"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -22,7 +22,7 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 60
-        self.nb_of_generations = 120
+        self.nb_of_generations = 250
 
         self.mutation_rate = 0.3
         self.nb_parents = 20
@@ -34,7 +34,7 @@ class Config_1:
         self.data_slice_start_index = None
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 3
+        self.data_slice_cycle_count = 5
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings

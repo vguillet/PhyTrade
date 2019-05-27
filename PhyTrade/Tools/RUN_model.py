@@ -27,6 +27,8 @@ class RUN_model:
 
         # ---- Generate data slice
         self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)
+        self.data_slice.gen_slice_metalabels(ticker)
+        self.data_slice.perform_trade_run(ticker)
 
         # ---- Generate Individual
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)

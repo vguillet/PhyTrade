@@ -38,6 +38,9 @@ class EVOA_optimiser:
         self.evoa_tools = EVOA_tools()
         self.data_slice_cycle_count = 0
 
+        self.nb_parents = None
+        self.nb_random_ind = None
+
         # -- Initialise records
         self.results = EVOA_results_gen(config, config.config_name, ticker)
 
@@ -102,6 +105,7 @@ class EVOA_optimiser:
                 print("---------------> Determining new generation parameters")
                 self.nb_parents, self.nb_random_ind = \
                     self.evoa_tools.determine_evolving_gen_parameters(gen,
+                                                                      self.data_slice_cycle_count,
                                                                       config,
                                                                       print_evoa_parameters_per_gen=config.print_evoa_parameters_per_gen)
 
@@ -152,6 +156,10 @@ class EVOA_optimiser:
 
             if sum(self.fitness_evaluation) != 0:
                 # ------------------ Collect generation data
+                if self.nb_parents is not None and self.nb_random_ind is not None:
+                    self.results.nb_parents.append(self.nb_parents)
+                    self.results.nb_random_ind.append(self.nb_random_ind)
+
                 self.results.best_individual_fitness_per_gen.append(max(self.fitness_evaluation))
                 self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation)/len(self.fitness_evaluation))
 

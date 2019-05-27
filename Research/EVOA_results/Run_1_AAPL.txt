@@ -6,7 +6,7 @@ Configuration file: Run_1
 
 -----------> EVO_algo main parameters:
 population_size = 60
-nb_of_generations = 120
+nb_of_generations = 250
 
 mutation_rate = 0.3
 nb_parents = 20
@@ -17,7 +17,7 @@ exploitation_phase_len_percent = 20.0
 data_slice_start_index = -7203
 data_slice_size = 200
 data_slice_shift_per_gen = 100
-data_slice_cycle_count = 3
+data_slice_cycle_count = 5
 
 -----------> Generation 0 settings:
 starting_parameters: C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json
@@ -40,38 +40,38 @@ benchmark_data_slice_stop = -253
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 22:55:35 05/22/19 W. Europe Daylight Time
-Run time: 6345.72s
+End time: 23:42:20 05/24/19 W. Europe Daylight Time
+Run time: 13049.828s
 
-Average computing time per generation: 52.881s
+Average computing time per generation: 52.199s
 
-Number of data points processed: 4100
-Number of invalid data slices: 0
+Number of data points processed: 5200
+Number of invalid data slices: 3
 
 -----------> Fitness results:
-Max average fitness achieved: 41.598785473785476
+Max average fitness achieved: 37.969155844155836
 Max individual fitness achieved: 100.0
 
-Average fitness best fit line gradient achieved: 0.09466895918994994
-Individual fitness best fit line gradient achieved: -0.13609232746704095
+Average fitness best fit line gradient achieved: 0.003977423912595938
+Individual fitness best fit line gradient achieved: -0.07079216822961121
 
 -----------> Net Worth results:
-Max average net worth achieved: 1497.222990945436
-Max individual net worth achieved: 1717.2792821005633
+Max average net worth achieved: 1724.9419019324298
+Max individual net worth achieved: 2091.536442359444
 
-Average net worth best fit line gradient achieved: -0.4757702054294747
-Individual net worth best fit line gradient achieved: -1.6969727775635033
+Average net worth best fit line gradient achieved: -0.0013895592601163376
+Individual net worth best fit line gradient achieved: 0.05691535199326621
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 61.5
+Fitness achieved: 60.0
 Fitness achieved bs: 14.285714285714285
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     1     1    4
-Hold    37   122   34
-Buy      0     1    0
+Sell     0     2    0
+Hold    37   119   37
+Buy      1     3    1
 
 -----------> Benchmark Confusion tables: 
 
@@ -84,62 +84,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         1         5
-Non-Sell    37       157
+Sell         0         2
+Non-Sell    38       160
 
-TPR = 0.026
-TNR = 0.969
-PPV = 0.167
-NPV = 0.809
-FNR = 0.974
-FPR = 0.031
-FDR = 0.833
-FOR = 0.191
-ACC = 0.79
-F1 = 0.045
-MCC = -0.01
-BM = -0.005
-MK = -0.024
+TPR = 0.0
+TNR = 0.988
+PPV = 0.0
+NPV = 0.808
+FNR = 1.0
+FPR = 0.012
+FDR = 1.0
+FOR = 0.192
+ACC = 0.8
+F1 = 0.0
+MCC = -0.049
+BM = -0.012
+MK = -0.192
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        0        1
-Non-Buy   38      161
+Buy        1        4
+Non-Buy   37      158
 
-TPR = 0.0
-TNR = 0.994
-PPV = 0.0
-NPV = 0.809
-FNR = 1.0
-FPR = 0.006
-FDR = 1.0
-FOR = 0.191
-ACC = 0.805
-F1 = 0.0
-MCC = -0.034
-BM = -0.006
-MK = -0.191
+TPR = 0.026
+TNR = 0.975
+PPV = 0.2
+NPV = 0.81
+FNR = 0.974
+FPR = 0.025
+FDR = 0.8
+FOR = 0.19
+ACC = 0.795
+F1 = 0.047
+MCC = 0.004
+BM = 0.002
+MK = 0.01
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       122        71
-Non-Hold     2         5
+Hold       119        74
+Non-Hold     5         2
 
-TPR = 0.984
-TNR = 0.066
-PPV = 0.632
-NPV = 0.714
-FNR = 0.016
-FPR = 0.934
-FDR = 0.368
-FOR = 0.286
-ACC = 0.635
-F1 = 0.77
-MCC = 0.131
-BM = 0.05
-MK = 0.346
+TPR = 0.96
+TNR = 0.026
+PPV = 0.617
+NPV = 0.286
+FNR = 0.04
+FPR = 0.974
+FDR = 0.383
+FOR = 0.714
+ACC = 0.605
+F1 = 0.751
+MCC = -0.037
+BM = -0.014
+MK = -0.098
 
