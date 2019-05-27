@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 class Tradebot_v4:
     def __init__(self, analysis,
-                 investment_settings=3, cash_in_settings=0, prev_stop_loss=0.85, max_stop_loss=0.75):
+                 investment_settings=3, cash_in_settings=0, initial_funds=1000, prev_stop_loss=0.85, max_stop_loss=0.75):
         """
         Used to simulate a trade run based on a provided analysis.
 
@@ -32,15 +32,16 @@ class Tradebot_v4:
         :param analysis: Analysis to be used for performing trade decisions
         :param investment_settings: Investing protocol
         :param cash_in_settings: Cash-in protocol
+        :param initial_funds: Initial funds to be used
         :param prev_stop_loss: Stop loss as % of previous day value
         :param max_stop_loss: Stop loss as % of max worth achieved
         """
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
-        print_trade_process = True
+        print_trade_process = False
 
         # -- Tradebot finance
-        self.account = ACCOUNT(initial_funds=1000)
+        self.account = ACCOUNT(initial_funds=initial_funds)
         self.prev_stop_loss = prev_stop_loss
         self.max_stop_loss = max_stop_loss
 

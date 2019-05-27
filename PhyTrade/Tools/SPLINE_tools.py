@@ -315,7 +315,6 @@ class SPLINE:
                 buy_trigger = 1
 
             if min_prev is not None:        # Re-initiate buy trigger if signal decrease past previous min
-                print(min_prev, spline[i])
                 if spline[i] < min_prev:
                     buy_trigger = 1
                     min_prev = None

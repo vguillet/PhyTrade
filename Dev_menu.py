@@ -27,5 +27,5 @@ for ticker in config.tickers:
 from PhyTrade.Tools.RUN_model import RUN_model
 import json
 
-parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Run_1_AAPL.json".replace('\\', '/')))
-evaluation = RUN_model("1", parameter_set, "AAPL", -7000, 150, 20)
+parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
+evaluation = RUN_model("1", parameter_set, "AAPL", -7000, 30, 20)
