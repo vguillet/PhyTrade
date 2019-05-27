@@ -87,4 +87,4 @@ class OC:
 
         plt.scatter(sell_dates, sell_values, label="Sell triggers")   # Plot sell signals
         plt.scatter(buy_dates, buy_values, label="Buy triggers")      # Plot buy signals
-        plt.legend()
+        # plt.legend()

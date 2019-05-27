@@ -18,8 +18,7 @@ class Config_0:
         # ____________________________________________________________________________________________________
         # -- Model settings
         # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
-        self.tickers = ["RACE"]
-
+        self.tickers = ["AAPL"]
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 10
@@ -32,7 +31,7 @@ class Config_0:
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_index = None
+        self.data_slice_start_index = -6703
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 0
         self.data_slice_cycle_count = 5

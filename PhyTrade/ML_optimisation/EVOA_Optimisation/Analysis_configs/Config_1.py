@@ -17,7 +17,8 @@ class Config_1:
 
         # ____________________________________________________________________________________________________
         # -- Model settings
-        self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
+        # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
+        self.tickers = ["AAPL"]
 
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
@@ -39,9 +40,9 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
-        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_configuration.json"
-        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
-        self.starting_parameters = None
+        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Test_run_AAPL.json"
+        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        # self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]

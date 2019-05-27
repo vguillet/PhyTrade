@@ -17,7 +17,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volume_gen
 
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.MAJOR_SPLINE_gen import MAJOR_SPLINE
+from PhyTrade.Economic_model.Technical_Analysis.Tools.MAJOR_SPLINE_gen import MAJOR_SPLINE
 
 
 class Prototype_1:

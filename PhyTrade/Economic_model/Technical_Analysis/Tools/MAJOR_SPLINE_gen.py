@@ -25,11 +25,6 @@ class MAJOR_SPLINE:
         self.sell_dates, self.buy_dates, self.sell_spline, self.buy_spline = \
             spline_tools.calc_spline_trigger(big_data, spline, self.upper_threshold, self.lower_threshold)
 
-        print(self.sell_dates)
-        print(self.sell_spline)
-        print(self.buy_dates)
-        print(self.buy_spline)
-
         # -- Calculating buy/sell values
         self.sell_values, self.buy_values = \
             oc_tools.calc_trigger_values(big_data, self.sell_dates, self.buy_dates)

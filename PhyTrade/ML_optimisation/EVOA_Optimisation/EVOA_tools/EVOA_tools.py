@@ -154,6 +154,7 @@ class EVOA_tools:
 
     @staticmethod
     def throttle(current_generation, nb_of_generations, max_value, min_value=1, decay_function=0):
+        from math import log10
         # -- Exit program if incorrect settings used
         if decay_function > 2:
             print("Invalid throttle decay function reference")
@@ -177,6 +178,10 @@ class EVOA_tools:
 
                 if throttled_value <= min_value:
                     throttled_value = min_value
+
+            elif decay_function == 2:
+                throttled_value = max_value+log10(-(current_generation-nb_of_generations))
+
         else:
             throttled_value = min_value
 

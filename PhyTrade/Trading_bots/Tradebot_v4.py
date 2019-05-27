@@ -12,7 +12,7 @@ class Tradebot_v4:
                  investment_settings=1, cash_in_settings=0, prev_stop_loss=0.85, max_stop_loss=0.75):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
-        print_trade_process = False
+        print_trade_process = True
 
         # -- Tradebot finance
         self.account = ACCOUNT(initial_funds=1000)
@@ -66,8 +66,13 @@ class Tradebot_v4:
             elif investment_settings == 1:
                 investment_per_trade = self.account.current_funds * 0.3
 
-            # --> Pegged investment percentage based on signal strength
-            # TODO: Setup signal strength based investment
+            # --> Fixed investment value per trade pegged to signal strength
+            elif investment_settings == 2:
+                investment_per_trade = (self.analysis.Major_spline.spline[i]-1)*100
+
+            # --> Fixed investment percentage per trade pegged to signal strength
+            elif investment_settings == 3:
+                investment_per_trade = (self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds * 0.3
 
             # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
             # --> Total asset liquidation
@@ -78,8 +83,9 @@ class Tradebot_v4:
             elif cash_in_settings == 1:
                 assets_sold_per_trade = self.account.current_assets * 0.3
 
-            # --> Pegged asset liquidation percentage based on signal strength
-            # TODO: Setup signal strength based asset liquidation
+            # --> Asset liquidation percentage per trade pegged to signal strength
+            elif cash_in_settings == 2:
+                assets_sold_per_trade = (self.analysis.big_data.Major_spline.spline[i]+1) * self.account.current_assets * 0.3
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
             # TODO: Figure out variable stop_loss concept
@@ -92,7 +98,7 @@ class Tradebot_v4:
             """
             # ~~~~~~~~~~~~~~~~~~ Define trade protocol
             # ----- Define stop-loss action
-            # --> WRT max_net_worth or prev_net_worth
+            # --> WRT max_net_worth and/or prev_net_worth
             if not len(self.account.net_worth_history) == 0 and \
                     self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[i]) < \
                     max(self.account.net_worth_history) * self.max_stop_loss and \
