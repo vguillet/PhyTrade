@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 class Tradebot_v4:
     def __init__(self, analysis,
-                 investment_settings=1, cash_in_settings=0, prev_stop_loss=0.85, max_stop_loss=0.75):
+                 investment_settings=3, cash_in_settings=0, prev_stop_loss=0.85, max_stop_loss=0.75):
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         print_trade_process = True
@@ -68,11 +68,11 @@ class Tradebot_v4:
 
             # --> Fixed investment value per trade pegged to signal strength
             elif investment_settings == 2:
-                investment_per_trade = (self.analysis.Major_spline.spline[i]-1)*100
+                investment_per_trade = -((self.analysis.Major_spline.spline[i]-1)*100)
 
             # --> Fixed investment percentage per trade pegged to signal strength
             elif investment_settings == 3:
-                investment_per_trade = (self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds * 0.3
+                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds * 0.3)
 
             # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
             # --> Total asset liquidation
