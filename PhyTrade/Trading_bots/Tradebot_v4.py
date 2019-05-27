@@ -10,6 +10,31 @@ import matplotlib.pyplot as plt
 class Tradebot_v4:
     def __init__(self, analysis,
                  investment_settings=3, cash_in_settings=0, prev_stop_loss=0.85, max_stop_loss=0.75):
+        """
+        Used to simulate a trade run based on a provided analysis.
+
+        The investment settings are as follow:
+            0 - Fixed investment value per trade
+
+            1 - Fixed investment percentage per trade
+
+            2 - Fixed investment value per trade pegged to signal strength
+
+            3 - Fixed investment percentage per trade pegged to signal strength
+
+        The cash-in settings are as follow:
+            0 - Total asset liquidation
+
+            1 - Fixed asset liquidation percentage
+
+            2 - Asset liquidation percentage per trade pegged to signal strength
+
+        :param analysis: Analysis to be used for performing trade decisions
+        :param investment_settings: Investing protocol
+        :param cash_in_settings: Cash-in protocol
+        :param prev_stop_loss: Stop loss as % of previous day value
+        :param max_stop_loss: Stop loss as % of max worth achieved
+        """
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
         print_trade_process = True
