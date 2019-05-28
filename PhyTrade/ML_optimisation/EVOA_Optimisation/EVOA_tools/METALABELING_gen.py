@@ -63,7 +63,7 @@ class MetaLabeling:
                     if j >= len(data_lst):
                         break
 
-                    percent_difference = (data_lst[j] - data_lst[i]) / data_lst[i] * 100
+                    percent_difference = (data_lst[j] - data_lst[i])/data_lst[i] * 100
 
                     if abs(percent_difference) > abs(max_percent_difference):
                         max_percent_difference = percent_difference

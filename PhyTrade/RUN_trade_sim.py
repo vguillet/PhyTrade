@@ -3,21 +3,25 @@ Contains the EVAL_parameter_set class, to be used for direct evaluation of a set
 """
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
-from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
-from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+
+import numpy as np
 
 
 class RUN_trade_sim:
     def __init__(self, eval_name,
                  parameter_set, ticker,
-                 data_slice_start, data_slice_size, nb_data_slices,
+                 start_date, data_slice_size, nb_data_slices,
                  plot_signal=False,
                  print_trade_process=False):
 
         self.ticker = ticker
         self.parameter_set = parameter_set
 
-        self.data_slice_start = data_slice_start
+        data = fetch_technical_data(ticker)
+
+        self.data_slice_start = -np.flatnonzero(data['index'] == start_date)[0]
+        print(self.data_slice_start)
         self.data_slice_size = data_slice_size
         self.nb_data_slices = nb_data_slices
         self.data_slice_size = data_slice_size
@@ -25,7 +29,6 @@ class RUN_trade_sim:
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ===============================================================================
-        decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Trade simulation \n")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
