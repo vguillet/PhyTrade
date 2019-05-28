@@ -120,6 +120,7 @@ class EVOA_tools:
         import random
         from copy import deepcopy
 
+        mutation_rate = EVOA_tools().throttle(current_generation, nb_of_generations, mutation_rate, 0.05, decay_function)
         nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate)
 
         # -- Save parents to new population
@@ -153,7 +154,24 @@ class EVOA_tools:
         return new_population
 
     @staticmethod
-    def throttle(current_generation, nb_of_generations, max_value, min_value=1, decay_function=0):
+    def throttle(current_generation, nb_of_generations, max_value, min_value=1., decay_function=0):
+        """
+        Throttle a value according to the instance in the run time.
+
+        The following decay functions settings can be used:
+                0 - Fixed value (returns max value)
+
+                1 - Linear decay
+
+                2 - Logarithmic decay (in development)
+
+        :param current_generation: Current generation
+        :param nb_of_generations: Total number of generation in the run
+        :param max_value: Max allowed value
+        :param min_value: Min allowed value
+        :param decay_function: Decay function setting
+        :return: Throttled value
+        """
         from math import log10
         # -- Exit program if incorrect settings used
         if decay_function > 2:
@@ -179,7 +197,8 @@ class EVOA_tools:
                 if throttled_value <= min_value:
                     throttled_value = min_value
 
-            elif decay_function == 2:
+            # TODO: Complete log decay
+            elif decay_function == 2:       # Logarithmic decay
                 throttled_value = max_value+log10(-(current_generation-nb_of_generations))
 
         else:

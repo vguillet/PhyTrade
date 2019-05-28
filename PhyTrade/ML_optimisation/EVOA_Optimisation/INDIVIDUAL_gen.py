@@ -248,10 +248,21 @@ class Individual:
 
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
 
-    def perform_trade_run(self):
+    def perform_trade_run(self,
+                          investment_settings=3, cash_in_settings=0,
+                          initial_funds=1000,
+                          initial_assets=0,
+                          prev_stop_loss=0.85, max_stop_loss=0.75,
+                          print_trade_process=False):
+
         from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        tradebot = Tradebot_v4(self.analysis)
+        tradebot = Tradebot_v4(self.analysis,
+                               investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                               initial_funds=initial_funds,
+                               initial_assets=initial_assets,
+                               prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
+                               print_trade_process=print_trade_process)
 
         self.account = tradebot.account
         # self.big_data = tradebot.analysis.big_data

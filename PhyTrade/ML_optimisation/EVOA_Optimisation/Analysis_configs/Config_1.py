@@ -23,9 +23,9 @@ class Config_1:
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 60
-        self.nb_of_generations = 250
+        self.nb_of_generations = 300
 
-        self.mutation_rate = 0.3
+        self.mutation_rate = 0.4
         self.nb_parents = 20
         self.nb_random_ind = 10
 
@@ -35,12 +35,12 @@ class Config_1:
         self.data_slice_start_index = None
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 5
+        self.data_slice_cycle_count = 7
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
-        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Run_2_AAPL.json"
+        self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json"
         self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
         # self.starting_parameters = None
 

@@ -10,7 +10,8 @@ from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool i
 class RUN_model:
     def __init__(self, eval_name,
                  parameter_set, ticker,
-                 data_slice_start, data_slice_size, nb_data_slices,
+                 data_slice_start, data_slice_size,
+                 data_slice_shift, nb_data_slices,
                  look_ahead):
 
         self.parameter_set = parameter_set
@@ -27,16 +28,24 @@ class RUN_model:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         # ---- Generate data slice
-        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)
+        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, data_slice_shift, 20, -20, self.look_ahead)
         self.data_slice.gen_slice_metalabels(ticker)
         self.data_slice.perform_trade_run(ticker)
 
         # ---- Generate Individual
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
 
+        # ---- Perform initial evaluation
+        self.individual.gen_economic_model(self.data_slice, plot_3=False)
+        self.individual.perform_trade_run(print_trade_process=False)
+
         # ---- Generate economic model and perform trade run
-        self.individual.gen_economic_model(self.data_slice, plot_3=True)
-        self.individual.perform_trade_run(print_trade_process=True)
+        for i in range(nb_data_slices-1):
+            self.data_slice.get_shifted_data_slice(ticker)
+            self.individual.gen_economic_model(self.data_slice, plot_3=False)
+            self.individual.perform_trade_run(initial_funds=self.individual.account.current_funds,
+                                              initial_assets=self.individual.account.current_assets,
+                                              print_trade_process=False)
 
         # ---- Generate evaluation summary
         self.results = EVAL_parameter_set_results_gen(eval_name)

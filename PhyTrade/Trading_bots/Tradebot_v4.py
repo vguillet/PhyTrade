@@ -9,7 +9,11 @@ import matplotlib.pyplot as plt
 
 class Tradebot_v4:
     def __init__(self, analysis,
-                 investment_settings=3, cash_in_settings=0, initial_funds=1000, prev_stop_loss=0.85, max_stop_loss=0.75):
+                 investment_settings=3, cash_in_settings=0,
+                 initial_funds=1000,
+                 initial_assets=0,
+                 prev_stop_loss=0.85, max_stop_loss=0.75,
+                 print_trade_process=False):
         """
         Used to simulate a trade run based on a provided analysis.
 
@@ -33,15 +37,16 @@ class Tradebot_v4:
         :param investment_settings: Investing protocol
         :param cash_in_settings: Cash-in protocol
         :param initial_funds: Initial funds to be used
+        :param initial_assets: Initial assets to be used
         :param prev_stop_loss: Stop loss as % of previous day value
         :param max_stop_loss: Stop loss as % of max worth achieved
         """
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
-        print_trade_process = False
+        print_trade_process = print_trade_process
 
         # -- Tradebot finance
-        self.account = ACCOUNT(initial_funds=initial_funds)
+        self.account = ACCOUNT(initial_funds=initial_funds, initial_assets=initial_assets)
         self.prev_stop_loss = prev_stop_loss
         self.max_stop_loss = max_stop_loss
 
@@ -194,12 +199,18 @@ class Tradebot_v4:
             print("Buy count =", len(self.analysis.big_data.Major_spline.buy_dates))
             print("Sell count =", len(self.analysis.big_data.Major_spline.sell_dates))
             print("Stop_loss_count =", stop_loss_count)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print("Starting funds:", self.account.initial_funds)
+            print("Starting assets:", self.account.initial_assets)
             print("")
+            print("Current funds:", self.account.current_funds)
+            print("Current assets:", self.account.current_assets)
             print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
             print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
             print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]) / 10)
             print("Max worth:", max(self.account.net_worth_history))
             print("Min worth:", min(self.account.net_worth_history))
+            print("====================================================")
 
             print("")
             print("1000$ simple initial investment:",
