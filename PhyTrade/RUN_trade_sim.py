@@ -20,6 +20,7 @@ class RUN_trade_sim:
         self.data_slice_start = data_slice_start
         self.data_slice_size = data_slice_size
         self.nb_data_slices = nb_data_slices
+        self.data_slice_size = data_slice_size
 
         self.results = Trade_simulation_results_gen(eval_name)
 
@@ -39,9 +40,14 @@ class RUN_trade_sim:
 
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-        self.individual.perform_trade_run(print_trade_process=print_trade_process)
+        self.individual.perform_trade_run(investment_settings=3, cash_in_settings=0,
+                                          max_investment_per_trade=500,
+                                          print_trade_process=print_trade_process)
 
         # --> Record slice trade history
+        self.results.buy_count += len(self.individual.analysis.big_data.Major_spline.buy_dates)
+        self.results.sell_count += len(self.individual.analysis.big_data.Major_spline.sell_dates)
+
         self.results.net_worth = self.individual.account.net_worth_history
         self.results.funds = self.individual.account.funds_history
         self.results.assets = self.individual.account.assets_history
@@ -53,11 +59,18 @@ class RUN_trade_sim:
             print("================== Data slice", i+1, "==================")
             self.data_slice.get_next_data_slice(self.ticker)
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-            self.individual.perform_trade_run(initial_funds=self.individual.account.current_funds,
+            self.individual.perform_trade_run(investment_settings=3, cash_in_settings=0,
+                                              initial_funds=self.individual.account.current_funds,
                                               initial_assets=self.individual.account.current_assets,
+                                              max_investment_per_trade=5000,
                                               prev_simple_investment_assets=self.individual.account.simple_investment_assets,
                                               print_trade_process=print_trade_process)
+
             # --> Record slice trade history
+            self.results.buy_count += len(self.individual.analysis.big_data.Major_spline.buy_dates)
+            self.results.sell_count += len(self.individual.analysis.big_data.Major_spline.sell_dates)
+            self.results.profit.append((self.individual.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
+
             self.results.net_worth += self.individual.account.net_worth_history
             self.results.funds += self.individual.account.funds_history
             self.results.assets += self.individual.account.assets_history
@@ -96,7 +109,11 @@ class Trade_simulation_results_gen:
         self.nb_data_slices = None
 
         self.total_data_points_processed = None
+        self.buy_count = 0
+        self.sell_count = 0
+
         self.net_worth = None
+        self.profit = []
         self.funds = None
         self.assets = None
 
@@ -104,7 +121,7 @@ class Trade_simulation_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\RUN_results".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\Trade_sim_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")
@@ -114,14 +131,31 @@ class Trade_simulation_results_gen:
         self.results_file.write("Ticker: " + str(self.individual.ticker) + "\n")
         self.results_file.write("\ndata_slice_start_index = " + str(self.data_slice_start) + "\n")
         self.results_file.write("data_slice_size = " + str(self.data_slice_size) + "\n")
-
         self.results_file.write("nb_data_slices = " + str(self.nb_data_slices) + "\n")
-        self.results_file.write("Model parameters: " + str(self.parameter_set))
+        self.results_file.write("Model parameters: " + str(self.parameter_set) + "\n")
 
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         self.results_file.write("-----------> Run stats: \n")
         self.results_file.write("\nNumber of data points processed: " + str(self.total_data_points_processed) + "\n")
+        self.results_file.write("Buy trigger count: " + str(self.buy_count) + "\n")
+        self.results_file.write("Sell trigger count: " + str(self.sell_count) + "\n")
 
+        self.results_file.write("\nFinal net worth: " + str(round(self.net_worth[-1])) + "$\n")
+        self.results_file.write("Average profit per gen: " + str(round(sum(self.profit)/len(self.profit))) + "%\n")
+        self.results_file.write("Max profit achieved: " + str(round(max(self.profit))) + "%\n")
+        if min(self.profit) >= 0:
+            self.results_file.write("Min profit achieved: " + str(round(min(self.profit))) + "%\n")
+        else:
+            self.results_file.write("Max loss achieved: " + str(round(min(self.profit))) + "%\n")
+
+        self.results_file.write("\nSimple investment final net worth: " + str(round(self.simple_investment[-1])) + "$\n")
+        self.results_file.write("Simple investment profit: " + str(round((self.simple_investment[-1]-1000)/1000*100)) + "%\n")
+
+        self.results_file.write(
+            "\n Net worth difference trading strategy vs simple investment: " + str(round(self.net_worth[-1]-self.simple_investment[-1])) + "$\n")
+        self.results_file.write(
+            "% Net worth difference trading strategy vs simple investment: " + str(round((self.net_worth[-1] - self.simple_investment[-1])/self.simple_investment[-1]*100)) + "%\n")
+        # self.results_file.write("" + "\n")
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
         self.results_file.write(str() + "\n")

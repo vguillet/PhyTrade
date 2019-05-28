@@ -74,6 +74,7 @@ class ACCOUNT:
 
     def start_simple_investment(self, current_value, initial_investment=1000):
         self.simple_investment_assets = initial_investment/current_value
+        print(self.simple_investment_assets)
 
     def calc_simple_investment_value(self, current_value):
         self.simple_investment_net_worth.append(self.simple_investment_assets*current_value)
@@ -86,10 +87,13 @@ class ACCOUNT:
     def plot_net_worth(self, dates):
         import matplotlib.pyplot as plt
 
-        plt.plot(dates, self.net_worth_history)
+        plt.plot(dates, self.net_worth_history, label="Net worth history")
+        plt.plot(dates, self.simple_investment_net_worth, label="Simple investment net worth")
 
         plt.gcf().autofmt_xdate()
         plt.grid()
+        plt.legend()
         plt.title("Net worth over time")
         plt.xlabel("Trade date")
         plt.ylabel("Net worth ($)")
+        plt.show()

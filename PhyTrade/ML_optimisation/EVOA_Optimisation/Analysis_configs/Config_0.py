@@ -18,30 +18,30 @@ class Config_0:
         # ____________________________________________________________________________________________________
         # -- Model settings
         # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
-        self.tickers = ["AAPL"]
+        self.tickers = ["GOOGL"]
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 10
-        self.nb_of_generations = 5
+        self.population_size = 30
+        self.nb_of_generations = 70
 
         self.mutation_rate = 0.3
-        self.nb_parents = 5
-        self.nb_random_ind = 4
+        self.nb_parents = 10
+        self.nb_random_ind = 7
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_index = -6703
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 0
+        self.data_slice_shift_per_gen = 100
         self.data_slice_cycle_count = 5
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
         self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json"
-        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
-        # self.starting_parameters = None
+        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]

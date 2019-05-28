@@ -1,0 +1,30 @@
+====================== Trade_simulation_1 ======================
+
+-----------> Model settings:
+Ticker: AAPL
+
+data_slice_start_index = -7001
+data_slice_size = 200
+nb_data_slices = 15
+Model parameters: None
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Run stats: 
+
+Number of data points processed: 3000
+Buy trigger count: 92
+Sell trigger count: 72
+
+Final net worth: 7580.0$
+Average profit per gen: 17.0%
+Max profit achieved: 77.0%
+Max loss achieved: -12.0%
+
+Simple investment final net worth: 752$
+Simple investment profit: -25%
+
+ Net worth difference trading strategy vs simple investment: 6828.0$
+% Net worth difference trading strategy vs simple investment: 908.0%
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
