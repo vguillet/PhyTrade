@@ -1,0 +1,16 @@
+====================== Trade_simulation_1 ======================
+
+-----------> Model settings:
+Ticker: AAPL
+
+data_slice_start_index = -7001
+data_slice_size = 200
+nb_data_slices = 35
+Model parameters: None
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Run stats: 
+
+Number of data points processed: 7000
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+

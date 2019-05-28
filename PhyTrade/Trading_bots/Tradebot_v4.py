@@ -13,6 +13,7 @@ class Tradebot_v4:
                  initial_funds=1000,
                  initial_assets=0,
                  prev_stop_loss=0.85, max_stop_loss=0.75,
+                 prev_simple_investment_assets=None,
                  print_trade_process=False):
         """
         Used to simulate a trade run based on a provided analysis.
@@ -40,6 +41,8 @@ class Tradebot_v4:
         :param initial_assets: Initial assets to be used
         :param prev_stop_loss: Stop loss as % of previous day value
         :param max_stop_loss: Stop loss as % of max worth achieved
+        :param prev_simple_investment_assets: Number of shares from previous simple investment, keep to None to start new simple investment
+        :param print_trade_process: Print trade process to console and plot profit per slice graphs
         """
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
@@ -82,9 +85,18 @@ class Tradebot_v4:
 
         """
         # ============================ TRADE PROTOCOL DEF ==============================
+        # ~~~~~~~~~~~~~~~~~~ Initiate simple investment
+        if prev_simple_investment_assets is None:
+            self.account.start_simple_investment(1000)
+        else:
+            self.account.simple_investment_assets = prev_simple_investment_assets
+
         for i in range(len(self.trade_actions)):
             if print_trade_process:
                 print("----------------- Day ", i)
+
+            # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value
+            self.account.calc_simple_investment_value(self.analysis.big_data.data_slice_open_values[i])
 
             # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
             # --> Fixed investment value per trade
@@ -104,6 +116,8 @@ class Tradebot_v4:
             # --> Fixed investment percentage per trade pegged to signal strength
             elif investment_settings == 3:
                 investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds * 0.3)
+                if investment_per_trade > 50000:
+                    investment_per_trade = 50000
 
             # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
             # --> Total asset liquidation
@@ -211,10 +225,7 @@ class Tradebot_v4:
             print("Max worth:", max(self.account.net_worth_history))
             print("Min worth:", min(self.account.net_worth_history))
             print("====================================================")
-
-            print("")
-            print("1000$ simple initial investment:",
-                  (1000 / self.analysis.big_data.data_slice_open_values[0]) * self.analysis.big_data.data_slice_open_values[
-                      -1])
             self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
             plt.show()
+
+
