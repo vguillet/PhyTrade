@@ -31,22 +31,22 @@ class Individual:
                           initial_funds=1000,
                           initial_assets=0,
                           prev_stop_loss=0.85, max_stop_loss=0.75,
-                          max_investment_per_trade=50000,
+                          max_investment_per_trade=500,
                           prev_simple_investment_assets=None,
                           print_trade_process=False):
 
         from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        tradebot = Tradebot_v4(self.analysis,
-                               investment_settings=investment_settings, cash_in_settings=cash_in_settings,
-                               initial_funds=initial_funds,
-                               initial_assets=initial_assets,
-                               prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
-                               max_investment_per_trade=max_investment_per_trade,
-                               prev_simple_investment_assets=prev_simple_investment_assets,
-                               print_trade_process=print_trade_process)
+        self.tradebot = Tradebot_v4(self.analysis,
+                                    investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                                    initial_funds=initial_funds,
+                                    initial_assets=initial_assets,
+                                    prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
+                                    max_investment_per_trade=max_investment_per_trade,
+                                    prev_simple_investment_assets=prev_simple_investment_assets,
+                                    print_trade_process=print_trade_process)
 
-        self.account = tradebot.account
+        self.account = self.tradebot.account
         # self.big_data = tradebot.analysis.big_data
 
 

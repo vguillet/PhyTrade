@@ -3,7 +3,7 @@ This Trade bot is optimised for the GA parameter optimisation
 
 """
 
-from PhyTrade.Trading_bots.ACCOUNT_tools import ACCOUNT
+from PhyTrade.Trading_bots.ACCOUNT_gen import ACCOUNT
 import matplotlib.pyplot as plt
 
 

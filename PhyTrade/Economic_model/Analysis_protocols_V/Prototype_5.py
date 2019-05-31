@@ -12,7 +12,7 @@ Victor Guillet
 12/14/2018
 """
 
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
+from PhyTrade.Economic_model.Big_Data import BIGDATA
 
 # ---> Import indicators
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen import RSI
@@ -25,7 +25,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volume_gen
 from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volatility_gen import VOLATILITY
 
 # ---> import general tools
-from PhyTrade.Economic_model.Technical_Analysis.Tools.MAJOR_SPLINE_gen import MAJOR_SPLINE
+from PhyTrade.Economic_model.MAJOR_SPLINE_gen import MAJOR_SPLINE
 from PhyTrade.Tools.MATH_tools import MATH
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE

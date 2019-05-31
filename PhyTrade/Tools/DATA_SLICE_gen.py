@@ -83,8 +83,8 @@ class data_slice_info:
         return
 
     def perform_trade_run(self, ticker):
-        from PhyTrade.Trading_bots.Tradebot_v3 import Tradebot_v3
-        from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Big_Data import BIGDATA
+        from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
+        from PhyTrade.Economic_model.Big_Data import BIGDATA
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
         data = fetch_technical_data(ticker)
@@ -94,7 +94,7 @@ class data_slice_info:
 
         # TODO: Add open/close value selection
         analysis.big_data.buy_sell_labels = self.metalabels.close_values_metalabels
-        tradebot = Tradebot_v3(analysis)
+        tradebot = Tradebot_v4(analysis)
         self.metalabels_account = tradebot.account
 
         return

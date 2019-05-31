@@ -4,6 +4,7 @@ Contains the EVAL_parameter_set class, to be used for direct evaluation of a set
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
 
 import numpy as np
 
@@ -12,6 +13,8 @@ class RUN_trade_sim:
     def __init__(self, eval_name,
                  parameter_set, ticker,
                  start_date, data_slice_size, nb_data_slices,
+                 investment_settings=3, cash_in_settings=2,
+                 max_investment_per_trade_percent=0.3,
                  plot_signal=False,
                  print_trade_process=False):
 
@@ -21,9 +24,8 @@ class RUN_trade_sim:
         self.data_slice_size = data_slice_size
         self.nb_data_slices = nb_data_slices
 
-        # ---- Find corresponding data index from date
+        # ---- Find corresponding starting data index from start date
         data = fetch_technical_data(ticker)
-
         self.data_slice_start = -len(data)+np.flatnonzero(data['index'] == start_date)[0]
 
         # ---- Initiate records
@@ -38,6 +40,9 @@ class RUN_trade_sim:
         print("Data slice size:", data_slice_size)
         print("Number of data slices processed:", nb_data_slices)
         print("\nStarting parameters:", parameter_set)
+
+        print("\nInvestment_settings =", investment_settings)
+        print("Cash-in settings =", cash_in_settings)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ TRADING SIMULATION ===============================
 
@@ -51,13 +56,13 @@ class RUN_trade_sim:
 
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-        self.individual.perform_trade_run(investment_settings=3, cash_in_settings=0,
-                                          max_investment_per_trade=5000,
+        self.individual.perform_trade_run(investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                           print_trade_process=print_trade_process)
 
         # --> Record slice trade history
-        self.results.buy_count += len(self.individual.analysis.big_data.Major_spline.buy_dates)
-        self.results.sell_count += len(self.individual.analysis.big_data.Major_spline.sell_dates)
+        self.results.buy_count += self.individual.tradebot.buy_count
+        self.results.sell_count += self.individual.tradebot.sell_count
+        self.results.stop_loss_count += self.individual.tradebot.stop_loss_count
 
         self.results.net_worth = self.individual.account.net_worth_history
         self.results.funds = self.individual.account.funds_history
@@ -68,18 +73,27 @@ class RUN_trade_sim:
         # ---- Generate economic model and perform trade run
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
+            # --> Calc new data slice parameters
             self.data_slice.get_next_data_slice(self.ticker)
-            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'],
-                  "; Net worth =", round(self.results.net_worth[-1]), "$\n")
+
+            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'])
+            print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])
+            print("Buy count:", self.individual.tradebot.buy_count,
+                  "; Sell count:", self.individual.tradebot.sell_count,
+                  "; Stop loss count:", self.individual.tradebot.stop_loss_count)
 
             if self.data_slice.end_of_dataset is True:
                 break
 
+            max_investment_per_trade = EVOA_tools().throttle(i, self.nb_data_slices, max_investment_per_trade_percent, 0.1, decay_function=1)
+            print("Max investment per trade", max_investment_per_trade, "\n")
+
+            # --> Process slice
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-            self.individual.perform_trade_run(investment_settings=3, cash_in_settings=0,
+            self.individual.perform_trade_run(investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                               initial_funds=self.individual.account.current_funds,
                                               initial_assets=self.individual.account.current_assets,
-                                              max_investment_per_trade=5000,
+                                              max_investment_per_trade=max_investment_per_trade*self.individual.account.net_worth_history[-1],
                                               prev_simple_investment_assets=self.individual.account.simple_investment_assets,
                                               print_trade_process=print_trade_process)
 
@@ -110,7 +124,6 @@ class RUN_trade_sim:
 
         print("-- Trade simulation completed --")
         print("Number of data points processed:", self.results.total_data_points_processed)
-        print(self.results.simple_investment[-1])
 
 
 class Trade_simulation_results_gen:
@@ -128,6 +141,7 @@ class Trade_simulation_results_gen:
         self.total_data_points_processed = None
         self.buy_count = 0
         self.sell_count = 0
+        self.stop_loss_count = 0
 
         self.net_worth = None
         self.profit = []

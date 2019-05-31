@@ -6,7 +6,9 @@ from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_too
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
+import numpy as np
 import time
 import sys
 
@@ -16,6 +18,10 @@ class EVOA_optimiser:
 
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
+        # ---- Find corresponding starting data index from start date
+        data = fetch_technical_data(ticker)
+        config.data_slice_start_index = -len(data)+np.flatnonzero(data['index'] == config.data_slice_start_date)[0]
+
         # -- Initialise data slice for gen and metalabels
         self.data_slice_info = data_slice_info(config.data_slice_start_index,
                                                config.data_slice_size,
@@ -104,6 +110,7 @@ class EVOA_optimiser:
                     if self.data_slice_info.end_of_dataset is True:
                         break
 
+                print("Data slice analysed:", data.iloc[self.data_slice_info.start_index]['index'], "-->", data.iloc[self.data_slice_info.stop_index]['index'])
                 print("Data slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index)
                 print("Data slice analysis cycle:", self.data_slice_cycle_count, "\n")
 
