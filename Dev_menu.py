@@ -48,7 +48,7 @@ while run is True:
         import json
 
         parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
-        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2000-01-01", 200, 15,
+        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2000-01-01", 200, 25,
                                       plot_signal=False, print_trade_process=False)
 
     elif selection == 0:

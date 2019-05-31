@@ -42,7 +42,7 @@ class RUN_trade_sim:
         # ============================ TRADING SIMULATION ===============================
 
         # ---- Generate data slice
-        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 20, -20, 0)
+        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 20, -20, 0, data_looper=False)
         self.data_slice.gen_slice_metalabels(ticker)
         self.data_slice.perform_trade_run(self.ticker)
 
@@ -52,7 +52,7 @@ class RUN_trade_sim:
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
         self.individual.perform_trade_run(investment_settings=3, cash_in_settings=0,
-                                          max_investment_per_trade=500,
+                                          max_investment_per_trade=5000,
                                           print_trade_process=print_trade_process)
 
         # --> Record slice trade history
@@ -69,6 +69,11 @@ class RUN_trade_sim:
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
             self.data_slice.get_next_data_slice(self.ticker)
+
+            if self.data_slice.end_of_dataset is True:
+                print("End of dataset reached\n")
+                break
+
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
             self.individual.perform_trade_run(investment_settings=3, cash_in_settings=0,
                                               initial_funds=self.individual.account.current_funds,

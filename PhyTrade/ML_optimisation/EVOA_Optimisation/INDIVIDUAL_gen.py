@@ -51,6 +51,7 @@ class Individual:
         self.account = tradebot.account
         # self.big_data = tradebot.analysis.big_data
 
+
     def gen_parameter_set(self):
         ga_random = EVOA_random_gen()
 

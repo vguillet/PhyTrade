@@ -7,8 +7,9 @@ from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.METALABELING_gen impo
 
 class data_slice_info:
     def __init__(self, start_slice, slice_size, data_slice_shift_per_gen,
-                 upper_barrier, lower_barrier, look_ahead):
+                 upper_barrier, lower_barrier, look_ahead, data_looper=True):
 
+        # ---- Data slice properties
         self.default_start_slice_index = start_slice
 
         self.start_index = start_slice
@@ -17,9 +18,14 @@ class data_slice_info:
         self.slice_size = slice_size
         self.data_slice_shift_per_gen = data_slice_shift_per_gen
 
+        # ---- Metalabels properties
         self.upper_barrier = upper_barrier
         self.lower_barrier = lower_barrier
         self.look_ahead = look_ahead
+
+        # ---- Tracker properties
+        self.data_looper = data_looper
+        self.end_of_dataset = False
 
     def gen_slice_metalabels(self, ticker):
         self.metalabels = MetaLabeling(ticker,
@@ -35,12 +41,17 @@ class data_slice_info:
 
         if self.stop_index >= 0:
             if self.start_index < 0:
-                self.stop_index = 0
+                self.stop_index = -1
 
             else:
-                # ------------------ Loop back to beginning of dataset if end of dataset is reached
-                self.start_index = self.default_start_slice_index
-                self.stop_index = self.default_start_slice_index + self.slice_size
+                if self.data_looper is True:
+                    # ------------------ Loop back to beginning of dataset if end of dataset is reached
+                    self.start_index = self.default_start_slice_index
+                    self.stop_index = self.default_start_slice_index + self.slice_size
+                else:
+                    # ------------------ Trigger End of dataset
+                    self.end_of_dataset = True
+                    return
 
         # -- Generate new metalabels
         self.gen_slice_metalabels(ticker)
@@ -56,9 +67,14 @@ class data_slice_info:
                 self.stop_index = -1
 
             else:
-                # ------------------ Loop back to beginning of dataset if end of dataset is reached
-                self.start_index = self.default_start_slice_index
-                self.stop_index = self.default_start_slice_index + self.slice_size
+                if self.data_looper is True:
+                    # ------------------ Loop back to beginning of dataset if end of dataset is reached
+                    self.start_index = self.default_start_slice_index
+                    self.stop_index = self.default_start_slice_index + self.slice_size
+                else:
+                    # ------------------ Trigger End of dataset
+                    self.end_of_dataset = True
+                    return
 
         # -- Generate new metalabels
         self.gen_slice_metalabels(ticker)
