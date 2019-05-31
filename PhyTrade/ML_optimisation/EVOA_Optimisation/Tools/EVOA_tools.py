@@ -14,7 +14,7 @@ import sys
 class EVOA_tools:
     @staticmethod
     def gen_initial_population(ticker, population_size=10):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
+        from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 
         population_lst = []
         for i in range(population_size):
@@ -26,7 +26,7 @@ class EVOA_tools:
     def evaluate_population(population_lst, data_slice_info,
                             max_worker_processes=1,
                             calculate_stats=False, print_evaluation_status=False, plot_3=False):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
         metalabel_accuracies = []
         confusion_matrix_analysis = []
@@ -115,8 +115,8 @@ class EVOA_tools:
                             decay_function,
                             population_size, parents, nb_random_ind, mutation_rate=0.2):
 
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
+        from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.Tools.INDIVIDUAL_gen import Individual
         import random
         from copy import deepcopy
 

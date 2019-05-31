@@ -2,7 +2,7 @@
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
-from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
+from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 import numpy as np
@@ -69,7 +69,8 @@ class RUN_trade_sim:
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
             self.data_slice.get_next_data_slice(self.ticker)
-            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'])
+            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'],
+                  "; Net worth =", round(self.results.net_worth[-1]), "$\n")
 
             if self.data_slice.end_of_dataset is True:
                 break

@@ -1,4 +1,4 @@
-from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_random_gen import EVOA_random_gen
+from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_random_gen import EVOA_random_gen
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 
@@ -20,8 +20,6 @@ class Individual:
                 self.nb_of_parameters += 1
 
     def gen_economic_model(self, data_slice_info, plot_3=False):
-        from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
-        from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_4 import Prototype_4
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
 
         self.analysis = Prototype_5(self.parameter_dictionary, data_slice_info, self.data)

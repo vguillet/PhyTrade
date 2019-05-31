@@ -7,7 +7,7 @@ print("-- Welcome to the PhyTrade Economic analyser and modeling tool --")
 print("Select the wanted run process:")
 print("1 - RUN EVOA Optimiser")
 print("2 - RUN Model")
-print("3 - RUN Trading simulation")
+print("3 - RUN Single ticker trading simulation")
 print("")
 print("0 - Exit")
 
@@ -44,7 +44,7 @@ while run is True:
 
     elif selection == 3:
         # ============================ TRADING SIMULATION ==============================
-        from PhyTrade.RUN_trade_sim import RUN_trade_sim
+        from PhyTrade.RUN_single_trade_sim import RUN_trade_sim
         import json
 
         parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))

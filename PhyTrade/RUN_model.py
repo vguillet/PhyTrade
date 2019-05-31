@@ -2,8 +2,8 @@
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
-from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
-from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 import numpy as np
@@ -48,8 +48,8 @@ class RUN_model:
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
 
         # ---- Generate economic model and perform trade run
-        self.individual.gen_economic_model(self.data_slice, plot_3=False)
-        self.individual.perform_trade_run(print_trade_process=False)
+        self.individual.gen_economic_model(self.data_slice, plot_3=True)
+        self.individual.perform_trade_run(print_trade_process=True)
 
         # ---- Generate evaluation summary
         self.results = EVAL_parameter_set_results_gen(eval_name)
