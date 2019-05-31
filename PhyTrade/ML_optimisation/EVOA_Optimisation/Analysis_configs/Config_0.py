@@ -36,6 +36,8 @@ class Config_0:
         self.data_slice_shift_per_gen = 100
         self.data_slice_cycle_count = 5
 
+        self.data_looper = True
+
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted

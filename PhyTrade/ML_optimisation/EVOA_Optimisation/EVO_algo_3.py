@@ -22,7 +22,9 @@ class EVOA_optimiser:
                                                config.data_slice_shift_per_gen,
                                                config.upper_barrier,
                                                config.lower_barrier,
-                                               config.look_ahead)
+                                               config.look_ahead,
+                                               data_looper=config.data_looper)
+
         self.data_slice_info.gen_slice_metalabels(ticker)
 
         # -- Initialise benchmark data slice
@@ -32,6 +34,7 @@ class EVOA_optimiser:
                                                     config.upper_barrier,
                                                     config.lower_barrier,
                                                     config.look_ahead)
+        
         self.benchmark_data_slice.gen_slice_metalabels(ticker)
 
         # -- Initialise tools and counters
@@ -95,10 +98,12 @@ class EVOA_optimiser:
                 # ------------------ Define the data slice to be used by the generation
                 self.data_slice_cycle_count += 1
                 if self.data_slice_cycle_count > config.data_slice_cycle_count:
-                    # data_slice_info.get_next_data_slice(ticker)
                     self.data_slice_info.get_shifted_data_slice(ticker)
-
                     self.data_slice_cycle_count = 1
+
+                    if self.data_slice_info.end_of_dataset is True:
+                        print("End of dataset reached\n")
+                        break
 
                 print("Data slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index)
                 print("Data slice analysis cycle:", self.data_slice_cycle_count, "\n")
