@@ -18,19 +18,26 @@ class RUN_trade_sim:
         self.ticker = ticker
         self.parameter_set = parameter_set
 
+        self.data_slice_size = data_slice_size
+        self.nb_data_slices = nb_data_slices
+
+        # ---- Find corresponding data index from date
         data = fetch_technical_data(ticker)
 
         self.data_slice_start = -np.flatnonzero(data['index'] == start_date)[0]
-        print(self.data_slice_start)
-        self.data_slice_size = data_slice_size
-        self.nb_data_slices = nb_data_slices
-        self.data_slice_size = data_slice_size
 
+        # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Trade simulation \n")
+
+        print("Evaluated ticker:", ticker)
+        print("\nStart date:", start_date)
+        print("Data slice size:", data_slice_size)
+        print("Number of data slices processed:", nb_data_slices)
+        print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         # ---- Generate data slice
@@ -124,7 +131,7 @@ class Trade_simulation_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\Trade_sim_results".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\RUN_trade_sim_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")

@@ -3,27 +3,39 @@ Contains the EVAL_parameter_set class, to be used for direct evaluation of a set
 """
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 from PhyTrade.ML_optimisation.EVOA_Optimisation.INDIVIDUAL_gen import Individual
-from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_3 import Prototype_3
 from PhyTrade.ML_optimisation.EVOA_Optimisation.EVOA_tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+
+import numpy as np
 
 
 class RUN_model:
     def __init__(self, eval_name,
                  parameter_set, ticker,
-                 data_slice_start, data_slice_size, nb_data_slices,
+                 start_date, data_slice_size,
                  look_ahead):
 
+        self.ticker = ticker
         self.parameter_set = parameter_set
 
-        self.ticker = ticker
-        self.data_slice_start = data_slice_start
         self.data_slice_size = data_slice_size
         self.look_ahead = look_ahead
+
+        # ---- Find corresponding data index from date
+        data = fetch_technical_data(ticker)
+
+        self.data_slice_start = -np.flatnonzero(data['index'] == start_date)[0]
 
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("EVOA_parameter_evaluation \n")
+        print("Model generation\n")
+
+        print("Evaluated ticker:", ticker)
+        print("\nStart date:", start_date)
+        print("Data slice size:", data_slice_size)
+
+        print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         # ---- Generate data slice

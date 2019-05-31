@@ -12,19 +12,19 @@ Model parameters: None
 -----------> Run stats: 
 
 Number of data points processed: 3000
-Buy trigger count: 74
+Buy trigger count: 82
 Sell trigger count: 73
 
-Final net worth: 6354.0$
-Average profit per gen: 12.0%
-Max profit achieved: 29.0%
-Max loss achieved: -8.0%
+Final net worth: 5527.0$
+Average profit per gen: 11.0%
+Max profit achieved: 25.0%
+Max loss achieved: -6.0%
 
-Simple investment final net worth: 8307$
-Simple investment profit: 731%
+Simple investment final net worth: 8234$
+Simple investment profit: 723%
 
- Net worth difference trading strategy vs simple investment: -1953.0$
-% Net worth difference trading strategy vs simple investment: -24.0%
+ Net worth difference trading strategy vs simple investment: -2706.0$
+% Net worth difference trading strategy vs simple investment: -33.0%
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
