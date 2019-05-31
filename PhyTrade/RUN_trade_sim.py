@@ -24,7 +24,7 @@ class RUN_trade_sim:
         # ---- Find corresponding data index from date
         data = fetch_technical_data(ticker)
 
-        self.data_slice_start = -np.flatnonzero(data['index'] == start_date)[0]
+        self.data_slice_start = -len(data)+np.flatnonzero(data['index'] == start_date)[0]
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
@@ -69,9 +69,9 @@ class RUN_trade_sim:
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
             self.data_slice.get_next_data_slice(self.ticker)
+            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'])
 
             if self.data_slice.end_of_dataset is True:
-                print("End of dataset reached\n")
                 break
 
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)

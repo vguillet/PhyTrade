@@ -51,6 +51,7 @@ class data_slice_info:
                 else:
                     # ------------------ Trigger End of dataset
                     self.end_of_dataset = True
+                    print("End of dataset reached\n")
                     return
 
         # -- Generate new metalabels
@@ -74,6 +75,7 @@ class data_slice_info:
                 else:
                     # ------------------ Trigger End of dataset
                     self.end_of_dataset = True
+                    print("End of dataset reached\n")
                     return
 
         # -- Generate new metalabels

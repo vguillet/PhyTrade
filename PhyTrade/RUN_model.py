@@ -23,8 +23,7 @@ class RUN_model:
 
         # ---- Find corresponding data index from date
         data = fetch_technical_data(ticker)
-
-        self.data_slice_start = -np.flatnonzero(data['index'] == start_date)[0]
+        self.data_slice_start = -len(data)+np.flatnonzero(data['index'] == start_date)[0]
 
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
@@ -33,6 +32,7 @@ class RUN_model:
 
         print("Evaluated ticker:", ticker)
         print("\nStart date:", start_date)
+        print("End date:", data.iloc[self.data_slice_start+data_slice_size]['index'])
         print("Data slice size:", data_slice_size)
 
         print("\nStarting parameters:", parameter_set)
@@ -48,8 +48,8 @@ class RUN_model:
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
 
         # ---- Generate economic model and perform trade run
-        self.individual.gen_economic_model(self.data_slice, plot_3=True)
-        self.individual.perform_trade_run(print_trade_process=True)
+        self.individual.gen_economic_model(self.data_slice, plot_3=False)
+        self.individual.perform_trade_run(print_trade_process=False)
 
         # ---- Generate evaluation summary
         self.results = EVAL_parameter_set_results_gen(eval_name)
@@ -82,7 +82,7 @@ class EVAL_parameter_set_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\RUN_results".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\RUN_model_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")

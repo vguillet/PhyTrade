@@ -34,7 +34,7 @@ class EVOA_optimiser:
                                                     config.upper_barrier,
                                                     config.lower_barrier,
                                                     config.look_ahead)
-        
+
         self.benchmark_data_slice.gen_slice_metalabels(ticker)
 
         # -- Initialise tools and counters
@@ -102,7 +102,6 @@ class EVOA_optimiser:
                     self.data_slice_cycle_count = 1
 
                     if self.data_slice_info.end_of_dataset is True:
-                        print("End of dataset reached\n")
                         break
 
                 print("Data slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index)

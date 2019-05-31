@@ -23,7 +23,10 @@ class BIGDATA:
         """
 
         self.data = data
-        self.dates = list(self.data.index.values)
+
+        self.dates = []
+        for index, row in self.data.iterrows():
+            self.dates.append(row['index'])
 
         self.data_slice_start_ind = data_slice_start_ind
         self.data_slice_stop_ind = data_slice_stop_ind
