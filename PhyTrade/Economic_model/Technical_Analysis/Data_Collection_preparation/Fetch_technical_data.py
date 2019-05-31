@@ -4,7 +4,7 @@ import os
 
 
 def fetch_technical_data(ticker):
-    path = r"Research\Data\**_Yahoo_data.csv".replace('\\', '/').replace('**', ticker)
+    path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\Technical_data\**_Yahoo_data.csv".replace('\\', '/').replace('**', ticker)
 
     # ---> Check if generated path data exists in database
     if os.path.exists(path):
@@ -24,7 +24,7 @@ def fetch_technical_data(ticker):
         data = data.reset_index()
 
         # ---> Save data to csv file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\Data".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\Technical_data".replace('\\', '/')
         full_file_name = path + '/' + file_name
 
         data.to_csv(full_file_name)
