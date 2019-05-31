@@ -37,6 +37,7 @@ class RUN_model:
 
         print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # ============================ ECONOMIC ANALYSIS ================================
 
         # ---- Generate data slice
         self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)

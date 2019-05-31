@@ -65,6 +65,7 @@ class EVOA_optimiser:
         print("Starting parameters:", config.starting_parameters)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= EVO OPTIMISATION PROCESS =============================
+
         # ------------------ Initialise population
         if config.starting_parameters is None:
             self.population = self.evoa_tools.gen_initial_population(ticker, config.population_size)

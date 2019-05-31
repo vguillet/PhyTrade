@@ -39,6 +39,7 @@ class RUN_trade_sim:
         print("Number of data slices processed:", nb_data_slices)
         print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        # ============================ TRADING SIMULATION ===============================
 
         # ---- Generate data slice
         self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 20, -20, 0)

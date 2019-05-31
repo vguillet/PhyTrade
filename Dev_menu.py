@@ -14,6 +14,7 @@ print("0 - Exit")
 run = True
 while run is True:
     selection = int(input("Enter selection:"))
+    print("")
 
     if selection == 1:
         # ============================ EVOLUTION-OPTIMISER =============================
