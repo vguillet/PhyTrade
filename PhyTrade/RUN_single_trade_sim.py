@@ -18,7 +18,6 @@ class RUN_trade_sim:
     def __init__(self, eval_name,
                  parameter_set, ticker,
                  start_date, data_slice_size, nb_data_slices,
-                 investment_settings=3, cash_in_settings=2,
                  plot_signal=False,
                  print_trade_process=False):
 
@@ -34,8 +33,11 @@ class RUN_trade_sim:
         self.m_cash_in_settings = 0
 
         # --> Investment settings
-        max_investment_per_trade_percent = 0.3
-        min_investment_per_trade_percent = 0.05
+        self.investment_settings = 3
+        self.cash_in_settings = 2
+
+        max_investment_per_trade_percent = 0.2
+        min_investment_per_trade_percent = 0.01
 
         investment_per_trade_decay_function = 1
 
@@ -76,8 +78,8 @@ class RUN_trade_sim:
         print("Number of data slices processed:", nb_data_slices)
         print("\nStarting parameters:", parameter_set)
 
-        print("\nInvestment_settings =", investment_settings)
-        print("Cash-in settings =", cash_in_settings)
+        print("\nInvestment_settings =", self.investment_settings)
+        print("Cash-in settings =", self.cash_in_settings)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ TRADING SIMULATION ===============================
 
@@ -99,7 +101,7 @@ class RUN_trade_sim:
 
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-        self.individual.perform_trade_run(investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+        self.individual.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                           prev_stop_loss=max_prev_stop_loss, max_stop_loss=max_max_stop_loss,
                                           print_trade_process=print_trade_process)
 
@@ -162,7 +164,7 @@ class RUN_trade_sim:
 
             # --> Process slice
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-            self.individual.perform_trade_run(investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+            self.individual.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                               initial_funds=self.individual.account.current_funds,
                                               initial_assets=self.individual.account.current_assets,
                                               prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
@@ -277,7 +279,7 @@ class Trade_simulation_results_gen:
         plt.plot(self.assets, label="Assets")
         plt.plot(self.simple_investment, label="Simple investment NW")
 
-        if run_metalabels is None:
+        if run_metalabels:
             plt.plot(self.metalabel_net_worth, label="Metalabels NW")
 
         plt.grid()

@@ -23,7 +23,7 @@ while run is True:
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVO_algo_3 import EVOA_optimiser
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
-        config = Config_0()
+        config = Config_1()
 
         for ticker in config.tickers:
             try:
@@ -48,8 +48,7 @@ while run is True:
         import json
 
         parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
-        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2000-01-01", 24, 50,
-                                      investment_settings=3, cash_in_settings=2,
+        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2014-01-01", 24, 50,
                                       plot_signal=False, print_trade_process=False)
 
     elif selection == 0:

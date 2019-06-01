@@ -91,7 +91,8 @@ class EVOA_results_gen:
 
         self.results_file.write("\nexploitation_phase_len_percent = " + str(self.config.exploitation_phase_len_percent*100) + "\n")
 
-        self.results_file.write("\ndata_slice_start_index = " + str(self.config.data_slice_start_index) + "\n")
+        self.results_file.write("\ndata_slice_start_date = " + self.config.data_slice_start_date + "\n")
+        self.results_file.write("data_slice_start_index = " + str(self.config.data_slice_start_index) + "\n")
         self.results_file.write("data_slice_size = " + str(self.config.data_slice_size) + "\n")
         self.results_file.write("data_slice_shift_per_gen = " + str(self.config.data_slice_shift_per_gen) + "\n")
         self.results_file.write("data_slice_cycle_count = " + str(self.config.data_slice_cycle_count) + "\n")

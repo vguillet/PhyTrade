@@ -5,11 +5,11 @@ import multiprocessing
 import json
 
 
-class Config_0:
+class Config_1:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Test_run_2"
+        self.config_name = "Run_3"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -21,29 +21,29 @@ class Config_0:
         self.tickers = ["AAPL"]
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 20
-        self.nb_of_generations = 10
+        self.population_size = 50
+        self.nb_of_generations = 100
 
         self.mutation_rate = 0.3
-        self.nb_parents = 8
-        self.nb_random_ind = 4
+        self.nb_parents = 10
+        self.nb_random_ind = 10
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_date = "2010-01-01"
+        self.data_slice_start_date = "2016-01-01"
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 5
+        self.data_slice_cycle_count = 4
 
-        self.data_looper = False
+        self.data_looper = True
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
         # Set to None if random initial population wanted
         self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json"
-        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
-        # self.starting_parameters = None
+        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]

@@ -167,7 +167,12 @@ class EVOA_optimiser:
                                                                                              print_evaluation_status=config.print_evaluation_status,
                                                                                              plot_3=config.plot_signal_triggers)
 
-            if sum(self.fitness_evaluation) != 0:
+            if config.evaluation_method == 1 and sum(self.fitness_evaluation) == 0:
+                self.results.invalid_slice_count += 1
+                self.data_slice_cycle_count = config.data_slice_cycle_count
+                print("Data slice invalid for training, proceed to next data slice")
+
+            else:
                 # ------------------ Collect generation data
                 if self.nb_parents is not None and self.nb_random_ind is not None:
                     self.results.nb_parents.append(self.nb_parents)
@@ -194,11 +199,6 @@ class EVOA_optimiser:
                 print("Best Individual net worth from previous generation:", round(max(self.net_worth), 3))
                 print("Average net worth from previous generation:", round((sum(self.net_worth) / len(self.net_worth)), 3))
                 print("\n")
-
-            else:
-                self.results.invalid_slice_count += 1
-                self.data_slice_cycle_count = config.data_slice_cycle_count
-                print("Data slice invalid for training, proceed to next data slice")
 
         # ===============================================================================
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
