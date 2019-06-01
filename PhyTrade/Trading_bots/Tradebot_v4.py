@@ -1,6 +1,9 @@
 """
 This Trade bot is optimised for the GA parameter optimisation
 
+Input that still require manual input:
+    - Simple investment settings
+    - Investment settings
 """
 
 from PhyTrade.Trading_bots.ACCOUNT_gen import ACCOUNT
@@ -48,6 +51,17 @@ class Tradebot_v4:
         """
 
         # ============================ TRADE_BOT ATTRIBUTES ============================
+        # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # --> Simple investment settings
+        self.s_initial_investment = 1000
+
+        # --> Investment settings
+        self.fixed_investment = 100
+        self.investment_percentage = 0.3
+
+        self.asset_liquidation_percentage = 0.5
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.print_trade_process = print_trade_process
 
         # -- Tradebot finance
@@ -91,7 +105,8 @@ class Tradebot_v4:
         # ============================ TRADE PROTOCOL DEF ==============================
         # ~~~~~~~~~~~~~~~~~~ Initiate simple investment
         if prev_simple_investment_assets is None:
-            self.account.start_simple_investment(self.analysis.big_data.data_slice_open_values[0], initial_investment=1000)
+            self.account.start_simple_investment(self.analysis.big_data.data_slice_open_values[0],
+                                                 initial_investment=self.s_initial_investment)
         else:
             self.account.simple_investment_assets = prev_simple_investment_assets
 
@@ -105,21 +120,21 @@ class Tradebot_v4:
             # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
             # --> Fixed investment value per trade
             if investment_settings == 0:
-                if self.account.current_funds >= 100:
-                    investment_per_trade = 100
+                if self.account.current_funds >= self.fixed_investment:
+                    investment_per_trade = self.fixed_investment
                 else:
                     investment_per_trade = self.account.current_funds
             # --> Fixed investment percentage per trade
             elif investment_settings == 1:
-                investment_per_trade = self.account.current_funds * 0.3
+                investment_per_trade = self.account.current_funds*self.investment_percentage
 
             # --> Fixed investment value per trade pegged to signal strength
             elif investment_settings == 2:
-                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*100)
+                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.fixed_investment)
 
             # --> Fixed investment percentage per trade pegged to signal strength
             elif investment_settings == 3:
-                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds * 0.2)
+                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds*self.investment_percentage)
 
             # ----> Limit max investment per trade
             if investment_per_trade > max_investment_per_trade:
@@ -132,16 +147,16 @@ class Tradebot_v4:
 
             # --> Fixed asset liquidation percentage
             elif cash_in_settings == 1:
-                assets_sold_per_trade = self.account.current_assets*0.3
+                assets_sold_per_trade = self.account.current_assets*self.asset_liquidation_percentage
 
             # --> Asset liquidation percentage per trade pegged to signal strength
             elif cash_in_settings == 2:
-                assets_sold_per_trade = (self.analysis.big_data.Major_spline.spline[i]+1)*self.account.current_assets * 0.5
+                assets_sold_per_trade = (self.analysis.big_data.Major_spline.spline[i]+1)*self.account.current_assets*self.asset_liquidation_percentage
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
-            # TODO: Figure out variable stop_loss concept
-            if i % 100 == 0 and not self.prev_stop_loss == 0.95:
-                self.prev_stop_loss += 0.01
+            # # TODO: Figure out variable stop_loss concept
+            # if i % 100 == 0 and not self.prev_stop_loss == 0.95:
+            #     self.prev_stop_loss += 0.01
 
             """
 

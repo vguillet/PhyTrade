@@ -28,6 +28,12 @@ class data_slice_info:
         self.end_of_dataset = False
 
     def gen_slice_metalabels(self, ticker):
+        """
+        Generate metalabels for a specific data slice. Only necessary to be ran when a
+        dataslice instance is initiated.
+
+        :param ticker: Ticker of analysis
+        """
         self.metalabels = MetaLabeling(ticker,
                                        self.upper_barrier, self.lower_barrier,
                                        self.look_ahead,
@@ -82,7 +88,15 @@ class data_slice_info:
         self.gen_slice_metalabels(ticker)
         return
 
-    def perform_trade_run(self, ticker):
+    def perform_trade_run(self, ticker,
+                          investment_settings=3, cash_in_settings=0,
+                          initial_funds=1000,
+                          initial_assets=0,
+                          prev_stop_loss=0.85, max_stop_loss=0.75,
+                          max_investment_per_trade=500,
+                          prev_simple_investment_assets=None,
+                          print_trade_process=False):
+
         from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
         from PhyTrade.Economic_model.Big_Data import BIGDATA
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
@@ -94,9 +108,16 @@ class data_slice_info:
 
         # TODO: Add open/close value selection
         analysis.big_data.buy_sell_labels = self.metalabels.close_values_metalabels
-        tradebot = Tradebot_v4(analysis)
-        self.metalabels_account = tradebot.account
+        tradebot = Tradebot_v4(analysis,
+                               investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                               initial_funds=initial_funds,
+                               initial_assets=initial_assets,
+                               prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
+                               max_investment_per_trade=max_investment_per_trade,
+                               prev_simple_investment_assets=prev_simple_investment_assets,
+                               print_trade_process=print_trade_process)
 
+        self.metalabels_account = tradebot.account
         return
 
 

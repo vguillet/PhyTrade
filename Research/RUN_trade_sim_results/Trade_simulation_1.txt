@@ -3,28 +3,28 @@
 -----------> Model settings:
 Ticker: AAPL
 
-data_slice_start_index = -3438
-data_slice_size = 200
-nb_data_slices = 30
+data_slice_start_index = -7091
+data_slice_size = 24
+nb_data_slices = 50
 Model parameters: None
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
 
-Number of data points processed: 6000
-Buy trigger count: 89
+Number of data points processed: 1200
+Buy trigger count: 87
 Sell trigger count: 75
 
-Final net worth: 4257.0$
-Average profit per gen: 9.0%
-Max profit achieved: 37.0%
-Max loss achieved: -26.0%
+Final net worth: 2460.0$
+Average profit per gen: 2.0%
+Max profit achieved: 18.0%
+Max loss achieved: -28.0%
 
-Simple investment final net worth: 5845$
-Simple investment profit: 484%
+Simple investment final net worth: 272$
+Simple investment profit: -73%
 
- Net worth difference trading strategy vs simple investment: -1587.0$
-% Net worth difference trading strategy vs simple investment: -27.0%
+ Net worth difference trading strategy vs simple investment: 2188.0$
+% Net worth difference trading strategy vs simple investment: 805.0%
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

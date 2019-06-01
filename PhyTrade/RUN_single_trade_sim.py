@@ -1,5 +1,10 @@
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
+
+Input that still require manual input:
+    - Metalabels settings
+    - Investment settings
+    - Stop-loss settings
 """
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
@@ -14,10 +19,40 @@ class RUN_trade_sim:
                  parameter_set, ticker,
                  start_date, data_slice_size, nb_data_slices,
                  investment_settings=3, cash_in_settings=2,
-                 max_investment_per_trade_percent=0.3,
                  plot_signal=False,
                  print_trade_process=False):
 
+        # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # --> Metalabeling settings
+        self.run_metalabels = False         # Can be switched off for performance increase
+
+        self.upper_barrier = 20
+        self.lower_barrier = -20
+        self.look_ahead = 10
+
+        self.m_investment_settings = 1
+        self.m_cash_in_settings = 0
+
+        # --> Investment settings
+        max_investment_per_trade_percent = 0.3
+        min_investment_per_trade_percent = 0.05
+
+        investment_per_trade_decay_function = 1
+
+        # --> Stop-loss settings
+        max_prev_stop_loss = 0.85
+        min_prev_stop_loss = 0.98
+
+        prev_stop_loss_decay_function = 1
+
+        max_max_stop_loss = 0.75
+        min_max_stop_loss = 0.95
+
+        max_stop_loss_decay_function = 1
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        # ---- Initiate run parameters
         self.ticker = ticker
         self.parameter_set = parameter_set
 
@@ -47,9 +82,17 @@ class RUN_trade_sim:
         # ============================ TRADING SIMULATION ===============================
 
         # ---- Generate data slice
-        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 20, -20, 0, data_looper=False)
+        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0,
+                                          self.upper_barrier, self.lower_barrier, self.look_ahead,
+                                          data_looper=False)
         self.data_slice.gen_slice_metalabels(ticker)
-        self.data_slice.perform_trade_run(self.ticker)
+
+        if self.run_metalabels is True:
+            self.data_slice.perform_trade_run(self.ticker,
+                                              investment_settings=self.m_investment_settings,
+                                              cash_in_settings=self.m_cash_in_settings,
+                                              print_trade_process=print_trade_process)
+            self.results.metalabel_net_worth = self.data_slice.metalabels_account.net_worth_history
 
         # ---- Generate Individual
         self.individual = Individual(ticker=self.ticker, parameter_set=parameter_set)
@@ -64,13 +107,15 @@ class RUN_trade_sim:
         self.results.sell_count += self.individual.tradebot.sell_count
         self.results.stop_loss_count += self.individual.tradebot.stop_loss_count
 
+        self.results.profit.append((self.individual.account.net_worth_history[-1] - 1000)/1000*100)
+
         self.results.net_worth = self.individual.account.net_worth_history
         self.results.funds = self.individual.account.funds_history
         self.results.assets = self.individual.account.assets_history
 
         self.results.simple_investment = self.individual.account.simple_investment_net_worth
 
-        # ---- Generate economic model and perform trade run
+        # ---- Generate economic model and perform trade run for all data slices
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
             # --> Calc new data slice parameters
@@ -85,21 +130,50 @@ class RUN_trade_sim:
             if self.data_slice.end_of_dataset is True:
                 break
 
-            max_investment_per_trade = EVOA_tools().throttle(i, self.nb_data_slices, max_investment_per_trade_percent, 0.1, decay_function=1)
-            print("Max investment per trade", max_investment_per_trade, "\n")
+            # --> Throttle values
+            self.prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                              max_prev_stop_loss, min_prev_stop_loss,
+                                                              decay_function=prev_stop_loss_decay_function), 3)
+            print("\nPrev stop loss", self.prev_stop_loss)
+
+            self.max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                             max_max_stop_loss, min_max_stop_loss,
+                                                             decay_function=max_stop_loss_decay_function), 3)
+            print("Max stop loss", self.max_stop_loss, "\n")
+
+            self.max_investment_per_trade = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                                        max_investment_per_trade_percent, min_investment_per_trade_percent,
+                                                                        decay_function=investment_per_trade_decay_function), 3)
+            print("Max investment per trade", self.max_investment_per_trade, "\n")
+
+            # --> Process slice metalabels
+            if self.run_metalabels is True:
+                self.data_slice.perform_trade_run(self.ticker,
+                                                  investment_settings=self.m_investment_settings,
+                                                  cash_in_settings=self.m_cash_in_settings,
+                                                  initial_funds=self.individual.account.current_funds,
+                                                  initial_assets=self.individual.account.current_assets,
+                                                  prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
+                                                  max_investment_per_trade=self.max_investment_per_trade*self.individual.account.net_worth_history[-1],
+                                                  prev_simple_investment_assets=self.individual.account.simple_investment_assets,
+                                                  print_trade_process=print_trade_process)
+                self.results.metalabel_net_worth += self.data_slice.metalabels_account.net_worth_history
 
             # --> Process slice
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
             self.individual.perform_trade_run(investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                               initial_funds=self.individual.account.current_funds,
                                               initial_assets=self.individual.account.current_assets,
-                                              max_investment_per_trade=max_investment_per_trade*self.individual.account.net_worth_history[-1],
+                                              prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
+                                              max_investment_per_trade=self.max_investment_per_trade*self.individual.account.net_worth_history[-1],
                                               prev_simple_investment_assets=self.individual.account.simple_investment_assets,
                                               print_trade_process=print_trade_process)
 
             # --> Record slice trade history
             self.results.buy_count += len(self.individual.analysis.big_data.Major_spline.buy_dates)
             self.results.sell_count += len(self.individual.analysis.big_data.Major_spline.sell_dates)
+            self.results.stop_loss_count += self.individual.tradebot.stop_loss_count
+
             self.results.profit.append((self.individual.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
 
             self.results.net_worth += self.individual.account.net_worth_history
@@ -120,7 +194,7 @@ class RUN_trade_sim:
         self.results.total_data_points_processed = self.data_slice_size*self.nb_data_slices
 
         self.results.gen_result_recap_file()
-        self.results.plot_results()
+        self.results.plot_results(self.run_metalabels)
 
         print("-- Trade simulation completed --")
         print("Number of data points processed:", self.results.total_data_points_processed)
@@ -148,7 +222,8 @@ class Trade_simulation_results_gen:
         self.funds = None
         self.assets = None
 
-        self.simple_investment = []
+        self.simple_investment = None
+        self.metalabel_net_worth = None
 
     def gen_result_recap_file(self):
         # -- Create results file
@@ -193,13 +268,16 @@ class Trade_simulation_results_gen:
 
         self.results_file.close()
 
-    def plot_results(self):
+    def plot_results(self, run_metalabels):
         import matplotlib.pyplot as plt
 
         plt.plot(self.net_worth, label="Net worth")
         plt.plot(self.funds, label="Funds")
         plt.plot(self.assets, label="Assets")
-        plt.plot(self.simple_investment, label="Simple investment")
+        plt.plot(self.simple_investment, label="Simple investment NW")
+
+        if run_metalabels is None:
+            plt.plot(self.metalabel_net_worth, label="Metalabels NW")
 
         plt.grid()
         plt.legend()

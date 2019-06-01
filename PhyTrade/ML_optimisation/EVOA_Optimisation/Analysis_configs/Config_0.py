@@ -9,7 +9,7 @@ class Config_0:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Test_run"
+        self.config_name = "Test_run_2"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -42,8 +42,8 @@ class Config_0:
         # -- Generation 0 settings
         # Set to None if random initial population wanted
         self.path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json"
-        # self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
-        self.starting_parameters = None
+        self.starting_parameters = json.load(open(self.path.replace('\\', '/')))
+        # self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels"]

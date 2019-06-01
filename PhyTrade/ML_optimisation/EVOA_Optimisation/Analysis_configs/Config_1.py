@@ -5,11 +5,11 @@ import multiprocessing
 import json
 
 
-class Config_1:
+class Config_0:
     def __init__(self):
         # ____________________________________________________________________________________________________
         # -- Print parameters
-        self.config_name = "Run_2"
+        self.config_name = "Test_run_2"
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
@@ -19,23 +19,24 @@ class Config_1:
         # -- Model settings
         # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
         self.tickers = ["AAPL"]
-
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
-        self.population_size = 60
-        self.nb_of_generations = 300
+        self.population_size = 20
+        self.nb_of_generations = 10
 
-        self.mutation_rate = 0.4
-        self.nb_parents = 20
-        self.nb_random_ind = 10
+        self.mutation_rate = 0.3
+        self.nb_parents = 8
+        self.nb_random_ind = 4
 
-        self.exploitation_phase_len_percent = 0.2
+        self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_index = None
+        self.data_slice_start_date = "2010-01-01"
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 7
+        self.data_slice_cycle_count = 5
+
+        self.data_looper = False
 
         # ____________________________________________________________________________________________________
         # -- Generation 0 settings
