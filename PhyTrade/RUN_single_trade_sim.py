@@ -100,6 +100,7 @@ class RUN_trade_sim:
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
         self.individual.perform_trade_run(investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                                          prev_stop_loss=max_prev_stop_loss, max_stop_loss=max_max_stop_loss,
                                           print_trade_process=print_trade_process)
 
         # --> Record slice trade history

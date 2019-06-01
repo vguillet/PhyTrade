@@ -178,24 +178,24 @@ class EVOA_tools:
             print("Invalid throttle decay function reference")
             sys.exit()
 
+        inverse = False
+        if max_value < min_value:
+            inverse = True
+
         # TODO: add decay functions (log/exponential etc...)
         if current_generation <= nb_of_generations:
             if decay_function == 0:       # Fixed value
                 return max_value
 
             elif decay_function == 1:     # Linear decay
-                interval = max_value - min_value
-                if interval == 0:
-                    interval = 1
-
-                interval_size = nb_of_generations/interval
-                if interval_size <= 0:
-                    return max_value
-
-                throttled_value = -(1/interval_size)*current_generation + max_value
-
-                if throttled_value <= min_value:
-                    throttled_value = min_value
+                if inverse:
+                    throttled_value = max_value + (min_value-max_value)/nb_of_generations*current_generation
+                    if throttled_value >= min_value:
+                        throttled_value = min_value
+                else:
+                    throttled_value = max_value - (max_value-min_value)/nb_of_generations*current_generation
+                    if throttled_value <= min_value:
+                        throttled_value = min_value
 
             # TODO: Complete log decay
             elif decay_function == 2:       # Logarithmic decay
