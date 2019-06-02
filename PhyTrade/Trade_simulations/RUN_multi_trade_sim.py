@@ -78,6 +78,7 @@ class RUN_trade_sim:
 
         self.portfolio.perform_trade_run()
         sys.exit()
+
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
         self.individual.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
