@@ -6,16 +6,14 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
-
-
+import sys
 
 
 class RUN_trade_sim:
     def __init__(self, eval_name,
-                 parameter_set, ticker,
+                 parameter_sets, tickers,
                  start_date, data_slice_size, nb_data_slices,
                  plot_signal=False,
                  print_trade_process=False):
@@ -54,50 +52,32 @@ class RUN_trade_sim:
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         # ---- Initiate run parameters
-        self.ticker = ticker
-        self.parameter_set = parameter_set
+        self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
+                                       start_date, data_slice_size,
+                                       self.upper_barrier, self.lower_barrier, self.look_ahead)
 
-        self.data_slice_size = data_slice_size
         self.nb_data_slices = nb_data_slices
-
-        # ---- Find corresponding starting data index from start date
-        data = fetch_technical_data(ticker)
-        self.data_slice_start = -len(data)+np.flatnonzero(data['index'] == start_date)[0]
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Trade simulation \n")
+        print("Multi ticker trade simulation \n")
 
-        print("Evaluated ticker:", ticker)
+        print("Evaluated tickers:", tickers)
         print("\nStart date:", start_date)
         print("Data slice size:", data_slice_size)
         print("Number of data slices processed:", nb_data_slices)
-        print("\nStarting parameters:", parameter_set)
+        print("\nStarting parameters:", parameter_sets)
 
         print("\nInvestment_settings =", self.investment_settings)
         print("Cash-in settings =", self.cash_in_settings)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ TRADING SIMULATION ===============================
 
-        # ---- Generate data slice
-        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0,
-                                          self.upper_barrier, self.lower_barrier, self.look_ahead,
-                                          data_looper=False)
-        self.data_slice.gen_slice_metalabels(ticker)
-
-        if self.run_metalabels is True:
-            self.data_slice.perform_trade_run(self.ticker,
-                                              investment_settings=self.m_investment_settings,
-                                              cash_in_settings=self.m_cash_in_settings,
-                                              print_trade_process=print_trade_process)
-            self.results.metalabel_net_worth = self.data_slice.metalabels_account.net_worth_history
-
-        # ---- Generate Individual
-        self.individual = Individual(ticker=self.ticker, parameter_set=parameter_set)
-
+        self.portfolio.perform_trade_run()
+        sys.exit()
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
         self.individual.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
@@ -123,7 +103,7 @@ class RUN_trade_sim:
             # --> Calc new data slice parameters
             self.data_slice.get_next_data_slice(self.ticker)
 
-            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'])
+            print(self.data_slice.start_date, "-->", self.data_slice.stop_date)
             print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])
             print("Buy count:", self.individual.tradebot.buy_count,
                   "; Sell count:", self.individual.tradebot.sell_count,
@@ -189,11 +169,11 @@ class RUN_trade_sim:
         self.results.individual = self.individual
         self.parameter_set = self.parameter_set
 
-        self.results.data_slice_start = self.data_slice_start
-        self.results.data_slice_size = self.data_slice_size
+        self.results.data_slice_start = self.data_slice.default_start_slice_index
+        self.results.data_slice_size = self.data_slice.slice_size
         self.results.nb_data_slices = self.nb_data_slices
 
-        self.results.total_data_points_processed = self.data_slice_size*self.nb_data_slices
+        self.results.total_data_points_processed = self.data_slice.slice_size*self.nb_data_slices
 
         self.results.gen_result_recap_file()
         self.results.plot_results(self.run_metalabels)

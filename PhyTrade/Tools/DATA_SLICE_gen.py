@@ -12,6 +12,7 @@ class data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
                  upper_barrier, lower_barrier, look_ahead, data_looper=True):
 
+        self.ticker = ticker
         self.data = fetch_technical_data(ticker)
         # ---- Find corresponding starting data index from start date
         self.start_date = start_date
@@ -37,20 +38,18 @@ class data_slice:
         self.data_looper = data_looper
         self.end_of_dataset = False
 
-    def gen_slice_metalabels(self, ticker):
+    def gen_slice_metalabels(self):
         """
         Generate metalabels for a specific data slice. Only necessary to be ran when a
         dataslice instance is initiated.
-
-        :param ticker: Ticker of analysis
         """
-        self.metalabels = MetaLabeling(ticker,
+        self.metalabels = MetaLabeling(self.ticker,
                                        self.upper_barrier, self.lower_barrier,
                                        self.look_ahead,
                                        self.start_index, self.stop_index)
         return
 
-    def get_next_data_slice(self, ticker):
+    def get_next_data_slice(self):
         # -- Determine new start/stop indexes
         self.start_index += self.slice_size
         self.start_date = self.data.iloc[self.start_index]['index']
@@ -74,10 +73,10 @@ class data_slice:
                     return
 
         # -- Generate new metalabels
-        self.gen_slice_metalabels(ticker)
+        self.gen_slice_metalabels()
         return
 
-    def get_shifted_data_slice(self, ticker):
+    def get_shifted_data_slice(self):
         # -- Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
         self.start_date = self.data.iloc[self.start_index]['index']
@@ -101,10 +100,10 @@ class data_slice:
                     return
 
         # -- Generate new metalabels
-        self.gen_slice_metalabels(ticker)
+        self.gen_slice_metalabels()
         return
 
-    def perform_trade_run(self, ticker,
+    def perform_trade_run(self,
                           investment_settings=1, cash_in_settings=0,
                           initial_funds=1000,
                           initial_assets=0,
@@ -113,11 +112,11 @@ class data_slice:
                           prev_simple_investment_assets=None,
                           print_trade_process=False):
 
-        from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
+        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
         from PhyTrade.Economic_model.Big_Data import BIGDATA
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
-        data = fetch_technical_data(ticker)
+        data = fetch_technical_data(self.ticker)
 
         analysis = mock()
         analysis.big_data = BIGDATA(data, self.start_index, self.stop_index)

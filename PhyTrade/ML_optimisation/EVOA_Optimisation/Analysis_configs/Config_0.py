@@ -18,7 +18,7 @@ class Config_0:
         # ____________________________________________________________________________________________________
         # -- Model settings
         # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
-        self.tickers = ["AAPL"]
+        self.tickers = ["AMZN"]
         # ____________________________________________________________________________________________________
         # -- EVO_algo main parameters
         self.population_size = 20

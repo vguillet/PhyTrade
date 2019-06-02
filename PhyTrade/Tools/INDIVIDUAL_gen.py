@@ -35,7 +35,7 @@ class Individual:
                           prev_simple_investment_assets=None,
                           print_trade_process=False):
 
-        from PhyTrade.Trading_bots.Tradebot_v4 import Tradebot_v4
+        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
         self.tradebot = Tradebot_v4(self.analysis,
                                     investment_settings=investment_settings, cash_in_settings=cash_in_settings,
@@ -48,7 +48,6 @@ class Individual:
 
         self.account = self.tradebot.account
         # self.big_data = tradebot.analysis.big_data
-
 
     def gen_parameter_set(self):
         ga_random = EVOA_random_gen()

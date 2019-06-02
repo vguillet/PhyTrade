@@ -77,13 +77,12 @@ class RUN_trade_sim:
 
         # ---- Generate data slice
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
-                                          self.upper_barrier, self.lower_barrier, self.look_ahead,
-                                          data_looper=False)
-        self.data_slice.gen_slice_metalabels(ticker)
+                                     self.upper_barrier, self.lower_barrier, self.look_ahead,
+                                     data_looper=False)
+        self.data_slice.gen_slice_metalabels()
 
         if self.run_metalabels is True:
-            self.data_slice.perform_trade_run(self.ticker,
-                                              investment_settings=self.m_investment_settings,
+            self.data_slice.perform_trade_run(investment_settings=self.m_investment_settings,
                                               cash_in_settings=self.m_cash_in_settings,
                                               print_trade_process=print_trade_process)
             self.results.metalabel_net_worth = self.data_slice.metalabels_account.net_worth_history
@@ -114,7 +113,7 @@ class RUN_trade_sim:
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
             # --> Calc new data slice parameters
-            self.data_slice.get_next_data_slice(self.ticker)
+            self.data_slice.get_next_data_slice()
 
             print(self.data_slice.start_date, "-->", self.data_slice.stop_date)
             print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])
@@ -143,8 +142,7 @@ class RUN_trade_sim:
 
             # --> Process slice metalabels
             if self.run_metalabels is True:
-                self.data_slice.perform_trade_run(self.ticker,
-                                                  investment_settings=self.m_investment_settings,
+                self.data_slice.perform_trade_run(investment_settings=self.m_investment_settings,
                                                   cash_in_settings=self.m_cash_in_settings,
                                                   initial_funds=self.individual.account.current_funds,
                                                   initial_assets=self.individual.account.current_assets,

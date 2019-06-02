@@ -26,7 +26,7 @@ class EVOA_optimiser:
                                      config.look_ahead,
                                      data_looper=config.data_looper)
 
-        self.data_slice.gen_slice_metalabels(ticker)
+        self.data_slice.gen_slice_metalabels()
 
         # -- Initialise benchmark data slice
         self.benchmark_data_slice = data_slice(ticker,
@@ -37,7 +37,7 @@ class EVOA_optimiser:
                                                config.lower_barrier,
                                                config.look_ahead)
 
-        self.benchmark_data_slice.gen_slice_metalabels(ticker)
+        self.benchmark_data_slice.gen_slice_metalabels()
 
         # -- Initialise tools and counters
         self.evoa_tools = EVOA_tools()
@@ -100,7 +100,7 @@ class EVOA_optimiser:
                 # ------------------ Define the data slice to be used by the generation
                 self.data_slice_cycle_count += 1
                 if self.data_slice_cycle_count > config.data_slice_cycle_count:
-                    self.data_slice.get_shifted_data_slice(ticker)
+                    self.data_slice.get_shifted_data_slice()
                     self.data_slice_cycle_count = 1
 
                     if self.data_slice.end_of_dataset is True:

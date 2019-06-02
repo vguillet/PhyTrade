@@ -69,7 +69,7 @@ class EVOA_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Run_recaps".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\RUN_EVOA_recaps".replace('\\', '/')
         full_file_name = path + '/' + self.run_label + "_" + self.ticker
 
         self.results_file = open(full_file_name + ".txt", "w+")
