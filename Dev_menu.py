@@ -23,20 +23,20 @@ while run is True:
         from PhyTrade.ML_optimisation.EVOA_Optimisation.EVO_algo_3 import EVOA_optimiser
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
-        config = Config_1()
+        config = Config_0()
+        ticker = config.tickers[0]
+        # for ticker in config.tickers:
+        #     try:
+        config.data_slice_start_index = -len(fetch_technical_data(ticker)) + config.data_slice_size
+        EVO_optimisation = EVOA_optimiser(config, ticker)
 
-        for ticker in config.tickers:
-            try:
-                config.data_slice_start_index = -len(fetch_technical_data(ticker)) + config.data_slice_size
-                EVO_optimisation = EVOA_optimiser(config, ticker)
-
-            except:
-                print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
-                continue
+            # except:
+            #     print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
+            #     continue
 
     elif selection == 2:
         # ============================ ECONOMIC ANALYSIS ===============================
-        from PhyTrade.RUN_model import RUN_model
+        from PhyTrade.Economic_model.RUN_model import RUN_model
         import json
 
         parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
@@ -44,7 +44,7 @@ while run is True:
 
     elif selection == 3:
         # ============================ TRADING SIMULATION ==============================
-        from PhyTrade.RUN_single_trade_sim import RUN_trade_sim
+        from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_trade_sim
         import json
 
         parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))

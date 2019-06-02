@@ -1,12 +1,9 @@
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
+from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-
-import numpy as np
 
 
 class RUN_model:
@@ -15,15 +12,17 @@ class RUN_model:
                  start_date, data_slice_size,
                  look_ahead):
 
+        # ---- Initiate run parameters
         self.ticker = ticker
         self.parameter_set = parameter_set
 
-        self.data_slice_size = data_slice_size
-        self.look_ahead = look_ahead
+        # ---- Generate data slice
+        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0, 0, 0, look_ahead)
+        self.data_slice.gen_slice_metalabels(ticker)
+        self.data_slice.perform_trade_run(ticker)
 
-        # ---- Find corresponding data index from date
-        data = fetch_technical_data(ticker)
-        self.data_slice_start = -len(data)+np.flatnonzero(data['index'] == start_date)[0]
+        # ---- Generate Individual
+        self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
 
         # ===============================================================================
         decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
@@ -31,22 +30,13 @@ class RUN_model:
         print("Model generation\n")
 
         print("Evaluated ticker:", ticker)
-        print("\nStart date:", start_date)
-        print("End date:", data.iloc[self.data_slice_start+data_slice_size]['index'])
+        print("\nStart date:", self.data_slice.start_date)
+        print("\nStop date:", self.data_slice.stop_date)
         print("Data slice size:", data_slice_size)
 
         print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ ECONOMIC ANALYSIS ================================
-
-        # ---- Generate data slice
-        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0, 0, 0, self.look_ahead)
-        self.data_slice.gen_slice_metalabels(ticker)
-        self.data_slice.perform_trade_run(ticker)
-
-        # ---- Generate Individual
-        self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
-
         # ---- Generate economic model and perform trade run
         self.individual.gen_economic_model(self.data_slice, plot_3=True)
         self.individual.perform_trade_run(print_trade_process=True)
@@ -59,10 +49,10 @@ class RUN_model:
                                                                                      print_benchmark_results=False)
 
         self.results.individual = self.individual
-        self.results.total_data_points_processed = self.data_slice_size
-        self.results.look_ahead = self.look_ahead
-        self.results.benchmark_data_slice_start = self.data_slice_start
-        self.results.benchmark_data_slice_stop = self.data_slice_start + self.data_slice_size
+        self.results.total_data_points_processed = self.data_slice.slice_size
+        self.results.look_ahead = look_ahead
+        self.results.benchmark_data_slice_start = self.data_slice.start_index
+        self.results.benchmark_data_slice_stop = self.data_slice.stop_index
 
         self.results.gen_result_recap_file()
 

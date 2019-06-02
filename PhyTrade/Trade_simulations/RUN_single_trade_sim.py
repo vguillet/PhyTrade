@@ -6,12 +6,9 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
+from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
-
-import numpy as np
 
 
 class RUN_trade_sim:
@@ -58,12 +55,7 @@ class RUN_trade_sim:
         self.ticker = ticker
         self.parameter_set = parameter_set
 
-        self.data_slice_size = data_slice_size
         self.nb_data_slices = nb_data_slices
-
-        # ---- Find corresponding starting data index from start date
-        data = fetch_technical_data(ticker)
-        self.data_slice_start = -len(data)+np.flatnonzero(data['index'] == start_date)[0]
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
@@ -84,7 +76,7 @@ class RUN_trade_sim:
         # ============================ TRADING SIMULATION ===============================
 
         # ---- Generate data slice
-        self.data_slice = data_slice_info(self.data_slice_start, self.data_slice_size, 0,
+        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
                                           self.upper_barrier, self.lower_barrier, self.look_ahead,
                                           data_looper=False)
         self.data_slice.gen_slice_metalabels(ticker)
@@ -124,7 +116,7 @@ class RUN_trade_sim:
             # --> Calc new data slice parameters
             self.data_slice.get_next_data_slice(self.ticker)
 
-            print(data.iloc[self.data_slice.start_index]['index'], "-->", data.iloc[self.data_slice.stop_index]['index'])
+            print(self.data_slice.start_date, "-->", self.data_slice.stop_date)
             print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])
             print("Buy count:", self.individual.tradebot.buy_count,
                   "; Sell count:", self.individual.tradebot.sell_count,
@@ -190,11 +182,11 @@ class RUN_trade_sim:
         self.results.individual = self.individual
         self.parameter_set = self.parameter_set
 
-        self.results.data_slice_start = self.data_slice_start
-        self.results.data_slice_size = self.data_slice_size
+        self.results.data_slice_start = self.data_slice.default_start_slice_index
+        self.results.data_slice_size = self.data_slice.slice_size
         self.results.nb_data_slices = self.nb_data_slices
 
-        self.results.total_data_points_processed = self.data_slice_size*self.nb_data_slices
+        self.results.total_data_points_processed = self.data_slice.slice_size*self.nb_data_slices
 
         self.results.gen_result_recap_file()
         self.results.plot_results(self.run_metalabels)

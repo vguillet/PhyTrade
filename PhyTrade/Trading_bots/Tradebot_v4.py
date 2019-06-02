@@ -77,23 +77,7 @@ class Tradebot_v4:
         self.analysis = analysis
 
         # -- Generate trade actions from analysis
-        self.trade_actions = [0] * len(self.analysis.big_data.data_slice_dates)
-
-        if analysis.big_data.buy_sell_labels is None:
-            for i in self.analysis.big_data.Major_spline.sell_dates:
-                self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = 1
-
-            for i in self.analysis.big_data.Major_spline.buy_dates:
-                self.trade_actions[self.analysis.big_data.data_slice_dates.index(i)] = -1
-
-        # TODO: check for use of buy_sell_labels
-        else:
-            for i in range(len(analysis.big_data.buy_sell_labels)):
-                if analysis.big_data.buy_sell_labels[i] == 1:
-                    self.trade_actions[i] = 1
-
-                elif analysis.big_data.buy_sell_labels[i] == -1:
-                    self.trade_actions[i] = -1
+        self.trade_actions = self.analysis.big_data.Major_spline.trade_signal
 
         # ==============================================================================
         """

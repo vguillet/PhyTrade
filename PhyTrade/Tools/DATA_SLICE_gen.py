@@ -2,21 +2,31 @@
 This script contains the data_slice class used by the EVOA Optimisation. The slice itself contains
 information about the slice analysed, including the starting and stopping index, along with the metalabels generated
 """
+from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 from PhyTrade.Tools.METALABELING_gen import MetaLabeling
 
+import numpy as np
 
-class data_slice_info:
-    def __init__(self, start_slice, slice_size, data_slice_shift_per_gen,
+
+class data_slice:
+    def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
                  upper_barrier, lower_barrier, look_ahead, data_looper=True):
 
+        self.data = fetch_technical_data(ticker)
+        # ---- Find corresponding starting data index from start date
+        self.start_date = start_date
+        self.start_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.start_date)[0]
+
         # ---- Data slice properties
-        self.default_start_slice_index = start_slice
-
-        self.start_index = start_slice
-        self.stop_index = start_slice + slice_size
-
         self.slice_size = slice_size
+        self.stop_index = self.start_index + self.slice_size
+        self.stop_date = self.data.iloc[self.stop_index]['index']
+
         self.data_slice_shift_per_gen = data_slice_shift_per_gen
+
+        #  ---- Record default properties
+        self.default_start_slice_date = self.start_date
+        self.default_start_slice_index = self.start_index
 
         # ---- Metalabels properties
         self.upper_barrier = upper_barrier
@@ -43,7 +53,10 @@ class data_slice_info:
     def get_next_data_slice(self, ticker):
         # -- Determine new start/stop indexes
         self.start_index += self.slice_size
+        self.start_date = self.data.iloc[self.start_index]['index']
+
         self.stop_index += self.slice_size
+        self.stop_date = self.data.iloc[self.stop_index]['index']
 
         if self.stop_index >= 0:
             if self.start_index < 0:
@@ -67,7 +80,10 @@ class data_slice_info:
     def get_shifted_data_slice(self, ticker):
         # -- Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
+        self.start_date = self.data.iloc[self.start_index]['index']
+
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
+        self.stop_date = self.data.iloc[self.stop_index]['index']
 
         if self.stop_index >= 0:
             if self.start_index < 0:
@@ -89,7 +105,7 @@ class data_slice_info:
         return
 
     def perform_trade_run(self, ticker,
-                          investment_settings=3, cash_in_settings=0,
+                          investment_settings=1, cash_in_settings=0,
                           initial_funds=1000,
                           initial_assets=0,
                           prev_stop_loss=0.85, max_stop_loss=0.75,
@@ -105,9 +121,10 @@ class data_slice_info:
 
         analysis = mock()
         analysis.big_data = BIGDATA(data, self.start_index, self.stop_index)
+        analysis.big_data.Major_spline = mock()
+        analysis.big_data.Major_spline.trade_signal = self.metalabels.close_values_metalabels
 
         # TODO: Add open/close value selection
-        analysis.big_data.buy_sell_labels = self.metalabels.close_values_metalabels
         tradebot = Tradebot_v4(analysis,
                                investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                initial_funds=initial_funds,

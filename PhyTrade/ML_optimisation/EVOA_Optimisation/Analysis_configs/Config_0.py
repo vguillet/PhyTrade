@@ -68,6 +68,6 @@ class Config_0:
 
         # ____________________________________________________________________________________________________
         # -- Benchmarking data slice settings
-        self.benchmark_data_slice_start = -453
+        self.benchmark_data_slice_start_date = "2017-01-01"
         self.benchmark_data_slice_size = 200
 

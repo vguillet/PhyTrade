@@ -5,10 +5,8 @@ This script contains the EVOA_optimiser class, which is a refactored and optimis
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice_info
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 
-import numpy as np
 import time
 import sys
 
@@ -18,28 +16,26 @@ class EVOA_optimiser:
 
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
-        # ---- Find corresponding starting data index from start date
-        data = fetch_technical_data(ticker)
-        config.data_slice_start_index = -len(data)+np.flatnonzero(data['index'] == config.data_slice_start_date)[0]
-
         # -- Initialise data slice for gen and metalabels
-        self.data_slice_info = data_slice_info(config.data_slice_start_index,
-                                               config.data_slice_size,
-                                               config.data_slice_shift_per_gen,
-                                               config.upper_barrier,
-                                               config.lower_barrier,
-                                               config.look_ahead,
-                                               data_looper=config.data_looper)
+        self.data_slice = data_slice(ticker,
+                                     config.data_slice_start_date,
+                                     config.data_slice_size,
+                                     config.data_slice_shift_per_gen,
+                                     config.upper_barrier,
+                                     config.lower_barrier,
+                                     config.look_ahead,
+                                     data_looper=config.data_looper)
 
-        self.data_slice_info.gen_slice_metalabels(ticker)
+        self.data_slice.gen_slice_metalabels(ticker)
 
         # -- Initialise benchmark data slice
-        self.benchmark_data_slice = data_slice_info(config.benchmark_data_slice_start,
-                                                    config.benchmark_data_slice_size,
-                                                    0,
-                                                    config.upper_barrier,
-                                                    config.lower_barrier,
-                                                    config.look_ahead)
+        self.benchmark_data_slice = data_slice(ticker,
+                                               config.benchmark_data_slice_start_date,
+                                               config.benchmark_data_slice_size,
+                                               0,
+                                               config.upper_barrier,
+                                               config.lower_barrier,
+                                               config.look_ahead)
 
         self.benchmark_data_slice.gen_slice_metalabels(ticker)
 
@@ -104,14 +100,14 @@ class EVOA_optimiser:
                 # ------------------ Define the data slice to be used by the generation
                 self.data_slice_cycle_count += 1
                 if self.data_slice_cycle_count > config.data_slice_cycle_count:
-                    self.data_slice_info.get_shifted_data_slice(ticker)
+                    self.data_slice.get_shifted_data_slice(ticker)
                     self.data_slice_cycle_count = 1
 
-                    if self.data_slice_info.end_of_dataset is True:
+                    if self.data_slice.end_of_dataset is True:
                         break
 
-                print("Data slice analysed:", data.iloc[self.data_slice_info.start_index]['index'], "-->", data.iloc[self.data_slice_info.stop_index]['index'])
-                print("Data slice analysed:", self.data_slice_info.start_index, "-->", self.data_slice_info.stop_index)
+                print("Data slice analysed:", self.data_slice.start_date, "-->", self.data_slice.stop_date)
+                print("Data slice analysed:", self.data_slice.start_index, "-->", self.data_slice.stop_index)
                 print("Data slice analysis cycle:", self.data_slice_cycle_count, "\n")
 
                 # ------------------ Determine new generation GA parameters
@@ -162,7 +158,7 @@ class EVOA_optimiser:
 
             # ------------------ Evaluate population
             self.fitness_evaluation, _, self.net_worth = self.evoa_tools.evaluate_population(self.population,
-                                                                                             self.data_slice_info,
+                                                                                             self.data_slice,
                                                                                              max_worker_processes=config.max_worker_processes,
                                                                                              print_evaluation_status=config.print_evaluation_status,
                                                                                              plot_3=config.plot_signal_triggers)
@@ -184,10 +180,10 @@ class EVOA_optimiser:
                 self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
                 self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
 
-                self.data_slice_info.perform_trade_run(ticker)
-                self.results.data_slice_metalabel_pp.append(self.data_slice_info.metalabels_account.net_worth_history[-1])
+                self.data_slice.perform_trade_run(ticker)
+                self.results.data_slice_metalabel_pp.append(self.data_slice.metalabels_account.net_worth_history[-1])
 
-                # ------------------ Return generation info
+                # ------------------ Print generation info
                 generation_end_time = time.time()
                 print("\nTime elapsed:", generation_end_time-generation_start_time)
                 print("\n-- Generation", gen + 1, "population evaluation completed --\n")
@@ -203,7 +199,7 @@ class EVOA_optimiser:
         # ===============================================================================
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("All data processed")
-        total_data_points_processed = -config.data_slice_start_index + self.data_slice_info.stop_index
+        total_data_points_processed = -config.data_slice_start_index + self.data_slice.stop_index
         print("Number of data points processed:", total_data_points_processed)
         print("Parameter optimisation completed")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
