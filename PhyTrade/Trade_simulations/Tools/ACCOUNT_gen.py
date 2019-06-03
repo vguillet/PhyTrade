@@ -4,7 +4,7 @@ Contains information about a Tradebot's account, along with it's transaction his
 
 
 class ACCOUNT:
-    def __init__(self, initial_funds=1000, initial_assets=0):
+    def __init__(self, initial_funds=1000, initial_assets=[]):
         """
         Stores the states of a trading account. Stores account history in:
             -> funds_history
