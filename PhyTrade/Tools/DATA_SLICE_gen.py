@@ -28,6 +28,7 @@ class data_slice:
         #  ---- Record default properties
         self.default_start_slice_date = self.start_date
         self.default_start_slice_index = self.start_index
+        self.default_slice_size = slice_size
 
         # ---- Metalabels properties
         self.upper_barrier = upper_barrier
@@ -60,12 +61,14 @@ class data_slice:
         if self.stop_index >= 0:
             if self.start_index < 0:
                 self.stop_index = -1
+                self.slice_size = abs(self.start_index+self.stop_index)
 
             else:
                 if self.data_looper is True:
                     # ------------------ Loop back to beginning of dataset if end of dataset is reached
+                    self.slice_size = self.default_slice_size
                     self.start_index = self.default_start_slice_index
-                    self.stop_index = self.default_start_slice_index + self.slice_size
+                    self.stop_index = self.default_start_slice_index + self.default_slice_size
                 else:
                     # ------------------ Trigger End of dataset
                     self.end_of_dataset = True

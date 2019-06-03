@@ -70,7 +70,8 @@ class Tradebot_v5:
         self.sell_count = 0
         self.stop_loss_count = 0
 
-    def calc_investment_value(self, investment_settings,
+    def calc_investment_value(self,
+                              investment_settings,
                               max_investment_per_trade, signal_strength):
         """
         Used to generate trading values to be used for run_trade
@@ -164,7 +165,6 @@ class Tradebot_v5:
                 print("Account stop-loss triggered")
                 self.account.print_account_status()
                 print("==========================================================")
-
             return
 
         # --> For ticker
@@ -184,14 +184,12 @@ class Tradebot_v5:
                 print("Ticker stop-loss triggered")
                 self.account.print_account_status()
                 print("==========================================================")
-
             return
 
         # ----- Define hold action
         elif trade_action == 0:
             if self.print_trade_process:
                 print("->Hold")
-
             return
 
         # ----- Define buy action
@@ -199,13 +197,16 @@ class Tradebot_v5:
             investment_per_trade = self.calc_investment_value(investment_settings=investment_settings,
                                                               max_investment_per_trade=max_investment_per_trade,
                                                               signal_strength=signal_strength)
+            asset_count = round(investment_per_trade/self.account.content[ticker]["Current_price"], 0)
+
             if self.account.current_funds != 0:
-                self.account.convert_funds_to_assets(ticker, investment_per_trade)
+                self.account.convert_funds_to_assets(ticker, asset_count)
                 self.buy_count += 1
 
                 if self.print_trade_process:
                     print("Trade action: Buy")
-                    print("Investment =", investment_per_trade, "$")
+                    print("Number of share brought:", asset_count)
+                    print("Investment =", self.account.content[ticker]["Current_price"]*asset_count, "$")
                     self.account.print_account_status()
                 return
 
@@ -235,11 +236,9 @@ class Tradebot_v5:
                     print("Trade action 'Sell' canceled because nothing to sell")
                 return
 
-    def print_account_status(self):
+    def print_tradebot_status(self):
         """
-        Used to print account status
-
-        :param current_value: Current ticker value
+        Used to print tradebot status
         """
         print("")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

@@ -19,10 +19,10 @@ class Individual:
             for j in range(len(self.parameter_dictionary[i])):
                 self.nb_of_parameters += 1
 
-    def gen_economic_model(self, data_slice_info, plot_3=False):
+    def gen_economic_model(self, data_slice, plot_3=False):
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
 
-        self.analysis = Prototype_5(self.parameter_dictionary, data_slice_info, self.data)
+        self.analysis = Prototype_5(self.parameter_dictionary, data_slice, self.data)
 
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
 

@@ -111,21 +111,21 @@ class ACCOUNT:
             order.update_order(current_date, current_price[ticker])
 
     # ----------------------------------- Trading actions
-    def convert_funds_to_assets(self, ticker, investment_per_trade):
+    def convert_funds_to_assets(self, ticker, asset_count):
         """
         Used to perform a buy operation for a specific ticker at a given date
 
         :param ticker: Ticker traded
-        :param investment_per_trade: Amount of investment to be performed
+        :param asset_count: Amount of investment to be performed
         """
         # --> Create order
         self.add_order_to_content(ticker, ORDER_gen(ticker,
                                                     self.current_date,
-                                                    investment_per_trade/self.content[ticker]["Current_price"],
+                                                    asset_count,
                                                     self.content[ticker]["Current_price"]))
         # --> Update funds and ticker net worth
         self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
-        self.current_funds = self.current_funds - investment_per_trade
+        self.current_funds = self.current_funds - self.content[ticker]["Open_orders"][-1].open_worth
 
     def convert_assets_to_funds(self, ticker, assets_sold_per_trade):
         """
