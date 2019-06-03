@@ -1,12 +1,12 @@
 """
-This Trade bot is optimised for the GA parameter optimisation
+This Trade bot is optimised for the RUN_multi_trade_sim
 
 Input that still require manual input:
     - Simple investment settings
     - Investment settings
 """
 
-from PhyTrade.Trade_simulations.Trading_bots.ACCOUNT_gen import ACCOUNT
+from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
 
 
 class Tradebot_v5:
@@ -65,13 +65,7 @@ class Tradebot_v5:
         self.sell_count = 0
         self.stop_loss_count = 0
 
-        # -- Market analysis protocol
-        # self.analysis = analysis
-
-        # -- Generate trade actions from analysis
-        # self.trade_actions = self.analysis.big_data.Major_spline.trade_signal
-
-    def calc_trading_values(self, investment_settings=1, cash_in_settings=0,
+    def calc_trading_values(self, ticker, investment_settings=1, cash_in_settings=0,
                             max_investment_per_trade=50000, signal_strength=1):
         """
         Used to generate trading values to be used for run_trade

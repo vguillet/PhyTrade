@@ -1,12 +1,12 @@
 """
-This Trade bot is optimised for the GA parameter optimisation
+This Trade bot is optimised for the GA parameter optimisation, RUN_model, and RUN_single_trade_sim
 
 Input that still require manual input:
     - Simple investment settings
     - Investment settings
 """
 
-from PhyTrade.Trade_simulations.Trading_bots.ACCOUNT_gen import ACCOUNT
+from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
 
 
 class Tradebot_v4:
