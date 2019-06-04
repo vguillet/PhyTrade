@@ -135,7 +135,7 @@ class Tradebot_v5:
     def perform_trade(self, ticker, trade_action,
                       investment_settings=1, max_investment_per_trade=50000, cash_in_settings=0, signal_strength=1):
         """
-                Used to perform trade action
+        Used to perform trade action
 
         :param ticker:  Traded ticker
         :param trade_action: Trade action to be performed

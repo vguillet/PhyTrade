@@ -9,8 +9,10 @@ class PORTFOLIO_gen:
                  upper_barrier, lower_barrier, look_ahead):
 
         # ---- Initiate Portfolio parameters
+        self.tradebot = None
         self.tickers = tickers
         self.content = {}
+        self.current_values = {}
         for i in range(len(tickers)):
             self.create_content_entry(tickers[i], parameter_sets[i])
 
@@ -40,19 +42,29 @@ class PORTFOLIO_gen:
     def perform_trade_run(self,
                           investment_settings=3, cash_in_settings=0,
                           initial_funds=1000,
-                          initial_orders=0,
+                          initial_orders=[],
                           prev_stop_loss=0.85, max_stop_loss=0.75,
                           max_investment_per_trade=500,
-                          run_metalabels=False,
-                          prev_simple_investment_orders=None,
+                          prev_simple_investment_orders=[],
                           print_trade_process=False):
 
-        tradebot = Tradebot_v5(initial_funds, initial_orders, prev_simple_investment_orders,
-                               prev_stop_loss, max_stop_loss,
-                               print_trade_process)
+        self.tradebot = Tradebot_v5(initial_funds, initial_orders, prev_simple_investment_orders,
+                                    prev_stop_loss, max_stop_loss,
+                                    print_trade_process)
 
         # --> For every day in current data slice
         for i in range(self.data_slice_length):
+            date = self.content[self.tickers[0]]["Data_slice"].data["index"][self.content[self.tickers[0]]["Data_slice"].start_index + i]
+
+            # ---- Update account
+            # --> Update current values
+            for ticker in self.content.keys():
+                self.current_values[ticker] = self.content[ticker]["Individual"].analysis.big_data.data_slice_open_values[i]
+
+            # --> Update tradebot account
+            self.tradebot.account.update_account(date, self.current_values)
+            print(self.current_values)
+
             sell_orders = []
             hold_orders = []
             buy_orders = []
@@ -70,16 +82,29 @@ class PORTFOLIO_gen:
 
             order_lst = [sell_orders, hold_orders, buy_orders]
 
-            # TODO: finish order orders
             # --> Reorder tickers based on signal strength
             for orders in order_lst:
                 for j in range(1, len(orders)-1):
-                    if abs(self.content[self.content.keys()[-1]]["Individual"].analysis.big_data.Major_spline.spline[i]) > \
+                    if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i]) > \
                             abs(orders[j-1].analysis.big_data.Major_spline.spline[i]):
                         orders[j], orders[j-1] = orders[j-1], orders[j]
+
                 for j in range(len(orders)):
                     print("Order")
                     print(orders[j].analysis.big_data.Major_spline.spline[i])
+
+            # --> Perform trade runs
+            for orders in order_lst:
+                if orders == "buy_orders":
+                    order_type = 1
+                elif orders == "hold_orders":
+                    order_type = 0
+                else:
+                    order_type = -1
+                for ticker in orders:
+                    self.tradebot.perform_trade(ticker, order_type,
+                                                investment_settings, max_investment_per_trade, cash_in_settings,
+                                                self.content[ticker]["Individual"].analysis.big_data.Major_spline.spline[i])
 
     def create_content_entry(self, ticker, parameter_set):
         """
@@ -88,7 +113,10 @@ class PORTFOLIO_gen:
         :param ticker: Traded ticker
         :param parameter_set: Parameter set
         """
+        # --> Create content entry
         self.content[ticker] = {}
         self.content[ticker]["Individual"] = Individual(ticker, parameter_set)
         self.content[ticker]["Data_slice"] = None
 
+        # --> Create current_value entry
+        self.current_values[ticker] = {}
