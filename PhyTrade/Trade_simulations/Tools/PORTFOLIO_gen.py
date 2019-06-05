@@ -26,6 +26,7 @@ class PORTFOLIO_gen:
         for ticker in self.content.keys():
             self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"])
             print(ticker, "model generated")
+        print("")
 
         # ---- Initiate counters
         self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
@@ -42,6 +43,7 @@ class PORTFOLIO_gen:
             # --> Update counter
             self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
             print(ticker, "model generated")
+        print("")
 
     def perform_trade_run(self,
                           investment_settings=3, cash_in_settings=0,
@@ -59,8 +61,8 @@ class PORTFOLIO_gen:
         # --> For every day in current data slice
         for i in range(self.data_slice_length):
             # date = self.content[self.tickers[0]]["Data_slice"].data["index"][-self.content[self.tickers[0]]["Data_slice"].start_index + i + len(self.tickers[0]["Data_slice"].data["index"])]
-            # print("date selected", date)
-            date = "1"
+            date = "NEW DATE"
+            print("------------- Trade Date:", date, "-------------")
             # ---- Update account
             # --> Update current values
             for ticker in self.content.keys():
@@ -85,24 +87,28 @@ class PORTFOLIO_gen:
                 elif self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == -1:
                     buy_orders.append(ticker)
 
+                print("---------> Trade signal:", self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i])
+                print("---------> Spline:", self.content[ticker]["Individual"].analysis.big_data.Major_spline.spline[i])
+
             order_lst = [sell_orders, hold_orders, buy_orders]
 
             # --> Reorder tickers based on signal strength
             for orders in order_lst:
-                for j in range(1, len(orders)-1):
-                    if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i]) > \
-                            abs(orders[j-1].analysis.big_data.Major_spline.spline[i]):
-                        orders[j], orders[j-1] = orders[j-1], orders[j]
+                for k in range(len(orders)):
+                    for j in range(1, len(orders)):
+                        if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i]) > \
+                                abs(self.content[orders[j-1]]["Individual"].analysis.big_data.Major_spline.spline[i]):
+                            orders[j], orders[j-1] = orders[j-1], orders[j]
 
+                print("Order")
                 for j in range(len(orders)):
-                    print("Order")
-                    print(orders[j].analysis.big_data.Major_spline.spline[i])
+                    print(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i])
 
             # --> Perform trade runs
             for orders in order_lst:
-                if orders == "buy_orders":
+                if orders == buy_orders:
                     order_type = 1
-                elif orders == "hold_orders":
+                elif orders == hold_orders:
                     order_type = 0
                 else:
                     order_type = -1

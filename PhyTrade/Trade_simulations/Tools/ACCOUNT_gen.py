@@ -123,6 +123,7 @@ class ACCOUNT:
                                                     self.current_date,
                                                     asset_count,
                                                     self.content[ticker]["Current_price"]))
+
         # --> Update funds and ticker net worth
         self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
         self.current_funds = self.current_funds - self.content[ticker]["Open_orders"][-1].open_worth
@@ -267,7 +268,10 @@ class ACCOUNT:
 
         :return: Net worth
         """
-        net_worth = self.net_worth_history[-1]
+        net_worth = 0
+        if len(self.net_worth_history) != 0:
+            net_worth = self.net_worth_history[-1]
+
         for ticker in self.content.keys():
             if self.content[ticker]["Open_order_count"] != 0:
                 for order in self.content[ticker]["Open_orders"]:
@@ -289,6 +293,7 @@ class ACCOUNT:
             print(ticker, ":", self.content[ticker]["Open_order_count"])
 
         print("Total net worth=", self.calc_net_worth(), "$")
+        print("")
 
     def plot_net_worth(self, dates):
         import matplotlib.pyplot as plt

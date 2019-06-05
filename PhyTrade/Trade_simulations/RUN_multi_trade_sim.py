@@ -55,7 +55,6 @@ class RUN_trade_sim:
         max_stop_loss_decay_function = 1
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        print("Check r")
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
                                        start_date, data_slice_size,
@@ -103,7 +102,7 @@ class RUN_trade_sim:
                                              max_investment_per_trade=self.current_max_investment_per_trade,
                                              prev_simple_investment_orders=self.current_simple_investments_orders,
                                              print_trade_process=print_trade_process)
-
+            sys.exit()
             # --> Record slice trade history
             self.results.buy_count += self.portfolio.tradebot.buy_count
             self.results.sell_count += self.portfolio.tradebot.sell_count
@@ -193,8 +192,8 @@ class Trade_simulation_results_gen:
 
         self.net_worth = None
         self.profit = []
-        self.funds = None
-        self.assets = None
+        self.funds = []
+        self.assets = []
 
         self.metalabel_net_worth = None
 

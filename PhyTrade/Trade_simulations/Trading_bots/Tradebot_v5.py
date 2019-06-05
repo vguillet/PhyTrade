@@ -101,7 +101,9 @@ class Tradebot_v5:
         # --> Fixed investment percentage per trade pegged to signal strength
         elif investment_settings == 3:
             investment_per_trade = -((signal_strength - 1) * self.account.current_funds * self.investment_percentage)
-
+            print("Current funds", self.account.current_funds)
+            print("Signal strength", signal_strength)
+            print("investment_percentage", self.investment_percentage)
         else:
             investment_per_trade = 0
             print("Invalid investment per trade settings")
@@ -146,6 +148,8 @@ class Tradebot_v5:
         :return:
         """
         # ~~~~~~~~~~~~~~~~~~ Define trade protocol
+        print("_______________________________")
+        print("Ticker:", ticker)
         # ----- Define stop-loss action WRT max_net_worth and/or prev_net_worth for account and tickers
         # --> For account
         if not len(self.account.net_worth_history) == 0 and \
@@ -189,15 +193,20 @@ class Tradebot_v5:
         # ----- Define hold action
         elif trade_action == 0:
             if self.print_trade_process:
-                print("->Hold")
+                print("->Hold\n")
             return
 
         # ----- Define buy action
         elif trade_action == -1:
+            # --> Calculate investment per trade
             investment_per_trade = self.calc_investment_value(investment_settings=investment_settings,
                                                               max_investment_per_trade=max_investment_per_trade,
                                                               signal_strength=signal_strength)
+            print(investment_per_trade)
+            print(self.account.content[ticker]["Current_price"])
+            # --> Round according to current stock price
             asset_count = round(investment_per_trade/self.account.content[ticker]["Current_price"], 0)
+            print("asset_count", asset_count)
 
             if self.account.current_funds != 0:
                 self.account.convert_funds_to_assets(ticker, asset_count)
@@ -213,7 +222,7 @@ class Tradebot_v5:
             else:
                 self.account.record_net_worth()
                 if self.print_trade_process:
-                    print("Trade action 'Buy' canceled because insufficient funds")
+                    print("Trade action 'Buy' canceled because insufficient funds\n")
                 return
 
         # ----- Define sell action
@@ -233,7 +242,7 @@ class Tradebot_v5:
 
             else:
                 if self.print_trade_process:
-                    print("Trade action 'Sell' canceled because nothing to sell")
+                    print("Trade action 'Sell' canceled because nothing to sell\n")
                 return
 
     def print_tradebot_status(self):
