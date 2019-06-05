@@ -22,13 +22,16 @@ class PORTFOLIO_gen:
                                                             upper_barrier, lower_barrier, look_ahead)
 
         # ---- Generate initial economic models
+        print("-- Generating initial economic models")
         for ticker in self.content.keys():
             self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"])
+            print(ticker, "model generated")
 
         # ---- Initiate counters
         self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
 
     def get_next_data_slices_and_economic_models(self):
+        print("-- Generating next data slices and economic models")
         for ticker in self.content.keys():
             # --> Get next data slice
             self.content[ticker]["Data_slice"].get_next_data_slice()
@@ -38,6 +41,7 @@ class PORTFOLIO_gen:
 
             # --> Update counter
             self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
+            print(ticker, "model generated")
 
     def perform_trade_run(self,
                           investment_settings=3, cash_in_settings=0,
@@ -54,8 +58,9 @@ class PORTFOLIO_gen:
 
         # --> For every day in current data slice
         for i in range(self.data_slice_length):
-            date = self.content[self.tickers[0]]["Data_slice"].data["index"][self.content[self.tickers[0]]["Data_slice"].start_index + i]
-
+            # date = self.content[self.tickers[0]]["Data_slice"].data["index"][-self.content[self.tickers[0]]["Data_slice"].start_index + i + len(self.tickers[0]["Data_slice"].data["index"])]
+            # print("date selected", date)
+            date = "1"
             # ---- Update account
             # --> Update current values
             for ticker in self.content.keys():

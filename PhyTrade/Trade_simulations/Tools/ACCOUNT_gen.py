@@ -243,10 +243,10 @@ class ACCOUNT:
 
     # ----------------------------------- Simple investment functions
     def create_simple_investment_entry(self, ticker, current_value=None):
-        self.content[ticker] = {}
-        self.content[ticker]["Current_price"] = current_value
-        self.content[ticker]["Order"] = None
-        self.content[ticker]["Net_worth"] = []
+        self.simple_investment_orders[ticker] = {}
+        self.simple_investment_orders[ticker]["Current_price"] = current_value
+        self.simple_investment_orders[ticker]["Order"] = None
+        self.simple_investment_orders[ticker]["Net_worth"] = []
 
     def add_simple_investment_order(self, ticker, order):
         self.simple_investment_orders[ticker]["Open_orders"] = order

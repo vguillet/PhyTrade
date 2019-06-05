@@ -64,7 +64,7 @@ while run is True:
 
         tickers = ["AAPL", "NVDA", "INTC", "AMZN"]
         run_trade_sim = RUN_trade_sim("1", parameter_sets, tickers, "2014-01-01", 24, 50,
-                                      plot_signal=False, print_trade_process=False)
+                                      plot_signal=False, print_trade_process=True)
     elif selection == 0:
         import sys
         sys.exit()

@@ -55,7 +55,7 @@ class RUN_trade_sim:
         max_stop_loss_decay_function = 1
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+        print("Check r")
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
                                        start_date, data_slice_size,
@@ -72,10 +72,11 @@ class RUN_trade_sim:
         self.current_prev_stop_loss = max_prev_stop_loss
         self.current_max_stop_loss = max_max_stop_loss
 
-        self.ref_data_slice = data_slice("", start_date, data_slice_size, 0, 0, 0, 0, False)
+        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, 0, 0, 0, False)
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
+        self.results.net_worth = [self.initial_investment]
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -95,11 +96,6 @@ class RUN_trade_sim:
         for i in range(nb_data_slices-1):
             print("================== Data slice", i+1, "==================")
             print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.stop_date)
-            print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])
-            print("Buy count:", self.portfolio.tradebot.buy_count,
-                  "; Sell count:", self.portfolio.tradebot.sell_count,
-                  "; Stop loss count:", self.portfolio.tradebot.stop_loss_count)
-
             # --> Perform trade run
             self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                              initial_funds=self.current_funds, initial_orders=self.current_orders,
@@ -119,9 +115,7 @@ class RUN_trade_sim:
             self.results.funds += self.portfolio.tradebot.account.funds_history
             self.results.assets += self.portfolio.tradebot.account.assets_history
 
-            self.results.simple_investment += self.portfolio.tradebot.account.simple_investment_net_worth
-
-            # ---- Update current parameters
+            # --> Update current parameters
             self.current_funds = self.portfolio.tradebot.account.current_funds
 
             self.current_orders = []
@@ -131,6 +125,17 @@ class RUN_trade_sim:
                 self.current_simple_investments_orders.append(self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"])
 
             assert len(self.current_orders) == self.portfolio.tradebot.account.current_order_count
+
+            print("Net worth =", round(self.results.net_worth[-1]), "$")
+            print("Buy count:", self.portfolio.tradebot.buy_count,
+                  "; Sell count:", self.portfolio.tradebot.sell_count,
+                  "; Stop loss count:", self.portfolio.tradebot.stop_loss_count)
+            self.portfolio.tradebot.account.print_account_status()
+
+            # ---- Calc next data slice parameters
+            self.ref_data_slice.get_next_data_slice()
+            if self.ref_data_slice.end_of_dataset is True:
+                break
 
             # --> Throttle values
             self.current_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
@@ -149,11 +154,8 @@ class RUN_trade_sim:
                                                                                 decay_function=investment_per_trade_decay_function), 3)
             print("Max investment per trade", self.current_max_investment_per_trade, "\n")
 
-            # ---- Calc next data slice parameters
+            # --> Update account
             self.portfolio.get_next_data_slices_and_economic_models()
-
-            if self.ref_data_slice.end_of_dataset is True:
-                break
 
         # ---- Generate simulation summary
         self.results.tickers = tickers
@@ -163,6 +165,7 @@ class RUN_trade_sim:
         self.results.data_slice_size = data_slice_size
         self.results.nb_data_slices = nb_data_slices
 
+        # TODO: Fixed total_datapoint count
         self.results.total_data_points_processed = data_slice_size*nb_data_slices
 
         self.results.gen_result_recap_file()
@@ -193,7 +196,6 @@ class Trade_simulation_results_gen:
         self.funds = None
         self.assets = None
 
-        self.simple_investment = None
         self.metalabel_net_worth = None
 
     def gen_result_recap_file(self):
