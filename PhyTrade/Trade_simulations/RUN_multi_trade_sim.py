@@ -142,13 +142,13 @@ class RUN_trade_sim:
             self.current_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
                                                                      max_max_stop_loss, min_max_stop_loss,
                                                                      decay_function=max_stop_loss_decay_function), 3)
-            print("Max stop loss", self.current_max_stop_loss, "\n")
+            print("Max stop loss", self.current_max_stop_loss)
 
             self.current_max_investment_per_trade = round(EVOA_tools().throttle(i, self.nb_data_slices,
                                                                                 max_investment_per_trade_percent,
                                                                                 min_investment_per_trade_percent,
                                                                                 decay_function=investment_per_trade_decay_function), 3)
-            print("Max investment percentage per trade", self.current_max_investment_per_trade, "\n")
+            print("Max investment percentage per trade", self.current_max_investment_per_trade, "%\n")
 
             # --> Update account
             self.portfolio.get_next_data_slices_and_economic_models()

@@ -76,7 +76,6 @@ class PORTFOLIO_gen:
 
             if print_trade_process:
                 print("------------- Trade Date:", i + 1, "-------------")
-                print(self.current_values)
 
             sell_orders = []
             hold_orders = []

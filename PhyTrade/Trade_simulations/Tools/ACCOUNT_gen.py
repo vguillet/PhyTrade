@@ -101,8 +101,6 @@ class ACCOUNT:
         self.record_net_worth()
         self.record_asset_worth()
 
-        print("\n~~ Account update successful ~~\n")
-
     def update_ticker_entry(self, ticker, current_date, current_price):
         """
         Used to update specific ticker entry
