@@ -86,18 +86,22 @@ class ACCOUNT:
             # --> Update orders
             for order in self.content[ticker]["Open_orders"]:
                 order.update_order(current_date, current_prices[ticker])
+
             # --> Update net worth
             self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker))
 
             # --> Update simple investment
             if self.simple_investment_orders[ticker]["Order"] is not None:
                 self.simple_investment_orders[ticker]["Order"].update_order(current_date, current_prices[ticker])
+
                 # --> Update net worth
                 self.simple_investment_orders[ticker]["Net_worth"].append(self.simple_investment_orders[ticker]["Order"].current_worth)
 
         # Record history of account
         self.record_net_worth()
         self.record_asset_worth()
+
+        print("\n~~ Account update successful ~~\n")
 
     def update_ticker_entry(self, ticker, current_date, current_price):
         """
@@ -110,6 +114,9 @@ class ACCOUNT:
         """
         # --> Update current prices
         self.content[ticker]["Current_price"] = current_price[ticker]
+
+        # --> Update net worth
+        self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker))
 
         # --> Update orders
         for order in self.content[ticker]["Open_orders"]:
@@ -173,6 +180,7 @@ class ACCOUNT:
             self.content[ticker]["Open_order_count"] -= 1
             self.content[ticker]["Closed_orders_count"] += 1
 
+            # --> Update current parameters
             self.current_asset_worth -= order.close_worth
             self.current_order_count -= 1
 
@@ -190,10 +198,23 @@ class ACCOUNT:
         :param ticker: Traded ticker
         """
         for order in self.content[ticker]["Open_orders"]:
+            # --> Close order
             order.close_order()
-            self.content[ticker]["Closed_orders"].append(self.content[ticker]["Open_orders"].pop(order))
+
+            # --> Record close worth
+            self.current_funds += order.close_worth
+
+            # --> Move closed order to order history
+            self.content[ticker]["Open_orders"].remove(order)
+            self.content[ticker]["Closed_orders"].append(order)
+
+            # --> Edit counters
             self.content[ticker]["Open_order_count"] -= 1
             self.content[ticker]["Closed_orders_count"] += 1
+
+            # --> Update current parameters
+            self.current_asset_worth -= order.close_worth
+            self.current_order_count -= 1
 
     # =================================== Account generation functions
     # ----------------------------------- Ticker specific functions
@@ -219,10 +240,13 @@ class ACCOUNT:
         :param ticker: Ticker of order
         :param order: Order class instance
         """
+        # --> Add order to content
         self.content[ticker]["Open_orders"].append(order)
 
         # --> Edit counters
         self.content[ticker]["Open_order_count"] += 1
+
+        # --> Update current parameters
         self.current_asset_worth += order.current_worth
         self.current_order_count += 1
 
