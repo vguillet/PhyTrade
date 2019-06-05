@@ -6,7 +6,7 @@ Input that still require manual input:
     - Investment settings
 """
 
-from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
+from PhyTrade.Trade_simulations.Tools.S_ACCOUNT_gen import ACCOUNT
 
 
 class Tradebot_v4:
