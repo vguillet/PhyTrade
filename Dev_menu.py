@@ -49,8 +49,8 @@ while run is True:
         import json
 
         parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
-        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2014-01-01", 24, 50,
-                                      plot_signal=False, print_trade_process=False)
+        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2014-01-01", 24, 10,
+                                      plot_signal=True, print_trade_process=False)
 
     elif selection == 4:
         from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_trade_sim
@@ -64,7 +64,7 @@ while run is True:
 
         tickers = ["AAPL", "NVDA", "INTC", "AMZN"]
         run_trade_sim = RUN_trade_sim("1", parameter_sets, tickers, "2014-01-01", 24, 50,
-                                      plot_signal=False, print_trade_process=False)
+                                      plot_signal=False, print_trade_process=True)
     elif selection == 0:
         import sys
         sys.exit()

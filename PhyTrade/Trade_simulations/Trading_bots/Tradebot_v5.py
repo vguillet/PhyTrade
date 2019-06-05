@@ -12,7 +12,8 @@ from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
 class Tradebot_v5:
     def __init__(self,
                  initial_funds=1000,
-                 initial_assets=0,
+                 initial_orders=[],
+                 simple_investment_orders=[],
                  prev_stop_loss=0.85, max_stop_loss=0.75,
                  print_trade_process=False):
         """
@@ -35,7 +36,8 @@ class Tradebot_v5:
             2 - Asset liquidation percentage per trade pegged to signal strength
 
         :param initial_funds: Initial funds to be used
-        :param initial_assets: Initial assets to be used
+        :param initial_orders: Initial orders to be used
+        :param simple_investment_orders: Initial simple investment orders
         :param prev_stop_loss: Stop loss as % of previous day value
         :param max_stop_loss: Stop loss as % of max worth achieved
 
@@ -57,7 +59,10 @@ class Tradebot_v5:
         self.print_trade_process = print_trade_process
 
         # -- Tradebot finance
-        self.account = ACCOUNT(initial_funds=initial_funds, initial_assets=initial_assets)
+        self.account = ACCOUNT(initial_funds=initial_funds,
+                               initial_orders=initial_orders,
+                               simple_investment_orders=simple_investment_orders)
+
         self.prev_stop_loss = prev_stop_loss
         self.max_stop_loss = max_stop_loss
 
@@ -65,15 +70,17 @@ class Tradebot_v5:
         self.sell_count = 0
         self.stop_loss_count = 0
 
-    def calc_trading_values(self, ticker, investment_settings=1, cash_in_settings=0,
-                            max_investment_per_trade=50000, signal_strength=1):
+    def calc_investment_value(self,
+                              investment_settings,
+                              max_investment_per_trade, signal_strength):
         """
         Used to generate trading values to be used for run_trade
 
         :param investment_settings: Investing protocol
-        :param cash_in_settings: Cash-in protocol
         :param max_investment_per_trade: Maximum investment per trade allowed
         :param signal_strength: Signal strength to be used for scaling trading values
+
+        :return investment_per_trade
         """
 
         # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
@@ -94,7 +101,9 @@ class Tradebot_v5:
         # --> Fixed investment percentage per trade pegged to signal strength
         elif investment_settings == 3:
             investment_per_trade = -((signal_strength - 1) * self.account.current_funds * self.investment_percentage)
-
+            print("Current funds", self.account.current_funds)
+            print("Signal strength", signal_strength)
+            print("investment_percentage", self.investment_percentage)
         else:
             investment_per_trade = 0
             print("Invalid investment per trade settings")
@@ -103,119 +112,142 @@ class Tradebot_v5:
         if investment_per_trade > max_investment_per_trade:
             investment_per_trade = max_investment_per_trade
 
-        self.investment_per_trade = investment_per_trade
+        return investment_per_trade
 
+    def calc_asset_sold_value(self, ticker, cash_in_settings=0, signal_strength=1):
         # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
         # --> Total asset liquidation
         if cash_in_settings == 0:
-            assets_sold_per_trade = self.account.current_assets
+            assets_sold_per_trade = self.account.content[ticker]["Net_worth"]
 
         # --> Fixed asset liquidation percentage
         elif cash_in_settings == 1:
-            assets_sold_per_trade = self.account.current_assets * self.asset_liquidation_percentage
+            assets_sold_per_trade = self.account.content[ticker]["Net_worth"] * self.asset_liquidation_percentage
 
         # --> Asset liquidation percentage per trade pegged to signal strength
         elif cash_in_settings == 2:
-            assets_sold_per_trade = (signal_strength + 1) * self.account.current_assets * self.asset_liquidation_percentage
+            assets_sold_per_trade = (signal_strength + 1) * self.account.content[ticker]["Net_worth"] * self.asset_liquidation_percentage
 
         else:
             assets_sold_per_trade = 0
             print("Invalid asset sold per trade settings")
 
-        self.assets_sold_per_trade = assets_sold_per_trade
+        return assets_sold_per_trade
 
-    def calc_simple_investment(self, current_value, prev_simple_investment_assets=None):
-        """
-        Used to compute simple investment
-
-        :param current_value: Current ticker value
-        :param prev_simple_investment_assets: Number of shares from previous simple investment, keep to None to start new simple investment
-        """
-        # ~~~~~~~~~~~~~~~~~~ Initiate simple investment
-        if prev_simple_investment_assets is None:
-            self.account.start_simple_investment(current_value, initial_investment=self.s_initial_investment)
-        else:
-            self.account.simple_investment_assets = prev_simple_investment_assets
-
-        self.account.calc_simple_investment_value(current_value)
-
-    def perform_trade(self, current_value, trade_action):
+    def perform_trade(self, ticker, trade_action,
+                      investment_settings=1, max_investment_per_trade=50000, cash_in_settings=0, signal_strength=1):
         """
         Used to perform trade action
 
-        :param current_value: Current ticker value
+        :param ticker:  Traded ticker
         :param trade_action: Trade action to be performed
+        :param investment_settings:
+        :param max_investment_per_trade:
+        :param cash_in_settings:
+        :param signal_strength:
+        :return:
         """
         # ~~~~~~~~~~~~~~~~~~ Define trade protocol
-        # ----- Define stop-loss action
-        # --> WRT max_net_worth and/or prev_net_worth
+        print("_______________________________")
+        print("Ticker:", ticker)
+        # ----- Define stop-loss action WRT max_net_worth and/or prev_net_worth for account and tickers
+        # --> For account
         if not len(self.account.net_worth_history) == 0 and \
-                self.account.calc_net_worth(current_value) < \
-                max(self.account.net_worth_history) * self.max_stop_loss and \
-                not self.account.current_assets == 0 \
+                self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.max_stop_loss and \
+                not self.account.current_order_count == 0 \
                 or\
                 not len(self.account.net_worth_history) == 0 and \
-                self.account.calc_net_worth(current_value) < \
-                self.account.net_worth_history[-1] * self.prev_stop_loss and \
-                not self.account.current_assets == 0:
+                self.account.net_worth_history[-1] < self.account.net_worth_history[-1] * self.prev_stop_loss and \
+                not self.account.current_order_count == 0:
 
-            self.account.convert_assets_to_funds(
-                current_value,
-                self.account.current_assets)
-
+            for ticker in self.account.content.keys():
+                self.account.close_all_ticker_order(ticker)
             self.stop_loss_count += 1
 
             if self.print_trade_process:
                 print("==========================================================")
-                print("Stop-loss triggered")
-                self.account.print_account_status(current_value)
+                print("Account stop-loss triggered")
+                self.account.print_account_status()
                 print("==========================================================")
+            return
+
+        # --> For ticker
+        elif not len(self.account.net_worth_history) == 0 and \
+                self.account.content[ticker]["Net_worth"][-1] < max(self.account.content[ticker]["Net_worth"]) * self.max_stop_loss and \
+                not self.account.content[ticker]["Open_orders"] == 0 \
+                or\
+                not len(self.account.net_worth_history) == 0 and \
+                self.account.content[ticker]["Net_worth"][-1] < self.account.content[ticker]["Net_worth"][-1] * self.prev_stop_loss and \
+                not self.account.content[ticker]["Open_orders"] == 0:
+
+            self.account.close_all_ticker_order(ticker)
+            self.stop_loss_count += 1
+
+            if self.print_trade_process:
+                print("==========================================================")
+                print("Ticker stop-loss triggered")
+                self.account.print_account_status()
+                print("==========================================================")
+            return
 
         # ----- Define hold action
         elif trade_action == 0:
-            self.account.record_net_worth(current_value)
-
             if self.print_trade_process:
-                print("->Hold")
+                print("->Hold\n")
+            return
 
         # ----- Define buy action
         elif trade_action == -1:
+            # --> Calculate investment per trade
+            investment_per_trade = self.calc_investment_value(investment_settings=investment_settings,
+                                                              max_investment_per_trade=max_investment_per_trade,
+                                                              signal_strength=signal_strength)
+            print(investment_per_trade)
+            print(self.account.content[ticker]["Current_price"])
+            # --> Round according to current stock price
+            asset_count = round(investment_per_trade/self.account.content[ticker]["Current_price"], 0)
+            print("asset_count", asset_count)
+
             if self.account.current_funds != 0:
-                self.account.convert_funds_to_assets(current_value, self.investment_per_trade)
+                self.account.convert_funds_to_assets(ticker, asset_count)
                 self.buy_count += 1
 
                 if self.print_trade_process:
                     print("Trade action: Buy")
-                    print("Investment =", self.investment_per_trade, "$")
-                    self.account.print_account_status(current_value)
+                    print("Number of share brought:", asset_count)
+                    print("Investment =", self.account.content[ticker]["Current_price"]*asset_count, "$")
+                    self.account.print_account_status()
+                return
 
             else:
-                self.account.record_net_worth(current_value)
+                self.account.record_net_worth()
                 if self.print_trade_process:
-                    print("Trade action 'Buy' canceled because insufficient funds")
+                    print("Trade action 'Buy' canceled because insufficient funds\n")
+                return
 
         # ----- Define sell action
         elif trade_action == 1:
-            if self.account.current_assets != 0:
-                self.account.convert_assets_to_funds(
-                    current_value, self.assets_sold_per_trade)
+            assets_sold_per_trade = self.calc_asset_sold_value(ticker,
+                                                               cash_in_settings=cash_in_settings,
+                                                               signal_strength=signal_strength)
+            if self.account.content[ticker] != 0:
+                self.account.convert_assets_to_funds(ticker, assets_sold_per_trade)
                 self.sell_count += 1
 
                 if self.print_trade_process:
                     print("Trade action: Sell")
-                    print("Investment =", self.investment_per_trade, "$")
-                    self.account.print_account_status(current_value)
+                    print("Asset worth sold =", assets_sold_per_trade, "$")
+                    self.account.print_account_status()
+                return
 
             else:
-                self.account.record_net_worth(current_value)
                 if self.print_trade_process:
-                    print("Trade action 'Sell' canceled because nothing to sell")
+                    print("Trade action 'Sell' canceled because nothing to sell\n")
+                return
 
-    def print_account_status(self, current_value):
+    def print_tradebot_status(self):
         """
-        Used to print account status
-
-        :param current_value: Current ticker value
+        Used to print tradebot status
         """
         print("")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -224,19 +256,7 @@ class Tradebot_v5:
         print("Stop_loss_count =", self.stop_loss_count)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Starting funds:", self.account.initial_funds)
-        print("Starting assets:", self.account.initial_assets)
+        print("Starting asset count:", len(self.account.initial_orders))
         print("")
-        print("Current funds:", self.account.current_funds)
-        print("Current assets:", self.account.current_assets)
-        print("Net worth:", self.account.calc_net_worth(current_value), "$")
-        print("")
-        print("Profit=", self.account.calc_net_profit(current_value))
-        print("Percent profit=", self.account.calc_net_profit(current_value) / 10)
-        print("")
-        print("Max worth:", max(self.account.net_worth_history))
-        print("Min worth:", min(self.account.net_worth_history))
-        print("====================================================")
-
-    # def plot_trade_status(self, dates):
-    #     self.account.plot_net_worth(dates)
-    #
+        print("~~~~~~~~~~~~~~")
+        self.account.print_account_status()

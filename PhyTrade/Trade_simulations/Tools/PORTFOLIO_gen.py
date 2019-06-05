@@ -1,3 +1,4 @@
+from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v5 import Tradebot_v5
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 
@@ -8,61 +9,125 @@ class PORTFOLIO_gen:
                  upper_barrier, lower_barrier, look_ahead):
 
         # ---- Initiate Portfolio parameters
+        self.tradebot = None
         self.tickers = tickers
-        self.parameter_sets = parameter_sets
+        self.content = {}
+        self.current_values = {}
+        for i in range(len(tickers)):
+            self.create_content_entry(tickers[i], parameter_sets[i])
 
-        # ---- Generate data slices
-        self.data_slices = []
+        # ---- Generate initial data slices
+        for ticker in self.content.keys():
+            self.content[ticker]["Data_slice"] = data_slice(ticker, start_date, data_slice_size, 0,
+                                                            upper_barrier, lower_barrier, look_ahead)
 
-        for ticker in tickers:
-            self.data_slices.append(data_slice(ticker, start_date, data_slice_size, 0, upper_barrier, lower_barrier, look_ahead))
+        # ---- Generate initial economic models
+        print("-- Generating initial economic models")
+        for ticker in self.content.keys():
+            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"])
+            print(ticker, "model generated")
+        print("")
 
-        # ---- Generate individuals and initial economic models
-        self.individuals = []
-        for i in range(len(self.tickers)):
-            self.individuals.append(Individual(self.tickers[i], self.parameter_sets[i]))
+        # ---- Initiate counters
+        self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
 
-        self.gen_economic_models()
+    def get_next_data_slices_and_economic_models(self):
+        print("-- Generating next data slices and economic models")
+        for ticker in self.content.keys():
+            # --> Get next data slice
+            self.content[ticker]["Data_slice"].get_next_data_slice()
 
-    def get_next_data_slices(self):
-        for i, individual in enumerate(self.individuals):
-            individual.gen_economic_model(self.data_slices[i].get_next_data_slice())
+            # --> Gen next economic model
+            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"])
 
-    def gen_economic_models(self):
-        for i, individual in enumerate(self.individuals):
-            individual.gen_economic_model(self.data_slices[i])
+            # --> Update counter
+            self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
+            print(ticker, "model generated")
+        print("")
 
     def perform_trade_run(self,
                           investment_settings=3, cash_in_settings=0,
                           initial_funds=1000,
-                          initial_assets=0,
+                          initial_orders=[],
                           prev_stop_loss=0.85, max_stop_loss=0.75,
                           max_investment_per_trade=500,
-                          run_metalabels=False,
-                          prev_simple_investment_assets=None,
+                          prev_simple_investment_orders=[],
                           print_trade_process=False):
 
-        for i in range(self.data_slices[0].slice_size):
+        self.tradebot = Tradebot_v5(initial_funds, initial_orders, prev_simple_investment_orders,
+                                    prev_stop_loss, max_stop_loss,
+                                    print_trade_process)
+
+        # --> For every day in current data slice
+        for i in range(self.data_slice_length):
+            # date = self.content[self.tickers[0]]["Data_slice"].data["index"][-self.content[self.tickers[0]]["Data_slice"].start_index + i + len(self.tickers[0]["Data_slice"].data["index"])]
+            date = "NEW DATE"
+            print("------------- Trade Date:", date, "-------------")
+            # ---- Update account
+            # --> Update current values
+            for ticker in self.content.keys():
+                self.current_values[ticker] = self.content[ticker]["Individual"].analysis.big_data.data_slice_open_values[i]
+
+            # --> Update tradebot account
+            self.tradebot.account.update_account(date, self.current_values)
+            print(self.current_values)
+
             sell_orders = []
             hold_orders = []
             buy_orders = []
 
-            for individual in self.individuals:
+            # --> Classify tickers based on trade signal
+            for ticker in self.content.keys():
+                if self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == 1:
+                    sell_orders.append(ticker)
 
-                if individual.analysis.big_data.Major_spline.trade_signal[i] == 1:
-                    sell_orders.append(individual)
-                elif individual.analysis.big_data.Major_spline.trade_signal[i] == 0:
-                    hold_orders.append(individual)
-                elif individual.analysis.big_data.Major_spline.trade_signal[i] == -1:
-                    buy_orders.append(individual)
+                elif self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == 0:
+                    hold_orders.append(ticker)
 
-            order_lst = [sell_orders, buy_orders]
+                elif self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == -1:
+                    buy_orders.append(ticker)
 
+                print("---------> Trade signal:", self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i])
+                print("---------> Spline:", self.content[ticker]["Individual"].analysis.big_data.Major_spline.spline[i])
+
+            order_lst = [sell_orders, hold_orders, buy_orders]
+
+            # --> Reorder tickers based on signal strength
             for orders in order_lst:
-                for j in range(1, len(orders)-1):
-                    if abs(orders[j].analysis.big_data.Major_spline.spline[i]) > abs(orders[j-1].analysis.big_data.Major_spline.spline[i]):
-                        orders[j], orders[j-1] = orders[j-1], orders[j]
-                for j in range(len(orders)):
-                    print("Order")
-                    print(orders[j].analysis.big_data.Major_spline.spline[i])
+                for k in range(len(orders)):
+                    for j in range(1, len(orders)):
+                        if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i]) > \
+                                abs(self.content[orders[j-1]]["Individual"].analysis.big_data.Major_spline.spline[i]):
+                            orders[j], orders[j-1] = orders[j-1], orders[j]
 
+                print("Order")
+                for j in range(len(orders)):
+                    print(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i])
+
+            # --> Perform trade runs
+            for orders in order_lst:
+                if orders == buy_orders:
+                    order_type = 1
+                elif orders == hold_orders:
+                    order_type = 0
+                else:
+                    order_type = -1
+                for ticker in orders:
+                    self.tradebot.perform_trade(ticker, order_type,
+                                                investment_settings, max_investment_per_trade, cash_in_settings,
+                                                self.content[ticker]["Individual"].analysis.big_data.Major_spline.spline[i])
+
+    def create_content_entry(self, ticker, parameter_set):
+        """
+        Used to add ticker entry to portfolio content
+
+        :param ticker: Traded ticker
+        :param parameter_set: Parameter set
+        """
+        # --> Create content entry
+        self.content[ticker] = {}
+        self.content[ticker]["Individual"] = Individual(ticker, parameter_set)
+        self.content[ticker]["Data_slice"] = None
+
+        # --> Create current_value entry
+        self.current_values[ticker] = {}
