@@ -42,15 +42,18 @@ class ACCOUNT:
 
         # --> Record initial orders in content
         self.content = {}
+        self.simple_investment_orders = {}
+
         for order in self.initial_orders:
             if order.ticker not in self.content.keys():
                 self.create_content_entry(order.ticker)
+                self.create_simple_investment_entry(order.ticker)
             self.add_order_to_content(order.ticker, order)
 
         # ---- Simple investment initialisation
-        self.simple_investment_orders = {}
         for order in simple_investment_orders:
-            self.create_simple_investment_entry(order.ticker)
+            if order.ticker not in self.simple_investment_orders.keys():
+                self.create_simple_investment_entry(order.ticker)
             self.add_simple_investment_order(order.ticker, order)
 
     # =================================== Account management functions
@@ -95,7 +98,6 @@ class ACCOUNT:
         # Record history of account
         self.record_net_worth()
         self.record_asset_worth()
-        self.asset_worth_history.append(self.current_asset_worth)
 
     def update_ticker_entry(self, ticker, current_date, current_price):
         """
@@ -129,7 +131,7 @@ class ACCOUNT:
 
         # --> Update funds and ticker net worth
         self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
-        self.current_funds = self.current_funds - self.content[ticker]["Open_orders"][-1].open_worth
+        self.current_funds -= self.content[ticker]["Open_orders"][-1].open_worth
 
     def convert_assets_to_funds(self, ticker, assets_sold_per_trade):
         """
@@ -161,6 +163,7 @@ class ACCOUNT:
 
             # --> Record close worth
             sell_worth += order.close_worth
+            self.current_funds += order.close_worth
 
             # --> Move closed order to order history
             self.content[ticker]["Open_orders"].remove(order)
@@ -169,6 +172,7 @@ class ACCOUNT:
             # --> Edit counters
             self.content[ticker]["Open_order_count"] -= 1
             self.content[ticker]["Closed_orders_count"] += 1
+
             self.current_asset_worth -= order.close_worth
             self.current_order_count -= 1
 
@@ -274,9 +278,7 @@ class ACCOUNT:
 
         :return: Net worth
         """
-        net_worth = 0
-        if len(self.net_worth_history) != 0:
-            net_worth = self.net_worth_history[-1]
+        net_worth = self.current_funds
 
         for ticker in self.content.keys():
             if self.content[ticker]["Open_order_count"] != 0:
@@ -314,12 +316,14 @@ class ACCOUNT:
 
     # ----------------------------------- Print/plot functions
     def print_account_status(self):
+        print("-> ACCOUNT status:")
         print("Current funds =", self.current_funds, "$")
         print("Open orders =")
         for ticker in self.content.keys():
             print(ticker, ":", self.content[ticker]["Open_order_count"])
 
         print("Total net worth=", self.calc_net_worth(), "$")
+
         print("")
 
     def plot_net_worth(self, dates):

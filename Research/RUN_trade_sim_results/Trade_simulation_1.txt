@@ -1,30 +1,24 @@
 ====================== Trade_simulation_1 ======================
 
 -----------> Model settings:
-Ticker: INTC
+Tickers: ['AAPL', 'NVDA', 'INTC', 'AMZN']
 
-data_slice_start_index = -1977
+data_slice_start_index = 2014-01-01
 data_slice_size = 24
-nb_data_slices = 1
+nb_data_slices = 3
 Model parameters: None
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
 
-Number of data points processed: 24
-Buy trigger count: 2
-Sell trigger count: 2
+Number of data points processed: 72
+Buy trigger count: 12
+Sell trigger count: 3
 
-Final net worth: 1020.0$
-Average profit per gen: 2.0%
-Max profit achieved: 2.0%
-Min profit achieved: 2.0%
-
-Simple investment final net worth: 964$
-Simple investment profit: -4%
-
- Net worth difference trading strategy vs simple investment: 56.0$
-% Net worth difference trading strategy vs simple investment: 6.0%
+Final net worth: 1853.0$
+Average profit per gen: 43.0%
+Max profit achieved: 85.0%
+Min profit achieved: 0.0%
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

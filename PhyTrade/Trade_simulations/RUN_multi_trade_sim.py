@@ -63,7 +63,7 @@ class RUN_trade_sim:
         self.current_orders = []
         self.current_simple_investments_orders = []
 
-        self.current_max_investment_per_trade = self.current_funds * max_investment_per_trade_percent
+        self.current_max_investment_per_trade = max_investment_per_trade_percent
         self.current_prev_stop_loss = max_prev_stop_loss
         self.current_max_stop_loss = max_max_stop_loss
 
@@ -95,7 +95,7 @@ class RUN_trade_sim:
             self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                              initial_funds=self.current_funds, initial_orders=self.current_orders,
                                              prev_stop_loss=self.current_prev_stop_loss, max_stop_loss=self.current_max_stop_loss,
-                                             max_investment_per_trade=self.current_max_investment_per_trade,
+                                             max_investment_per_trade=self.current_funds * self.current_max_investment_per_trade,
                                              prev_simple_investment_orders=self.current_simple_investments_orders,
                                              print_trade_process=print_trade_process)
 
@@ -107,8 +107,8 @@ class RUN_trade_sim:
             self.results.profit.append((self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
 
             self.results.net_worth += self.portfolio.tradebot.account.net_worth_history
-            self.results.funds += self.portfolio.tradebot.account.funds_history
             self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
+            self.results.funds += self.portfolio.tradebot.account.funds_history
 
             # --> Update current parameters
             self.current_funds = self.portfolio.tradebot.account.current_funds
@@ -121,14 +121,13 @@ class RUN_trade_sim:
                     self.current_simple_investments_orders = self.current_simple_investments_orders + \
                                                              self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"]
 
-            assert len(self.current_orders) == self.portfolio.tradebot.account.current_order_count
-
             print("Net worth =", round(self.results.net_worth[-1]), "$")
             print("Buy count:", self.portfolio.tradebot.buy_count,
                   "; Sell count:", self.portfolio.tradebot.sell_count,
-                  "; Stop loss count:", self.portfolio.tradebot.stop_loss_count)
+                  "; Stop loss count:", self.portfolio.tradebot.stop_loss_count, "\n")
             self.portfolio.tradebot.account.print_account_status()
 
+            print("--------------------------------------------------")
             # ---- Calc next data slice parameters
             self.ref_data_slice.get_next_data_slice()
             if self.ref_data_slice.end_of_dataset is True:
@@ -138,7 +137,7 @@ class RUN_trade_sim:
             self.current_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
                                                                       max_prev_stop_loss, min_prev_stop_loss,
                                                                       decay_function=prev_stop_loss_decay_function), 3)
-            print("\nPrev stop loss", self.current_prev_stop_loss)
+            print("Prev stop loss", self.current_prev_stop_loss)
 
             self.current_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
                                                                      max_max_stop_loss, min_max_stop_loss,
@@ -149,7 +148,7 @@ class RUN_trade_sim:
                                                                                 max_investment_per_trade_percent,
                                                                                 min_investment_per_trade_percent,
                                                                                 decay_function=investment_per_trade_decay_function), 3)
-            print("Max investment per trade", self.current_max_investment_per_trade, "\n")
+            print("Max investment percentage per trade", self.current_max_investment_per_trade, "\n")
 
             # --> Update account
             self.portfolio.get_next_data_slices_and_economic_models()

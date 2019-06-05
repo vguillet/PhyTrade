@@ -164,7 +164,7 @@ class Tradebot_v5:
 
             if self.print_trade_process:
                 print("==========================================================")
-                print("Account stop-loss triggered")
+                print("Account stop-loss triggered\n")
                 self.account.print_account_status()
                 print("==========================================================")
             return
@@ -172,18 +172,18 @@ class Tradebot_v5:
         # --> For ticker
         elif not len(self.account.net_worth_history) == 0 and \
                 self.account.content[ticker]["Net_worth"][-1] < max(self.account.content[ticker]["Net_worth"]) * self.max_stop_loss and \
-                not self.account.content[ticker]["Open_orders"] == 0 \
+                not self.account.content[ticker]["Open_order_count"] == 0 \
                 or\
                 not len(self.account.net_worth_history) == 0 and \
                 self.account.content[ticker]["Net_worth"][-1] < self.account.content[ticker]["Net_worth"][-1] * self.prev_stop_loss and \
-                not self.account.content[ticker]["Open_orders"] == 0:
+                not self.account.content[ticker]["Open_order_count"] == 0:
 
             self.account.close_all_ticker_order(ticker)
             self.stop_loss_count += 1
 
             if self.print_trade_process:
                 print("==========================================================")
-                print("Ticker stop-loss triggered")
+                print("Ticker stop-loss triggered\n")
                 self.account.print_account_status()
                 print("==========================================================")
             return
@@ -211,7 +211,7 @@ class Tradebot_v5:
                 if self.print_trade_process:
                     print("Trade action: Buy")
                     print("Number of share brought:", asset_count)
-                    print("Investment =", self.account.content[ticker]["Current_price"]*asset_count, "$")
+                    print("Investment =", self.account.content[ticker]["Current_price"]*asset_count, "$\n")
                     self.account.print_account_status()
                 return
 
@@ -232,7 +232,7 @@ class Tradebot_v5:
 
                 if self.print_trade_process:
                     print("Trade action: Sell")
-                    print("Asset worth sold =", assets_sold_per_trade, "$")
+                    print("Asset worth sold =", assets_sold_per_trade, "$\n")
                     self.account.print_account_status()
                 return
 
