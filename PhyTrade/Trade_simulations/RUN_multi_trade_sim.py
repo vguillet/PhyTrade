@@ -31,8 +31,9 @@ class RUN_trade_sim:
 
         self.initial_investment = 1000
 
-        max_investment_per_trade_percent = 0.2
-        min_investment_per_trade_percent = 0.01
+        # Max --> Min
+        max_investment_per_trade_percent = 0.1
+        min_investment_per_trade_percent = 0.0001
 
         investment_per_trade_decay_function = 1
 
@@ -121,7 +122,6 @@ class RUN_trade_sim:
                     self.current_simple_investments_orders = self.current_simple_investments_orders + \
                                                              self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"]
 
-            print("Net worth =", round(self.results.net_worth[-1]), "$")
             print("Buy count:", self.portfolio.tradebot.buy_count,
                   "; Sell count:", self.portfolio.tradebot.sell_count,
                   "; Stop loss count:", self.portfolio.tradebot.stop_loss_count, "\n")
@@ -148,7 +148,7 @@ class RUN_trade_sim:
                                                                                 max_investment_per_trade_percent,
                                                                                 min_investment_per_trade_percent,
                                                                                 decay_function=investment_per_trade_decay_function), 3)
-            print("Max investment percentage per trade", self.current_max_investment_per_trade, "%\n")
+            print("Max investment percentage per trade", self.current_max_investment_per_trade*100, "%\n")
 
             # --> Update account
             self.portfolio.get_next_data_slices_and_economic_models()

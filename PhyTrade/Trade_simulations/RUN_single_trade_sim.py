@@ -33,7 +33,7 @@ class RUN_trade_sim:
         self.investment_settings = 3
         self.cash_in_settings = 2
 
-        max_investment_per_trade_percent = 0.2
+        max_investment_per_trade_percent = 0.3
         min_investment_per_trade_percent = 0.01
 
         investment_per_trade_decay_function = 1

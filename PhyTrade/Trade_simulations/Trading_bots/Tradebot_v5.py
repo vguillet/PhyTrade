@@ -11,6 +11,7 @@ from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
 
 class Tradebot_v5:
     def __init__(self,
+                 tickers,
                  initial_funds=1000,
                  initial_orders=[],
                  simple_investment_orders=[],
@@ -59,7 +60,8 @@ class Tradebot_v5:
         self.print_trade_process = print_trade_process
 
         # -- Tradebot finance
-        self.account = ACCOUNT(initial_funds=initial_funds,
+        self.account = ACCOUNT(tickers,
+                               initial_funds=initial_funds,
                                initial_orders=initial_orders,
                                simple_investment_orders=simple_investment_orders)
 

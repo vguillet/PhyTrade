@@ -57,7 +57,8 @@ class PORTFOLIO_gen:
                           prev_simple_investment_orders=[],
                           print_trade_process=False):
 
-        self.tradebot = Tradebot_v5(initial_funds, initial_orders, prev_simple_investment_orders,
+        self.tradebot = Tradebot_v5(self.tickers,
+                                    initial_funds, initial_orders, prev_simple_investment_orders,
                                     prev_stop_loss, max_stop_loss,
                                     print_trade_process)
 

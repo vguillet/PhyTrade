@@ -48,12 +48,12 @@ while run is True:
         from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_trade_sim
         import json
 
-        # parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
+        parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
         # parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_NVDA.json".replace('\\', '/')))
-        parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_INTC.json".replace('\\', '/')))
+        # parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_INTC.json".replace('\\', '/')))
         # parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_AMZN.json".replace('\\', '/')))
 
-        run_trade_sim = RUN_trade_sim("1", parameter_set, "INTC", "2014-01-01", 24, 100,
+        run_trade_sim = RUN_trade_sim("1", parameter_set, "AAPL", "2010-01-01", 24, 100,
                                       plot_signal=False, print_trade_process=False)
 
     elif selection == 4:
@@ -67,8 +67,8 @@ while run is True:
         parameter_sets.append(json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_AMZN.json".replace('\\', '/'))))
 
         tickers = ["AAPL", "NVDA", "INTC", "AMZN"]
-        run_trade_sim = RUN_trade_sim("1", parameter_sets, tickers, "2014-01-01", 24, 10,
-                                      plot_signal=False, print_trade_process=False)
+        run_trade_sim = RUN_trade_sim("1", parameter_sets, tickers, "2010-01-01", 24, 50,
+                                      plot_signal=False, print_trade_process=True)
     elif selection == 0:
         import sys
         sys.exit()

@@ -5,7 +5,7 @@ from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
 
 
 class ACCOUNT:
-    def __init__(self, initial_funds=1000, initial_orders=[], simple_investment_orders=[]):
+    def __init__(self, tickers, initial_funds=1000, initial_orders=[], simple_investment_orders=[]):
         """
         Stores the states of a trading account. Stores account history in:
             -> funds_history
@@ -44,18 +44,30 @@ class ACCOUNT:
         self.content = {}
         self.simple_investment_orders = {}
 
+        # --> Compile initial dictionary
+        for ticker in tickers:
+            self.create_content_entry(ticker)
+            self.create_simple_investment_entry(ticker)
+
+        # --> Add initial orders
         for order in self.initial_orders:
             if order.ticker not in self.content.keys():
                 self.create_content_entry(order.ticker)
-                self.create_simple_investment_entry(order.ticker)
+
             self.add_order_to_content(order.ticker, order)
 
-        # ---- Simple investment initialisation
+        # --> Add simple investment orders
         for order in simple_investment_orders:
             if order.ticker not in self.simple_investment_orders.keys():
                 self.create_simple_investment_entry(order.ticker)
+
             self.add_simple_investment_order(order.ticker, order)
 
+        # --> Initiate simple investments if None
+            for ticker in self.simple_investment_orders.keys():
+                if self.simple_investment_orders[ticker]["Order"] is None:
+                    self.start_simple_investment(ticker, 250)
+        
     # =================================== Account management functions
     # ----------------------------------- Account management and update functions
     def update_account(self, current_date, current_prices):
@@ -119,6 +131,9 @@ class ACCOUNT:
         # --> Update orders
         for order in self.content[ticker]["Open_orders"]:
             order.update_order(current_date, current_price[ticker])
+
+        if self.simple_investment_orders[ticker]["Open_order"] is not None:
+            self.simple_investment_orders[ticker]["Open_order"].update_order(current_date, current_price[ticker])
 
     # ----------------------------------- Trading actions
     def convert_funds_to_assets(self, ticker, asset_count):
