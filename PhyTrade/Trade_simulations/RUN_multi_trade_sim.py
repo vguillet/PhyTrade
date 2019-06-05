@@ -21,14 +21,9 @@ class RUN_trade_sim:
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # --> Metalabeling settings
-        self.run_metalabels = False         # Can be switched off for performance increase
-
         self.upper_barrier = 20
         self.lower_barrier = -20
         self.look_ahead = 10
-
-        self.m_investment_settings = 1
-        self.m_cash_in_settings = 0
 
         # --> Investment settings
         self.investment_settings = 3
@@ -58,7 +53,8 @@ class RUN_trade_sim:
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
                                        start_date, data_slice_size,
-                                       self.upper_barrier, self.lower_barrier, self.look_ahead)
+                                       self.upper_barrier, self.lower_barrier, self.look_ahead,
+                                       plot_signal=plot_signal)
 
         self.nb_data_slices = nb_data_slices
 
@@ -67,7 +63,7 @@ class RUN_trade_sim:
         self.current_orders = []
         self.current_simple_investments_orders = []
 
-        self.current_max_investment_per_trade = max_investment_per_trade_percent
+        self.current_max_investment_per_trade = self.current_funds * max_investment_per_trade_percent
         self.current_prev_stop_loss = max_prev_stop_loss
         self.current_max_stop_loss = max_max_stop_loss
 
@@ -102,7 +98,7 @@ class RUN_trade_sim:
                                              max_investment_per_trade=self.current_max_investment_per_trade,
                                              prev_simple_investment_orders=self.current_simple_investments_orders,
                                              print_trade_process=print_trade_process)
-            sys.exit()
+
             # --> Record slice trade history
             self.results.buy_count += self.portfolio.tradebot.buy_count
             self.results.sell_count += self.portfolio.tradebot.sell_count
@@ -112,7 +108,7 @@ class RUN_trade_sim:
 
             self.results.net_worth += self.portfolio.tradebot.account.net_worth_history
             self.results.funds += self.portfolio.tradebot.account.funds_history
-            self.results.assets += self.portfolio.tradebot.account.assets_history
+            self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
 
             # --> Update current parameters
             self.current_funds = self.portfolio.tradebot.account.current_funds
@@ -120,8 +116,10 @@ class RUN_trade_sim:
             self.current_orders = []
             self.current_simple_investments_orders = []
             for ticker in self.portfolio.tradebot.account.content.keys():
-                self.current_orders.append(self.portfolio.tradebot.account.content[ticker]["Open_orders"])
-                self.current_simple_investments_orders.append(self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"])
+                self.current_orders = self.current_orders + self.portfolio.tradebot.account.content[ticker]["Open_orders"]
+                if self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"] is not None:
+                    self.current_simple_investments_orders = self.current_simple_investments_orders + \
+                                                             self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"]
 
             assert len(self.current_orders) == self.portfolio.tradebot.account.current_order_count
 
@@ -168,7 +166,7 @@ class RUN_trade_sim:
         self.results.total_data_points_processed = data_slice_size*nb_data_slices
 
         self.results.gen_result_recap_file()
-        self.results.plot_results(self.run_metalabels)
+        self.results.plot_results()
 
         print("-- Trade simulation completed --")
         print("Number of data points processed:", self.results.total_data_points_processed)
@@ -193,7 +191,7 @@ class Trade_simulation_results_gen:
         self.net_worth = None
         self.profit = []
         self.funds = []
-        self.assets = []
+        self.assets_worth = []
 
         self.metalabel_net_worth = None
 
@@ -226,30 +224,18 @@ class Trade_simulation_results_gen:
         else:
             self.results_file.write("Max loss achieved: " + str(round(min(self.profit))) + "%\n")
 
-        self.results_file.write("\nSimple investment final net worth: " + str(round(self.simple_investment[-1])) + "$\n")
-        self.results_file.write("Simple investment profit: " + str(round((self.simple_investment[-1]-1000)/1000*100)) + "%\n")
-
-        self.results_file.write(
-            "\n Net worth difference trading strategy vs simple investment: " + str(round(self.net_worth[-1]-self.simple_investment[-1])) + "$\n")
-        self.results_file.write(
-            "% Net worth difference trading strategy vs simple investment: " + str(round((self.net_worth[-1] - self.simple_investment[-1])/self.simple_investment[-1]*100)) + "%\n")
-        # self.results_file.write("" + "\n")
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
         self.results_file.write(str() + "\n")
 
         self.results_file.close()
 
-    def plot_results(self, run_metalabels):
+    def plot_results(self):
         import matplotlib.pyplot as plt
 
         plt.plot(self.net_worth, label="Net worth")
         plt.plot(self.funds, label="Funds")
-        plt.plot(self.assets, label="Assets")
-        plt.plot(self.simple_investment, label="Simple investment NW")
-
-        if run_metalabels:
-            plt.plot(self.metalabel_net_worth, label="Metalabels NW")
+        plt.plot(self.assets_worth, label="Assets worth")
 
         plt.grid()
         plt.legend()

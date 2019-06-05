@@ -6,7 +6,10 @@ from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 class PORTFOLIO_gen:
     def __init__(self, tickers, parameter_sets,
                  start_date, data_slice_size,
-                 upper_barrier, lower_barrier, look_ahead):
+                 upper_barrier, lower_barrier, look_ahead,
+                 plot_signal=False):
+
+        self.plot_signal = plot_signal
 
         # ---- Initiate Portfolio parameters
         self.tradebot = None
@@ -24,7 +27,7 @@ class PORTFOLIO_gen:
         # ---- Generate initial economic models
         print("-- Generating initial economic models")
         for ticker in self.content.keys():
-            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"])
+            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"], plot_3=self.plot_signal)
             print(ticker, "model generated")
         print("")
 
@@ -38,7 +41,7 @@ class PORTFOLIO_gen:
             self.content[ticker]["Data_slice"].get_next_data_slice()
 
             # --> Gen next economic model
-            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"])
+            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"], plot_3=self.plot_signal)
 
             # --> Update counter
             self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
@@ -50,7 +53,7 @@ class PORTFOLIO_gen:
                           initial_funds=1000,
                           initial_orders=[],
                           prev_stop_loss=0.85, max_stop_loss=0.75,
-                          max_investment_per_trade=500,
+                          max_investment_per_trade=50000,
                           prev_simple_investment_orders=[],
                           print_trade_process=False):
 
@@ -62,7 +65,7 @@ class PORTFOLIO_gen:
         for i in range(self.data_slice_length):
             # date = self.content[self.tickers[0]]["Data_slice"].data["index"][-self.content[self.tickers[0]]["Data_slice"].start_index + i + len(self.tickers[0]["Data_slice"].data["index"])]
             date = "NEW DATE"
-            print("------------- Trade Date:", date, "-------------")
+
             # ---- Update account
             # --> Update current values
             for ticker in self.content.keys():
@@ -70,7 +73,10 @@ class PORTFOLIO_gen:
 
             # --> Update tradebot account
             self.tradebot.account.update_account(date, self.current_values)
-            print(self.current_values)
+
+            if print_trade_process:
+                print("------------- Trade Date:", i + 1, "-------------")
+                print(self.current_values)
 
             sell_orders = []
             hold_orders = []
@@ -87,35 +93,28 @@ class PORTFOLIO_gen:
                 elif self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == -1:
                     buy_orders.append(ticker)
 
-                print("---------> Trade signal:", self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i])
-                print("---------> Spline:", self.content[ticker]["Individual"].analysis.big_data.Major_spline.spline[i])
-
             order_lst = [sell_orders, hold_orders, buy_orders]
 
             # --> Reorder tickers based on signal strength
             for orders in order_lst:
                 for k in range(len(orders)):
                     for j in range(1, len(orders)):
-                        if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i]) > \
-                                abs(self.content[orders[j-1]]["Individual"].analysis.big_data.Major_spline.spline[i]):
+                        if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.trade_spline[i]) > \
+                                abs(self.content[orders[j-1]]["Individual"].analysis.big_data.Major_spline.trade_spline[i]):
                             orders[j], orders[j-1] = orders[j-1], orders[j]
-
-                print("Order")
-                for j in range(len(orders)):
-                    print(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.spline[i])
 
             # --> Perform trade runs
             for orders in order_lst:
                 if orders == buy_orders:
-                    order_type = 1
+                    order_type = -1
                 elif orders == hold_orders:
                     order_type = 0
                 else:
-                    order_type = -1
+                    order_type = 1
                 for ticker in orders:
                     self.tradebot.perform_trade(ticker, order_type,
                                                 investment_settings, max_investment_per_trade, cash_in_settings,
-                                                self.content[ticker]["Individual"].analysis.big_data.Major_spline.spline[i])
+                                                self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_spline[i])
 
     def create_content_entry(self, ticker, parameter_set):
         """

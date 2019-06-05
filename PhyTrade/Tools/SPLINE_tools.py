@@ -278,7 +278,7 @@ class SPLINE:
         dates_points = []
 
         for i in range(0, len(big_data.spline_xs)):
-            if i % 5 == 0:
+            if i % int(int(len(big_data.spline_xs)/len(big_data.data_slice_dates))) == 0:
                 dates_points.append(i)
 
         # Buy and sell triggers can take three values:

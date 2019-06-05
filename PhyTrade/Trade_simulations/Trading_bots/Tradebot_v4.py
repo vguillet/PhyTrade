@@ -96,6 +96,8 @@ class Tradebot_v4:
         for i in range(len(self.trade_actions)):
             if print_trade_process:
                 print("----------------- Day ", i)
+                print("-------------------> Action", self.trade_actions[i])
+                print("-------------------> Signal", self.analysis.big_data.Major_spline.trade_spline[i])
 
             # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value
             self.account.calc_simple_investment_value(self.analysis.big_data.data_slice_open_values[i])
@@ -113,11 +115,11 @@ class Tradebot_v4:
 
             # --> Fixed investment value per trade pegged to signal strength
             elif investment_settings == 2:
-                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.fixed_investment)
+                investment_per_trade = -((self.analysis.big_data.Major_spline.trade_spline[i]-1)*self.fixed_investment)
 
             # --> Fixed investment percentage per trade pegged to signal strength
             elif investment_settings == 3:
-                investment_per_trade = -((self.analysis.big_data.Major_spline.spline[i]-1)*self.account.current_funds*self.investment_percentage)
+                investment_per_trade = -((self.analysis.big_data.Major_spline.trade_spline[i]-1)*self.account.current_funds*self.investment_percentage)
 
             # ----> Limit max investment per trade
             if investment_per_trade > max_investment_per_trade:
@@ -134,7 +136,7 @@ class Tradebot_v4:
 
             # --> Asset liquidation percentage per trade pegged to signal strength
             elif cash_in_settings == 2:
-                assets_sold_per_trade = (self.analysis.big_data.Major_spline.spline[i]+1)*self.account.current_assets*self.asset_liquidation_percentage
+                assets_sold_per_trade = (self.analysis.big_data.Major_spline.trade_spline[i]+1)*self.account.current_assets*self.asset_liquidation_percentage
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
             # # TODO: Figure out variable stop_loss concept
@@ -239,8 +241,3 @@ class Tradebot_v4:
             print("Max worth:", max(self.account.net_worth_history))
             print("Min worth:", min(self.account.net_worth_history))
             print("====================================================")
-
-            self.account.plot_net_worth(self.analysis.big_data.data_slice_dates)
-
-
-

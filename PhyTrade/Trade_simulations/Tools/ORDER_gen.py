@@ -63,3 +63,6 @@ class ORDER_gen:
             self.return_outcome = 1
         else:
             self.return_outcome = 0
+
+    def __str__(self):
+        return self.ticker + " order - Asset count: " + str(self.asset_count) + ", Current worth: " + str(self.current_worth) + " (" + self.current_date + ")"

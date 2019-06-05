@@ -101,9 +101,7 @@ class Tradebot_v5:
         # --> Fixed investment percentage per trade pegged to signal strength
         elif investment_settings == 3:
             investment_per_trade = -((signal_strength - 1) * self.account.current_funds * self.investment_percentage)
-            print("Current funds", self.account.current_funds)
-            print("Signal strength", signal_strength)
-            print("investment_percentage", self.investment_percentage)
+
         else:
             investment_per_trade = 0
             print("Invalid investment per trade settings")
@@ -126,7 +124,7 @@ class Tradebot_v5:
 
         # --> Asset liquidation percentage per trade pegged to signal strength
         elif cash_in_settings == 2:
-            assets_sold_per_trade = (signal_strength + 1) * self.account.content[ticker]["Net_worth"] * self.asset_liquidation_percentage
+            assets_sold_per_trade = (signal_strength + 1) * self.account.content[ticker]["Net_worth"][-1] * self.asset_liquidation_percentage
 
         else:
             assets_sold_per_trade = 0
@@ -145,11 +143,11 @@ class Tradebot_v5:
         :param max_investment_per_trade:
         :param cash_in_settings:
         :param signal_strength:
-        :return:
         """
         # ~~~~~~~~~~~~~~~~~~ Define trade protocol
-        print("_______________________________")
-        print("Ticker:", ticker)
+        if self.print_trade_process:
+            print("_______________________________")
+            print("Ticker:", ticker)
         # ----- Define stop-loss action WRT max_net_worth and/or prev_net_worth for account and tickers
         # --> For account
         if not len(self.account.net_worth_history) == 0 and \
@@ -202,11 +200,9 @@ class Tradebot_v5:
             investment_per_trade = self.calc_investment_value(investment_settings=investment_settings,
                                                               max_investment_per_trade=max_investment_per_trade,
                                                               signal_strength=signal_strength)
-            print(investment_per_trade)
-            print(self.account.content[ticker]["Current_price"])
+
             # --> Round according to current stock price
             asset_count = round(investment_per_trade/self.account.content[ticker]["Current_price"], 0)
-            print("asset_count", asset_count)
 
             if self.account.current_funds != 0:
                 self.account.convert_funds_to_assets(ticker, asset_count)
@@ -230,7 +226,7 @@ class Tradebot_v5:
             assets_sold_per_trade = self.calc_asset_sold_value(ticker,
                                                                cash_in_settings=cash_in_settings,
                                                                signal_strength=signal_strength)
-            if self.account.content[ticker] != 0:
+            if self.account.content[ticker]["Open_order_count"] != 0:
                 self.account.convert_assets_to_funds(ticker, assets_sold_per_trade)
                 self.sell_count += 1
 
