@@ -33,23 +33,36 @@ class RUN_trade_sim:
 
         # Max --> Min
         max_investment_per_trade_percent = 0.1
-        min_investment_per_trade_percent = 0.0001
+        min_investment_per_trade_percent = 0.000001
 
         investment_per_trade_decay_function = 1
 
         # --> Stop-loss settings
+        # Account
         # Max --> Min
-        max_prev_stop_loss = 0.85
-        min_prev_stop_loss = 0.98
+        max_account_prev_stop_loss = 0.85
+        min_account_prev_stop_loss = 0.98
 
-        prev_stop_loss_decay_function = 1
+        account_prev_stop_loss_decay_function = 1
 
         # Max --> Min
-        max_max_stop_loss = 0.75
-        min_max_stop_loss = 0.95
+        max_account_max_stop_loss = 0.75
+        min_account_max_stop_loss = 0.95
 
-        max_stop_loss_decay_function = 1
+        account_max_stop_loss_decay_function = 1
 
+        # Ticker
+        # Max --> Min
+        max_ticker_prev_stop_loss = 0.80
+        min_ticker_prev_stop_loss = 0.98
+
+        ticker_prev_stop_loss_decay_function = 1
+
+        # Max --> Min
+        max_ticker_max_stop_loss = 0.70
+        min_ticker_max_stop_loss = 0.95
+
+        ticker_max_stop_loss_decay_function = 1
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
@@ -60,13 +73,20 @@ class RUN_trade_sim:
         self.nb_data_slices = nb_data_slices
 
         # ---- Current param setup
+        # Finance
         self.current_funds = self.initial_investment
-        self.current_orders = []
-        self.current_simple_investments_orders = []
+        self.current_account_content = {}
+        self.current_account_simple_investments_content = {}
 
         self.current_max_investment_per_trade = max_investment_per_trade_percent
-        self.current_prev_stop_loss = max_prev_stop_loss
-        self.current_max_stop_loss = max_max_stop_loss
+
+        # Account stop-losses
+        self.current_account_prev_stop_loss = max_account_prev_stop_loss
+        self.current_account_max_stop_loss = max_account_max_stop_loss
+
+        # Ticker stop-losses
+        self.current_ticker_prev_stop_loss = max_ticker_prev_stop_loss
+        self.current_ticker_max_stop_loss = max_ticker_max_stop_loss
 
         self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, 0, 0, 0, False)
 
@@ -94,60 +114,83 @@ class RUN_trade_sim:
             print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.stop_date)
             # --> Perform trade run
             self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
-                                             initial_funds=self.current_funds, initial_orders=self.current_orders,
-                                             prev_stop_loss=self.current_prev_stop_loss, max_stop_loss=self.current_max_stop_loss,
+                                             initial_funds=self.current_funds,
+                                             initial_account_content=self.current_account_content,
+                                             initial_account_simple_investment_content=self.current_account_simple_investments_content,
+                                             account_prev_stop_loss=self.current_account_prev_stop_loss,
+                                             account_max_stop_loss=self.current_account_max_stop_loss,
+                                             ticker_prev_stop_loss=self.current_ticker_prev_stop_loss,
+                                             ticker_max_stop_loss=self.current_ticker_max_stop_loss,
                                              max_investment_per_trade=self.current_funds * self.current_max_investment_per_trade,
-                                             prev_simple_investment_orders=self.current_simple_investments_orders,
                                              print_trade_process=print_trade_process)
 
-            # --> Record slice trade history
+            # ---- Record slice trade history
+            # --> Record trade actions
             self.results.buy_count += self.portfolio.tradebot.buy_count
             self.results.sell_count += self.portfolio.tradebot.sell_count
             self.results.stop_loss_count += self.portfolio.tradebot.stop_loss_count
 
-            self.results.profit.append((self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
-
+            # --> Record finance
+            self.results.funds += self.portfolio.tradebot.account.funds_history
             self.results.net_worth += self.portfolio.tradebot.account.net_worth_history
             self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
-            self.results.funds += self.portfolio.tradebot.account.funds_history
+
+            self.results.profit.append((self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
 
             # --> Update current parameters
             self.current_funds = self.portfolio.tradebot.account.current_funds
+            self.current_account_content = self.portfolio.tradebot.account.content
+            self.current_account_simple_investments_content = self.portfolio.tradebot.account.simple_investment_content
 
-            self.current_orders = []
-            self.current_simple_investments_orders = []
-            for ticker in self.portfolio.tradebot.account.content.keys():
-                self.current_orders = self.current_orders + self.portfolio.tradebot.account.content[ticker]["Open_orders"]
-                if self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"] is not None:
-                    self.current_simple_investments_orders = self.current_simple_investments_orders + \
-                                                             self.portfolio.tradebot.account.simple_investment_orders[ticker]["Order"]
-
+            # --> Print Data slice results
+            print("--------------------------------------------------")
             print("Buy count:", self.portfolio.tradebot.buy_count,
                   "; Sell count:", self.portfolio.tradebot.sell_count,
                   "; Stop loss count:", self.portfolio.tradebot.stop_loss_count, "\n")
+
             self.portfolio.tradebot.account.print_account_status()
 
             print("--------------------------------------------------")
+
             # ---- Calc next data slice parameters
             self.ref_data_slice.get_next_data_slice()
             if self.ref_data_slice.end_of_dataset is True:
                 break
 
             # --> Throttle values
-            self.current_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
-                                                                      max_prev_stop_loss, min_prev_stop_loss,
-                                                                      decay_function=prev_stop_loss_decay_function), 3)
-            print("Prev stop loss", self.current_prev_stop_loss)
+            # Account stop-losses
+            self.current_account_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                                              max_account_prev_stop_loss, min_account_prev_stop_loss,
+                                                                              decay_function=account_prev_stop_loss_decay_function), 3)
 
-            self.current_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
-                                                                     max_max_stop_loss, min_max_stop_loss,
-                                                                     decay_function=max_stop_loss_decay_function), 3)
-            print("Max stop loss", self.current_max_stop_loss)
+            self.current_account_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                                             max_account_max_stop_loss, min_account_max_stop_loss,
+                                                                             decay_function=account_max_stop_loss_decay_function), 3)
 
+            # Ticker stop-losses
+            self.current_ticker_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                                             max_ticker_prev_stop_loss, min_ticker_prev_stop_loss,
+                                                                             decay_function=ticker_prev_stop_loss_decay_function), 3)
+
+            self.current_ticker_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+                                                                            max_ticker_max_stop_loss, min_ticker_max_stop_loss,
+                                                                            decay_function=ticker_max_stop_loss_decay_function), 3)
+
+            # Max investment per trade
             self.current_max_investment_per_trade = round(EVOA_tools().throttle(i, self.nb_data_slices,
                                                                                 max_investment_per_trade_percent,
                                                                                 min_investment_per_trade_percent,
                                                                                 decay_function=investment_per_trade_decay_function), 3)
+
+            # --> Print throttled values
+            print("Account:")
+            print("Prev stop loss", self.current_account_prev_stop_loss)
+            print("Max stop loss", self.current_account_max_stop_loss)
+
+            print("\nTickers:")
+            print("Prev stop loss", self.current_ticker_prev_stop_loss)
+            print("Max stop loss", self.current_ticker_max_stop_loss)
+
             print("Max investment percentage per trade", self.current_max_investment_per_trade*100, "%\n")
 
             # --> Update account

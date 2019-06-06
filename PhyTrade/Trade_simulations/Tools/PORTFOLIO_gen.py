@@ -51,16 +51,20 @@ class PORTFOLIO_gen:
     def perform_trade_run(self,
                           investment_settings=3, cash_in_settings=0,
                           initial_funds=1000,
-                          initial_orders=[],
-                          prev_stop_loss=0.85, max_stop_loss=0.75,
+                          initial_account_content={},
+                          initial_account_simple_investment_content={},
+                          account_prev_stop_loss=0.85, account_max_stop_loss=0.75,
+                          ticker_prev_stop_loss=0.85, ticker_max_stop_loss=0.75,
                           max_investment_per_trade=50000,
-                          prev_simple_investment_orders=[],
                           print_trade_process=False):
 
         self.tradebot = Tradebot_v5(self.tickers,
-                                    initial_funds, initial_orders, prev_simple_investment_orders,
-                                    prev_stop_loss, max_stop_loss,
-                                    print_trade_process)
+                                    initial_funds=initial_funds,
+                                    initial_account_content=initial_account_content,
+                                    initial_account_simple_investment_content=initial_account_simple_investment_content,
+                                    account_prev_stop_loss=account_prev_stop_loss, account_max_stop_loss=account_max_stop_loss,
+                                    ticker_prev_stop_loss=ticker_prev_stop_loss, ticker_max_stop_loss=ticker_max_stop_loss,
+                                    print_trade_process=print_trade_process)
 
         # --> For every day in current data slice
         for i in range(self.data_slice_length):

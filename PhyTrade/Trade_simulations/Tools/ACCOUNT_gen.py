@@ -5,7 +5,7 @@ from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
 
 
 class ACCOUNT:
-    def __init__(self, tickers, initial_funds=1000, initial_orders=[], simple_investment_orders=[]):
+    def __init__(self, tickers, initial_funds=1000, initial_content={}, initial_simple_investment_content={}):
         """
         Stores the states of a trading account. Stores account history in:
             -> funds_history
@@ -18,56 +18,34 @@ class ACCOUNT:
         The update_account must be run for each new day to allow for a correct updating of the orders, including when an account
         instance is initiated
 
-        :param initial_funds: Initial funds in the account
-        :param initial_orders: Initial orders in the account (as order class instances)
+        :param tickers: Tickers traded
+        :param initial_funds: Initial funds in account
+        :param initial_content: Initial content of account
+        :param initial_simple_investment_content: Initial orders in the account (as order class instances)
         """
 
         # ---- Account initialisation
-        self.initial_funds = initial_funds
-        self.initial_orders = initial_orders
+        self.current_funds = initial_funds
+        self.content = initial_content
+        self.simple_investment_content = initial_simple_investment_content
 
         # ---- Records initialisation
         # --> Initialise history lsts
-        self.orders_history = []
-
-        self.net_worth_history = []
         self.funds_history = []
+        self.net_worth_history = []
         self.asset_worth_history = []
 
         # ---- Current param setup
-        self.current_funds = initial_funds
-        self.current_asset_worth = 0
-        self.current_order_count = 0
         self.current_date = None
+        self.current_order_count = 0
+        self.current_asset_worth = 0
 
-        # --> Record initial orders in content
-        self.content = {}
-        self.simple_investment_orders = {}
-
-        # --> Compile initial dictionary
+        # --> Compile add ticker to dictionary if missing and initiate simple investments
         for ticker in tickers:
-            self.create_content_entry(ticker)
-            self.create_simple_investment_entry(ticker)
+            if ticker not in self.content.keys():
+                self.create_content_entry(ticker)
+                self.create_simple_investment_entry(ticker)
 
-        # --> Add initial orders
-        for order in self.initial_orders:
-            if order.ticker not in self.content.keys():
-                self.create_content_entry(order.ticker)
-
-            self.add_order_to_content(order.ticker, order)
-
-        # --> Add simple investment orders
-        for order in simple_investment_orders:
-            if order.ticker not in self.simple_investment_orders.keys():
-                self.create_simple_investment_entry(order.ticker)
-
-            self.add_simple_investment_order(order.ticker, order)
-
-        # --> Initiate simple investments if None
-            for ticker in self.simple_investment_orders.keys():
-                if self.simple_investment_orders[ticker]["Order"] is None:
-                    self.start_simple_investment(ticker, 250)
-        
     # =================================== Account management functions
     # ----------------------------------- Account management and update functions
     def update_account(self, current_date, current_prices):
@@ -85,31 +63,40 @@ class ACCOUNT:
             if self.content[ticker]["Open_order_count"] != 0:
                 assert ticker in current_prices.keys()
 
-        # --> Update current prices and add new tickers
+        # ---- Perform update
         for ticker in current_prices.keys():
-            if ticker not in self.content.keys():
+            # --> If ticker in content, update current price
+            if ticker in self.content.keys():
+                self.content[ticker]["Current_price"] = current_prices[ticker]
+                self.simple_investment_content[ticker]["Current_price"] = current_prices[ticker]
+
+            # --> Else, create content entry and update current price
+            else:
                 self.create_content_entry(ticker, current_prices[ticker])
                 self.create_simple_investment_entry(ticker, current_prices[ticker])
-            else:
-                self.content[ticker]["Current_price"] = current_prices[ticker]
-                self.simple_investment_orders[ticker]["Current_price"] = current_prices[ticker]
 
-        for ticker in current_prices.keys():
-            # --> Update orders
+            # ---- Update account content
+            # --> Update content orders
             for order in self.content[ticker]["Open_orders"]:
                 order.update_order(current_date, current_prices[ticker])
 
-            # --> Update net worth
+            # --> Update content tickers net worth
             self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker))
 
-            # --> Update simple investment
-            if self.simple_investment_orders[ticker]["Order"] is not None:
-                self.simple_investment_orders[ticker]["Order"].update_order(current_date, current_prices[ticker])
+            # --> If None, start simple investment
+            if self.simple_investment_content[ticker]["Order"] is None:
+                self.start_simple_investment(ticker, initial_investment=250)
+
+            # ---- Update account simple investment content
+            # --> Update simple investment content orders
+            if self.simple_investment_content[ticker]["Order"] is not None:
+                self.simple_investment_content[ticker]["Order"].update_order(current_date, current_prices[ticker])
 
                 # --> Update net worth
-                self.simple_investment_orders[ticker]["Net_worth"].append(self.simple_investment_orders[ticker]["Order"].current_worth)
+                self.simple_investment_content[ticker]["Net_worth"].append(self.simple_investment_content[ticker]["Order"].current_worth)
 
-        # Record history of account
+        # ---- Record account history
+        self.funds_history.append(self.current_funds)
         self.record_net_worth()
         self.record_asset_worth()
 
@@ -132,8 +119,8 @@ class ACCOUNT:
         for order in self.content[ticker]["Open_orders"]:
             order.update_order(current_date, current_price[ticker])
 
-        if self.simple_investment_orders[ticker]["Open_order"] is not None:
-            self.simple_investment_orders[ticker]["Open_order"].update_order(current_date, current_price[ticker])
+        if self.simple_investment_content[ticker]["Open_order"] is not None:
+            self.simple_investment_content[ticker]["Open_order"].update_order(current_date, current_price[ticker])
 
     # ----------------------------------- Trading actions
     def convert_funds_to_assets(self, ticker, asset_count):
@@ -291,22 +278,22 @@ class ACCOUNT:
 
     # ----------------------------------- Simple investment functions
     def create_simple_investment_entry(self, ticker, current_value=None):
-        self.simple_investment_orders[ticker] = {}
-        self.simple_investment_orders[ticker]["Current_price"] = current_value
-        self.simple_investment_orders[ticker]["Order"] = None
-        self.simple_investment_orders[ticker]["Net_worth"] = []
+        self.simple_investment_content[ticker] = {}
+        self.simple_investment_content[ticker]["Current_price"] = current_value
+        self.simple_investment_content[ticker]["Order"] = None
+        self.simple_investment_content[ticker]["Net_worth"] = []
 
     def add_simple_investment_order(self, ticker, order):
-        self.simple_investment_orders[ticker]["Open_orders"] = order
+        self.simple_investment_content[ticker]["Order"] = order
 
     def start_simple_investment(self, ticker, initial_investment=1000):
         # --> Create order
         self.add_simple_investment_order(ticker, ORDER_gen(ticker,
                                                            self.current_date,
-                                                           initial_investment/self.simple_investment_orders[ticker]["Current_price"],
-                                                           self.simple_investment_orders[ticker]["Current_price"]))
+                                                           initial_investment/self.simple_investment_content[ticker]["Current_price"],
+                                                           self.simple_investment_content[ticker]["Current_price"]))
         # --> Update ticker net worth
-        self.content[ticker]["Net_worth"].append(self.simple_investment_orders[ticker]["Order"].current_worth)
+        self.content[ticker]["Net_worth"].append(self.simple_investment_content[ticker]["Order"].current_worth)
 
     # ----------------------------------- Net functions
     def calc_net_worth(self):

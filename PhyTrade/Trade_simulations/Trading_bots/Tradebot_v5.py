@@ -13,9 +13,10 @@ class Tradebot_v5:
     def __init__(self,
                  tickers,
                  initial_funds=1000,
-                 initial_orders=[],
-                 simple_investment_orders=[],
-                 prev_stop_loss=0.85, max_stop_loss=0.75,
+                 initial_account_content={},
+                 initial_account_simple_investment_content={},
+                 account_prev_stop_loss=0.85, account_max_stop_loss=0.75,
+                 ticker_prev_stop_loss=0.85, ticker_max_stop_loss=0.75,
                  print_trade_process=False):
         """
         Used to simulate a trade run based on a provided analysis.
@@ -37,8 +38,8 @@ class Tradebot_v5:
             2 - Asset liquidation percentage per trade pegged to signal strength
 
         :param initial_funds: Initial funds to be used
-        :param initial_orders: Initial orders to be used
-        :param simple_investment_orders: Initial simple investment orders
+        :param initial_account_content: Initial content of account
+        :param initial_account_simple_investment_content: Initial simple investment content of account
         :param prev_stop_loss: Stop loss as % of previous day value
         :param max_stop_loss: Stop loss as % of max worth achieved
 
@@ -59,15 +60,20 @@ class Tradebot_v5:
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.print_trade_process = print_trade_process
 
-        # -- Tradebot finance
+        # ---- Tradebot finance
         self.account = ACCOUNT(tickers,
                                initial_funds=initial_funds,
-                               initial_orders=initial_orders,
-                               simple_investment_orders=simple_investment_orders)
+                               initial_content=initial_account_content,
+                               initial_simple_investment_content=initial_account_simple_investment_content)
 
-        self.prev_stop_loss = prev_stop_loss
-        self.max_stop_loss = max_stop_loss
+        # --> Setup stop_losses
+        self.account_prev_stop_loss = account_prev_stop_loss
+        self.account_max_stop_loss = account_max_stop_loss
 
+        self.ticker_prev_stop_loss = ticker_prev_stop_loss
+        self.ticker_max_stop_loss = ticker_max_stop_loss
+
+        # --> Setup counters
         self.buy_count = 0
         self.sell_count = 0
         self.stop_loss_count = 0
@@ -153,11 +159,11 @@ class Tradebot_v5:
         # ----- Define stop-loss action WRT max_net_worth and/or prev_net_worth for account and tickers
         # --> For account
         if not len(self.account.net_worth_history) == 0 and \
-                self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.max_stop_loss and \
+                self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.account_max_stop_loss and \
                 not self.account.current_order_count == 0 \
                 or\
                 not len(self.account.net_worth_history) == 0 and \
-                self.account.net_worth_history[-1] < self.account.net_worth_history[-1] * self.prev_stop_loss and \
+                self.account.net_worth_history[-1] < self.account.net_worth_history[-1] * self.account_prev_stop_loss and \
                 not self.account.current_order_count == 0:
 
             for ticker in self.account.content.keys():
@@ -172,13 +178,13 @@ class Tradebot_v5:
             return
 
         # --> For ticker
-        elif not len(self.account.net_worth_history) == 0 and \
-                self.account.content[ticker]["Net_worth"][-1] < max(self.account.content[ticker]["Net_worth"]) * self.max_stop_loss and \
-                not self.account.content[ticker]["Open_order_count"] == 0 \
+        elif len(self.account.net_worth_history) != 0 and \
+                self.account.content[ticker]["Net_worth"][-1] < max(self.account.content[ticker]["Net_worth"]) * self.ticker_max_stop_loss \
+                and self.account.content[ticker]["Open_order_count"] != 0 \
                 or\
-                not len(self.account.net_worth_history) == 0 and \
-                self.account.content[ticker]["Net_worth"][-1] < self.account.content[ticker]["Net_worth"][-1] * self.prev_stop_loss and \
-                not self.account.content[ticker]["Open_order_count"] == 0:
+                len(self.account.net_worth_history) != 0 and \
+                self.account.content[ticker]["Net_worth"][-1] < self.account.content[ticker]["Net_worth"][-1] * self.ticker_prev_stop_loss \
+                and self.account.content[ticker]["Open_order_count"] != 0:
 
             self.account.close_all_ticker_order(ticker)
             self.stop_loss_count += 1
@@ -186,6 +192,7 @@ class Tradebot_v5:
             if self.print_trade_process:
                 print("==========================================================")
                 print("Ticker stop-loss triggered\n")
+                print("")
                 self.account.print_account_status()
                 print("==========================================================")
             return
