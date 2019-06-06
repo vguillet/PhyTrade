@@ -128,7 +128,9 @@ class RUN_trade_sim:
             # --> Record trade actions
             self.results.buy_count += self.portfolio.tradebot.buy_count
             self.results.sell_count += self.portfolio.tradebot.sell_count
-            self.results.stop_loss_count += self.portfolio.tradebot.stop_loss_count
+
+            self.results.account_stop_loss_count += self.portfolio.tradebot.account_stop_loss_count
+            self.results.ticker_stop_loss_count += self.portfolio.tradebot.ticker_stop_loss_count
 
             # --> Record finance
             self.results.funds += self.portfolio.tradebot.account.funds_history
@@ -145,8 +147,9 @@ class RUN_trade_sim:
             # --> Print Data slice results
             print("--------------------------------------------------")
             print("Buy count:", self.portfolio.tradebot.buy_count,
-                  "; Sell count:", self.portfolio.tradebot.sell_count,
-                  "; Stop loss count:", self.portfolio.tradebot.stop_loss_count, "\n")
+                  "; Sell count:", self.portfolio.tradebot.sell_count,)
+            print("Account stop loss count:", self.portfolio.tradebot.account_stop_loss_count,
+                  "; Ticker stop loss count:", self.portfolio.tradebot.ticker_stop_loss_count)
 
             self.portfolio.tradebot.account.print_account_status()
 
@@ -228,7 +231,9 @@ class Trade_simulation_results_gen:
         self.total_data_points_processed = None
         self.buy_count = 0
         self.sell_count = 0
-        self.stop_loss_count = 0
+
+        self.account_stop_loss_count = 0
+        self.ticker_stop_loss_count = 0
 
         self.net_worth = None
         self.profit = []

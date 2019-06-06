@@ -83,11 +83,11 @@ class ACCOUNT:
             # --> Update content tickers net worth
             self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker))
 
+            # ---- Update account simple investment content
             # --> If None, start simple investment
             if self.simple_investment_content[ticker]["Order"] is None:
                 self.start_simple_investment(ticker, initial_investment=250)
 
-            # ---- Update account simple investment content
             # --> Update simple investment content orders
             if self.simple_investment_content[ticker]["Order"] is not None:
                 self.simple_investment_content[ticker]["Order"].update_order(current_date, current_prices[ticker])
