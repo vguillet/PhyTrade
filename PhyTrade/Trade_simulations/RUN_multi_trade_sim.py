@@ -14,16 +14,26 @@ import sys
 
 
 class RUN_multi_trade_sim:
-    def __init__(self, eval_name,
-                 parameter_sets, tickers,
-                 start_date, data_slice_size, nb_data_slices,
-                 plot_signal=False,
-                 print_trade_process=False):
+    def __init__(self):
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch multi_trade_sim settings
         settings = SETTINGS()
         settings.gen_multi_trade_sim()
+
+        # --> Simulation parameters
+        eval_name = settings.simulation_name
+
+        tickers = settings.tickers
+        parameter_sets = settings.parameter_sets
+
+        start_date = settings.start_date
+        data_slice_size = settings.data_slice_size
+        nb_data_slices = settings.nb_data_slices
+
+        # --> Print parameters
+        plot_signal = settings.plot_signal
+        print_trade_process = settings.print_trade_process
 
         # --> Metalabeling settings
         self.upper_barrier = settings.upper_barrier

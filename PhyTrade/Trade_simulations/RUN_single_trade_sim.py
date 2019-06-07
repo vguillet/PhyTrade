@@ -24,7 +24,7 @@ class RUN_single_trade_sim:
         # --> Simulation parameters
         eval_name = settings.simulation_name
 
-        ticker = settings.tickers
+        ticker = settings.ticker
         parameter_set = settings.parameter_set
 
         start_date = settings.start_date

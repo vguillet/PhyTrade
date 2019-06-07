@@ -102,7 +102,6 @@ class SETTINGS:
         self.start_date = "2000-01-01"
         self.data_slice_size = 200
         self.nb_data_slices = 10
-        self.look_ahead = 12
 
         # ___________________________ Print/plot parameters ______________________
         self.plot_signal = False
@@ -142,6 +141,34 @@ class SETTINGS:
 
     # =============================== MULTI TRADE SIM SETTINGS ====================
     def gen_multi_trade_sim(self):
+        # ___________________________ Simulation parameters ______________________
+        self.simulation_name = "1"
+
+        self.parameter_sets = []
+        self.parameter_sets.append(json.load(open(
+            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace(
+                '\\', '/'))))
+        self.parameter_sets.append(json.load(open(
+            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_NVDA.json".replace(
+                '\\', '/'))))
+        self.parameter_sets.append(json.load(open(
+            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_INTC.json".replace(
+                '\\', '/'))))
+        self.parameter_sets.append(json.load(open(
+            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_1_AMZN.json".replace(
+                '\\', '/'))))
+
+        self.tickers = ["AAPL", "NVDA", "INTC", "AMZN"]
+        # self.tickers = ["AAPL"]
+
+        self.start_date = "2000-01-01"
+        self.data_slice_size = 200
+        self.nb_data_slices = 10
+
+        # ___________________________ Print/plot parameters ______________________
+        self.plot_signal = False
+        self.print_trade_process = False
+
         # ___________________________ Metalabeling settings ______________________
         self.upper_barrier = 20
         self.lower_barrier = -20
