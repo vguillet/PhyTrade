@@ -1,6 +1,7 @@
 """
 Contains information about a Tradebot's account, along with it's transaction history etc...
 """
+from SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
 
 
@@ -18,12 +19,16 @@ class ACCOUNT:
         The update_account must be run for each new day to allow for a correct updating of the orders, including when an account
         instance is initiated
 
+        s_investment_start investment still requires manual input
+
         :param tickers: Tickers traded
         :param initial_funds: Initial funds in account
         :param initial_content: Initial content of account
         :param initial_simple_investment_content: Initial orders in the account (as order class instances)
         """
 
+        settings = SETTINGS()
+        settings.gen_tradebot_settings()
         # ---- Account initialisation
         self.current_funds = initial_funds
         self.content = initial_content

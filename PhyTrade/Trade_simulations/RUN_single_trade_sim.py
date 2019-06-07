@@ -6,48 +6,64 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
+
+from SETTINGS import SETTINGS
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
 
 
-class RUN_trade_sim:
-    def __init__(self, eval_name,
-                 parameter_set, ticker,
-                 start_date, data_slice_size, nb_data_slices,
-                 plot_signal=False,
-                 print_trade_process=False):
+class RUN_single_trade_sim:
+    def __init__(self):
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ---- Fetch single_trade_sim settings
+        settings = SETTINGS()
+        settings.gen_single_trade_sim()
+
+        # --> Simulation parameters
+        eval_name = settings.simulation_name
+
+        ticker = settings.tickers
+        parameter_set = settings.parameter_set
+
+        start_date = settings.start_date
+        data_slice_size = settings.data_slice_size
+        nb_data_slices = settings.nb_data_slices
+
+        # --> Print parameters
+        plot_signal = settings.plot_signal
+        print_trade_process = settings.print_trade_process
+
         # --> Metalabeling settings
-        self.run_metalabels = False         # Can be switched off for performance increase
+        self.run_metalabels = settings.run_metalabels         # Can be switched off for performance increase
 
-        self.upper_barrier = 20
-        self.lower_barrier = -20
-        self.look_ahead = 10
+        self.upper_barrier = settings.upper_barrier
+        self.lower_barrier = settings.lower_barrier
+        self.look_ahead = settings.look_ahead
 
-        self.m_investment_settings = 1
-        self.m_cash_in_settings = 0
+        self.m_investment_settings = settings.m_investment_settings
+        self.m_cash_in_settings = settings.m_cash_in_settings
 
         # --> Investment settings
-        self.investment_settings = 3
-        self.cash_in_settings = 2
+        self.investment_settings = settings.investment_settings
+        self.cash_in_settings = settings.cash_in_settings
 
-        max_investment_per_trade_percent = 0.3
-        min_investment_per_trade_percent = 0.01
+        max_investment_per_trade_percent = settings.max_investment_per_trade_percent
+        min_investment_per_trade_percent = settings.min_investment_per_trade_percent
 
-        investment_per_trade_decay_function = 1
+        investment_per_trade_decay_function = settings.investment_per_trade_decay_function
 
         # --> Stop-loss settings
-        max_prev_stop_loss = 0.85
-        min_prev_stop_loss = 0.98
+        max_prev_stop_loss = settings.max_prev_stop_loss
+        min_prev_stop_loss = settings.min_prev_stop_loss
 
-        prev_stop_loss_decay_function = 1
+        prev_stop_loss_decay_function = settings.prev_stop_loss_decay_function
 
-        max_max_stop_loss = 0.75
-        min_max_stop_loss = 0.95
+        max_max_stop_loss = settings.max_max_stop_loss
+        min_max_stop_loss = settings.min_max_stop_loss
 
-        max_stop_loss_decay_function = 1
+        max_stop_loss_decay_function = settings.max_stop_loss_decay_function
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

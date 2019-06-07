@@ -34,7 +34,7 @@ class Config_0:
         self.data_slice_start_date = "2010-01-01"
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 0
-        self.data_slice_cycle_count = 8
+        self.data_slice_cycle_count = 10
 
         self.data_looper = False
 

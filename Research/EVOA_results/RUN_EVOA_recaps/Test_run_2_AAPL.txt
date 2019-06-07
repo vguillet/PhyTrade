@@ -1,0 +1,145 @@
+====================== Test_run_2 ======================
+
+~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
+
+Configuration file: Test_run_2
+
+-----------> EVO_algo main parameters:
+population_size = 10
+nb_of_generations = 10
+
+mutation_rate = 0.3
+nb_parents = 5
+nb_random_ind = 2
+
+exploitation_phase_len_percent = 15.0
+
+data_slice_start_date = 2010-01-01
+data_slice_start_index = -3438
+data_slice_size = 200
+data_slice_shift_per_gen = 0
+data_slice_cycle_count = 10
+
+-----------> Generation 0 settings:
+starting_parameters: C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json
+
+-----------> Generations settings:
+Evaluation method: Profit
+
+Parents # decay function: Linear decay
+Random individual # decay function: Linear decay
+Mutation variation range # decay function: Linear decay
+
+-----------> Metalabeling settings:
+upper_barrier = 20
+lower_barrier = -20
+look_ahead = 10
+
+-----------> Benchmarking data slice settings:
+benchmark_data_slice_start_date = 2017-01-01
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Run stats: 
+End time: 17:45:50 06/07/19 W. Europe Daylight Time
+Run time: 208.859s
+
+Average computing time per generation: 20.886s
+
+Number of data points processed: 200
+Number of invalid data slices: 0
+
+-----------> Fitness results:
+Max average fitness achieved: 1364.1196454736335
+Max individual fitness achieved: 1378.0937526994462
+
+Average fitness best fit line gradient achieved: 23.227641834856662
+Individual fitness best fit line gradient achieved: 10.96800581219643
+
+-----------> Net Worth results:
+Max average net worth achieved: 1364.1196454736335
+Max individual net worth achieved: 1378.0937526994462
+
+Average net worth best fit line gradient achieved: 23.227641834856662
+Individual net worth best fit line gradient achieved: 10.96800581219643
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------> Validation benchmark results: 
+Fitness achieved: 94.0
+Fitness achieved bs: 0.0
+
+Confusion Matrix: 
+      Sell  Hold  Buy
+Sell     0     9    0
+Hold     0   188    0
+Buy      0     3    0
+
+-----------> Benchmark Confusion tables: 
+
+Reference Confusion Table: 
+                             Condition Positive Condition Negative
+Predicted Condition Positive      True positive     False positive
+Predicted Condition Negative     False Negative      True negative
+
+-----------> Sell classification results: 
+
+Sell Confusion Table: 
+          Sell  Non-Sell
+Sell         0         9
+Non-Sell     0       191
+
+TPR = inf
+TNR = 0.955
+PPV = 0.0
+NPV = 1.0
+FNR = inf
+FPR = 0.045
+FDR = 1.0
+FOR = 0.0
+ACC = 0.955
+F1 = 0.0
+MCC = inf
+BM = inf
+MK = 0.0
+
+-----------> Buy classification results: 
+
+Buy Confusion Table: 
+         Buy  Non-Buy
+Buy        0        3
+Non-Buy    0      197
+
+TPR = inf
+TNR = 0.985
+PPV = 0.0
+NPV = 1.0
+FNR = inf
+FPR = 0.015
+FDR = 1.0
+FOR = 0.0
+ACC = 0.985
+F1 = 0.0
+MCC = inf
+BM = inf
+MK = 0.0
+
+-----------> Hold classification results: 
+
+Hold Confusion Table: 
+          Hold  Non-Hold
+Hold       188         0
+Non-Hold    12         0
+
+TPR = 0.94
+TNR = inf
+PPV = 1.0
+NPV = 0.0
+FNR = 0.06
+FPR = inf
+FDR = 0.0
+FOR = 1.0
+ACC = 0.94
+F1 = 0.969
+MCC = inf
+BM = inf
+MK = 0.0
+

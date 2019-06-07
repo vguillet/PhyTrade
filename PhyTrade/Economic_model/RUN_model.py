@@ -1,16 +1,26 @@
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
+from SETTINGS import SETTINGS
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
 
 class RUN_model:
-    def __init__(self, eval_name,
-                 parameter_set, ticker,
-                 start_date, data_slice_size,
-                 look_ahead):
+    def __init__(self):
+        # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ---- Fetch multi_trade_sim settings
+        settings = SETTINGS()
+        settings.gen_model_settings()
+
+        eval_name = settings.evaluation_name
+        parameter_set = settings.parameter_set
+        ticker = settings.ticker
+
+        start_date = settings.start_date
+        data_slice_size = settings.data_slice_size
+        look_ahead = settings.look_ahead
 
         # ---- Initiate run parameters
         self.ticker = ticker
@@ -19,13 +29,13 @@ class RUN_model:
         # ---- Generate data slice
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0, 0, 0, look_ahead)
         self.data_slice.gen_slice_metalabels()
-        self.data_slice.perform_trade_run(ticker)
+        self.data_slice.perform_trade_run()
 
         # ---- Generate Individual
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
 
         # ===============================================================================
-        decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
+        # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Model generation\n")
 
@@ -43,10 +53,11 @@ class RUN_model:
 
         # ---- Generate evaluation summary
         self.results = EVAL_parameter_set_results_gen(eval_name)
-        self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(self.individual.analysis.big_data.Major_spline.trade_signal,
-                                                                                     self.data_slice.metalabels.close_values_metalabels,
-                                                                                     calculate_stats=True,
-                                                                                     print_benchmark_results=False)
+        self.results.benchmark_confusion_matrix_analysis = \
+            Confusion_matrix_analysis(self.individual.analysis.big_data.Major_spline.trade_signal,
+                                      self.data_slice.metalabels.close_values_metalabels,
+                                      calculate_stats=True,
+                                      print_benchmark_results=False)
 
         self.results.individual = self.individual
         self.results.total_data_points_processed = self.data_slice.slice_size
@@ -132,4 +143,3 @@ class EVAL_parameter_set_results_gen:
 
         self.results_file.close()
         return
-

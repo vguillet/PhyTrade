@@ -6,13 +6,14 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
+from SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
 from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 import sys
 
 
-class RUN_trade_sim:
+class RUN_multi_trade_sim:
     def __init__(self, eval_name,
                  parameter_sets, tickers,
                  start_date, data_slice_size, nb_data_slices,
@@ -20,49 +21,54 @@ class RUN_trade_sim:
                  print_trade_process=False):
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ---- Fetch multi_trade_sim settings
+        settings = SETTINGS()
+        settings.gen_multi_trade_sim()
+
         # --> Metalabeling settings
-        self.upper_barrier = 20
-        self.lower_barrier = -20
-        self.look_ahead = 10
+        self.upper_barrier = settings.upper_barrier
+        self.lower_barrier = settings.lower_barrier
+        self.look_ahead = settings.look_ahead
 
         # --> Investment settings
-        self.investment_settings = 3
-        self.cash_in_settings = 2
+        self.investment_settings = settings.investment_settings
+        self.cash_in_settings = settings.cash_in_settings
 
-        self.initial_investment = 1000
+        self.initial_investment = settings.initial_investment
 
         # Max --> Min
-        max_investment_per_trade_percent = 0.1
-        min_investment_per_trade_percent = 0.000001
+        max_investment_per_trade_percent = settings.max_investment_per_trade_percent
+        min_investment_per_trade_percent = settings.min_investment_per_trade_percent
 
-        investment_per_trade_decay_function = 1
+        investment_per_trade_decay_function = settings.investment_per_trade_decay_function
 
         # --> Stop-loss settings
         # Account
         # Max --> Min
-        max_account_prev_stop_loss = 0.85
-        min_account_prev_stop_loss = 0.98
+        max_account_prev_stop_loss = settings.max_account_prev_stop_loss
+        min_account_prev_stop_loss = settings.min_account_prev_stop_loss
 
-        account_prev_stop_loss_decay_function = 1
+        account_prev_stop_loss_decay_function = settings.account_prev_stop_loss_decay_function
 
         # Max --> Min
-        max_account_max_stop_loss = 0.75
-        min_account_max_stop_loss = 0.95
+        max_account_max_stop_loss = settings.max_account_max_stop_loss
+        min_account_max_stop_loss = settings.min_account_max_stop_loss
 
-        account_max_stop_loss_decay_function = 1
+        account_max_stop_loss_decay_function = settings.account_max_stop_loss_decay_function
 
         # Ticker
         # Max --> Min
-        max_ticker_prev_stop_loss = 0.80
-        min_ticker_prev_stop_loss = 0.98
+        max_ticker_prev_stop_loss = settings.max_ticker_prev_stop_loss
+        min_ticker_prev_stop_loss = settings.min_ticker_prev_stop_loss
 
-        ticker_prev_stop_loss_decay_function = 1
+        ticker_prev_stop_loss_decay_function = settings.ticker_prev_stop_loss_decay_function
 
         # Max --> Min
-        max_ticker_max_stop_loss = 0.70
-        min_ticker_max_stop_loss = 0.95
+        max_ticker_max_stop_loss = settings.max_account_max_stop_loss
+        min_ticker_max_stop_loss = settings.min_account_max_stop_loss
 
-        ticker_max_stop_loss_decay_function = 1
+        ticker_max_stop_loss_decay_function = settings.ticker_max_stop_loss_decay_function
+
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,

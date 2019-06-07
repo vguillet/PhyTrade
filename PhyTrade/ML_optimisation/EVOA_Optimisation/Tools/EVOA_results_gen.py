@@ -2,14 +2,21 @@
 This class contains the results_gen class, used to generate results form the various runs
 """
 
+from SETTINGS import SETTINGS
 import time
 from PhyTrade.Tools.MATH_tools import MATH
 
 
 class EVOA_results_gen:
-    def __init__(self, config, run_label, ticker):
-        self.config = config
-        self.run_label = run_label
+    def __init__(self, ticker):
+        
+        # ---- Fetch EVOA settings
+        settings = SETTINGS()
+        settings.gen_evoa_settings()
+        
+        self.settings = settings
+
+        self.run_label = settings.config_name
         self.ticker = ticker
 
         self.individual = None
@@ -22,6 +29,7 @@ class EVOA_results_gen:
         self.run_start_time = None
         self.run_stop_time = None
 
+        self.data_slice_start_index = None
         self.total_data_points_processed = None
 
         self.best_individual_fitness_per_gen = []
@@ -79,42 +87,41 @@ class EVOA_results_gen:
         self.results_file.write("====================== " + self.run_label + " ======================\n")
         self.results_file.write("\n~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~\n")
 
-        self.results_file.write("\nConfiguration file: " + self.config.config_name + "\n")
+        self.results_file.write("\nConfiguration file: " + self.settings.config_name + "\n")
 
         self.results_file.write("\n-----------> EVO_algo main parameters:" + "\n")
-        self.results_file.write("population_size = " + str(self.config.population_size) + "\n")
-        self.results_file.write("nb_of_generations = " + str(self.config.nb_of_generations) + "\n")
+        self.results_file.write("population_size = " + str(self.settings.population_size) + "\n")
+        self.results_file.write("nb_of_generations = " + str(self.settings.nb_of_generations) + "\n")
 
-        self.results_file.write("\nmutation_rate = " + str(self.config.mutation_rate) + "\n")
-        self.results_file.write("nb_parents = " + str(self.config.nb_parents) + "\n")
-        self.results_file.write("nb_random_ind = " + str(self.config.nb_random_ind) + "\n")
+        self.results_file.write("\nmutation_rate = " + str(self.settings.mutation_rate) + "\n")
+        self.results_file.write("nb_parents = " + str(self.settings.nb_parents) + "\n")
+        self.results_file.write("nb_random_ind = " + str(self.settings.nb_random_ind) + "\n")
 
-        self.results_file.write("\nexploitation_phase_len_percent = " + str(self.config.exploitation_phase_len_percent*100) + "\n")
+        self.results_file.write("\nexploitation_phase_len_percent = " + str(self.settings.exploitation_phase_len_percent*100) + "\n")
 
-        self.results_file.write("\ndata_slice_start_date = " + self.config.data_slice_start_date + "\n")
-        self.results_file.write("data_slice_start_index = " + str(self.config.data_slice_start_index) + "\n")
-        self.results_file.write("data_slice_size = " + str(self.config.data_slice_size) + "\n")
-        self.results_file.write("data_slice_shift_per_gen = " + str(self.config.data_slice_shift_per_gen) + "\n")
-        self.results_file.write("data_slice_cycle_count = " + str(self.config.data_slice_cycle_count) + "\n")
+        self.results_file.write("\ndata_slice_start_date = " + self.settings.data_slice_start_date + "\n")
+        self.results_file.write("data_slice_start_index = " + str(self.data_slice_start_index) + "\n")
+        self.results_file.write("data_slice_size = " + str(self.settings.data_slice_size) + "\n")
+        self.results_file.write("data_slice_shift_per_gen = " + str(self.settings.data_slice_shift_per_gen) + "\n")
+        self.results_file.write("data_slice_cycle_count = " + str(self.settings.data_slice_cycle_count) + "\n")
 
         self.results_file.write("\n-----------> Generation 0 settings:" + "\n")
-        self.results_file.write("starting_parameters: " + str(self.config.path) + "\n")
+        self.results_file.write("starting_parameters: " + str(self.settings.path) + "\n")
 
         self.results_file.write("\n-----------> Generations settings:" + "\n")
-        self.results_file.write("Evaluation method: " + self.config.evaluation_methods[self.config.evaluation_method] + "\n")
+        self.results_file.write("Evaluation method: " + self.settings.evaluation_methods[self.settings.evaluation_method] + "\n")
 
-        self.results_file.write("\nParents # decay function: " + self.config.decay_functions[self.config.parents_decay_function] + "\n")
-        self.results_file.write("Random individual # decay function: " + self.config.decay_functions[self.config.parents_decay_function] + "\n")
-        self.results_file.write("Mutation variation range # decay function: " + self.config.decay_functions[self.config.mutation_decay_function] + "\n")
+        self.results_file.write("\nParents # decay function: " + self.settings.decay_functions[self.settings.parents_decay_function] + "\n")
+        self.results_file.write("Random individual # decay function: " + self.settings.decay_functions[self.settings.parents_decay_function] + "\n")
+        self.results_file.write("Mutation variation range # decay function: " + self.settings.decay_functions[self.settings.mutation_decay_function] + "\n")
 
         self.results_file.write("\n-----------> Metalabeling settings:" + "\n")
-        self.results_file.write("upper_barrier = " + str(self.config.upper_barrier) + "\n")
-        self.results_file.write("lower_barrier = " + str(self.config.lower_barrier) + "\n")
-        self.results_file.write("look_ahead = " + str(self.config.look_ahead) + "\n")
+        self.results_file.write("upper_barrier = " + str(self.settings.upper_barrier) + "\n")
+        self.results_file.write("lower_barrier = " + str(self.settings.lower_barrier) + "\n")
+        self.results_file.write("look_ahead = " + str(self.settings.look_ahead) + "\n")
 
         self.results_file.write("\n-----------> Benchmarking data slice settings:" + "\n")
-        self.results_file.write("benchmark_data_slice_start = " + str(self.config.benchmark_data_slice_start) + "\n")
-        self.results_file.write("benchmark_data_slice_stop = " + str(self.config.benchmark_data_slice_start + self.config.benchmark_data_slice_size) + "\n")
+        self.results_file.write("benchmark_data_slice_start_date = " + str(self.settings.benchmark_data_slice_start_date) + "\n")
 
         self.results_file.write("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
@@ -124,7 +131,7 @@ class EVOA_results_gen:
         self.results_file.write("Run time: " + str(round(self.run_stop_time - self.run_start_time, 3)) + "s\n")
 
         self.results_file.write("\nAverage computing time per generation: "
-                                + str(round((self.run_stop_time - self.run_start_time)/self.config.nb_of_generations, 3)) + "s\n")
+                                + str(round((self.run_stop_time - self.run_start_time)/self.settings.nb_of_generations, 3)) + "s\n")
 
         self.results_file.write("\nNumber of data points processed: " + str(self.total_data_points_processed) + "\n")
         self.results_file.write("Number of invalid data slices: " + str(self.invalid_slice_count) + "\n")
@@ -190,11 +197,12 @@ class EVOA_results_gen:
         plt.plot(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen, label="Average fitness per gen")
         plt.plot(range(len(self.avg_fitness_per_gen)), self.yfit_avg_f, "k", dashes=[6, 2])
 
-        plt.plot(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen, label="Best individual fitness per gen")
+        plt.plot(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen,
+                 label="Best individual fitness per gen")
         plt.plot(range(len(self.best_individual_fitness_per_gen)), self.yfit_best_f, "k", dashes=[6, 2])
 
-        plt.plot([self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count,
-                  self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count],
+        plt.plot([self.settings.nb_of_generations-self.settings.exploitation_phase_len-self.invalid_slice_count,
+                  self.settings.nb_of_generations-self.settings.exploitation_phase_len-self.invalid_slice_count],
                  [0, 100], label="End of exploration phase")
 
         plt.title("Fitness per gen; " + self.ticker + self.run_label)
@@ -209,12 +217,13 @@ class EVOA_results_gen:
         plt.plot(range(len(self.avg_net_worth_per_gen)), self.avg_net_worth_per_gen, label="Average net worth per gen")
         plt.plot(range(len(self.avg_net_worth_per_gen)), self.yfit_avg_nw, "k", dashes=[6, 2])
 
-        plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen, label="Best individual net worth per gen")
+        plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen,
+                 label="Best individual net worth per gen")
         plt.plot(range(len(self.best_individual_net_worth_per_gen)), self.yfit_best_nw, "k", dashes=[6, 2])
 
         plt.plot(range(len(self.data_slice_metalabel_pp)), self.data_slice_metalabel_pp, label="Metalabel net worth per gen")
-        plt.plot([self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count,
-                  self.config.nb_of_generations-self.config.exploitation_phase_len-self.invalid_slice_count],
+        plt.plot([self.settings.nb_of_generations-self.settings.exploitation_phase_len-self.invalid_slice_count,
+                  self.settings.nb_of_generations-self.settings.exploitation_phase_len-self.invalid_slice_count],
                  [min(self.avg_net_worth_per_gen), max(self.best_individual_net_worth_per_gen)], label="End of exploration phase")
 
         plt.title("Profit per gen; " + self.ticker + self.run_label)
