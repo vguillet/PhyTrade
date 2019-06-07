@@ -121,22 +121,10 @@ class EVOA_optimiser:
                 if sum(self.fitness_evaluation) != 0:
                     # ------------------ Select individuals from previous generation
                     print("---------------> Selecting individuals from previous generation")
-                    # -- Exit program if incorrect settings used
-                    if config.parents_decay_function > 1:
-                        print("Invalid evaluation method reference")
-                        sys.exit()
-
-                    if config.evaluation_method == 0:
-                        self.parents = self.evoa_tools.select_from_population(self.net_worth,
-                                                                              self.population,
-                                                                              selection_method=config.parents_selection_method,
-                                                                              nb_parents=self.nb_parents)
-
-                    elif config.evaluation_method == 1:
-                        self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
-                                                                              self.population,
-                                                                              selection_method=config.parents_selection_method,
-                                                                              nb_parents=self.nb_parents)
+                    self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
+                                                                          self.population,
+                                                                          selection_method=config.parents_selection_method,
+                                                                          nb_parents=self.nb_parents)
 
                     # ------------------ Generate offsprings with mutations
                     print("---------------> Generating offsprings with mutations")
@@ -157,11 +145,12 @@ class EVOA_optimiser:
                     self.population = self.new_population
 
             # ------------------ Evaluate population
-            self.fitness_evaluation, _, self.net_worth = self.evoa_tools.evaluate_population(self.population,
-                                                                                             self.data_slice,
-                                                                                             max_worker_processes=config.max_worker_processes,
-                                                                                             print_evaluation_status=config.print_evaluation_status,
-                                                                                             plot_3=config.plot_signal_triggers)
+            self.fitness_evaluation, self.metalabel_accuracies, _, self.net_worth = self.evoa_tools.evaluate_population(self.population,
+                                                                                                                        self.data_slice,
+                                                                                                                        evaluation_setting=config.evaluation_method,
+                                                                                                                        max_worker_processes=config.max_worker_processes,
+                                                                                                                        print_evaluation_status=config.print_evaluation_status,
+                                                                                                                        plot_3=config.plot_signal_triggers)
 
             if config.evaluation_method == 1 and sum(self.fitness_evaluation) == 0:
                 self.results.invalid_slice_count += 1
@@ -180,7 +169,7 @@ class EVOA_optimiser:
                 self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
                 self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))
 
-                self.data_slice.perform_trade_run(ticker)
+                self.data_slice.perform_trade_run()
                 self.results.data_slice_metalabel_pp.append(self.data_slice.metalabels_account.net_worth_history[-1])
 
                 # ------------------ Print generation info

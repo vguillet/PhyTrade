@@ -25,6 +25,7 @@ class EVOA_tools:
     @staticmethod
     def evaluate_population(population_lst, data_slice_info,
                             max_worker_processes=1,
+                            evaluation_setting=0,
                             calculate_stats=False, print_evaluation_status=False, plot_3=False):
         from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
@@ -64,27 +65,32 @@ class EVOA_tools:
         #
         # accuracies_achieved = MATH().normalise_zero_one(profit_achieved)
 
-        return metalabel_accuracies, confusion_matrix_analysis, net_worth
+        if evaluation_setting == 0:
+            fitness_evaluation = net_worth
+        elif evaluation_setting == 1:
+            fitness_evaluation = metalabel_accuracies
+
+        return fitness_evaluation, metalabel_accuracies, confusion_matrix_analysis, net_worth
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
         if sum(fitness_evaluation) != 0:
-            # -- Determine fitness ratio
+            # --> Determine fitness ratio
             fitness_ratios = []
             for i in range(len(fitness_evaluation)):
                 fitness_ratios.append(fitness_evaluation[i]/sum(fitness_evaluation)*100)
 
-            # -- Select individuals
+            # --> Select individuals
             parents = []
 
             # TODO: Implement alternative selection methods
-            # -- Exit program if incorrect settings used
+            # --> Exit program if incorrect settings used
             if selection_method > 0:
                 print("Invalid parent selection method reference")
                 sys.exit()
 
+            # Elitic selection
             if selection_method == 0:
-                # Elitic selection
                 sorted_fitness_ratios = fitness_ratios
                 sorted_population = population
                 sorted_fitness_evaluation = fitness_evaluation
@@ -101,7 +107,8 @@ class EVOA_tools:
                     parents.append(sorted_population[i])
 
         else:
-            # -- Select individuals randomly
+            # --> Select individuals randomly
+            # TODO: Implement random selection
             parents = []
             for i in range(nb_parents):
                 parents.append(population[i])
@@ -123,20 +130,19 @@ class EVOA_tools:
         mutation_rate = EVOA_tools().throttle(current_generation, nb_of_generations, mutation_rate, 0.05, decay_function)
         nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate)
 
-        # -- Save parents to new population
-        new_population = []
-        for parent in parents:
-            new_population.append(parent)
+        # --> Save single best parent to new population
+        new_population = [parents[0]]
 
-        # -- Generate offsprings from parents with mutations
+        # --> Generate offsprings from parents with mutations
         cycling = -1
-        for _ in range(population_size - len(parents) - nb_random_ind):
+        for _ in range(population_size - 1 - nb_random_ind):
             cycling += 1
             if cycling >= len(parents):
                 cycling = 0
 
             offspring = deepcopy(parents[cycling])
 
+            # --> Mutate offspring
             for _ in range(nb_of_parameters_to_mutate):
                 parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
 
@@ -147,7 +153,7 @@ class EVOA_tools:
 
             new_population.append(offspring)
 
-        # -- Create random_ind number of random individuals and add to new population
+        # --> Create random_ind number of random individuals and add to new population
         for _ in range(nb_random_ind):
             new_population.append(Individual(ticker=ticker))
 

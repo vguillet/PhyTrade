@@ -191,7 +191,7 @@ class Tradebot_v5:
         if self.print_trade_process:
             print("_______________________________")
             print("Ticker:", ticker)
-        
+
         # --> For account
         if len(self.account.net_worth_history) != 0 \
                 and self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.account_max_stop_loss\
