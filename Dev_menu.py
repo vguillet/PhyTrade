@@ -3,7 +3,7 @@ The Dev_menu script is used to initiate all economic analysis, trading simulatio
 and economic model parameters evaluations and optimisations.
 """
 from SETTINGS import SETTINGS
-from PhyTrade.ML_optimisation.EVOA_Optimisation.EVO_algo_3 import EVOA_optimiser
+from PhyTrade.ML_optimisation.EVOA_optimisation.EVO_algo_3 import EVOA_optimiser
 from PhyTrade.Economic_model.RUN_model import RUN_model
 from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
 from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim

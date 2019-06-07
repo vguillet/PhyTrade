@@ -8,7 +8,7 @@ Input that still require manual input:
 """
 from SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
-from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 import sys
 

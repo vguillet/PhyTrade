@@ -10,7 +10,8 @@ from PhyTrade.Trade_simulations.Tools.S_ACCOUNT_gen import ACCOUNT
 
 
 class Tradebot_v4:
-    def __init__(self, analysis,
+    def __init__(self, daily_values,
+                 trade_signal, trade_spline=[],
                  investment_settings=1, cash_in_settings=0,
                  initial_funds=1000,
                  initial_assets=0,
@@ -37,7 +38,6 @@ class Tradebot_v4:
 
             2 - Asset liquidation percentage per trade pegged to signal strength
 
-        :param analysis: Analysis to be used for performing trade decisions
         :param investment_settings: Investing protocol
         :param cash_in_settings: Cash-in protocol
         :param initial_funds: Initial funds to be used
@@ -75,12 +75,13 @@ class Tradebot_v4:
         self.buy_count = 0
         self.sell_count = 0
         self.stop_loss_count = 0
-
-        # -- Market analysis protocol
-        self.analysis = analysis
-
-        # -- Generate trade actions from analysis
-        self.trade_actions = self.analysis.big_data.Major_spline.trade_signal
+        
+        # -- Daily stock prices
+        self.daily_values = daily_values
+        
+        # -- Trade actions and spline
+        self.trade_actions = trade_signal
+        self.trade_spline = trade_spline
 
         # ==============================================================================
         """
@@ -92,7 +93,7 @@ class Tradebot_v4:
         # ============================ TRADE PROTOCOL DEF ==============================
         # ~~~~~~~~~~~~~~~~~~ Initiate simple investment
         if prev_simple_investment_assets is None:
-            self.account.start_simple_investment(self.analysis.big_data.data_slice_open_values[0],
+            self.account.start_simple_investment(self.daily_values[0],
                                                  initial_investment=self.s_initial_investment)
         else:
             self.account.simple_investment_assets = prev_simple_investment_assets
@@ -101,10 +102,10 @@ class Tradebot_v4:
             if print_trade_process:
                 print("----------------- Day ", i)
                 print("-------------------> Action", self.trade_actions[i])
-                print("-------------------> Signal", self.analysis.big_data.Major_spline.trade_spline[i])
+                print("-------------------> Signal", self.trade_spline[i])
 
             # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value
-            self.account.calc_simple_investment_value(self.analysis.big_data.data_slice_open_values[i])
+            self.account.calc_simple_investment_value(self.daily_values[i])
 
             # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
             # --> Fixed investment value per trade
@@ -119,11 +120,14 @@ class Tradebot_v4:
 
             # --> Fixed investment value per trade pegged to signal strength
             elif investment_settings == 2:
-                investment_per_trade = -((self.analysis.big_data.Major_spline.trade_spline[i]-1)*self.fixed_investment)
+                investment_per_trade = -((self.trade_spline[i]-1)*self.fixed_investment)
 
             # --> Fixed investment percentage per trade pegged to signal strength
             elif investment_settings == 3:
-                investment_per_trade = -((self.analysis.big_data.Major_spline.trade_spline[i]-1)*self.account.current_funds*self.investment_percentage)
+                investment_per_trade = -((self.trade_spline[i]-1)*self.account.current_funds*self.investment_percentage)
+
+            else:
+                investment_per_trade = 0
 
             # ----> Limit max investment per trade
             if investment_per_trade > max_investment_per_trade:
@@ -140,7 +144,10 @@ class Tradebot_v4:
 
             # --> Asset liquidation percentage per trade pegged to signal strength
             elif cash_in_settings == 2:
-                assets_sold_per_trade = (self.analysis.big_data.Major_spline.trade_spline[i]+1)*self.account.current_assets*self.asset_liquidation_percentage
+                assets_sold_per_trade = (self.trade_spline[i]+1)*self.account.current_assets*self.asset_liquidation_percentage
+
+            else:
+                assets_sold_per_trade = 1000000
 
             # ~~~~~~~~~~~~~~~~~~ Define the variable stop-loss value
             # # TODO: Figure out variable stop_loss concept
@@ -155,17 +162,17 @@ class Tradebot_v4:
             # ----- Define stop-loss action
             # --> WRT max_net_worth and/or prev_net_worth
             if not len(self.account.net_worth_history) == 0 and \
-                    self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[i]) < \
+                    self.account.calc_net_worth(self.daily_values[i]) < \
                     max(self.account.net_worth_history) * self.max_stop_loss and \
                     not self.account.current_assets == 0 \
                     or\
                     not len(self.account.net_worth_history) == 0 and \
-                    self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[i]) < \
+                    self.account.calc_net_worth(self.daily_values[i]) < \
                     self.account.net_worth_history[-1] * self.prev_stop_loss and \
                     not self.account.current_assets == 0:
 
                 self.account.convert_assets_to_funds(
-                    self.analysis.big_data.data_slice_open_values[i],
+                    self.daily_values[i],
                     self.account.current_assets)
 
                 self.stop_loss_count += 1
@@ -173,12 +180,12 @@ class Tradebot_v4:
                 if self.print_trade_process:
                     print("==========================================================")
                     print("Stop-loss triggered")
-                    self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+                    self.account.print_account_status(self.daily_values[i])
                     print("==========================================================")
 
             # ----- Define hold action
             elif self.trade_actions[i] == 0:
-                self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
+                self.account.record_net_worth(self.daily_values[i])
 
                 if self.print_trade_process:
                     print("->Hold")
@@ -187,16 +194,16 @@ class Tradebot_v4:
             elif self.trade_actions[i] == -1:
                 if self.account.current_funds != 0:
                     self.account.convert_funds_to_assets(
-                        self.analysis.big_data.data_slice_open_values[i], investment_per_trade)
+                        self.daily_values[i], investment_per_trade)
                     self.buy_count += 1
 
                     if self.print_trade_process:
                         print("Trade action: Buy")
                         print("Investment =", investment_per_trade, "$")
-                        self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+                        self.account.print_account_status(self.daily_values[i])
 
                 else:
-                    self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
+                    self.account.record_net_worth(self.daily_values[i])
                     if self.print_trade_process:
                         print("Trade action 'Buy' canceled because insufficient funds")
 
@@ -204,16 +211,16 @@ class Tradebot_v4:
             elif self.trade_actions[i] == 1:
                 if self.account.current_assets != 0:
                     self.account.convert_assets_to_funds(
-                        self.analysis.big_data.data_slice_open_values[i], assets_sold_per_trade)
+                        self.daily_values[i], assets_sold_per_trade)
                     self.sell_count += 1
 
                     if self.print_trade_process:
                         print("Trade action: Sell")
                         print("Investment =", investment_per_trade, "$")
-                        self.account.print_account_status(self.analysis.big_data.data_slice_open_values[i])
+                        self.account.print_account_status(self.daily_values[i])
 
                 else:
-                    self.account.record_net_worth(self.analysis.big_data.data_slice_open_values[i])
+                    self.account.record_net_worth(self.daily_values[i])
                     if self.print_trade_process:
                         print("Trade action 'Sell' canceled because nothing to sell")
 
@@ -237,10 +244,10 @@ class Tradebot_v4:
             print("")
             print("Current funds:", self.account.current_funds)
             print("Current assets:", self.account.current_assets)
-            print("Net worth:", self.account.calc_net_worth(self.analysis.big_data.data_slice_open_values[-1]), "$")
+            print("Net worth:", self.account.calc_net_worth(self.daily_values[-1]), "$")
             print("")
-            print("Profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]))
-            print("Percent profit=", self.account.calc_net_profit(self.analysis.big_data.data_slice_open_values[-1]) / 10)
+            print("Profit=", self.account.calc_net_profit(self.daily_values[-1]))
+            print("Percent profit=", self.account.calc_net_profit(self.daily_values[-1]) / 10)
             print("")
             print("Max worth:", max(self.account.net_worth_history))
             print("Min worth:", min(self.account.net_worth_history))

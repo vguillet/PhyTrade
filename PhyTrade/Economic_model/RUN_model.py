@@ -4,7 +4,7 @@ Contains the EVAL_parameter_set class, to be used for direct evaluation of a set
 from SETTINGS import SETTINGS
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
 
 class RUN_model:

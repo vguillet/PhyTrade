@@ -1,4 +1,4 @@
-from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_random_gen import EVOA_random_gen
+from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 
@@ -37,7 +37,10 @@ class Individual:
 
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        self.tradebot = Tradebot_v4(self.analysis,
+        # TODO: Implement data value cloe open selection
+        self.tradebot = Tradebot_v4(self.analysis.big_data.data_close_values,
+                                    self.analysis.big_data.Major_spline.trade_signal,
+                                    self.analysis.big_data.Major_spline.trade_spline,
                                     investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                     initial_funds=initial_funds,
                                     initial_assets=initial_assets,

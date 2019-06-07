@@ -23,11 +23,11 @@ class EVOA_tools:
         return population_lst
 
     @staticmethod
-    def evaluate_population(population_lst, data_slice_info,
+    def evaluate_population(population_lst, data_slice,
                             max_worker_processes=1,
                             evaluation_setting=0,
                             calculate_stats=False, print_evaluation_status=False, plot_3=False):
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+        from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
         metalabel_accuracies = []
         confusion_matrix_analysis = []
@@ -36,7 +36,7 @@ class EVOA_tools:
         # -- List based evaluation
         for i in range(len(population_lst)):
 
-            population_lst[i].gen_economic_model(data_slice_info, plot_3=plot_3)
+            population_lst[i].gen_economic_model(data_slice, plot_3=plot_3)
             population_lst[i].perform_trade_run()
 
             if print_evaluation_status:
@@ -45,7 +45,7 @@ class EVOA_tools:
                 print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
-                                                                             data_slice_info.metalabels.close_values_metalabels,
+                                                                             data_slice.metalabels.close_values_metalabels,
                                                                              calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
 
@@ -122,7 +122,7 @@ class EVOA_tools:
                             decay_function,
                             population_size, parents, nb_random_ind, mutation_rate=0.2):
 
-        from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.Tools.INDIVIDUAL_gen import Individual
         import random
         from copy import deepcopy

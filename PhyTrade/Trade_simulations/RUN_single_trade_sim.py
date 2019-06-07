@@ -10,7 +10,7 @@ Input that still require manual input:
 from SETTINGS import SETTINGS
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 
 
 class RUN_single_trade_sim:

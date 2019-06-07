@@ -3,7 +3,7 @@ This script contains the data_slice class used by the EVOA Optimisation. The sli
 information about the slice analysed, including the starting and stopping index, along with the metalabels generated
 """
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Tools.METALABELING_gen import MetaLabeling
+from PhyTrade.ML_optimisation.Metalabel_optimisation.METALABELING_gen import MetaLabeling
 
 import numpy as np
 
@@ -14,16 +14,19 @@ class data_slice:
 
         self.ticker = ticker
         self.data = fetch_technical_data(ticker)
-        # ---- Find corresponding starting data index from start date
+
+        # ---- Data slice properties
+        # --> Find corresponding starting data index from start date
         self.start_date = start_date
         self.start_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.start_date)[0]
 
-        # ---- Data slice properties
         self.slice_size = slice_size
         self.stop_index = self.start_index + self.slice_size
         self.stop_date = self.data.iloc[self.stop_index]['index']
 
         self.data_slice_shift_per_gen = data_slice_shift_per_gen
+
+        self.data_slice = self.data[self.start_index:self.stop_index]
 
         #  ---- Record default properties
         self.default_start_slice_date = self.start_date
@@ -116,18 +119,12 @@ class data_slice:
                           print_trade_process=False):
 
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
-        from PhyTrade.Economic_model.Big_Data import BIGDATA
-        from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
-        data = fetch_technical_data(self.ticker)
-
-        analysis = mock()
-        analysis.big_data = BIGDATA(data, self.start_index, self.stop_index)
-        analysis.big_data.Major_spline = mock()
-        analysis.big_data.Major_spline.trade_signal = self.metalabels.close_values_metalabels
+        self.trade_signal = self.metalabels.close_values_metalabels
 
         # TODO: Add open/close value selection
-        tradebot = Tradebot_v4(analysis,
+        tradebot = Tradebot_v4(list(self.data_slice["Open"]),
+                               self.trade_signal,
                                investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                initial_funds=initial_funds,
                                initial_assets=initial_assets,

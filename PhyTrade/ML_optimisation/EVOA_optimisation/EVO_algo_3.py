@@ -3,8 +3,8 @@ This script contains the EVOA_optimiser class, which is a refactored and optimis
 """
 
 from SETTINGS import SETTINGS
-from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.ML_optimisation.EVOA_Optimisation.Tools.EVOA_results_gen import EVOA_results_gen
+from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 
