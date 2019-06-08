@@ -108,7 +108,8 @@ class RUN_single_trade_sim:
 
         # ---- Perform initial evaluation
         self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-        self.individual.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
+        self.individual.perform_trade_run(self.data_slice,
+                                          investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                           prev_stop_loss=max_prev_stop_loss, max_stop_loss=max_max_stop_loss,
                                           print_trade_process=print_trade_process)
 
@@ -170,7 +171,8 @@ class RUN_single_trade_sim:
 
             # --> Process slice
             self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
-            self.individual.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
+            self.individual.perform_trade_run(self.data_slice,
+                                              investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                               initial_funds=self.individual.account.current_funds,
                                               initial_assets=self.individual.account.current_assets,
                                               prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,

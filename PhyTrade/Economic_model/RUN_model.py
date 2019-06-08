@@ -55,7 +55,7 @@ class RUN_model:
         self.results = EVAL_parameter_set_results_gen(eval_name)
         self.results.benchmark_confusion_matrix_analysis = \
             Confusion_matrix_analysis(self.individual.analysis.big_data.Major_spline.trade_signal,
-                                      self.data_slice.metalabels.close_values_metalabels,
+                                      self.data_slice.metalabels,
                                       calculate_stats=True,
                                       print_benchmark_results=False)
 

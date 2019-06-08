@@ -78,6 +78,7 @@ class Tradebot_v4:
         
         # -- Daily stock prices
         self.daily_values = daily_values
+        print(self.daily_values)
         
         # -- Trade actions and spline
         self.trade_actions = trade_signal
@@ -99,7 +100,7 @@ class Tradebot_v4:
             self.account.simple_investment_assets = prev_simple_investment_assets
 
         for i in range(len(self.trade_actions)):
-            if print_trade_process:
+            if self.print_trade_process:
                 print("----------------- Day ", i)
                 print("-------------------> Action", self.trade_actions[i])
                 print("-------------------> Signal", self.trade_spline[i])

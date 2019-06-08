@@ -10,7 +10,8 @@ import numpy as np
 
 class data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
-                 upper_barrier, lower_barrier, look_ahead, data_looper=True):
+                 upper_barrier, lower_barrier, look_ahead,
+                 data_selection="Open", data_looper=True):
 
         self.ticker = ticker
         self.data = fetch_technical_data(ticker)
@@ -20,15 +21,16 @@ class data_slice:
         self.start_date = start_date
         self.start_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.start_date)[0]
 
+        # --> Find corresponding stop data index
         self.slice_size = slice_size
         self.stop_index = self.start_index + self.slice_size
         self.stop_date = self.data.iloc[self.stop_index]['index']
 
+        self.sliced_data = self.data[self.start_index:self.stop_index]
+
         self.data_slice_shift_per_gen = data_slice_shift_per_gen
 
-        self.data_slice = self.data[self.start_index:self.stop_index]
-
-        #  ---- Record default properties
+        # ---- Record default properties
         self.default_start_slice_date = self.start_date
         self.default_start_slice_index = self.start_index
         self.default_slice_size = slice_size
@@ -36,25 +38,39 @@ class data_slice:
         # ---- Metalabels properties
         self.upper_barrier = upper_barrier
         self.lower_barrier = lower_barrier
+
         self.look_ahead = look_ahead
 
-        # ---- Tracker properties
+        # ---- Data slice settings
+        # --> Disable/enable  data looping
         self.data_looper = data_looper
         self.end_of_dataset = False
+
+        # --> List open/closed price to be used by tradebot
+        self.selection = data_selection
+        self.data_selection = list(self.data[self.selection])
+        self.data_slice_selection = list(self.sliced_data[self.selection])
 
     def gen_slice_metalabels(self):
         """
         Generate metalabels for a specific data slice. Only necessary to be ran when a
         dataslice instance is initiated.
         """
-        self.metalabels = MetaLabeling(self.ticker,
-                                       self.upper_barrier, self.lower_barrier,
+        # --> Create mock data slice and add parameters and info
+        mock_data_slice = address_sim()
+        mock_data_slice.data_selection = self.data_selection
+        mock_data_slice.data_slice_selection = self.data_slice_selection
+        mock_data_slice.start_index = self.start_index
+        mock_data_slice.stop_index = self.stop_index
+
+        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier,
                                        self.look_ahead,
-                                       self.start_index, self.stop_index)
+                                       mock_data_slice,
+                                       metalabel_setting=0).metalabels
         return
 
     def get_next_data_slice(self):
-        # -- Determine new start/stop indexes
+        # --> Determine new start/stop indexes
         self.start_index += self.slice_size
         self.start_date = self.data.iloc[self.start_index]['index']
 
@@ -68,22 +84,26 @@ class data_slice:
 
             else:
                 if self.data_looper is True:
-                    # ------------------ Loop back to beginning of dataset if end of dataset is reached
+                    # --> Loop back to beginning of dataset if end of dataset is reached
                     self.slice_size = self.default_slice_size
                     self.start_index = self.default_start_slice_index
                     self.stop_index = self.default_start_slice_index + self.default_slice_size
                 else:
-                    # ------------------ Trigger End of dataset
+                    # --> Trigger End of dataset
                     self.end_of_dataset = True
                     print("End of dataset reached\n")
                     return
 
-        # -- Generate new metalabels
+        # --> Update slice data
+        self.sliced_data = self.data[self.start_index:self.stop_index]
+        self.data_slice_selection = list(self.sliced_data[self.selection])
+
+        # --> Generate new metalabels
         self.gen_slice_metalabels()
         return
 
     def get_shifted_data_slice(self):
-        # -- Determine new start/stop indexes
+        # --> Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
         self.start_date = self.data.iloc[self.start_index]['index']
 
@@ -105,7 +125,11 @@ class data_slice:
                     print("End of dataset reached\n")
                     return
 
-        # -- Generate new metalabels
+        # --> Update slice data
+        self.sliced_data = self.data[self.start_index:self.stop_index]
+        self.data_slice_selection = list(self.sliced_data[self.selection])
+
+        # --> Generate new metalabels
         self.gen_slice_metalabels()
         return
 
@@ -120,10 +144,9 @@ class data_slice:
 
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        self.trade_signal = self.metalabels.close_values_metalabels
+        self.trade_signal = self.metalabels
 
-        # TODO: Add open/close value selection
-        tradebot = Tradebot_v4(list(self.data_slice["Open"]),
+        tradebot = Tradebot_v4(self.data_slice_selection,
                                self.trade_signal,
                                investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                initial_funds=initial_funds,
@@ -137,6 +160,6 @@ class data_slice:
         return
 
 
-class mock:
+class address_sim:
     def __init__(self):
-        return
+        pass

@@ -6,12 +6,26 @@ import numpy as np
 N = 50
 ticker = "AAPL"
 
-data_slice = data_slice(ticker, "2000-01-01", 200, 0, 0, 0, 0, 0)
+data_slice = data_slice(ticker, "2000-01-01", 400, 0, 0, 0, 0, 0)
 upper_barrier = np.linspace(0, 40, N)
-lower_barrier = np.linspace(0, 1, N)
-look_ahead = np.linspace(0, 1, N)
+lower_barrier = np.linspace(0, 40, N)
+look_ahead = np.linspace(0, 50, N)
 
-tradebot = Tradebot_v4()
+# print(list(data_slice.data_slice["Open"]))
+
+results = []
+for i in look_ahead:
+    results.append(Tradebot_v4(list(data_slice.sliced_data["Open"]),
+                   MetaLabeling(20, -20, round(i, 0), data_slice, metalabel_setting=0).metalabels,
+                               cash_in_settings=1).account.net_worth_history[-1])
+
+print(results)
+
+import matplotlib.pyplot as plt
+
+plt.plot(range(len(results)), results)
+plt.show()
+
 # xx, yy, zz = np.meshgrid(upper_barrier, lower_barrier, look_ahead)
 #
 # f = np.zeros_like(xx)

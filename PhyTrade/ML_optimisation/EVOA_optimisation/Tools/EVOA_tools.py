@@ -37,7 +37,7 @@ class EVOA_tools:
         for i in range(len(population_lst)):
 
             population_lst[i].gen_economic_model(data_slice, plot_3=plot_3)
-            population_lst[i].perform_trade_run()
+            population_lst[i].perform_trade_run(data_slice)
 
             if print_evaluation_status:
                 print("\n ----------------------------------------------")
@@ -45,7 +45,7 @@ class EVOA_tools:
                 print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
-                                                                             data_slice.metalabels.close_values_metalabels,
+                                                                             data_slice.metalabels,
                                                                              calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
 

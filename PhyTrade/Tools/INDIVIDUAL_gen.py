@@ -27,6 +27,7 @@ class Individual:
         self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
 
     def perform_trade_run(self,
+                          data_slice,
                           investment_settings=3, cash_in_settings=0,
                           initial_funds=1000,
                           initial_assets=0,
@@ -37,8 +38,7 @@ class Individual:
 
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        # TODO: Implement data value cloe open selection
-        self.tradebot = Tradebot_v4(self.analysis.big_data.data_close_values,
+        self.tradebot = Tradebot_v4(data_slice.data_slice_selection,
                                     self.analysis.big_data.Major_spline.trade_signal,
                                     self.analysis.big_data.Major_spline.trade_spline,
                                     investment_settings=investment_settings, cash_in_settings=cash_in_settings,

@@ -99,12 +99,12 @@ class SETTINGS:
         self.ticker = "AAPL"
         self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
 
-        self.start_date = "2000-01-01"
+        self.start_date = "2010-01-01"
         self.data_slice_size = 200
         self.nb_data_slices = 10
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_signal = False
+        self.plot_signal = True
         self.print_trade_process = False
 
         # ___________________________ Metalabeling settings ______________________
