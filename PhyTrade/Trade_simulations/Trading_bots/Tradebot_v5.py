@@ -196,6 +196,9 @@ class Tradebot_v5:
             print("_______________________________")
             print("Ticker:", ticker)
 
+        print("---------------------------------------------------------------------------------->", self.account.content[ticker]["Net_worth"][-1])
+        print("---------------------------------------------------------------------------------->", max(self.account.content[ticker]["Net_worth"]))
+
         # --> For account
         if len(self.account.net_worth_history) != 0 \
                 and self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.account_max_stop_loss\

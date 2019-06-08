@@ -159,6 +159,8 @@ class data_slice:
         self.metalabels_account = tradebot.account
         return
 
+    def __str__(self):
+        return "Data slice: Ticker - " + self.ticker + ", Current start_date - " + self.start_date + ", Slice size: " + str(self.slice_size)
 
 class address_sim:
     def __init__(self):

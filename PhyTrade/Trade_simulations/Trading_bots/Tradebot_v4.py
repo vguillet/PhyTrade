@@ -78,7 +78,6 @@ class Tradebot_v4:
         
         # -- Daily stock prices
         self.daily_values = daily_values
-        print(self.daily_values)
         
         # -- Trade actions and spline
         self.trade_actions = trade_signal

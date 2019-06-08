@@ -32,20 +32,20 @@ from PhyTrade.Tools.SPLINE_tools import SPLINE
 
 
 class Prototype_5:
-    def __init__(self, parameters, data_slice_info, data):
+    def __init__(self, parameters, data_slice):
         """
         Generate a model containing all coded indicators, process and generate bullish/bearish signals
 
         :param parameters: Dictionary of dictionaries containing the values for all the variables of each signal
-        :param data_slice_info: data_slice_info class instance
+        :param data_slice: data_slice class instance
         :param data: Pandas dataframe
         """
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = data_slice_info.start_index
-        data_slice_stop_ind = data_slice_info.stop_index
+        data_slice_start_ind = data_slice.start_index
+        data_slice_stop_ind = data_slice.stop_index
 
-        self.big_data = BIGDATA(data, data_slice_start_ind, data_slice_stop_ind)
+        self.big_data = BIGDATA(data_slice.data, data_slice_start_ind, data_slice_stop_ind)
 
         # ~~~~~~~~~~~~~~~~~~ Tools initialisation
         self.oc_tools = OC()

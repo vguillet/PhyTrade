@@ -25,7 +25,7 @@ class PORTFOLIO_gen:
                                                             upper_barrier, lower_barrier, look_ahead)
 
         # ---- Generate initial economic models
-        print("-- Generating initial economic models")
+        print("-- Generating initial economic models --")
         for ticker in self.content.keys():
             self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"], plot_3=self.plot_signal)
             print(ticker, "model generated")
@@ -73,7 +73,7 @@ class PORTFOLIO_gen:
             # ---- Update account
             # --> Update current values
             for ticker in self.content.keys():
-                self.current_values[ticker] = self.content[ticker]["Individual"].analysis.big_data.data_slice_open_values[i]
+                self.current_values[ticker] = self.content[ticker]["Data_slice"].data_slice_selection[i]
 
             # --> Update tradebot account
             self.tradebot.account.update_account(date, self.current_values)

@@ -104,7 +104,7 @@ class SETTINGS:
         self.nb_data_slices = 10
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_signal = True
+        self.plot_signal = False
         self.print_trade_process = False
 
         # ___________________________ Metalabeling settings ______________________
@@ -162,12 +162,12 @@ class SETTINGS:
         # self.tickers = ["AAPL"]
 
         self.start_date = "2000-01-01"
-        self.data_slice_size = 200
+        self.data_slice_size = 24
         self.nb_data_slices = 10
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_signal = False
-        self.print_trade_process = False
+        self.plot_signal = True
+        self.print_trade_process = True
 
         # ___________________________ Metalabeling settings ______________________
         self.upper_barrier = 20

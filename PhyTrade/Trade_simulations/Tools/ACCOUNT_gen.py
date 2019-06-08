@@ -136,10 +136,8 @@ class ACCOUNT:
         :param asset_count: Amount of investment to be performed
         """
         # --> Create order
-        self.add_order_to_content(ticker, ORDER_gen(ticker,
-                                                    self.current_date,
-                                                    asset_count,
-                                                    self.content[ticker]["Current_price"]))
+        new_order = ORDER_gen(ticker, self.current_date, asset_count, self.content[ticker]["Current_price"])
+        self.add_order_to_content(ticker, new_order)
 
         # --> Update funds and ticker net worth
         self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
@@ -254,6 +252,7 @@ class ACCOUNT:
         # --> Update current parameters
         self.current_asset_worth += order.current_worth
         self.current_order_count += 1
+        self.calc_ticker_net_worth(ticker)
 
     def calc_ticker_net_worth(self, ticker):
         """
