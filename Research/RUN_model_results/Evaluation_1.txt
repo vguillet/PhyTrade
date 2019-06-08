@@ -17,7 +17,7 @@ Number of data points processed: 200
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 1158.5104606712202
+Net worth achieved: 1553.4712110327691
 
 ---> Fitness: 
 Fitness achieved: 96.5

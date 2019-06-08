@@ -104,7 +104,7 @@ class RUN_multi_trade_sim:
         self.current_ticker_prev_stop_loss = max_ticker_prev_stop_loss
         self.current_ticker_max_stop_loss = max_ticker_max_stop_loss
 
-        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, 0, 0, 0, False)
+        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, 0, 0, 0, data_looper=False)
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
