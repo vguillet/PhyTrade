@@ -191,7 +191,6 @@ class Tradebot_v5:
         if self.print_trade_process:
             print("_______________________________")
             print("Ticker:", ticker)
-        print("---------------------------------------------------> ", )
         # --> For account
         if len(self.account.net_worth_history) != 0 \
                 and self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.account_max_stop_loss\
@@ -200,13 +199,13 @@ class Tradebot_v5:
             return
 
         if len(self.account.net_worth_history) > 1:
-            if self.account.net_worth_history[-2] < self.account.net_worth_history[-1] * self.account_prev_stop_loss and self.account.current_order_count != 0:
+            if self.account.net_worth_history[-1] < self.account.net_worth_history[-2] * self.account_prev_stop_loss and self.account.current_order_count != 0:
                 self.account_stop_loss()
                 return
 
         # --> For ticker
         if len(self.account.net_worth_history) > 1:
-            if self.account.content[ticker]["Net_worth"][-2] < self.account.content[ticker]["Net_worth"][-1] * self.ticker_prev_stop_loss \
+            if self.account.content[ticker]["Net_worth"][-1] < self.account.content[ticker]["Net_worth"][-2] * self.ticker_prev_stop_loss \
                     and self.account.content[ticker]["Open_order_count"] != 0:
                 self.ticker_stop_loss(ticker)
                 return
