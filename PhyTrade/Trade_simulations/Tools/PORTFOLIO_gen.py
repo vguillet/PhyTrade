@@ -53,7 +53,7 @@ class PORTFOLIO_gen:
                           initial_account_content={},
                           initial_account_simple_investment_content={},
                           account_prev_stop_loss=0.85, account_max_stop_loss=0.75,
-                          ticker_prev_stop_loss=0.85, ticker_max_stop_loss=0.75,
+                          ticker_prev_stop_loss=0.85,
                           max_investment_per_trade=50000,
                           print_trade_process=False):
 
@@ -62,7 +62,7 @@ class PORTFOLIO_gen:
                                     initial_account_content=initial_account_content,
                                     initial_account_simple_investment_content=initial_account_simple_investment_content,
                                     account_prev_stop_loss=account_prev_stop_loss, account_max_stop_loss=account_max_stop_loss,
-                                    ticker_prev_stop_loss=ticker_prev_stop_loss, ticker_max_stop_loss=ticker_max_stop_loss,
+                                    ticker_prev_stop_loss=ticker_prev_stop_loss,
                                     print_trade_process=print_trade_process)
 
         # --> For every day in current data slice
@@ -87,13 +87,13 @@ class PORTFOLIO_gen:
 
             # --> Classify tickers based on trade signal
             for ticker in self.content.keys():
-                if self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == 1:
+                if self.content[ticker]["Individual"].trade_signal[i] == 1:
                     sell_orders.append(ticker)
 
-                elif self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == 0:
+                elif self.content[ticker]["Individual"].trade_signal[i] == 0:
                     hold_orders.append(ticker)
 
-                elif self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_signal[i] == -1:
+                elif self.content[ticker]["Individual"].trade_signal[i] == -1:
                     buy_orders.append(ticker)
 
             order_lst = [sell_orders, hold_orders, buy_orders]
@@ -102,8 +102,8 @@ class PORTFOLIO_gen:
             for orders in order_lst:
                 for k in range(len(orders)):
                     for j in range(1, len(orders)):
-                        if abs(self.content[orders[j]]["Individual"].analysis.big_data.Major_spline.trade_spline[i]) > \
-                                abs(self.content[orders[j-1]]["Individual"].analysis.big_data.Major_spline.trade_spline[i]):
+                        if abs(self.content[orders[j]]["Individual"].trade_spline[i]) > \
+                                abs(self.content[orders[j-1]]["Individual"].trade_spline[i]):
                             orders[j], orders[j-1] = orders[j-1], orders[j]
 
             # --> Perform trade runs
@@ -117,7 +117,7 @@ class PORTFOLIO_gen:
                 for ticker in orders:
                     self.tradebot.perform_trade(ticker, order_type,
                                                 investment_settings, max_investment_per_trade, cash_in_settings,
-                                                self.content[ticker]["Individual"].analysis.big_data.Major_spline.trade_spline[i])
+                                                self.content[ticker]["Individual"].trade_spline[i])
 
     def create_content_entry(self, ticker, parameter_set):
         """

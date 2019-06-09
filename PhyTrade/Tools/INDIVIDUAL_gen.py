@@ -22,9 +22,13 @@ class Individual:
     def gen_economic_model(self, data_slice, plot_3=False):
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
 
-        self.analysis = Prototype_5(self.parameter_dictionary, data_slice)
+        analysis = Prototype_5(self.parameter_dictionary, data_slice)
 
-        self.analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
+        self.spline = analysis.big_data.Major_spline.spline
+        self.trade_spline = analysis.big_data.Major_spline.trade_spline
+        self.trade_signal = analysis.big_data.Major_spline.trade_signal
+
+        analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
 
     def perform_trade_run(self,
                           data_slice,
@@ -39,8 +43,8 @@ class Individual:
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
         self.tradebot = Tradebot_v4(data_slice.data_slice_selection,
-                                    self.analysis.big_data.Major_spline.trade_signal,
-                                    self.analysis.big_data.Major_spline.trade_spline,
+                                    self.trade_signal,
+                                    self.trade_spline,
                                     investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                     initial_funds=initial_funds,
                                     initial_assets=initial_assets,

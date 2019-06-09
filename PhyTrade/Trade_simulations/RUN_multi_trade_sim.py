@@ -73,12 +73,6 @@ class RUN_multi_trade_sim:
 
         ticker_prev_stop_loss_decay_function = settings.ticker_prev_stop_loss_decay_function
 
-        # Max --> Min
-        max_ticker_max_stop_loss = settings.max_account_max_stop_loss
-        min_ticker_max_stop_loss = settings.min_account_max_stop_loss
-
-        ticker_max_stop_loss_decay_function = settings.ticker_max_stop_loss_decay_function
-
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
@@ -102,7 +96,6 @@ class RUN_multi_trade_sim:
 
         # Ticker stop-losses
         self.current_ticker_prev_stop_loss = max_ticker_prev_stop_loss
-        self.current_ticker_max_stop_loss = max_ticker_max_stop_loss
 
         self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, 0, 0, 0, data_looper=False)
 
@@ -136,7 +129,6 @@ class RUN_multi_trade_sim:
                                              account_prev_stop_loss=self.current_account_prev_stop_loss,
                                              account_max_stop_loss=self.current_account_max_stop_loss,
                                              ticker_prev_stop_loss=self.current_ticker_prev_stop_loss,
-                                             ticker_max_stop_loss=self.current_ticker_max_stop_loss,
                                              max_investment_per_trade=self.current_funds * self.current_max_investment_per_trade,
                                              print_trade_process=print_trade_process)
 
@@ -153,7 +145,8 @@ class RUN_multi_trade_sim:
             self.results.net_worth += self.portfolio.tradebot.account.net_worth_history
             self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
 
-            self.results.profit.append((self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
+            self.results.profit.append(
+                (self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
 
             # --> Update current parameters
             self.current_funds = self.portfolio.tradebot.account.current_funds
@@ -191,10 +184,6 @@ class RUN_multi_trade_sim:
                                                                              max_ticker_prev_stop_loss, min_ticker_prev_stop_loss,
                                                                              decay_function=ticker_prev_stop_loss_decay_function), 3)
 
-            self.current_ticker_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
-                                                                            max_ticker_max_stop_loss, min_ticker_max_stop_loss,
-                                                                            decay_function=ticker_max_stop_loss_decay_function), 3)
-
             # Max investment per trade
             self.current_max_investment_per_trade = round(EVOA_tools().throttle(i, self.nb_data_slices,
                                                                                 max_investment_per_trade_percent,
@@ -208,8 +197,6 @@ class RUN_multi_trade_sim:
 
             print("\nTickers:")
             print("Prev stop loss", self.current_ticker_prev_stop_loss)
-            print("Max stop loss", self.current_ticker_max_stop_loss)
-
             print("Max investment percentage per trade", self.current_max_investment_per_trade*100, "%\n")
 
             # --> Update account

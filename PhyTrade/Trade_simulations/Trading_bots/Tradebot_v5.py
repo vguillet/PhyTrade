@@ -16,7 +16,7 @@ class Tradebot_v5:
                  initial_account_content={},
                  initial_account_simple_investment_content={},
                  account_prev_stop_loss=0.85, account_max_stop_loss=0.75,
-                 ticker_prev_stop_loss=0.85, ticker_max_stop_loss=0.75,
+                 ticker_prev_stop_loss=0.85,
                  print_trade_process=False):
         """
         Used to simulate a trade run based on a provided analysis.
@@ -43,7 +43,6 @@ class Tradebot_v5:
         :param account_prev_stop_loss: Stop loss as % of previous day value for accounts
         :param account_max_stop_loss: Stop loss as % of max worth achieved for accounts
         :param ticker_prev_stop_loss: Stop loss as % of previous day value for tickers
-        :param ticker_max_stop_loss: Stop loss as % of max worth achieved for tickers
 
         :param print_trade_process: Print trade process to console and plot profit per slice graphs
         """
@@ -65,6 +64,7 @@ class Tradebot_v5:
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.print_trade_process = print_trade_process
+        self.initial_funds = initial_funds
 
         # ---- Tradebot finance
         self.account = ACCOUNT(tickers,
@@ -77,7 +77,6 @@ class Tradebot_v5:
         self.account_max_stop_loss = account_max_stop_loss
 
         self.ticker_prev_stop_loss = ticker_prev_stop_loss
-        self.ticker_max_stop_loss = ticker_max_stop_loss
 
         # --> Setup counters
         self.buy_count = 0
@@ -147,6 +146,34 @@ class Tradebot_v5:
 
         return assets_sold_per_trade
 
+    def account_stop_loss(self):
+        # --> Close all content orders
+        for ticker in self.account.content.keys():
+            self.account.close_all_ticker_order(ticker)
+
+        # --> Update counter
+        self.account_stop_loss_count += 1
+
+        if self.print_trade_process:
+            print("==========================================================")
+            print("Account stop-loss triggered\n")
+            self.account.print_account_status()
+            print("==========================================================")
+
+    def ticker_stop_loss(self, ticker):
+        # --> Close all ticker orders
+        self.account.close_all_ticker_order(ticker)
+
+        # --> Update counter
+        self.ticker_stop_loss_count += 1
+
+        if self.print_trade_process:
+            print("==========================================================")
+            print("Ticker stop-loss triggered\n")
+            print("")
+            self.account.print_account_status()
+            print("==========================================================")
+
     def perform_trade(self, ticker, trade_action,
                       investment_settings=1, max_investment_per_trade=50000, cash_in_settings=0, signal_strength=1):
         """
@@ -160,66 +187,30 @@ class Tradebot_v5:
         :param signal_strength:
         """
 
-        # ----- Define stop-loss action WRT max_net_worth and/or prev_net_worth
-        def account_stop_loss():
-            # --> Close all content orders
-            for ticker in self.account.content.keys():
-                self.account.close_all_ticker_order(ticker)
-
-            # --> Update counter
-            self.account_stop_loss_count += 1
-
-            if self.print_trade_process:
-                print("==========================================================")
-                print("Account stop-loss triggered\n")
-                self.account.print_account_status()
-                print("==========================================================")
-            return
-
-        def ticker_stop_loss():
-            # --> Close all ticker orders
-            self.account.close_all_ticker_order(ticker)
-
-            # --> Update counter
-            self.ticker_stop_loss_count += 1
-
-            if self.print_trade_process:
-                print("==========================================================")
-                print("Ticker stop-loss triggered\n")
-                print("")
-                self.account.print_account_status()
-                print("==========================================================")
-            return
-
         # ~~~~~~~~~~~~~~~~~~ Define trade protocol
         if self.print_trade_process:
             print("_______________________________")
             print("Ticker:", ticker)
-
-        print("---------------------------------------------------------------------------------->", self.account.content[ticker]["Net_worth"][-1])
-        print("---------------------------------------------------------------------------------->", max(self.account.content[ticker]["Net_worth"]))
-
+        print("---------------------------------------------------> trade action", trade_action)
         # --> For account
         if len(self.account.net_worth_history) != 0 \
                 and self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.account_max_stop_loss\
                 and self.account.current_order_count != 0:
-            account_stop_loss()
+            self.account_stop_loss()
+            return
 
         elif len(self.account.net_worth_history) > 1:
             if self.account.net_worth_history[-2] < self.account.net_worth_history[-1] * self.account_prev_stop_loss \
                     and self.account.current_order_count != 0:
-                account_stop_loss()
+                self.account_stop_loss()
+                return
 
         # --> For ticker
-        elif len(self.account.net_worth_history) != 0 \
-                and self.account.content[ticker]["Net_worth"][-1] < max(self.account.content[ticker]["Net_worth"]) * self.ticker_max_stop_loss \
-                and self.account.content[ticker]["Open_order_count"] != 0:
-                ticker_stop_loss()
-
         elif len(self.account.net_worth_history) > 1:
             if self.account.content[ticker]["Net_worth"][-2] < self.account.content[ticker]["Net_worth"][-1] * self.ticker_prev_stop_loss \
                     and self.account.content[ticker]["Open_order_count"] != 0:
-                ticker_stop_loss()
+                self.ticker_stop_loss(ticker)
+                return
 
         # ----- Define hold action
         elif trade_action == 0:
@@ -229,6 +220,8 @@ class Tradebot_v5:
 
         # ----- Define buy action
         elif trade_action == -1:
+            print("---------------------------------------------------> trade action", trade_action)
+
             # --> Calculate investment per trade
             investment_per_trade = self.calc_investment_value(investment_settings=investment_settings,
                                                               max_investment_per_trade=max_investment_per_trade,
@@ -274,6 +267,9 @@ class Tradebot_v5:
                     print("Trade action 'Sell' canceled because nothing to sell\n")
                 return
 
+        else:
+            print(" --------------------------------------------------------> !!!!!!!!!!!!!!! ORDER NOT PROCESSED !!!!!!!!!!!!!!!")
+
     def print_tradebot_status(self):
         """
         Used to print tradebot status
@@ -284,7 +280,6 @@ class Tradebot_v5:
         print("Account stop_loss_count =", self.account_stop_loss_count)
         print("Ticker stop_loss_count =", self.ticker_stop_loss_count)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Starting funds:", self.account.initial_funds)
-        print("Starting asset count:", len(self.account.initial_orders))
+        print("Starting funds:", self.initial_funds)
         print("\n~~~~~~~~~~~~~~")
         self.account.print_account_status()

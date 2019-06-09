@@ -166,7 +166,7 @@ class SETTINGS:
         self.nb_data_slices = 10
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_signal = True
+        self.plot_signal = False
         self.print_trade_process = True
 
         # ___________________________ Metalabeling settings ______________________

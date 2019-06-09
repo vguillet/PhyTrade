@@ -181,8 +181,8 @@ class RUN_single_trade_sim:
                                               print_trade_process=print_trade_process)
 
             # --> Record slice trade history
-            self.results.buy_count += len(self.individual.analysis.big_data.Major_spline.buy_dates)
-            self.results.sell_count += len(self.individual.analysis.big_data.Major_spline.sell_dates)
+            self.results.buy_count += self.individual.tradebot.buy_count
+            self.results.sell_count += self.individual.tradebot.sell_count
             self.results.stop_loss_count += self.individual.tradebot.stop_loss_count
 
             self.results.profit.append((self.individual.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)

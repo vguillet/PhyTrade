@@ -44,7 +44,7 @@ class EVOA_tools:
                 print("Parameter set", i + 1, "evaluation completed:\n")
                 print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
 
-            individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].analysis.big_data.Major_spline.trade_signal,
+            individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].trade_signal,
                                                                              data_slice.metalabels,
                                                                              calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
