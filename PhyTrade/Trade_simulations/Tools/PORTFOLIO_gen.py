@@ -14,8 +14,9 @@ class PORTFOLIO_gen:
         # ---- Initiate Portfolio parameters
         self.tradebot = None
         self.tickers = tickers
-        self.content = {}
         self.current_values = {}
+
+        self.content = {}
         for i in range(len(tickers)):
             self.create_content_entry(tickers[i], parameter_sets[i])
 
@@ -114,6 +115,7 @@ class PORTFOLIO_gen:
                     order_type = 0
                 else:
                     order_type = 1
+
                 for ticker in orders:
                     self.tradebot.perform_trade(ticker, order_type,
                                                 investment_settings, max_investment_per_trade, cash_in_settings,
