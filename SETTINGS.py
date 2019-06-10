@@ -6,24 +6,24 @@ class SETTINGS:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Metalabels_test2"
+        self.config_name = "Run_3"
 
-        # self.tickers = ["INTC", "NVDA"]
-        self.tickers = ["AAPL"]
+        self.tickers = ["INTC", "NVDA"]
+        # self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
-        self.plot_eco_model_results = True
+        self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 20
-        self.nb_of_generations = 50
+        self.population_size = 60
+        self.nb_of_generations = 250
 
         self.mutation_rate = 0.4
-        self.nb_parents = 10
-        self.nb_random_ind = 5
+        self.nb_parents = 25
+        self.nb_random_ind = 10
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
@@ -45,7 +45,7 @@ class SETTINGS:
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels", "P/M average"]
-        self.evaluation_method = 2
+        self.evaluation_method = 0
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1

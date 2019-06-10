@@ -32,20 +32,10 @@ class Individual:
 
         # analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
         if plot_eco_model_results:
-            plot_tools = PLOT_tools()
-            # ------------------ Plot Open/Close prices
-            ax1 = plt.subplot(211)
-            plot_tools.plot_oc_values(data_slice)
-            plot_tools.plot_values_trigger(data_slice, self.trade_signal)
-
-            # ------------------ Plot bb signal(s)
-            ax2 = plt.subplot(212)
-            plot_tools.plot_spline(self.spline, color="y")
-            plot_tools.plot_spline(self.analysis.big_data.Major_spline.upper_threshold, label="Upper threshold")
-            plot_tools.plot_spline(self.analysis.big_data.Major_spline.lower_threshold, label="Lower threshold")
-            plot_tools.plot_spline_trigger(self.spline, self.trade_signal)
-
-            plt.show()
+            PLOT_tools().plot_trade_process(data_slice, self.spline,
+                                            self.analysis.big_data.Major_spline.upper_threshold,
+                                            self.analysis.big_data.Major_spline.lower_threshold,
+                                            self.trade_signal)
 
     def perform_trade_run(self,
                           data_slice,

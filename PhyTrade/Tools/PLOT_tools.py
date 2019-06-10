@@ -3,6 +3,23 @@ import matplotlib.pyplot as plt
 
 class PLOT_tools:
     @staticmethod
+    def plot_trade_process(data_slice, spline, upper_threshold_spline, lower_threshold_spline, trade_signal):
+        plot_tools = PLOT_tools()
+        # ------------------ Plot Open/Close prices
+        ax1 = plt.subplot(211)
+        plot_tools.plot_oc_values(data_slice)
+        plot_tools.plot_values_trigger(data_slice, trade_signal)
+
+        # ------------------ Plot bb signal(s)
+        ax2 = plt.subplot(212)
+        plot_tools.plot_spline(spline, color="y")
+        plot_tools.plot_spline(upper_threshold_spline, label="Upper threshold")
+        plot_tools.plot_spline(lower_threshold_spline, label="Lower threshold")
+        plot_tools.plot_spline_trigger(spline, trade_signal)
+
+        plt.show()
+
+    @staticmethod
     def plot_oc_values(data_slice, plot_close_values=True, plot_open_values=True):
         """
         :param data_slice: DATA_SLICE class instance
