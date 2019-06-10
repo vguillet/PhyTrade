@@ -78,7 +78,7 @@ class RUN_single_trade_sim:
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Trade simulation \n")
+        print("Single ticker Trade simulation \n")
 
         print("Evaluated ticker:", ticker)
         print("\nStart date:", start_date)

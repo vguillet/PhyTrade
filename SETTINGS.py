@@ -6,10 +6,10 @@ class SETTINGS:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Test_run_2"
+        self.config_name = "Run_3"
 
-        # self.tickers = ["AAPL", "AMZN", "INTC", "NVDA"]
-        self.tickers = ["AAPL"]
+        self.tickers = ["INTC", "NVDA"]
+        # self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
@@ -18,20 +18,20 @@ class SETTINGS:
         self.plot_signal_triggers = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 10
-        self.nb_of_generations = 10
+        self.population_size = 60
+        self.nb_of_generations = 250
 
-        self.mutation_rate = 0.3
-        self.nb_parents = 5
-        self.nb_random_ind = 2
+        self.mutation_rate = 0.4
+        self.nb_parents = 25
+        self.nb_random_ind = 10
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_date = "2010-01-01"
+        self.data_slice_start_date = "2000-01-01"
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 0
-        self.data_slice_cycle_count = 10
+        self.data_slice_shift_per_gen = 100
+        self.data_slice_cycle_count = 5
 
         self.data_looper = False
 

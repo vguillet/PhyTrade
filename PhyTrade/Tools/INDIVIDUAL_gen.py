@@ -42,7 +42,7 @@ class Individual:
 
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        self.tradebot = Tradebot_v4(data_slice.data_slice_selection,
+        self.tradebot = Tradebot_v4(data_slice.sliced_data_selection,
                                     self.trade_signal,
                                     self.trade_spline,
                                     investment_settings=investment_settings, cash_in_settings=cash_in_settings,

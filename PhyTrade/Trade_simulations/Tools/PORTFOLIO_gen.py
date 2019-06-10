@@ -74,7 +74,7 @@ class PORTFOLIO_gen:
             # ---- Update account
             # --> Update current values
             for ticker in self.content.keys():
-                self.current_values[ticker] = self.content[ticker]["Data_slice"].data_slice_selection[i]
+                self.current_values[ticker] = self.content[ticker]["Data_slice"].sliced_data_selection[i]
 
             # --> Update tradebot account
             self.tradebot.account.update_account(date, self.current_values)

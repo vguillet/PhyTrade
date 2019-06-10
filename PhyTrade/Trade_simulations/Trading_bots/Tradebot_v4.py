@@ -11,7 +11,7 @@ from PhyTrade.Trade_simulations.Tools.S_ACCOUNT_gen import ACCOUNT
 
 class Tradebot_v4:
     def __init__(self, daily_values,
-                 trade_signal, trade_spline=[],
+                 trade_signal, trade_spline=None,
                  investment_settings=1, cash_in_settings=0,
                  initial_funds=1000,
                  initial_assets=0,
@@ -102,7 +102,8 @@ class Tradebot_v4:
             if self.print_trade_process:
                 print("----------------- Day ", i)
                 print("-------------------> Action", self.trade_actions[i])
-                print("-------------------> Signal", self.trade_spline[i])
+                if self.trade_spline is not None:
+                    print("-------------------> Signal", self.trade_spline[i])
 
             # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value
             self.account.calc_simple_investment_value(self.daily_values[i])

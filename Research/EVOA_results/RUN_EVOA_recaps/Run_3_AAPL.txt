@@ -1,24 +1,24 @@
-====================== Test_run_2 ======================
+====================== Run_3 ======================
 
 ~~~~~~~~~~~ Run configuration recap: ~~~~~~~~~~~
 
-Configuration file: Test_run_2
+Configuration file: Run_3
 
 -----------> EVO_algo main parameters:
-population_size = 10
-nb_of_generations = 10
+population_size = 60
+nb_of_generations = 250
 
-mutation_rate = 0.3
-nb_parents = 5
-nb_random_ind = 2
+mutation_rate = 0.4
+nb_parents = 25
+nb_random_ind = 10
 
 exploitation_phase_len_percent = 15.0
 
-data_slice_start_date = 2010-01-01
-data_slice_start_index = -3438
+data_slice_start_date = 2000-01-01
+data_slice_start_index = -7091
 data_slice_size = 200
-data_slice_shift_per_gen = 0
-data_slice_cycle_count = 10
+data_slice_shift_per_gen = 100
+data_slice_cycle_count = 5
 
 -----------> Generation 0 settings:
 starting_parameters: C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json
@@ -40,38 +40,38 @@ benchmark_data_slice_start_date = 2017-01-01
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
-End time: 13:03:10 06/09/19 W. Europe Daylight Time
-Run time: 209.454s
+End time: 06:36:44 06/10/19 W. Europe Daylight Time
+Run time: 25260.542s
 
-Average computing time per generation: 20.945s
+Average computing time per generation: 101.042s
 
-Number of data points processed: 200
+Number of data points processed: 5100
 Number of invalid data slices: 0
 
 -----------> Fitness results:
-Max average fitness achieved: 1384.9430166326295
-Max individual fitness achieved: 1388.2263481561954
+Max average fitness achieved: 2224.8066092229687
+Max individual fitness achieved: 2275.932399986606
 
-Average fitness best fit line gradient achieved: 22.73615309686707
-Individual fitness best fit line gradient achieved: 10.91799688888793
+Average fitness best fit line gradient achieved: -0.8521266717817815
+Individual fitness best fit line gradient achieved: -1.6989557619689313
 
 -----------> Net Worth results:
-Max average net worth achieved: 1384.9430166326295
-Max individual net worth achieved: 1388.2263481561954
+Max average net worth achieved: 2224.8066092229687
+Max individual net worth achieved: 2275.932399986606
 
-Average net worth best fit line gradient achieved: 22.73615309686707
-Individual net worth best fit line gradient achieved: 10.91799688888793
+Average net worth best fit line gradient achieved: -0.8521266717817815
+Individual net worth best fit line gradient achieved: -1.6989557619689313
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
-Fitness achieved: 57.99999999999999
-Fitness achieved bs: 0.0
+Fitness achieved: 60.0
+Fitness achieved bs: 18.181818181818183
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     6    2
-Hold    38   116   35
-Buy      0     3    0
+Sell     0     1    1
+Hold    37   118   34
+Buy      1     6    2
 
 -----------> Benchmark Confusion tables: 
 
@@ -84,62 +84,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         8
-Non-Sell    38       154
+Sell         0         2
+Non-Sell    38       160
 
 TPR = 0.0
-TNR = 0.951
+TNR = 0.988
 PPV = 0.0
-NPV = 0.802
+NPV = 0.808
 FNR = 1.0
-FPR = 0.049
+FPR = 0.012
 FDR = 1.0
-FOR = 0.198
-ACC = 0.77
+FOR = 0.192
+ACC = 0.8
 F1 = 0.0
-MCC = -0.099
-BM = -0.049
-MK = -0.198
+MCC = -0.049
+BM = -0.012
+MK = -0.192
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        0        3
-Non-Buy   37      160
+Buy        2        7
+Non-Buy   35      156
 
-TPR = 0.0
-TNR = 0.982
-PPV = 0.0
-NPV = 0.812
-FNR = 1.0
-FPR = 0.018
-FDR = 1.0
-FOR = 0.188
-ACC = 0.8
-F1 = 0.0
-MCC = -0.059
-BM = -0.018
-MK = -0.188
+TPR = 0.054
+TNR = 0.957
+PPV = 0.222
+NPV = 0.817
+FNR = 0.946
+FPR = 0.043
+FDR = 0.778
+FOR = 0.183
+ACC = 0.79
+F1 = 0.087
+MCC = 0.021
+BM = 0.011
+MK = 0.039
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       116        73
-Non-Hold     9         2
+Hold       118        71
+Non-Hold     7         4
 
-TPR = 0.928
-TNR = 0.027
-PPV = 0.614
-NPV = 0.182
-FNR = 0.072
-FPR = 0.973
-FDR = 0.386
-FOR = 0.818
-ACC = 0.59
-F1 = 0.739
-MCC = -0.096
-BM = -0.045
-MK = -0.204
+TPR = 0.944
+TNR = 0.053
+PPV = 0.624
+NPV = 0.364
+FNR = 0.056
+FPR = 0.947
+FDR = 0.376
+FOR = 0.636
+ACC = 0.61
+F1 = 0.752
+MCC = -0.006
+BM = -0.003
+MK = -0.012
 

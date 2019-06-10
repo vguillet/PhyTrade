@@ -74,7 +74,6 @@ class ACCOUNT:
 
     def start_simple_investment(self, current_value, initial_investment=1000):
         self.simple_investment_assets = initial_investment/current_value
-        print(self.simple_investment_assets)
 
     def calc_simple_investment_value(self, current_value):
         self.simple_investment_net_worth.append(self.simple_investment_assets*current_value)

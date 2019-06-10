@@ -49,7 +49,7 @@ class data_slice:
         # --> List open/closed price to be used by tradebot
         self.selection = data_selection
         self.data_selection = list(self.data[self.selection])
-        self.data_slice_selection = list(self.sliced_data[self.selection])
+        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
     def gen_slice_metalabels(self):
         """
@@ -59,7 +59,7 @@ class data_slice:
         # --> Create mock data slice and add parameters and info
         mock_data_slice = address_sim()
         mock_data_slice.data_selection = self.data_selection
-        mock_data_slice.data_slice_selection = self.data_slice_selection
+        mock_data_slice.data_slice_selection = self.sliced_data_selection
         mock_data_slice.start_index = self.start_index
         mock_data_slice.stop_index = self.stop_index
 
@@ -96,7 +96,7 @@ class data_slice:
 
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
-        self.data_slice_selection = list(self.sliced_data[self.selection])
+        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
         # --> Generate new metalabels
         self.gen_slice_metalabels()
@@ -127,7 +127,7 @@ class data_slice:
 
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
-        self.data_slice_selection = list(self.sliced_data[self.selection])
+        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
         # --> Generate new metalabels
         self.gen_slice_metalabels()
@@ -146,7 +146,7 @@ class data_slice:
 
         self.trade_signal = self.metalabels
 
-        tradebot = Tradebot_v4(self.data_slice_selection,
+        tradebot = Tradebot_v4(self.sliced_data_selection,
                                self.trade_signal,
                                investment_settings=investment_settings, cash_in_settings=cash_in_settings,
                                initial_funds=initial_funds,
