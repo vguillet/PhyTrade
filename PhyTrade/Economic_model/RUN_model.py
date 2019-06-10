@@ -49,7 +49,7 @@ class RUN_model:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ ECONOMIC ANALYSIS ================================
         # ---- Generate economic model and perform trade run
-        self.individual.gen_economic_model(self.data_slice, plot_3=True)
+        self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=True)
         self.individual.perform_trade_run(self.data_slice, print_trade_process=True)
 
         # ---- Generate evaluation summary

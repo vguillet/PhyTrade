@@ -1,27 +1,30 @@
 from PhyTrade.ML_optimisation.Metalabel_optimisation.METALABELING_gen import MetaLabeling
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
-# import matplotlib.pyplot as plt
-# from mpl_toolkits.mplot3d import Axes3D
-# from matplotlib import cm
+from PhyTrade.Tools.PLOT_tools import PLOT_tools
 from pylab import *
 import numpy as np
 
 N = 40
 ticker = "AAPL"
 
-data_slice = data_slice(ticker, "2000-01-01", 400, 0, 0, 0, 0)
+data_slice = data_slice(ticker, "2000-01-01", 400, 0, data_selection="Close")
 upper_barrier = np.linspace(1, 100, N)
 lower_barrier = np.linspace(1, 100, N)
 look_ahead = np.linspace(1, 200, N)
 
 # --> Peak-dip metalabel visualisation
-print(MetaLabeling(20, -20, 10, data_slice, metalabel_setting=0).metalabels)
-print(Tradebot_v4(list(data_slice.sliced_data_selection),
-                  MetaLabeling(0, 0, 0, data_slice, metalabel_setting=0).metalabels,
-                  cash_in_settings=0, print_trade_process=True).account.net_worth_history[-1])
+# print(MetaLabeling(20, -20, 10, data_slice, metalabel_setting=0).metalabels)
+# print(Tradebot_v4(list(data_slice.sliced_data_selection),
+#                   MetaLabeling(0, 0, 0, data_slice, metalabel_setting=0).metalabels,
+#                   cash_in_settings=0, print_trade_process=True).account.net_worth_history[-1])
 
+plot_tools = PLOT_tools()
 
+plot_tools.plot_oc_values(data_slice)
+plot_tools.plot_values_trigger(data_slice, MetaLabeling(20, -20, 10, data_slice, metalabel_setting=1).metalabels)
+
+plt.show()
 
 # print(MetaLabeling(20, -20, 10, data_slice, metalabel_setting=0).metalabels)
 #

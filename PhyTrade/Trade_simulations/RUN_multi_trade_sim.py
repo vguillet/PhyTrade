@@ -32,7 +32,7 @@ class RUN_multi_trade_sim:
         nb_data_slices = settings.nb_data_slices
 
         # --> Print parameters
-        plot_signal = settings.plot_signal
+        plot_eco_model_results = settings.plot_eco_model_results
         print_trade_process = settings.print_trade_process
 
         # --> Metalabeling settings
@@ -77,7 +77,7 @@ class RUN_multi_trade_sim:
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
                                        start_date, data_slice_size,
-                                       plot_signal=plot_signal)
+                                       plot_eco_model_results=plot_eco_model_results)
 
         self.nb_data_slices = nb_data_slices
 

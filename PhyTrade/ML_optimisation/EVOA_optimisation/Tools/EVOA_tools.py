@@ -26,7 +26,7 @@ class EVOA_tools:
     def evaluate_population(population_lst, data_slice,
                             max_worker_processes=1,
                             evaluation_setting=0,
-                            calculate_stats=False, print_evaluation_status=False, plot_3=False):
+                            calculate_stats=False, print_evaluation_status=False, plot_eco_model_results=False):
         from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
         confusion_matrix_analysis = []
@@ -40,7 +40,7 @@ class EVOA_tools:
         # -- List based evaluation
         for i in range(len(population_lst)):
 
-            population_lst[i].gen_economic_model(data_slice, plot_3=plot_3)
+            population_lst[i].gen_economic_model(data_slice, plot_eco_model_results=plot_eco_model_results)
             population_lst[i].perform_trade_run(data_slice)
 
             if print_evaluation_status:

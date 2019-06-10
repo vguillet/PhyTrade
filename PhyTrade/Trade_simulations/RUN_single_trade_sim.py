@@ -32,7 +32,7 @@ class RUN_single_trade_sim:
         nb_data_slices = settings.nb_data_slices
 
         # --> Print parameters
-        plot_signal = settings.plot_signal
+        plot_eco_model_results = settings.plot_eco_model_results
         print_trade_process = settings.print_trade_process
 
         # --> Metalabeling settings
@@ -107,7 +107,7 @@ class RUN_single_trade_sim:
         self.individual = Individual(ticker=self.ticker, parameter_set=parameter_set)
 
         # ---- Perform initial evaluation
-        self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
+        self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=plot_eco_model_results)
         self.individual.perform_trade_run(self.data_slice,
                                           investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                           prev_stop_loss=max_prev_stop_loss, max_stop_loss=max_max_stop_loss,
@@ -172,7 +172,7 @@ class RUN_single_trade_sim:
                 self.results.metalabel_net_worth += self.data_slice.metalabels_account.net_worth_history
 
             # --> Process slice
-            self.individual.gen_economic_model(self.data_slice, plot_3=plot_signal)
+            self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=plot_eco_model_results)
             self.individual.perform_trade_run(self.data_slice,
                                               investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
                                               initial_funds=self.individual.account.current_funds,

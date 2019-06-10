@@ -5,6 +5,7 @@ This prototype is based entirely on technical analysis, and include new indicato
     - LWMA
 
 The following parameters still require manual input:
+    - spline interpolation coef
     - include trigger in signals (Technical_Indicators output generation)
     - buffer and buffer settings (Threshold determination)
 
@@ -38,7 +39,6 @@ class Prototype_5:
 
         :param parameters: Dictionary of dictionaries containing the values for all the variables of each signal
         :param data_slice: data_slice class instance
-        :param data: Pandas dataframe
         """
 
         # ========================= ANALYSIS INITIALISATION ==============================
@@ -49,6 +49,7 @@ class Prototype_5:
 
         # ~~~~~~~~~~~~~~~~~~ Tools initialisation
         self.oc_tools = OC()
+        self.big_data.spline_multiplication_coef = 5
         self.spline_tools = SPLINE(self.big_data)
         self.math_tools = MATH()
 

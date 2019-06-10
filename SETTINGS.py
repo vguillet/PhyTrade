@@ -15,7 +15,7 @@ class SETTINGS:
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = True
 
-        self.plot_signal_triggers = False
+        self.plot_eco_model_results = True
 
         # ___________________________ EVO_algo main parameters ___________________
         self.population_size = 20
@@ -113,7 +113,7 @@ class SETTINGS:
         self.nb_data_slices = 10
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_signal = False
+        self.plot_eco_model_results = False
         self.print_trade_process = False
 
         # ___________________________ Metalabels parameters ______________________
@@ -172,7 +172,7 @@ class SETTINGS:
         self.nb_data_slices = 10
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_signal = False
+        self.plot_eco_model_results = False
         self.print_trade_process = True
 
         # ___________________________ Metalabels parameters ______________________

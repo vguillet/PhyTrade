@@ -19,16 +19,33 @@ class Individual:
             for j in range(len(self.parameter_dictionary[i])):
                 self.nb_of_parameters += 1
 
-    def gen_economic_model(self, data_slice, plot_3=False):
+    def gen_economic_model(self, data_slice, plot_eco_model_results=False):
         from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
+        import matplotlib.pyplot as plt
+        from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
-        analysis = Prototype_5(self.parameter_dictionary, data_slice)
+        self.analysis = Prototype_5(self.parameter_dictionary, data_slice)
 
-        self.spline = analysis.big_data.Major_spline.spline
-        self.trade_spline = analysis.big_data.Major_spline.trade_spline
-        self.trade_signal = analysis.big_data.Major_spline.trade_signal
+        self.spline = self.analysis.big_data.Major_spline.spline
+        self.trade_spline = self.analysis.big_data.Major_spline.trade_spline
+        self.trade_signal = self.analysis.big_data.Major_spline.trade_signal
 
-        analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
+        # analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
+        if plot_eco_model_results:
+            plot_tools = PLOT_tools()
+            # ------------------ Plot Open/Close prices
+            ax1 = plt.subplot(211)
+            plot_tools.plot_oc_values(data_slice)
+            plot_tools.plot_values_trigger(data_slice, self.trade_signal)
+
+            # ------------------ Plot bb signal(s)
+            ax2 = plt.subplot(212)
+            plot_tools.plot_spline(self.spline, color="y")
+            plot_tools.plot_spline(self.analysis.big_data.Major_spline.upper_threshold, label="Upper threshold")
+            plot_tools.plot_spline(self.analysis.big_data.Major_spline.lower_threshold, label="Lower threshold")
+            plot_tools.plot_spline_trigger(self.spline, self.trade_signal)
+
+            plt.show()
 
     def perform_trade_run(self,
                           data_slice,

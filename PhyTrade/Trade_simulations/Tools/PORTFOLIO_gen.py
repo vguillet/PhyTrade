@@ -6,9 +6,9 @@ from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 class PORTFOLIO_gen:
     def __init__(self, tickers, parameter_sets,
                  start_date, data_slice_size,
-                 plot_signal=False):
+                 plot_eco_model_results=False):
 
-        self.plot_signal = plot_signal
+        self.plot_eco_model_results = plot_eco_model_results
 
         # ---- Initiate Portfolio parameters
         self.tradebot = None
@@ -26,7 +26,8 @@ class PORTFOLIO_gen:
         # ---- Generate initial economic models
         print("-- Generating initial economic models --")
         for ticker in self.content.keys():
-            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"], plot_3=self.plot_signal)
+            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"],
+                                                                  plot_eco_model_results=self.plot_eco_model_results)
             print(ticker, "model generated")
         print("")
 
@@ -40,7 +41,8 @@ class PORTFOLIO_gen:
             self.content[ticker]["Data_slice"].get_next_data_slice()
 
             # --> Gen next economic model
-            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"], plot_3=self.plot_signal)
+            self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"],
+                                                                  plot_eco_model_results=self.plot_eco_model_results)
 
             # --> Update counter
             self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size

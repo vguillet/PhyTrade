@@ -149,7 +149,7 @@ class EVOA_optimiser:
                                                     evaluation_setting=settings.evaluation_method,
                                                     max_worker_processes=settings.max_worker_processes,
                                                     print_evaluation_status=settings.print_evaluation_status,
-                                                    plot_3=settings.plot_signal_triggers)
+                                                    plot_eco_model_results=settings.plot_eco_model_results)
 
             if settings.evaluation_method == 1 and sum(self.fitness_evaluation) == 0:
                 self.results.invalid_slice_count += 1

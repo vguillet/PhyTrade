@@ -12,7 +12,7 @@ class SPLINE:
         import numpy as np
 
         x = np.array(range(len(big_data.data_slice_dates)))
-        xs = np.linspace(0, len(big_data.data_slice_dates), len(big_data.data_slice_dates) * 5)
+        xs = np.linspace(0, len(big_data.data_slice_dates), len(big_data.data_slice_dates) * big_data.spline_multiplication_coef)
 
         setattr(big_data, "spline_x", x)
         setattr(big_data, "spline_xs", xs)
