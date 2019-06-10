@@ -77,7 +77,6 @@ class RUN_multi_trade_sim:
         # ---- Initiate run parameters
         self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
                                        start_date, data_slice_size,
-                                       self.upper_barrier, self.lower_barrier, self.look_ahead,
                                        plot_signal=plot_signal)
 
         self.nb_data_slices = nb_data_slices
@@ -97,7 +96,7 @@ class RUN_multi_trade_sim:
         # Ticker stop-losses
         self.current_ticker_prev_stop_loss = max_ticker_prev_stop_loss
 
-        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, 0, 0, 0, data_looper=False)
+        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, data_looper=False)
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)

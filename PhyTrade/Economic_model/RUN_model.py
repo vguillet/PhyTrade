@@ -27,8 +27,9 @@ class RUN_model:
         self.parameter_set = parameter_set
 
         # ---- Generate data slice
-        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0, 0, 0, look_ahead)
-        self.data_slice.gen_slice_metalabels()
+        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0)
+        self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                             settings.metalabeling_setting)
         self.data_slice.perform_trade_run()
 
         # ---- Generate Individual

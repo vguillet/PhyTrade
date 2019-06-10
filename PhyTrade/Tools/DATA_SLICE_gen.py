@@ -10,7 +10,6 @@ import numpy as np
 
 class data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
-                 upper_barrier, lower_barrier, look_ahead,
                  data_selection="Open", data_looper=True):
 
         self.ticker = ticker
@@ -35,12 +34,6 @@ class data_slice:
         self.default_start_slice_index = self.start_index
         self.default_slice_size = slice_size
 
-        # ---- Metalabels properties
-        self.upper_barrier = upper_barrier
-        self.lower_barrier = lower_barrier
-
-        self.look_ahead = look_ahead
-
         # ---- Data slice settings
         # --> Disable/enable  data looping
         self.data_looper = data_looper
@@ -51,22 +44,27 @@ class data_slice:
         self.data_selection = list(self.data[self.selection])
         self.sliced_data_selection = list(self.sliced_data[self.selection])
 
-    def gen_slice_metalabels(self):
+    def gen_slice_metalabels(self, upper_barrier, lower_barrier, look_ahead, metalabeling_setting=0):
         """
         Generate metalabels for a specific data slice. Only necessary to be ran when a
         dataslice instance is initiated.
+
+        :param upper_barrier: Upper barrier to be used
+        :param lower_barrier: Lower barrier to be used
+        :param look_ahead: Look ahead to be used
+        :param metalabeling_setting: Metalabeling method to be used
         """
         # --> Create mock data slice and add parameters and info
         mock_data_slice = address_sim()
         mock_data_slice.data_selection = self.data_selection
-        mock_data_slice.data_slice_selection = self.sliced_data_selection
+        mock_data_slice.sliced_data_selection = self.sliced_data_selection
         mock_data_slice.start_index = self.start_index
         mock_data_slice.stop_index = self.stop_index
 
-        self.metalabels = MetaLabeling(self.upper_barrier, self.lower_barrier,
-                                       self.look_ahead,
+        self.metalabels = MetaLabeling(upper_barrier, lower_barrier,
+                                       look_ahead,
                                        mock_data_slice,
-                                       metalabel_setting=0).metalabels
+                                       metalabel_setting=metalabeling_setting).metalabels
         return
 
     def get_next_data_slice(self):
@@ -98,10 +96,6 @@ class data_slice:
         self.sliced_data = self.data[self.start_index:self.stop_index]
         self.sliced_data_selection = list(self.sliced_data[self.selection])
 
-        # --> Generate new metalabels
-        self.gen_slice_metalabels()
-        return
-
     def get_shifted_data_slice(self):
         # --> Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
@@ -128,10 +122,6 @@ class data_slice:
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
         self.sliced_data_selection = list(self.sliced_data[self.selection])
-
-        # --> Generate new metalabels
-        self.gen_slice_metalabels()
-        return
 
     def perform_trade_run(self,
                           investment_settings=1, cash_in_settings=0,

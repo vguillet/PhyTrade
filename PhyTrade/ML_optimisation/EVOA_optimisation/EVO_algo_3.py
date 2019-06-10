@@ -23,23 +23,19 @@ class EVOA_optimiser:
                                      settings.data_slice_start_date,
                                      settings.data_slice_size,
                                      settings.data_slice_shift_per_gen,
-                                     settings.upper_barrier,
-                                     settings.lower_barrier,
-                                     settings.look_ahead,
                                      data_looper=settings.data_looper)
 
-        self.data_slice.gen_slice_metalabels()
+        self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                             settings.metalabeling_setting)
 
         # -- Initialise benchmark data slice
         self.benchmark_data_slice = data_slice(ticker,
                                                settings.benchmark_data_slice_start_date,
                                                settings.benchmark_data_slice_size,
-                                               0,
-                                               settings.upper_barrier,
-                                               settings.lower_barrier,
-                                               settings.look_ahead)
+                                               0)
 
-        self.benchmark_data_slice.gen_slice_metalabels()
+        self.benchmark_data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                                       settings.metalabeling_setting)
 
         # -- Initialise tools and counters
         self.evoa_tools = EVOA_tools()
@@ -103,6 +99,8 @@ class EVOA_optimiser:
                 self.data_slice_cycle_count += 1
                 if self.data_slice_cycle_count > settings.data_slice_cycle_count:
                     self.data_slice.get_shifted_data_slice()
+                    self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                                         settings.metalabeling_setting)
                     self.data_slice_cycle_count = 1
 
                     if self.data_slice.end_of_dataset is True:

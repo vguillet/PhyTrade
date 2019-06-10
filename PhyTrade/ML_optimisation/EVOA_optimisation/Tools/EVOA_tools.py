@@ -29,9 +29,13 @@ class EVOA_tools:
                             calculate_stats=False, print_evaluation_status=False, plot_3=False):
         from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
-        metalabel_accuracies = []
         confusion_matrix_analysis = []
+        metalabel_accuracies = []
         net_worth = []
+
+        data_slice.perform_trade_run()
+        metalabel_net_worth = data_slice.metalabels_account.net_worth_history[-1]
+        net_worth_percentage = []
 
         # -- List based evaluation
         for i in range(len(population_lst)):
@@ -49,9 +53,16 @@ class EVOA_tools:
                                                                              calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
 
+            # --> Save evaluations
             confusion_matrix_analysis.append(individual_confusion_matrix_analysis)
+
+            # --> Save metalabel accuracies
             metalabel_accuracies.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
+
+            # --> Save net worth
             net_worth.append(population_lst[i].account.net_worth_history[-1])
+
+            net_worth_percentage.append((metalabel_net_worth - net_worth[-1]) / metalabel_net_worth*100)
 
         # -- Multi-process evaluation
         # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
@@ -65,10 +76,19 @@ class EVOA_tools:
         #
         # accuracies_achieved = MATH().normalise_zero_one(profit_achieved)
 
+        # --> Perform evaluation based on net worth
         if evaluation_setting == 0:
             fitness_evaluation = net_worth
+
+        # --> Perform evaluation based on metalabels accuracies
         elif evaluation_setting == 1:
             fitness_evaluation = metalabel_accuracies
+
+        # --> Perform evaluation based on the average of net worth and metalabel accuracies
+        elif evaluation_setting == 2:
+            fitness_evaluation = []
+            for i in range(len(population_lst)):
+                fitness_evaluation.append((net_worth_percentage[i]+metalabel_accuracies[i])/2)
 
         return fitness_evaluation, metalabel_accuracies, confusion_matrix_analysis, net_worth
 

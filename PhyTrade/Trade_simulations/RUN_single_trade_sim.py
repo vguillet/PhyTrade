@@ -93,9 +93,9 @@ class RUN_single_trade_sim:
 
         # ---- Generate data slice
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
-                                     self.upper_barrier, self.lower_barrier, self.look_ahead,
                                      data_looper=False)
-        self.data_slice.gen_slice_metalabels()
+        self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                             settings.metalabeling_setting)
 
         if self.run_metalabels is True:
             self.data_slice.perform_trade_run(investment_settings=self.m_investment_settings,
@@ -131,6 +131,8 @@ class RUN_single_trade_sim:
             print("================== Data slice", i+1, "==================")
             # --> Calc new data slice parameters
             self.data_slice.get_next_data_slice()
+            self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                                 settings.metalabeling_setting)
 
             print(self.data_slice.start_date, "-->", self.data_slice.stop_date)
             print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])

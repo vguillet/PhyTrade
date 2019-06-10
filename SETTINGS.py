@@ -6,10 +6,10 @@ class SETTINGS:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_3"
+        self.config_name = "Metalabels_test2"
 
-        self.tickers = ["INTC", "NVDA"]
-        # self.tickers = ["AAPL"]
+        # self.tickers = ["INTC", "NVDA"]
+        self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
@@ -18,12 +18,12 @@ class SETTINGS:
         self.plot_signal_triggers = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 60
-        self.nb_of_generations = 250
+        self.population_size = 20
+        self.nb_of_generations = 50
 
         self.mutation_rate = 0.4
-        self.nb_parents = 25
-        self.nb_random_ind = 10
+        self.nb_parents = 10
+        self.nb_random_ind = 5
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
@@ -44,8 +44,8 @@ class SETTINGS:
         self.starting_parameters = None
 
         # -- Generations settings
-        self.evaluation_methods = ["Profit", "MetaLabels"]
-        self.evaluation_method = 0
+        self.evaluation_methods = ["Profit", "MetaLabels", "P/M average"]
+        self.evaluation_method = 2
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
@@ -59,14 +59,21 @@ class SETTINGS:
         self.max_worker_processes = multiprocessing.cpu_count() - 1
 
         # ___________________________ Benchmark parameters _______________________
-        # -- Metalabeling settings:
-        self.upper_barrier = 20
-        self.lower_barrier = -20
-        self.look_ahead = 10
-
         # -- Benchmarking data slice settings
         self.benchmark_data_slice_start_date = "2017-01-01"
         self.benchmark_data_slice_size = 200
+
+        # ___________________________ Metalabels parameters ______________________
+        self.gen_metalabels_settings()
+
+    # =============================== METALABELING SETTINGS =======================
+    def gen_metalabels_settings(self):
+        # -- Metalabeling settings:
+        self.metalabeling_setting = 0
+
+        self.upper_barrier = 20
+        self.lower_barrier = -20
+        self.look_ahead = 10
 
     # =============================== TRADEBOT SETTINGS ===========================
     def gen_tradebot_settings(self):
@@ -89,7 +96,9 @@ class SETTINGS:
 
         self.start_date = "2000-01-01"
         self.data_slice_size = 200
-        self.look_ahead = 12
+
+        # ___________________________ Metalabels parameters ______________________
+        self.gen_metalabels_settings()
 
     # =============================== SINGLE TRADE SIM SETTINGS ===================
     def gen_single_trade_sim(self):
@@ -107,12 +116,9 @@ class SETTINGS:
         self.plot_signal = False
         self.print_trade_process = False
 
-        # ___________________________ Metalabeling settings ______________________
+        # ___________________________ Metalabels parameters ______________________
         self.run_metalabels = False     # Can be switched off for performance increase
-
-        self.upper_barrier = 20
-        self.lower_barrier = -20
-        self.look_ahead = 10
+        self.gen_metalabels_settings()
 
         self.m_investment_settings = 1
         self.m_cash_in_settings = 0
@@ -169,10 +175,8 @@ class SETTINGS:
         self.plot_signal = False
         self.print_trade_process = True
 
-        # ___________________________ Metalabeling settings ______________________
-        self.upper_barrier = 20
-        self.lower_barrier = -20
-        self.look_ahead = 10
+        # ___________________________ Metalabels parameters ______________________
+        self.gen_metalabels_settings()
 
         # ___________________________ Investment settings ________________________
         self.investment_settings = 3

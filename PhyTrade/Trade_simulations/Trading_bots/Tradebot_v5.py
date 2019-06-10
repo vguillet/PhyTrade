@@ -218,8 +218,6 @@ class Tradebot_v5:
 
         # ----- Define buy action
         elif trade_action == -1:
-            print("---------------------------------------------------> trade action", trade_action)
-
             # --> Calculate investment per trade
             investment_per_trade = self.calc_investment_value(investment_settings=investment_settings,
                                                               max_investment_per_trade=max_investment_per_trade,
