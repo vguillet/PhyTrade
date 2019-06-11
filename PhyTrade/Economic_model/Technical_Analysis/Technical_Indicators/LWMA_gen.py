@@ -57,51 +57,34 @@ class LWMA:
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when LWMAs crosses daily value
         """
-
-        self.data_values = big_data.data_slice_close_values
-
-        # ----------------- Trigger points determination
-        sell_dates = []
-        buy_dates = []
-
-        # lwma config can take two values, 0 for when lwma is higher than the close value, and 1 for the other way around
-        if self.lwma[0] > self.data_values[0]:
-            lwma_config = 0
-        else:
-            lwma_config = 1
-
-        for i in range(len(big_data.data_slice)):
-            if lwma_config == 0:
-                if self.data_values[i] > self.lwma[i]:
-                    sell_dates.append(big_data.data_slice_dates[i])
-                    lwma_config = 1
-            else:
-                if self.lwma[i] > self.data_values[i]:
-                    buy_dates.append(big_data.data_slice_dates[i])
-                    lwma_config = 0
-
-        self.sell_dates = sell_dates
-        self.buy_dates = buy_dates
-
-        # ----------------- Bear/Bullish continuous signal
-        bb_signal = []
-
-        for i in range(len(big_data.data_slice)):
-            bb_signal.append((self.lwma[i] - self.data_values[i]) / 2)
-
-        # Normalising lwma bb signal values between -1 and 1
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        bb_signal_normalised = MATH_tools().normalise_minus_one_one(bb_signal)
+        # ----------------- Bear/Bullish continuous signal
+        self.bb_signal = np.zeros(big_data.data_slice.slice_size)
+
+        for i in range(big_data.data_slice.slice_size):
+            self.bb_signal[i] = (self.lwma[i] - big_data.data_slice.sliced_data_selection[i]) / 2
+
+        # Normalising lwma bb signal values between -1 and 1
+        self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
 
         if include_triggers_in_bb_signal:
-            for date in self.sell_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+            # ----------------- Trigger points determination
+            # lwma config can take two values, 0 for when lwma is higher than the close value, and 1 for the other way around
+            if self.lwma[0] > big_data.data_slice.sliced_data_selection[0]:
+                lwma_config = 0
+            else:
+                lwma_config = 1
 
-            for date in self.buy_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
-
-        self.bb_signal = bb_signal_normalised
+            for i in range(big_data.data_slice.slice_size):
+                if lwma_config == 0:
+                    if big_data.data_slice.sliced_data_selection[i] > self.lwma[i]:
+                        self.bb_signal[i] = 1
+                        lwma_config = 1
+                else:
+                    if self.lwma[i] > big_data.data_slice.sliced_data_selection[i]:
+                        self.bb_signal[i] = -1
+                        lwma_config = 0
 
     """
 

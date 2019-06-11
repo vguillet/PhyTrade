@@ -53,49 +53,34 @@ class SMA:
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when SMAs cross
         """
-
-        # ----------------- Trigger points determination
-        sell_dates = []
-        buy_dates = []
-
-        # sma config can take two values, 0 for when sma_1 is higher than sma_2, and 2 for the other way around
-        if self.sma_1[0] > self.sma_2[0]:
-            sma_config = 0
-        else:
-            sma_config = 1
-
-        for i in range(len(big_data.data_slice)):
-            if sma_config == 0:
-                if self.sma_2[i] > self.sma_1[i]:
-                    sell_dates.append(big_data.data_slice_dates[i])
-                    sma_config = 1
-            else:
-                if self.sma_1[i] > self.sma_2[i]:
-                    buy_dates.append(big_data.data_slice_dates[i])
-                    sma_config = 0
-
-        self.sell_dates = sell_dates
-        self.buy_dates = buy_dates
-
-        # ----------------- Bear/Bullish continuous signal
-        bb_signal = []
-
-        for i in range(len(big_data.data_slice)):
-            bb_signal.append((self.sma_1[i] - self.sma_2[i])/2)
-
-        # Normalising sma bb signal values between -1 and 1
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        bb_signal_normalised = MATH_tools().normalise_minus_one_one(bb_signal)
+        # ----------------- Bear/Bullish continuous signal
+        self.bb_signal = np.zeros(big_data.data_slice.slice_size)
+
+        for i in range(big_data.data_slice.slice_size):
+            self.bb_signal[i] = (self.sma_1[i] - self.sma_2[i])/2
+
+        # Normalising sma bb signal values between -1 and 1
+        self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
 
         if include_triggers_in_bb_signal:
-            for date in self.sell_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+            # ----------------- Trigger points determination
+            # sma config can take two values, 0 for when sma_1 is higher than sma_2, and 2 for the other way around
+            if self.sma_1[0] > self.sma_2[0]:
+                sma_config = 0
+            else:
+                sma_config = 1
 
-            for date in self.buy_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
-
-        self.bb_signal = bb_signal_normalised
+            for i in range(big_data.data_slice.slice_size):
+                if sma_config == 0:
+                    if self.sma_2[i] > self.sma_1[i]:
+                        self.bb_signal[i] = 1
+                        sma_config = 1
+                else:
+                    if self.sma_1[i] > self.sma_2[i]:
+                        self.bb_signal[i] = -1
+                        sma_config = 0
 
     """
 

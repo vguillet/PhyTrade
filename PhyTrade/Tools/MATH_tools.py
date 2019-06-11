@@ -1,33 +1,33 @@
+import numpy as np
 
 
 class MATH_tools:
     @staticmethod
     def normalise_zero_one(signal):
-        
-        signal_normalised = []
+
+        signal_normalised = np.zeros(len(signal))
         
         for i in range(len(signal)):
-            signal_normalised.append((signal[i]-min(signal))/((max(signal)-min(signal)) or 1))
+            signal_normalised[i] = (signal[i]-min(signal))/((max(signal)-min(signal)) or 1)
         
         return signal_normalised
     
     @staticmethod
     def normalise_minus_one_one(signal):
-
-        signal_normalised = []
+        signal_normalised = np.zeros(len(signal))
 
         for i in range(len(signal)):
-            signal_normalised.append(2*(signal[i] - min(signal)) / ((max(signal) - min(signal)) or 1)-1)
+            signal_normalised[i] = 2*(signal[i] - min(signal)) / ((max(signal) - min(signal)) or 1)-1
 
         return signal_normalised
 
     @staticmethod
     def amplify(signal, amplification_factor):
 
-        signal_amplified = []
+        signal_amplified = np.zeros(len(signal))
 
-        for i in signal:
-            signal_amplified.append(i*amplification_factor)
+        for i in range(len(signal)):
+            signal_amplified[i] = signal[i]*amplification_factor
 
         return signal_amplified
 

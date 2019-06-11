@@ -42,12 +42,12 @@ class EMA:
 
             # ------------------ Calculate values falling in timeperiod_1 and 2
             timeperiod_1_close_values = np.array(big_data.data_slice.data_selection[
-                                                  big_data.data_slice.start_index+i-self.timeperiod_1+1:
-                                                  big_data.data_slice.start_index+i+1])[::-1]
+                                                 big_data.data_slice.start_index+i-self.timeperiod_1+1:
+                                                 big_data.data_slice.start_index+i+1])[::-1]
 
             timeperiod_2_close_values = np.array(big_data.data_slice.data_selection[
-                                                  big_data.data_slice.start_index+i-self.timeperiod_2+1:
-                                                  big_data.data_slice.start_index+i+1])[::-1]
+                                                 big_data.data_slice.start_index+i-self.timeperiod_2+1:
+                                                 big_data.data_slice.start_index+i+1])[::-1]
 
             # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
             self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
@@ -56,11 +56,11 @@ class EMA:
         self.ema_1[0] = self.sma_1[0]
         self.ema_2[0] = self.sma_2[0]
 
-        for i in range(1, big_data.data_slice.slice_size):
-            # ------------------ Calculate the multiplier for weighting the EMA
-            multiplier_1 = 2 / (self.timeperiod_1 + 1)
-            multiplier_2 = 2 / (self.timeperiod_2 + 1)
+        # ------------------ Calculate the multiplier for weighting the EMA
+        multiplier_1 = 2 / (self.timeperiod_1 + 1)
+        multiplier_2 = 2 / (self.timeperiod_2 + 1)
 
+        for i in range(1, big_data.data_slice.slice_size):
             # ------------------ Calculate the EMA
             self.ema_1[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_1[i-1]*multiplier_1 + self.ema_1[i-1]
             self.ema_2[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_2[i-1]*multiplier_2 + self.ema_2[i-1]
@@ -73,49 +73,34 @@ class EMA:
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when EMAs cross
         """
-
-        # ----------------- Trigger points determination
-        sell_dates = []
-        buy_dates = []
-
-        # ema config can take two values, 0 for when ema_1 is higher than ema_2, and 2 for the other way around
-        if self.ema_1[0] > self.ema_2[0]:
-            ema_config = 0
-        else:
-            ema_config = 1
-
-        for i in range(len(big_data.data_slice)):
-            if ema_config == 0:
-                if self.ema_2[i] > self.ema_1[i]:
-                    sell_dates.append(big_data.data_slice_dates[i])
-                    ema_config = 1
-            else:
-                if self.ema_1[i] > self.ema_2[i]:
-                    buy_dates.append(big_data.data_slice_dates[i])
-                    ema_config = 0
-
-        self.sell_dates = sell_dates
-        self.buy_dates = buy_dates
-
-        # ----------------- Bear/Bullish continuous signal
-        bb_signal = []
-
-        for i in range(len(big_data.data_slice)):
-            bb_signal.append((self.ema_1[i] - self.ema_2[i])/2)
-
-        # Normalising ema bb signal values between -1 and 1
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        bb_signal_normalised = MATH_tools().normalise_minus_one_one(bb_signal)
+        # ----------------- Bear/Bullish continuous signal
+        self.bb_signal = np.zeros(big_data.data_slice.slice_size)
+
+        for i in range(big_data.data_slice.slice_size):
+            self.bb_signal[i] = (self.ema_1[i] - self.ema_2[i])/2
+
+        # Normalising ema bb signal values between -1 and 1
+            self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
 
         if include_triggers_in_bb_signal:
-            for date in self.sell_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+            # ----------------- Trigger points determination
+            # ema config can take two values, 0 for when ema_1 is higher than ema_2, and 2 for the other way around
+            if self.ema_1[0] > self.ema_2[0]:
+                ema_config = 0
+            else:
+                ema_config = 1
 
-            for date in self.buy_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
-
-        self.bb_signal = bb_signal_normalised
+            for i in range(big_data.data_slice.slice_size):
+                if ema_config == 0:
+                    if self.ema_2[i] > self.ema_1[i]:
+                        self.bb_signal[i] = 1
+                        ema_config = 1
+                else:
+                    if self.ema_1[i] > self.ema_2[i]:
+                        self.bb_signal[i] = -1
+                        ema_config = 0
 
     """
 

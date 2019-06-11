@@ -9,6 +9,26 @@ class SETTINGS:
 
         # ___________________________ RSI parameters _____________________________
         self.buffer_setting = 0
+        self.rsi_include_triggers_in_bb_signal = True
+
+        # ___________________________ SMA parameters _____________________________
+        self.sma_include_triggers_in_bb_signal = True
+
+        # ___________________________ EMA parameters _____________________________
+        self.ema_include_triggers_in_bb_signal = True
+
+        # ___________________________ LWMA parameters ____________________________
+        self.lwma_include_triggers_in_bb_signal = True
+
+        # ___________________________ Modulation parameters ______________________
+        # TODO: Add to evoa algo
+        self.volume_std_dev_max = 3
+        self.volatility_std_dev_max = 3
+
+        # ___________________________ Threshold parameters _______________________
+        self.buffer_setting = 1
+        # TODO: Add to evoa algo
+        self.buffer = 0.05
 
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):

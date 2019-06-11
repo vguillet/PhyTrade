@@ -147,68 +147,42 @@ class RSI:
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when RSI crosses upper/lower bound
         """
-
-        # -----------------Trigger points determination
-        sell_dates = []
-        buy_dates = []
-
-        sell_rsi = []
-        buy_rsi = []
-
-        # Buy and sell triggers can take three values:
-        # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
-        sell_trigger = 0
-        buy_trigger = 0
-
-        # Defining indicator trigger for...
-        for i in range(len(big_data.data_slice)):
-
-            # ...upper bound
-            if self.rsi_values[i] >= self.standard_upper_threshold and sell_trigger == 0:  # Initiate sell trigger
-                sell_trigger = 1
-
-            if self.rsi_values[i] <= self.upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
-                sell_dates.append(big_data.data_slice_dates[i])
-                sell_rsi.append(self.rsi_values[i])
-
-                sell_trigger = 2
-
-            if self.rsi_values[i] < self.standard_upper_threshold and sell_trigger == 2:  # Reset trigger
-                sell_trigger = 0
-
-            # ...lower bound
-            if self.rsi_values[i] <= self.standard_lower_threshold and buy_trigger == 0:  # Initiate buy trigger
-                buy_trigger = 1
-
-            if self.rsi_values[i] >= self.lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
-                buy_dates.append(big_data.data_slice_dates[i])
-                buy_rsi.append(self.rsi_values[i])
-
-                buy_trigger = 2
-
-            if self.rsi_values[i] > self.standard_lower_threshold and sell_trigger == 2:  # Reset trigger
-                buy_trigger = 0
-
-        self.sell_rsi = sell_rsi
-        self.buy_rsi = buy_rsi
-
-        self.sell_dates = sell_dates
-        self.buy_dates = buy_dates
-
-        # -----------------Bear/Bullish continuous signal
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
+        # -----------------Bear/Bullish continuous signal
         # Normalising rsi bb signal values between -1 and 1
-        bb_signal_normalised = MATH_tools().normalise_minus_one_one(self.rsi_values)
+        self.bb_signal = MATH_tools().normalise_minus_one_one(self.rsi_values)
 
         if include_triggers_in_bb_signal:
-            for date in self.sell_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 1
+            # -----------------Trigger points determination
+            # Buy and sell triggers can take three values:
+            # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
+            sell_trigger = 0
+            buy_trigger = 0
 
-            for date in self.buy_dates:
-                bb_signal_normalised[big_data.data_slice_dates.index(date)] = 0
+            # Defining indicator trigger for...
+            for i in range(big_data.data_slice.slice_size):
+                # ...upper bound
+                if self.rsi_values[i] >= self.standard_upper_threshold and sell_trigger == 0:  # Initiate sell trigger
+                    sell_trigger = 1
 
-        self.bb_signal = bb_signal_normalised
+                if self.rsi_values[i] <= self.upper_bound[i] and sell_trigger == 1:  # Trigger sell signal
+                    self.bb_signal[i] = 1
+                    sell_trigger = 2
+
+                if self.rsi_values[i] < self.standard_upper_threshold and sell_trigger == 2:  # Reset trigger
+                    sell_trigger = 0
+
+                # ...lower bound
+                if self.rsi_values[i] <= self.standard_lower_threshold and buy_trigger == 0:  # Initiate buy trigger
+                    buy_trigger = 1
+
+                if self.rsi_values[i] >= self.lower_bound[i] and buy_trigger == 1:  # Trigger buy signal
+                    self.bb_signal[i] = -1
+                    buy_trigger = 2
+
+                if self.rsi_values[i] > self.standard_lower_threshold and sell_trigger == 2:  # Reset trigger
+                    buy_trigger = 0
 
     """
 
