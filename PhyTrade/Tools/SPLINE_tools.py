@@ -215,20 +215,16 @@ class SPLINE:
         return upper_threshold, lower_threshold
 
     @staticmethod
-    def calc_spline_trigger(big_data, spline, upper_threshold, lower_threshold):
+    def calc_trading_spline(big_data, spline, upper_threshold, lower_threshold):
 
-        sell_dates = []
-        buy_dates = []
-
-        sell_spline = []
-        buy_spline = []
+        trade_signal = np.zeros(big_data.data_slice.slice_size)
 
         # Listing out point of spline which are date points
-        dates_points = []
+        trade_spline = []
 
-        for i in range(0, len(big_data.spline_xs)):
-            if i % int(int(len(big_data.spline_xs)/len(big_data.data_slice_dates))) == 0:
-                dates_points.append(i)
+        for i in range(0, len(spline)):
+            if i % int(int(len(big_data.spline_xs)/big_data.data_slice.slice_size)) == 0:
+                trade_spline.append(spline[i])
 
         # Buy and sell triggers can take three values:
         # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
@@ -239,46 +235,44 @@ class SPLINE:
         min_prev = None
 
         # Defining indicator trigger for...
-        for i in dates_points:
+        for i in range(big_data.data_slice.slice_size):
             # ...upper bound
-            if spline[i] >= upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
+            if trade_spline[i] >= upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                 sell_trigger = 1
 
             if max_prev is not None:        # Re-initiate sell trigger if signal increase past previous max
-                if spline[i] > max_prev:
+                if trade_spline[i] > max_prev:
                     sell_trigger = 1
                     max_prev = None
 
-            if spline[i] <= max(list(upper_threshold[i-j] for j in range(10))) and sell_trigger == 1:   # Initiate sell trigger
-                sell_dates.append(big_data.data_slice_dates[dates_points.index(i)])
-                sell_spline.append(spline[i])
-                max_prev = spline[i]
+            if trade_spline[i] <= max(list(upper_threshold[i-j] for j in range(10))) and sell_trigger == 1:   # Initiate sell trigger
+                trade_signal[i] = 1
+                max_prev = trade_spline[i]
                 sell_trigger = 2
 
-            if spline[i] <= min(upper_threshold) and sell_trigger == 2:   # Reset trigger
+            if trade_spline[i] <= min(upper_threshold) and sell_trigger == 2:   # Reset trigger
                 max_prev = None
                 sell_trigger = 0
 
             # ...lower bound
-            if spline[i] <= lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
+            if trade_spline[i] <= lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                 buy_trigger = 1
 
             if min_prev is not None:        # Re-initiate buy trigger if signal decrease past previous min
-                if spline[i] < min_prev:
+                if trade_spline[i] < min_prev:
                     buy_trigger = 1
                     min_prev = None
 
-            if spline[i] >= min(list(lower_threshold[i-j] for j in range(10))) and buy_trigger == 1:    # Initiate sell trigger
-                buy_dates.append(big_data.data_slice_dates[dates_points.index(i)])
-                buy_spline.append(spline[i])
-                min_prev = spline[i]
+            if trade_spline[i] >= min(list(lower_threshold[i-j] for j in range(10))) and buy_trigger == 1:    # Initiate sell trigger
+                trade_signal[i] = -1
+                min_prev = trade_spline[i]
                 buy_trigger = 2
 
-            if spline[i] >= max(lower_threshold) and buy_trigger == 2:    # Reset trigger
+            if trade_spline[i] >= max(lower_threshold) and buy_trigger == 2:    # Reset trigger
                 min_prev = None
                 buy_trigger = 0
 
-        return sell_dates, buy_dates, sell_spline, buy_spline
+        return trade_signal, trade_spline
 
     @staticmethod
     def plot_spline_trigger(big_data,  spline, sell_dates, buy_dates):
