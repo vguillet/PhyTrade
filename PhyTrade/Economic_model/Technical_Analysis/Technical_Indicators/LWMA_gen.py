@@ -7,6 +7,7 @@ moving averages (EMA).
 Victor Guillet
 11/28/2018
 """
+import numpy as np
 
 
 class LWMA:
@@ -20,28 +21,33 @@ class LWMA:
         """
 
         self.lookback_period = lookback_period
-        self.lwma = []
+        self.lwma = np.zeros(big_data.data_slice.slice_size)
 
-        for i in range(len(big_data.data_slice)):
-            # ------------------ Calculate close values falling in timeperiod_1 and 2
-            lookback_period_close_values = []
+        for i in range(big_data.data_slice.slice_size):
 
-            for j in range(self.lookback_period):
-                lookback_period_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
+            # --> Adjust timeframe if necessary
+            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.lookback_period:
+                self.lookback_period = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+
+            # ------------------ Calculate values falling in timeperiod_1 and 2
+            lookback_period_values = np.array(big_data.data_slice.data_selection[
+                                              big_data.data_slice.start_index + i - self.lookback_period + 1:
+                                              big_data.data_slice.start_index + i + 1])[::-1]
 
             # ---> Compute weights for each days based on max weight param and lookback period
-            weights = []
+            weights = np.zeros(big_data.data_slice.slice_size)
+
             for j in range(self.lookback_period):
-                weights.append(max_weight-(max_weight/self.lookback_period)*j)
+                weights[j] = max_weight-(max_weight/self.lookback_period)*j
             # print(weights)
-            weights.reverse()
+            weights = weights[::-1]
 
             # ---> Compute weighted daily values
-            weighted_values = []
+            weighted_values = np.zeros(big_data.data_slice.slice_size)
             for j in range(self.lookback_period):
-                weighted_values.append(lookback_period_close_values[j]*weights[j])
+                weighted_values[j] = lookback_period_values[j]*weights[j]
 
-            self.lwma.append(sum(weighted_values)/sum(weights))
+            self.lwma[i] = sum(weighted_values)/sum(weights)
 
             # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):

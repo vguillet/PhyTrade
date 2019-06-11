@@ -7,6 +7,7 @@ a simple moving average (SMA), which applies an equal weight to all observations
 Victor Guillet
 11/28/2018
 """
+import numpy as np
 
 
 class EMA:
@@ -18,41 +19,51 @@ class EMA:
         :param timeperiod_1: First Timeframe parameter to be used
         :param timeperiod_2: Second Timeframe parameter to be used
         """
+        # --> EMA initialisation
         self.timeperiod_1 = timeperiod_1
         self.timeperiod_2 = timeperiod_2
 
-        # -------------------------- SMA CALCULATION ---------------------------
-        self.sma_1 = []
-        self.sma_2 = []
+        # -------------------------- EMA CALCULATION ---------------------------
+        self.ema_1 = np.zeros(big_data.data_slice.slice_size)
+        self.ema_2 = np.zeros(big_data.data_slice.slice_size)
 
-        for i in range(len(big_data.data_slice)):
+        # --> SMA CALCULATION
+        self.sma_1 = np.zeros(big_data.data_slice.slice_size)
+        self.sma_2 = np.zeros(big_data.data_slice.slice_size)
 
-            # ------------------ Calculate close values falling in timeperiod_1 and 2
-            timeperiod_1_close_values = []
-            timeperiod_2_close_values = []
+        for i in range(big_data.data_slice.slice_size):
 
-            for j in range(self.timeperiod_1):
-                timeperiod_1_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
+            # --> Adjust timeframe if necessary
+            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_1:
+                self.timeperiod_1 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
 
-            for j in range(self.timeperiod_2):
-                timeperiod_2_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
+            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_2:
+                self.timeperiod_2 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+
+            # ------------------ Calculate values falling in timeperiod_1 and 2
+            timeperiod_1_close_values = np.array(big_data.data_slice.data_selection[
+                                                  big_data.data_slice.start_index+i-self.timeperiod_1+1:
+                                                  big_data.data_slice.start_index+i+1])[::-1]
+
+            timeperiod_2_close_values = np.array(big_data.data_slice.data_selection[
+                                                  big_data.data_slice.start_index+i-self.timeperiod_2+1:
+                                                  big_data.data_slice.start_index+i+1])[::-1]
 
             # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
-            self.sma_1.append(sum(timeperiod_1_close_values)/len(timeperiod_1_close_values))
-            self.sma_2.append(sum(timeperiod_2_close_values)/len(timeperiod_2_close_values))
+            self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
+            self.sma_2[i] = sum(timeperiod_2_close_values)/len(timeperiod_2_close_values)
 
-        self.ema_1 = [self.sma_1[0]]
-        self.ema_2 = [self.sma_2[0]]
+        self.ema_1[0] = self.sma_1[0]
+        self.ema_2[0] = self.sma_2[0]
 
-        for i in range(len(big_data.data_slice)):
+        for i in range(1, big_data.data_slice.slice_size):
             # ------------------ Calculate the multiplier for weighting the EMA
             multiplier_1 = 2 / (self.timeperiod_1 + 1)
             multiplier_2 = 2 / (self.timeperiod_2 + 1)
 
             # ------------------ Calculate the EMA
-            if 0 < i:
-                self.ema_1.append(big_data.data_close_values[big_data.data_slice_start_ind + i] - self.ema_1[i-1]*multiplier_1 + self.ema_1[i-1])
-                self.ema_2.append(big_data.data_close_values[big_data.data_slice_start_ind + i] - self.ema_2[i-1]*multiplier_2 + self.ema_2[i-1])
+            self.ema_1[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_1[i-1]*multiplier_1 + self.ema_1[i-1]
+            self.ema_2[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_2[i-1]*multiplier_2 + self.ema_2[i-1]
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):

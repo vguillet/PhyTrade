@@ -26,21 +26,21 @@ class RSI:
         self.standard_upper_threshold = standard_upper_threshold
         self.standard_lower_threshold = standard_lower_threshold
         
-        # --------------------------RSI CALCULATION---------------------------
+        # -------------------------- RSI CALCULATION ---------------------------
         self.rsi_values = np.zeros(big_data.data_slice.slice_size)
         
         for i in range(big_data.data_slice.slice_size):
             # --> Adjust timeframe if necessary
             if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeframe:
-                self.timeframe = len(big_data.data_slice.data[big_data.data_slice.start_index:])
+                self.timeframe = len(big_data.data_slice.data[:big_data.data_slice.start_index])
 
-            # -- Collect open and close values falling in rsi_timeframe
-            timeframe_open_values = np.zeros(self.timeframe)
-            timeframe_close_values = np.zeros(self.timeframe)
+            timeframe_open_values = np.array(big_data.data_slice.data[
+                                               big_data.data_slice.start_index+i-self.timeframe+1:
+                                               big_data.data_slice.start_index+i+1]["Open"])[::-1]
 
-            for j in range(self.timeframe):
-                timeframe_open_values[j] = big_data.data_slice.data.iloc[big_data.data_slice.start_index + (i - j), 4]
-                timeframe_close_values[j] = big_data.data_slice.data.iloc[big_data.data_slice.start_index + (i - j), 5]
+            timeframe_close_values = np.array(big_data.data_slice.data[
+                                               big_data.data_slice.start_index+i-self.timeframe+1:
+                                               big_data.data_slice.start_index+i+1]["Close"])[::-1]
 
             # -- Calculate gains and losses in timeframe
             # Calculate the net loss or gain for each date falling
@@ -53,9 +53,9 @@ class RSI:
                     gains.append(net)
                 elif net < 0:
                     losses.append(net)
-            
+
             # -- Calculate rs and rsi values for data_slice
-            
+
             if gains:                                       # If gains != Null, calculate rsi_value, else rsi_value = 50
                 avg_gain = sum(gains)/len(gains)
                 if losses:                                  # If losses != Null, calculate rsi_value, else rsi_value = 50

@@ -93,9 +93,6 @@ class Prototype_5:
                                   timeperiod_1=parameters["timeframes"]["sma_3_timeframe_1"],
                                   timeperiod_2=parameters["timeframes"]["sma_3_timeframe_2"])
 
-
-        sys.exit()
-
         # -- EMA initialisation
         self.big_data.ema_1 = EMA(self.big_data,
                                   timeperiod_1=parameters["timeframes"]["ema_1_timeframe_1"],
@@ -122,6 +119,9 @@ class Prototype_5:
                                     lookback_period=parameters["timeframes"]["lwma_3_timeframe"],
                                     max_weight=parameters["lwma_max_weights"]["lwma_3_max_weight"])
 
+
+
+        sys.exit()
         # ~~~~~~~~~~~~~~~~~~ Amplification signal initialisation
         # -- Volume initialisation
         self.big_data.volume = VOLUME(self.big_data,
