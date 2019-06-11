@@ -3,13 +3,20 @@ import json
 
 
 class SETTINGS:
+    # =============================== ECONOMIC MODEL SETTINGS =====================
+    def gen_model_settings(self):
+        self.spline_interpolation_factor = 5
+
+        # ___________________________ RSI parameters _____________________________
+        self.buffer_setting = 0
+
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_3"
+        self.config_name = "Run_4"
 
-        self.tickers = ["INTC", "NVDA"]
-        # self.tickers = ["AAPL"]
+        # self.tickers = ["INTC", "NVDA"]
+        self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
@@ -19,7 +26,7 @@ class SETTINGS:
 
         # ___________________________ EVO_algo main parameters ___________________
         self.population_size = 60
-        self.nb_of_generations = 250
+        self.nb_of_generations = 100
 
         self.mutation_rate = 0.4
         self.nb_parents = 25
@@ -87,7 +94,7 @@ class SETTINGS:
         self.asset_liquidation_percentage = 0.5
 
     # =============================== SINGLE TRADE SIM SETTINGS ===================
-    def gen_model_settings(self):
+    def gen_run_model_settings(self):
         # ___________________________ Model parameters ___________________________
         self.evaluation_name = "1"
 

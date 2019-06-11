@@ -14,6 +14,8 @@ Victor Guillet
 """
 
 from PhyTrade.Economic_model.Big_Data import BIGDATA
+# ---> Import model settings
+from SETTINGS import SETTINGS
 
 # ---> Import indicators
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen import RSI
@@ -27,9 +29,11 @@ from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volatility
 
 # ---> import general tools
 from PhyTrade.Economic_model.MAJOR_SPLINE_gen import MAJOR_SPLINE
-from PhyTrade.Tools.MATH_tools import MATH
+from PhyTrade.Tools.MATH_tools import MATH_tools
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE
+
+import sys
 
 
 class Prototype_5:
@@ -42,33 +46,39 @@ class Prototype_5:
         """
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = data_slice.start_index
-        data_slice_stop_ind = data_slice.stop_index
+        # --> Fetch model settings
+        settings = SETTINGS()
+        settings.gen_model_settings()
 
-        self.big_data = BIGDATA(data_slice.data, data_slice_start_ind, data_slice_stop_ind)
+        # --> Initiate records
+        self.big_data = BIGDATA(data_slice)
 
         # ~~~~~~~~~~~~~~~~~~ Tools initialisation
+        self.big_data.spline_multiplication_coef = settings.spline_interpolation_factor
+
         self.oc_tools = OC()
-        self.big_data.spline_multiplication_coef = 5
         self.spline_tools = SPLINE(self.big_data)
-        self.math_tools = MATH()
+        self.math_tools = MATH_tools()
 
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators initialisation
         # -- RSI initialisation
         self.big_data.rsi_1 = RSI(self.big_data,
                                   timeframe=parameters["timeframes"]["rsi_1_timeframe"],
                                   standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_1_standard_upper_threshold"],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_1_standard_lower_threshold"])
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_1_standard_lower_threshold"],
+                                  buffer_setting=settings.buffer_setting)
 
         self.big_data.rsi_2 = RSI(self.big_data,
                                   timeframe=parameters["timeframes"]["rsi_2_timeframe"],
                                   standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_2_standard_upper_threshold"],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_2_standard_lower_threshold"])
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_2_standard_lower_threshold"],
+                                  buffer_setting=settings.buffer_setting)
 
         self.big_data.rsi_3 = RSI(self.big_data,
                                   timeframe=parameters["timeframes"]["rsi_3_timeframe"],
                                   standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_3_standard_upper_threshold"],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_3_standard_lower_threshold"])
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_3_standard_lower_threshold"],
+                                  buffer_setting=settings.buffer_setting)
 
         # -- SMA initialisation
         self.big_data.sma_1 = SMA(self.big_data,
@@ -82,6 +92,9 @@ class Prototype_5:
         self.big_data.sma_3 = SMA(self.big_data,
                                   timeperiod_1=parameters["timeframes"]["sma_3_timeframe_1"],
                                   timeperiod_2=parameters["timeframes"]["sma_3_timeframe_2"])
+
+
+        sys.exit()
 
         # -- EMA initialisation
         self.big_data.ema_1 = EMA(self.big_data,

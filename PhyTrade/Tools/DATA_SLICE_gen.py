@@ -20,11 +20,18 @@ class data_slice:
         self.start_date = start_date
         self.start_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.start_date)[0]
 
-        # --> Find corresponding stop data index
+        # --> Adjust slice size according to data available if necessary
         self.slice_size = slice_size
+
+        if len(self.data[self.start_index:]) < self.slice_size:
+            self.slice_size = -len(self.data[self.start_index:])
+            print("Data slice size adjusted to:", self.slice_size)
+
+        # --> Find corresponding stop data index
         self.stop_index = self.start_index + self.slice_size
         self.stop_date = self.data.iloc[self.stop_index]['index']
 
+        # --> Pandas dataframe containing all data slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
 
         self.data_slice_shift_per_gen = data_slice_shift_per_gen

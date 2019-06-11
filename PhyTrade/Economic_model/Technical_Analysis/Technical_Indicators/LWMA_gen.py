@@ -84,9 +84,9 @@ class LWMA:
             bb_signal.append((self.lwma[i] - self.data_values[i]) / 2)
 
         # Normalising lwma bb signal values between -1 and 1
-        from PhyTrade.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        bb_signal_normalised = MATH().normalise_minus_one_one(bb_signal)
+        bb_signal_normalised = MATH_tools().normalise_minus_one_one(bb_signal)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:

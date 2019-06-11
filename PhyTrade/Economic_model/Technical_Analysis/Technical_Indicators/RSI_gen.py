@@ -4,11 +4,12 @@ This script enables computing the RSI indicator
 Victor Guillet
 11/28/2018
 """
+import numpy as np
 
 
 class RSI:
-    def __init__(self, big_data, timeframe=14, buffer_setting=0,
-                 standard_upper_threshold=70, standard_lower_threshold=30):
+    def __init__(self, big_data, timeframe=14, standard_upper_threshold=70, standard_lower_threshold=30,
+                 buffer_setting=0):
         """
         Generates an RSI indicator instance
 
@@ -19,30 +20,34 @@ class RSI:
         :param standard_lower_threshold: Lower threshold for buy trigger points generation
         """
 
+        # --> RSI initialisation
         self.timeframe = timeframe
         self.buffer_setting = buffer_setting
         self.standard_upper_threshold = standard_upper_threshold
         self.standard_lower_threshold = standard_lower_threshold
         
         # --------------------------RSI CALCULATION---------------------------
-        rsi_values = []
+        self.rsi_values = np.zeros(big_data.data_slice.slice_size)
         
-        for i in range(len(big_data.data_slice)):
+        for i in range(big_data.data_slice.slice_size):
+            # --> Adjust timeframe if necessary
+            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeframe:
+                self.timeframe = len(big_data.data_slice.data[big_data.data_slice.start_index:])
 
             # -- Collect open and close values falling in rsi_timeframe
-            timeframe_open_values = []
-            timeframe_close_values = []
+            timeframe_open_values = np.zeros(self.timeframe)
+            timeframe_close_values = np.zeros(self.timeframe)
 
             for j in range(self.timeframe):
-                timeframe_open_values.append(big_data.data_open_values[big_data.data_slice_start_ind + (i - j)])
-                timeframe_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + (i - j)])
+                timeframe_open_values[j] = big_data.data_slice.data.iloc[big_data.data_slice.start_index + (i - j), 4]
+                timeframe_close_values[j] = big_data.data_slice.data.iloc[big_data.data_slice.start_index + (i - j), 5]
 
             # -- Calculate gains and losses in timeframe
             # Calculate the net loss or gain for each date falling
             # in the data frame and store them in gains and loss lists
             gains = []
             losses = []
-            for j in range(len(timeframe_close_values)):
+            for j in range(self.timeframe):
                 net = timeframe_close_values[j] - timeframe_open_values[j]
                 if net > 0:
                     gains.append(net)
@@ -51,11 +56,11 @@ class RSI:
             
             # -- Calculate rs and rsi values for data_slice
             
-            if gains:                       # If gains != Null, calculate rsi_value, else rsi_value = 50
+            if gains:                                       # If gains != Null, calculate rsi_value, else rsi_value = 50
                 avg_gain = sum(gains)/len(gains)
-                if losses:                  # If losses != Null, calculate rsi_value, else rsi_value = 50
+                if losses:                                  # If losses != Null, calculate rsi_value, else rsi_value = 50
                     avg_loss = sum(losses)/len(losses)
-                    if not avg_loss == 0:   # If avg_loss != Null, calculate rsi_value, else rsi_value = 50
+                    if avg_loss != 0:                       # If avg_loss != Null, calculate rsi_value, else rsi_value = 50
                         rs = avg_gain/avg_loss
                         current_rsi_value = 100-100/(1-rs)
                     else:
@@ -65,9 +70,7 @@ class RSI:
             else:
                 current_rsi_value = 50
 
-            rsi_values.append(current_rsi_value)
-        
-        self.rsi_values = rsi_values
+            self.rsi_values[i] = current_rsi_value
         
     # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
@@ -75,7 +78,6 @@ class RSI:
         #       - 1: fixed value buffer
         #       - 2: variable value buffer
         # TODO implement variable weighted buffer for rsi ??
-
         if self.buffer_setting == 0:
             rsi_buffer = 0
 
@@ -84,31 +86,34 @@ class RSI:
 
         elif self.buffer_setting == 2:
             rsi_buffer = 2
-    
+
+        else:
+            rsi_buffer = 0
     # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # Define initial upper and lower bounds
-        upper_bound = [self.standard_upper_threshold]*len(big_data.data_slice_dates)
-        lower_bound = [self.standard_lower_threshold]*len(big_data.data_slice_dates)
+        self.upper_bound = np.zeros(big_data.data_slice.slice_size)
+        self.lower_bound = np.zeros(big_data.data_slice.slice_size)
+
+        self.upper_bound[:] = self.standard_lower_threshold
+        self.lower_bound[:] = self.standard_upper_threshold
 
         # Define upper dynamic bound method
         freeze_trade_upper = False
 
-        for i in range(len(big_data.data_slice)):
+        for i in range(big_data.data_slice.slice_size):
             if self.rsi_values[i] < self.standard_upper_threshold:
                 freeze_trade_upper = False
 
             if self.rsi_values[i] > (self.standard_upper_threshold + rsi_buffer) and freeze_trade_upper is False:
                 new_upper_bound = self.rsi_values[i] - rsi_buffer
-                if new_upper_bound >= upper_bound[i-1]:
-                    upper_bound[i] = new_upper_bound
+                if new_upper_bound >= self.upper_bound[i-1]:
+                    self.upper_bound[i] = new_upper_bound
 
-                elif self.rsi_values[i] < upper_bound[i-1]:
+                elif self.rsi_values[i] < self.upper_bound[i-1]:
                     freeze_trade_upper = True
 
                 else:
-                    upper_bound[i] = upper_bound[i-1]
-        
-        self.upper_bound = upper_bound
+                    self.upper_bound[i] = self.upper_bound[i-1]
 
         # Define lower dynamic bound method
         freeze_trade_lower = False
@@ -119,16 +124,14 @@ class RSI:
 
             if self.rsi_values[i] < (self.standard_lower_threshold - rsi_buffer) and freeze_trade_lower is False:
                 new_lower_bound = self.rsi_values[i] + rsi_buffer
-                if new_lower_bound <= upper_bound[i-1]:
-                    lower_bound[i] = new_lower_bound
+                if new_lower_bound <= self.upper_bound[i-1]:
+                    self.lower_bound[i] = new_lower_bound
 
-                elif self.rsi_values[i] > lower_bound[i - 1]:
+                elif self.rsi_values[i] > self.lower_bound[i - 1]:
                     freeze_trade_lower = True
 
                 else:
-                    lower_bound[i] = lower_bound[i-1]
-
-        self.lower_bound = lower_bound
+                    self.lower_bound[i] = self.lower_bound[i-1]
 
     """
 
@@ -193,10 +196,10 @@ class RSI:
         self.buy_dates = buy_dates
 
         # -----------------Bear/Bullish continuous signal
-        from PhyTrade.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH_tools
 
         # Normalising rsi bb signal values between -1 and 1
-        bb_signal_normalised = MATH().normalise_minus_one_one(self.rsi_values)
+        bb_signal_normalised = MATH_tools().normalise_minus_one_one(self.rsi_values)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:

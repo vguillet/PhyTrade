@@ -12,7 +12,7 @@ class RUN_model:
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch multi_trade_sim settings
         settings = SETTINGS()
-        settings.gen_model_settings()
+        settings.gen_run_model_settings()
 
         eval_name = settings.evaluation_name
         parameter_set = settings.parameter_set

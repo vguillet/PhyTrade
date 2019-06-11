@@ -1,6 +1,6 @@
 
 
-class MATH:   
+class MATH_tools:
     @staticmethod
     def normalise_zero_one(signal):
         

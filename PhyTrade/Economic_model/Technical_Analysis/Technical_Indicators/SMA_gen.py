@@ -4,7 +4,7 @@ This script enables computing the SMA indicator
 Victor Guillet
 11/28/2018
 """
-
+import numpy as np
 
 class SMA:
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
@@ -19,24 +19,24 @@ class SMA:
         self.timeperiod_2 = timeperiod_2
 
         # -------------------------- SMA CALCULATION ---------------------------
-        self.sma_1 = []
-        self.sma_2 = []
+        self.sma_1 = np.zeros(big_data.data_slice.slice_size)
+        self.sma_2 = np.zeros(big_data.data_slice.slice_size)
 
-        for i in range(len(big_data.data_slice)):
+        for i in range(big_data.data_slice.slice_size):
 
-            # ------------------ Calculate close values falling in timeperiod_1 and 2
-            timeperiod_1_close_values = []
-            timeperiod_2_close_values = []
+            # ------------------ Calculate values falling in timeperiod_1 and 2
+            timeperiod_1_close_values = np.zeros(big_data.data_slice.slice_size)
+            timeperiod_2_close_values = np.zeros(big_data.data_slice.slice_size)
 
             for j in range(self.timeperiod_1):
-                timeperiod_1_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
+                timeperiod_1_close_values[j] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i - j]
 
             for j in range(self.timeperiod_2):
-                timeperiod_2_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + i - j])
+                timeperiod_2_close_values[j] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i - j]
 
             # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
-            self.sma_1.append(sum(timeperiod_1_close_values)/len(timeperiod_1_close_values))
-            self.sma_2.append(sum(timeperiod_2_close_values)/len(timeperiod_2_close_values))
+            self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
+            self.sma_2[i] = sum(timeperiod_2_close_values)/len(timeperiod_2_close_values)
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
@@ -77,9 +77,9 @@ class SMA:
             bb_signal.append((self.sma_1[i] - self.sma_2[i])/2)
 
         # Normalising sma bb signal values between -1 and 1
-        from PhyTrade.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        bb_signal_normalised = MATH().normalise_minus_one_one(bb_signal)
+        bb_signal_normalised = MATH_tools().normalise_minus_one_one(bb_signal)
 
         if include_triggers_in_bb_signal:
             for date in self.sell_dates:

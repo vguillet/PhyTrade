@@ -5,7 +5,7 @@ Victor Guillet
 11/12/2018
 """
 
-from PhyTrade.Tools.MATH_tools import MATH
+from PhyTrade.Tools.MATH_tools import MATH_tools
 import statistics as st
 import numpy as np
 
@@ -38,7 +38,7 @@ class VOLATILITY:
             self.volatility.append(annualised_volatility)
 
         # Normalising volatility signal values between 0 and 1
-        self.amp_coef = MATH().normalise_zero_one(self.volatility)
+        self.amp_coef = MATH_tools().normalise_zero_one(self.volatility)
 
         # Amplifying volatility signal
-        self.amp_coef = MATH().amplify(self.amp_coef, amplification_factor)
+        self.amp_coef = MATH_tools().amplify(self.amp_coef, amplification_factor)
