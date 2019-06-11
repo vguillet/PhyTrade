@@ -140,25 +140,31 @@ class Prototype_5:
         """
         # ========================= DATA GENERATION AND PROCESSING =======================
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators output generation
+        print("----------------------------------------> rsi")
         # -- RSI
         self.big_data.rsi_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
         self.big_data.rsi_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
         self.big_data.rsi_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
 
+        print("----------------------------------------> sma")
         # -- SMA
         self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
         self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
         self.big_data.sma_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
 
+        print("----------------------------------------> ema")
         # -- EMA
         self.big_data.ema_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
         self.big_data.ema_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
         self.big_data.ema_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
 
+        print("----------------------------------------> lwma")
         # -- LWMA
         self.big_data.lwma_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
         self.big_data.lwma_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
         self.big_data.lwma_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
+        print("----------------------------------------> done")
+
 
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # ---> Creating splines from indicator signals

@@ -4,11 +4,13 @@ import numpy as np
 class MATH_tools:
     @staticmethod
     def normalise_zero_one(signal):
-
         signal_normalised = np.zeros(len(signal))
         
+        signal_min = min(signal)
+        signal_max = max(signal)
+        
         for i in range(len(signal)):
-            signal_normalised[i] = (signal[i]-min(signal))/((max(signal)-min(signal)) or 1)
+            signal_normalised[i] = (signal[i]-signal_min)/((signal_max-signal_min) or 1)
         
         return signal_normalised
     
@@ -16,8 +18,11 @@ class MATH_tools:
     def normalise_minus_one_one(signal):
         signal_normalised = np.zeros(len(signal))
 
+        signal_min = min(signal)
+        signal_max = max(signal)
+
         for i in range(len(signal)):
-            signal_normalised[i] = 2*(signal[i] - min(signal)) / ((max(signal) - min(signal)) or 1)-1
+            signal_normalised[i] = 2*(signal[i] - signal_min) / ((signal_max - signal_min) or 1)-1
 
         return signal_normalised
 

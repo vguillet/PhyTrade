@@ -9,16 +9,16 @@ class SETTINGS:
 
         # ___________________________ RSI parameters _____________________________
         self.buffer_setting = 0
-        self.rsi_include_triggers_in_bb_signal = True
+        self.rsi_include_triggers_in_bb_signal = False
 
         # ___________________________ SMA parameters _____________________________
-        self.sma_include_triggers_in_bb_signal = True
+        self.sma_include_triggers_in_bb_signal = False
 
         # ___________________________ EMA parameters _____________________________
-        self.ema_include_triggers_in_bb_signal = True
+        self.ema_include_triggers_in_bb_signal = False
 
         # ___________________________ LWMA parameters ____________________________
-        self.lwma_include_triggers_in_bb_signal = True
+        self.lwma_include_triggers_in_bb_signal = False
 
         # ___________________________ Modulation parameters ______________________
         # TODO: Add to evoa algo
