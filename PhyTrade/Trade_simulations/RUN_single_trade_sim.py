@@ -200,7 +200,7 @@ class RUN_single_trade_sim:
         self.results.individual = self.individual
         self.parameter_set = self.parameter_set
 
-        self.results.data_slice_start = self.data_slice.default_start_slice_index
+        self.results.data_slice_start = self.data_slice.default_start_index
         self.results.data_slice_size = self.data_slice.slice_size
         self.results.nb_data_slices = self.nb_data_slices
 

@@ -40,13 +40,15 @@ class EVOA_tools:
         # -- List based evaluation
         for i in range(len(population_lst)):
 
+            if print_evaluation_status:
+                print("\n--------------------------------------------------")
+                print("Parameter set", i + 1)
+
             population_lst[i].gen_economic_model(data_slice, plot_eco_model_results=plot_eco_model_results)
             population_lst[i].perform_trade_run(data_slice)
 
             if print_evaluation_status:
-                print("\n ----------------------------------------------")
-                print("Parameter set", i + 1, "evaluation completed:\n")
-                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
+                print("\nFinal net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].trade_signal,
                                                                              data_slice.metalabels,
@@ -257,9 +259,7 @@ class EVOA_tools:
                                                     decay_function=settings.random_ind_decay_function))
 
         if settings.print_evoa_parameters_per_gen:
-            print("~~~~~~~~~~~")
-            print("Number of parents selected for this generation", nb_parents)
-            print("Number of random individuals generated for this generation", nb_random_ind)
-            print("~~~~~~~~~~~")
+            print("\nNumber of parents selected for this generation", nb_parents)
+            print("Number of random individuals generated for this generation", nb_random_ind, "\n")
 
         return nb_parents, nb_random_ind

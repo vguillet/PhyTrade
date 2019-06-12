@@ -23,6 +23,7 @@ class EVOA_optimiser:
                                      settings.data_slice_start_date,
                                      settings.data_slice_size,
                                      settings.data_slice_shift_per_gen,
+                                     end_date=settings.end_date,
                                      data_looper=settings.data_looper)
 
         self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
@@ -88,7 +89,6 @@ class EVOA_optimiser:
 
         # ------------------ Run for # nb of generations:
         for gen in range(settings.nb_of_generations+1):
-            print("\n==================================== Generation", gen, "====================================")
             generation_start_time = time.time()
 
             if gen == settings.nb_of_generations-settings.exploitation_phase_len-1:
@@ -105,7 +105,7 @@ class EVOA_optimiser:
 
                     if self.data_slice.end_of_dataset is True:
                         break
-
+                print("\n================================= Generation", gen, "=================================")
                 print("Data slice analysed:", self.data_slice.start_date, "-->", self.data_slice.stop_date)
                 print("Data slice analysed:", self.data_slice.start_index, "-->", self.data_slice.stop_index)
                 print("Data slice analysis cycle:", self.data_slice_cycle_count, "\n")
@@ -173,14 +173,14 @@ class EVOA_optimiser:
 
                 # ------------------ Print generation info
                 generation_end_time = time.time()
-                print("\nTime elapsed:", generation_end_time-generation_start_time)
-                print("\n-- Generation", gen + 1, "population evaluation completed --\n")
-                print("Metalabel net worth from previous generation:", round(self.results.data_slice_metalabel_pp[-1], 3))
-                print("\n")
-                print("Best Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
+                print("\n-- Generation", gen + 1, "population evaluation completed --")
+                print("Generation Run time:", round(generation_end_time-generation_start_time, 3))
+                print("\nMetalabel net worth from previous generation:", round(self.results.data_slice_metalabel_pp[-1], 3))
+
+                print("\nBest Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
                 print("Average fitness from previous generation:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
-                print("\n")
-                print("Best Individual net worth from previous generation:", round(max(self.net_worth), 3))
+
+                print("\nBest Individual net worth from previous generation:", round(max(self.net_worth), 3))
                 print("Average net worth from previous generation:", round((sum(self.net_worth) / len(self.net_worth)), 3))
                 print("\n")
 
@@ -211,7 +211,7 @@ class EVOA_optimiser:
                                                                                            evaluation_setting=settings.evaluation_method,
                                                                                            calculate_stats=True,
                                                                                            print_evaluation_status=False,
-                                                                                           plot_3=True)
+                                                                                           plot_eco_model_results=True)
 
         # Generate run results summary
         self.results.individual = self.best_individual

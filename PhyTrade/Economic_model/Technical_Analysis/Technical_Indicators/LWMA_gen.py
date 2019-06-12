@@ -35,7 +35,7 @@ class LWMA:
                                               big_data.data_slice.start_index + i + 1])[::-1]
 
             # ---> Compute weights for each days based on max weight param and lookback period
-            weights = np.zeros(big_data.data_slice.slice_size)
+            weights = np.zeros(self.lookback_period)
 
             for j in range(self.lookback_period):
                 weights[j] = max_weight-(max_weight/self.lookback_period)*j

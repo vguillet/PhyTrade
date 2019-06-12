@@ -149,7 +149,7 @@ class Confusion_matrix_analysis:
         if print_benchmark_results:
             print("Overall accuracy achieved:", round(self.overall_accuracy))
             print("Overall accuracy achieved (excluding hold):", round(self.overall_accuracy_bs))
-            print("\nConfusion matrix:\n", confusion_matrix, "\n")
+            print("\nConfusion matrix:\n", confusion_matrix)
 
     def calc_TPR(self, cm):
         tp = float(cm.ix[0, 0])

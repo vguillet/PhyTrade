@@ -10,7 +10,7 @@ import numpy as np
 
 class data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
-                 data_selection="Open", data_looper=True):
+                 data_selection="Open", end_date=None, data_looper=True):
 
         self.ticker = ticker
         self.data = fetch_technical_data(ticker)
@@ -31,25 +31,29 @@ class data_slice:
         self.stop_index = self.start_index + self.slice_size
         self.stop_date = self.data.iloc[self.stop_index]['index']
 
-        # --> Pandas dataframe containing all data slice data
+        # --> Slice Pandas dataframe according to start/stop indexes
         self.sliced_data = self.data[self.start_index:self.stop_index]
 
-        self.data_slice_shift_per_gen = data_slice_shift_per_gen
+        # --> List open/closed price according to selection
+        self.selection = data_selection
+        self.data_selection = list(self.data[self.selection])
+        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
-        # ---- Record default properties
-        self.default_start_slice_date = self.start_date
-        self.default_start_slice_index = self.start_index
+        # ---- Default properties
+        self.default_start_date = self.start_date
+        self.default_start_index = self.start_index
+
+        self.default_end_date = end_date
+        if self.default_end_date is not None:
+            self.default_end_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.default_end_date)[0]
+
         self.default_slice_size = slice_size
+        self.data_slice_shift_per_gen = data_slice_shift_per_gen
 
         # ---- Data slice settings
         # --> Disable/enable  data looping
         self.data_looper = data_looper
         self.end_of_dataset = False
-
-        # --> List open/closed price to be used by tradebot
-        self.selection = data_selection
-        self.data_selection = list(self.data[self.selection])
-        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
     def gen_slice_metalabels(self, upper_barrier, lower_barrier, look_ahead, metalabeling_setting=0):
         """
@@ -80,24 +84,13 @@ class data_slice:
         self.start_date = self.data.iloc[self.start_index]['index']
 
         self.stop_index += self.slice_size
+
+        # --> Check for end of data
+        self.check_end_data()
+
+        # --> Determine start/stop date
+        self.start_date = self.data.iloc[self.start_index]['index']
         self.stop_date = self.data.iloc[self.stop_index]['index']
-
-        if self.stop_index >= 0:
-            if self.start_index < 0:
-                self.stop_index = -1
-                self.slice_size = abs(self.start_index+self.stop_index)
-
-            else:
-                if self.data_looper is True:
-                    # --> Loop back to beginning of dataset if end of dataset is reached
-                    self.slice_size = self.default_slice_size
-                    self.start_index = self.default_start_slice_index
-                    self.stop_index = self.default_start_slice_index + self.default_slice_size
-                else:
-                    # --> Trigger End of dataset
-                    self.end_of_dataset = True
-                    print("End of dataset reached\n")
-                    return
 
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
@@ -109,22 +102,13 @@ class data_slice:
         self.start_date = self.data.iloc[self.start_index]['index']
 
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
+
+        # --> Check for end of data
+        self.check_end_data()
+
+        # --> Determine stop date
+        self.start_date = self.data.iloc[self.start_index]['index']
         self.stop_date = self.data.iloc[self.stop_index]['index']
-
-        if self.stop_index >= 0:
-            if self.start_index < 0:
-                self.stop_index = -1
-
-            else:
-                if self.data_looper is True:
-                    # ------------------ Loop back to beginning of dataset if end of dataset is reached
-                    self.start_index = self.default_start_slice_index
-                    self.stop_index = self.default_start_slice_index + self.slice_size
-                else:
-                    # ------------------ Trigger End of dataset
-                    self.end_of_dataset = True
-                    print("End of dataset reached\n")
-                    return
 
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
@@ -156,8 +140,52 @@ class data_slice:
         self.metalabels_account = tradebot.account
         return
 
+    # ========================================= Data slice tools =========================================
+    def check_end_data(self):
+        if self.default_end_date is None:
+            if self.stop_index >= -1:
+                if self.start_index < -1:
+                    self.stop_index = -1
+                    self.slice_size = abs(self.start_index)-1
+                    return
+                else:
+                    if self.data_looper is True:
+                        # --> Loop back to beginning of dataset if end of dataset is reached
+                        self.slice_size = self.default_slice_size
+                        self.start_index = self.default_start_index
+                        self.stop_index = self.default_start_index + self.default_slice_size
+                        return
+                    else:
+                        # --> Trigger End of dataset
+                        self.end_of_dataset = True
+                        print("End of dataset reached\n")
+                        return
+            else:
+                return
+        else:
+            if self.stop_index > self.default_end_index:
+                if self.start_index < self.default_end_index:
+                    self.stop_index = self.default_end_index
+                    self.slice_size = abs(self.start_index - self.stop_index)
+                    return
+                else:
+                    if self.data_looper is True:
+                        # --> Loop back to beginning of dataset if end of dataset is reached
+                        self.slice_size = self.default_slice_size
+                        self.start_index = self.default_start_index
+                        self.stop_index = self.default_start_index + self.default_slice_size
+                        return
+                    else:
+                        # --> Trigger End of dataset
+                        self.end_of_dataset = True
+                        print("End of dataset reached\n")
+                        return
+            else:
+                return
+
     def __str__(self):
         return "Data slice: Ticker - " + self.ticker + ", Current start_date - " + self.start_date + ", Slice size: " + str(self.slice_size)
+
 
 class address_sim:
     def __init__(self):

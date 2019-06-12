@@ -7,8 +7,8 @@ Ticker: AAPL
 look_ahead = 10
 
 -----------> Benchmarking data slice settings:
-benchmark_data_slice_start = -7091
-benchmark_data_slice_stop = -6891
+benchmark_data_slice_start = -3438
+benchmark_data_slice_stop = -3238
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -17,16 +17,16 @@ Number of data points processed: 200
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 1415.5792536936774
+Net worth achieved: 1196.278023769942
 
 ---> Fitness: 
-Fitness achieved: 56.00000000000001
+Fitness achieved: 57.99999999999999
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     1     0    1
-Hold    42   110   42
-Buy      0     3    1
+Sell     0     0    0
+Hold    40   116   40
+Buy      0     4    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -39,62 +39,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         1         1
-Non-Sell    42       156
+Sell         0         0
+Non-Sell    40       160
 
-TPR = 0.023
-TNR = 0.994
-PPV = 0.5
-NPV = 0.788
-FNR = 0.977
-FPR = 0.006
-FDR = 0.5
-FOR = 0.212
-ACC = 0.785
-F1 = 0.044
-MCC = 0.07
-BM = 0.017
-MK = 0.288
+TPR = 0.0
+TNR = 1.0
+PPV = inf
+NPV = 0.8
+FNR = 1.0
+FPR = 0.0
+FDR = inf
+FOR = 0.2
+ACC = 0.8
+F1 = 0.0
+MCC = inf
+BM = 0.0
+MK = inf
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        1        3
-Non-Buy   43      153
+Buy        0        4
+Non-Buy   40      156
 
-TPR = 0.023
-TNR = 0.981
-PPV = 0.25
-NPV = 0.781
-FNR = 0.977
-FPR = 0.019
-FDR = 0.75
-FOR = 0.219
-ACC = 0.77
-F1 = 0.042
-MCC = 0.01
-BM = 0.003
-MK = 0.031
+TPR = 0.0
+TNR = 0.975
+PPV = 0.0
+NPV = 0.796
+FNR = 1.0
+FPR = 0.025
+FDR = 1.0
+FOR = 0.204
+ACC = 0.78
+F1 = 0.0
+MCC = -0.071
+BM = -0.025
+MK = -0.204
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       110        84
-Non-Hold     3         3
+Hold       116        80
+Non-Hold     4         0
 
-TPR = 0.973
-TNR = 0.034
-PPV = 0.567
-NPV = 0.5
-FNR = 0.027
-FPR = 0.966
-FDR = 0.433
-FOR = 0.5
-ACC = 0.565
-F1 = 0.717
-MCC = 0.023
-BM = 0.008
-MK = 0.067
+TPR = 0.967
+TNR = 0.0
+PPV = 0.592
+NPV = 0.0
+FNR = 0.033
+FPR = 1.0
+FDR = 0.408
+FOR = 1.0
+ACC = 0.58
+F1 = 0.734
+MCC = -0.117
+BM = -0.033
+MK = -0.408
 
