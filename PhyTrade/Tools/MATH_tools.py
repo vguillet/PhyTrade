@@ -5,7 +5,7 @@ class MATH_tools:
     @staticmethod
     def normalise_zero_one(signal):
         signal_normalised = np.zeros(len(signal))
-        
+
         signal_min = min(signal)
         signal_max = max(signal)
         

@@ -30,6 +30,22 @@ class SETTINGS:
         # TODO: Add to evoa algo
         self.buffer = 0.05
 
+    # =============================== SINGLE TRADE SIM SETTINGS ===================
+    def gen_run_model_settings(self):
+        self.print_trade_process = False
+
+        # ___________________________ Model parameters ___________________________
+        self.evaluation_name = "1"
+
+        self.ticker = "AAPL"
+        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
+
+        self.start_date = "2000-01-01"
+        self.data_slice_size = 200
+
+        # ___________________________ Metalabels parameters ______________________
+        self.gen_metalabels_settings()
+
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
@@ -112,20 +128,6 @@ class SETTINGS:
         self.investment_percentage = 0.3
 
         self.asset_liquidation_percentage = 0.5
-
-    # =============================== SINGLE TRADE SIM SETTINGS ===================
-    def gen_run_model_settings(self):
-        # ___________________________ Model parameters ___________________________
-        self.evaluation_name = "1"
-
-        self.ticker = "AAPL"
-        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
-
-        self.start_date = "2000-01-01"
-        self.data_slice_size = 200
-
-        # ___________________________ Metalabels parameters ______________________
-        self.gen_metalabels_settings()
 
     # =============================== SINGLE TRADE SIM SETTINGS ===================
     def gen_single_trade_sim(self):

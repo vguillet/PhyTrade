@@ -6,6 +6,7 @@ Victor Guillet
 """
 import numpy as np
 
+
 class SMA:
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
         """

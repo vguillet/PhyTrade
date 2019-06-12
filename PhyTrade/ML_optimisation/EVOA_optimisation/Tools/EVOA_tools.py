@@ -24,7 +24,7 @@ class EVOA_tools:
 
     @staticmethod
     def evaluate_population(population_lst, data_slice,
-                            max_worker_processes=1,
+                            max_worker_processes=4,
                             evaluation_setting=0,
                             calculate_stats=False, print_evaluation_status=False, plot_eco_model_results=False):
         from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
@@ -65,16 +65,7 @@ class EVOA_tools:
             net_worth_percentage.append((metalabel_net_worth - net_worth[-1]) / metalabel_net_worth*100)
 
         # -- Multi-process evaluation
-        # from PhyTrade.Tools.MULTI_PROCESSING_tools import multi_process_pool
-        # def eval_function(individual):
-        #     individual.gen_economic_model(data_slice_info, plot_3=plot_3)
-        #
-        #     return Confusion_matrix_analysis(individual.big_data.Major_spline.trade_signal,
-        #                                      data_slice_info.metalabels.close_values_metalabels)
-        #
-        # accuracies_achieved = multi_process_pool(population_lst, eval_function, max_worker_processes=max_worker_processes)
-        #
-        # accuracies_achieved = MATH().normalise_zero_one(profit_achieved)
+        # TODO: Add multiprocessing
 
         # --> Perform evaluation based on net worth
         if evaluation_setting == 0:
