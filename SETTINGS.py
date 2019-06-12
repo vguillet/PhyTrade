@@ -3,13 +3,56 @@ import json
 
 
 class SETTINGS:
+    # =============================== ECONOMIC MODEL SETTINGS =====================
+    def gen_model_settings(self):
+        self.spline_interpolation_factor = 5
+
+        # ___________________________ RSI parameters _____________________________
+        self.buffer_setting = 0
+        self.rsi_include_triggers_in_bb_signal = False
+
+        # ___________________________ SMA parameters _____________________________
+        self.sma_include_triggers_in_bb_signal = False
+
+        # ___________________________ EMA parameters _____________________________
+        self.ema_include_triggers_in_bb_signal = False
+
+        # ___________________________ LWMA parameters ____________________________
+        self.lwma_include_triggers_in_bb_signal = False
+
+        # ___________________________ Modulation parameters ______________________
+        # TODO: Add to evoa algo
+        self.volume_std_dev_max = 3
+        self.volatility_std_dev_max = 3
+
+        # ___________________________ Threshold parameters _______________________
+        self.buffer_setting = 1
+        # TODO: Add to evoa algo
+        self.buffer = 0.05
+
+    # =============================== SINGLE TRADE SIM SETTINGS ===================
+    def gen_run_model_settings(self):
+        self.print_trade_process = False
+
+        # ___________________________ Model parameters ___________________________
+        self.evaluation_name = "1"
+
+        self.ticker = "AAPL"
+        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
+
+        self.start_date = "2000-01-01"
+        self.data_slice_size = 200
+
+        # ___________________________ Metalabels parameters ______________________
+        self.gen_metalabels_settings()
+
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_3"
+        self.config_name = "Run_4"
 
-        self.tickers = ["INTC", "NVDA"]
-        # self.tickers = ["AAPL"]
+        # self.tickers = ["INTC", "NVDA"]
+        self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
@@ -19,7 +62,7 @@ class SETTINGS:
 
         # ___________________________ EVO_algo main parameters ___________________
         self.population_size = 60
-        self.nb_of_generations = 250
+        self.nb_of_generations = 100
 
         self.mutation_rate = 0.4
         self.nb_parents = 25
@@ -85,20 +128,6 @@ class SETTINGS:
         self.investment_percentage = 0.3
 
         self.asset_liquidation_percentage = 0.5
-
-    # =============================== SINGLE TRADE SIM SETTINGS ===================
-    def gen_model_settings(self):
-        # ___________________________ Model parameters ___________________________
-        self.evaluation_name = "1"
-
-        self.ticker = "AAPL"
-        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
-
-        self.start_date = "2000-01-01"
-        self.data_slice_size = 200
-
-        # ___________________________ Metalabels parameters ______________________
-        self.gen_metalabels_settings()
 
     # =============================== SINGLE TRADE SIM SETTINGS ===================
     def gen_single_trade_sim(self):

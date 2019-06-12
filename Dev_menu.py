@@ -31,17 +31,17 @@ while run is True:
         # --> Generate evoa settings
         settings.gen_evoa_settings()
 
-        # ticker = settings.tickers[0]
-        # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-        # EVO_optimisation = EVOA_optimiser(ticker)
+        ticker = settings.tickers[0]
+        settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+        EVO_optimisation = EVOA_optimiser(ticker)
 
-        for ticker in settings.tickers:
-            try:
-                settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-                EVO_optimisation = EVOA_optimiser(ticker)
-            except:
-                print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
-                continue
+        # for ticker in settings.tickers:
+        #     try:
+        #         settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+        #         EVO_optimisation = EVOA_optimiser(ticker)
+        #     except:
+        #         print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
+        #         continue
 
     # ============================ ECONOMIC ANALYSIS ===============================
     elif selection == 2:

@@ -5,7 +5,7 @@ Victor Guillet
 11/12/2018
 """
 
-from PhyTrade.Tools.MATH_tools import MATH
+from PhyTrade.Tools.MATH_tools import MATH_tools
 import statistics as st
 import numpy as np
 
@@ -20,25 +20,29 @@ class VOLATILITY:
         :param amplification_factor: Amplification factor of the signal
         """
 
+        # --> VOLATILITY initialisation
         self.timeframe = timeframe
-        self.volatility = []
 
-        for i in range(len(big_data.data_slice)):
+        # -------------------------- VOLATILITY CALCULATION --------------------
+        self.volatility = np.zeros(big_data.data_slice.slice_size)
 
-            timeframe_close_values = []
+        for i in range(big_data.data_slice.slice_size):
+            # --> Adjust timeframe if necessary
+            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeframe:
+                self.timeframe = len(big_data.data_slice.data[:big_data.data_slice.start_index])
 
-            for j in range(self.timeframe):
-                timeframe_close_values.append(big_data.data_close_values[big_data.data_slice_start_ind + (i - j)])
+            timeframe_values = np.array(big_data.data_slice.data_selection[
+                                        big_data.data_slice.start_index+i-self.timeframe+1:
+                                        big_data.data_slice.start_index+i+1])[::-1]
 
-            self.timeframe_std_dev = st.stdev(timeframe_close_values)
-            annualisation_factor = np.sqrt(252/self.timeframe)
+            self.timeframe_std_dev = st.stdev(timeframe_values)
 
-            annualised_volatility = self.timeframe_std_dev*annualisation_factor
+            annualised_volatility = self.timeframe_std_dev*np.sqrt(252/self.timeframe)
 
-            self.volatility.append(annualised_volatility)
+            self.volatility[i] = annualised_volatility
 
         # Normalising volatility signal values between 0 and 1
-        self.amp_coef = MATH().normalise_zero_one(self.volatility)
+        self.amp_coef = MATH_tools().normalise_zero_one(self.volatility)
 
         # Amplifying volatility signal
-        self.amp_coef = MATH().amplify(self.amp_coef, amplification_factor)
+        self.amp_coef = MATH_tools().amplify(self.amp_coef, amplification_factor)

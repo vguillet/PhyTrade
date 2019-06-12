@@ -14,6 +14,8 @@ Victor Guillet
 """
 
 from PhyTrade.Economic_model.Big_Data import BIGDATA
+# ---> Import model settings
+from SETTINGS import SETTINGS
 
 # ---> Import indicators
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen import RSI
@@ -27,9 +29,13 @@ from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volatility
 
 # ---> import general tools
 from PhyTrade.Economic_model.MAJOR_SPLINE_gen import MAJOR_SPLINE
-from PhyTrade.Tools.MATH_tools import MATH
+from PhyTrade.Tools.MATH_tools import MATH_tools
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE
+
+import numpy as np
+import time
+import sys
 
 
 class Prototype_5:
@@ -42,33 +48,39 @@ class Prototype_5:
         """
 
         # ========================= ANALYSIS INITIALISATION ==============================
-        data_slice_start_ind = data_slice.start_index
-        data_slice_stop_ind = data_slice.stop_index
+        # --> Fetch model settings
+        settings = SETTINGS()
+        settings.gen_model_settings()
 
-        self.big_data = BIGDATA(data_slice.data, data_slice_start_ind, data_slice_stop_ind)
+        # --> Initiate records
+        self.big_data = BIGDATA(data_slice)
 
         # ~~~~~~~~~~~~~~~~~~ Tools initialisation
+        self.big_data.spline_multiplication_coef = settings.spline_interpolation_factor
+
         self.oc_tools = OC()
-        self.big_data.spline_multiplication_coef = 5
         self.spline_tools = SPLINE(self.big_data)
-        self.math_tools = MATH()
+        self.math_tools = MATH_tools()
 
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators initialisation
         # -- RSI initialisation
         self.big_data.rsi_1 = RSI(self.big_data,
                                   timeframe=parameters["timeframes"]["rsi_1_timeframe"],
                                   standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_1_standard_upper_threshold"],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_1_standard_lower_threshold"])
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_1_standard_lower_threshold"],
+                                  buffer_setting=settings.buffer_setting)
 
         self.big_data.rsi_2 = RSI(self.big_data,
                                   timeframe=parameters["timeframes"]["rsi_2_timeframe"],
                                   standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_2_standard_upper_threshold"],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_2_standard_lower_threshold"])
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_2_standard_lower_threshold"],
+                                  buffer_setting=settings.buffer_setting)
 
         self.big_data.rsi_3 = RSI(self.big_data,
                                   timeframe=parameters["timeframes"]["rsi_3_timeframe"],
                                   standard_upper_threshold=parameters["rsi_standard_upper_thresholds"]["rsi_3_standard_upper_threshold"],
-                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_3_standard_lower_threshold"])
+                                  standard_lower_threshold=parameters["rsi_standard_lower_thresholds"]["rsi_3_standard_lower_threshold"],
+                                  buffer_setting=settings.buffer_setting)
 
         # -- SMA initialisation
         self.big_data.sma_1 = SMA(self.big_data,
@@ -129,24 +141,24 @@ class Prototype_5:
         # ========================= DATA GENERATION AND PROCESSING =======================
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators output generation
         # -- RSI
-        self.big_data.rsi_1.get_output(self.big_data, include_triggers_in_bb_signal=True)
-        self.big_data.rsi_2.get_output(self.big_data, include_triggers_in_bb_signal=True)
-        self.big_data.rsi_3.get_output(self.big_data, include_triggers_in_bb_signal=True)
+        self.big_data.rsi_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
+        self.big_data.rsi_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
+        self.big_data.rsi_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
 
         # -- SMA
-        self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.sma_3.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        self.big_data.sma_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
+        self.big_data.sma_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
+        self.big_data.sma_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
 
         # -- EMA
-        self.big_data.ema_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.ema_2.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.ema_3.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        self.big_data.ema_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
+        self.big_data.ema_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
+        self.big_data.ema_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
 
         # -- LWMA
-        self.big_data.lwma_1.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.lwma_2.get_output(self.big_data, include_triggers_in_bb_signal=False)
-        self.big_data.lwma_3.get_output(self.big_data, include_triggers_in_bb_signal=False)
+        self.big_data.lwma_1.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
+        self.big_data.lwma_2.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
+        self.big_data.lwma_3.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
 
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # ---> Creating splines from indicator signals
@@ -225,43 +237,50 @@ class Prototype_5:
         self.big_data.spline_lwma_3 = self.spline_tools.flip_spline(self.big_data.spline_lwma_3)
 
         # ---> Adding signals together
+        # --> Creating signal array
+        self.big_data.spline_array = np.array([self.big_data.spline_oc_avg_gradient,
+                                              self.big_data.spline_rsi_1,
+                                              self.big_data.spline_rsi_2,
+                                              self.big_data.spline_rsi_3,
+                                              self.big_data.spline_sma_1,
+                                              self.big_data.spline_sma_2,
+                                              self.big_data.spline_sma_3,
+                                              self.big_data.spline_ema_1,
+                                              self.big_data.spline_ema_2,
+                                              self.big_data.spline_ema_3,
+                                              self.big_data.spline_lwma_1,
+                                              self.big_data.spline_lwma_2,
+                                              self.big_data.spline_lwma_3])
+
+        self.big_data.weights_array = np.array([[parameters["weights"]["oc_avg_gradient_spline_weight"]],
+                                               [parameters["weights"]["rsi_1_spline_weight"]],
+                                               [parameters["weights"]["rsi_2_spline_weight"]],
+                                               [parameters["weights"]["rsi_3_spline_weight"]],
+                                               [parameters["weights"]["sma_1_spline_weight"]],
+                                               [parameters["weights"]["sma_2_spline_weight"]],
+                                               [parameters["weights"]["sma_3_spline_weight"]],
+                                               [parameters["weights"]["ema_1_spline_weight"]],
+                                               [parameters["weights"]["ema_2_spline_weight"]],
+                                               [parameters["weights"]["ema_3_spline_weight"]],
+                                               [parameters["weights"]["lwma_1_spline_weight"]],
+                                               [parameters["weights"]["lwma_2_spline_weight"]],
+                                               [parameters["weights"]["lwma_3_spline_weight"]]])
+
         self.big_data.combined_spline = \
-            self.spline_tools.combine_splines(self.big_data,
-                                              [self.big_data.spline_oc_avg_gradient,
-                                               self.big_data.spline_rsi_1,
-                                               self.big_data.spline_rsi_2,
-                                               self.big_data.spline_rsi_3,
-                                               self.big_data.spline_sma_1,
-                                               self.big_data.spline_sma_2,
-                                               self.big_data.spline_sma_3,
-                                               self.big_data.spline_ema_1,
-                                               self.big_data.spline_ema_2,
-                                               self.big_data.spline_ema_3,
-                                               self.big_data.spline_lwma_1,
-                                               self.big_data.spline_lwma_2,
-                                               self.big_data.spline_lwma_3],
-                                              [parameters["weights"]["oc_avg_gradient_spline_weight"],
-                                               parameters["weights"]["rsi_1_spline_weight"],
-                                               parameters["weights"]["rsi_2_spline_weight"],
-                                               parameters["weights"]["rsi_3_spline_weight"],
-                                               parameters["weights"]["sma_1_spline_weight"],
-                                               parameters["weights"]["sma_2_spline_weight"],
-                                               parameters["weights"]["sma_3_spline_weight"],
-                                               parameters["weights"]["ema_1_spline_weight"],
-                                               parameters["weights"]["ema_2_spline_weight"],
-                                               parameters["weights"]["ema_3_spline_weight"],
-                                               parameters["weights"]["lwma_1_spline_weight"],
-                                               parameters["weights"]["lwma_2_spline_weight"],
-                                               parameters["weights"]["lwma_3_spline_weight"]])
+            self.spline_tools.combine_splines(self.big_data.spline_array,
+                                              self.big_data.weights_array)
 
         # ---> Tuning combined signal
         self.big_data.combined_spline = \
             self.spline_tools.modulate_amplitude_spline(
-                self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=3)
+                self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=settings.volume_std_dev_max)
 
         self.big_data.combined_spline = \
             self.spline_tools.modulate_amplitude_spline(
-                self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=3)
+                self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=settings.volatility_std_dev_max)
+
+        # print(self.big_data.combined_spline)
+        # print(np.shape(self.big_data.combined_spline))
 
         self.big_data.combined_spline = self.math_tools.normalise_minus_one_one(self.big_data.combined_spline)
 
@@ -269,7 +288,7 @@ class Prototype_5:
         # ---> Creating dynamic thresholds
         upper_threshold, lower_threshold = \
             self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
-                                              buffer=0.05, buffer_setting=1,
+                                              buffer=settings.buffer, buffer_setting=settings.buffer_setting,
                                               standard_upper_threshold=parameters["major_spline_standard_upper_thresholds"]["major_spline_standard_upper_threshold"],
                                               standard_lower_threshold=parameters["major_spline_standard_lower_thresholds"]["major_spline_standard_lower_threshold"])
 
@@ -283,7 +302,7 @@ class Prototype_5:
         #             self.math_tools.normalise_zero_one(self.big_data.spline_sma_3), 0.3))
 
         # ~~~~~~~~~~~~~~~~~~ Creating Major Spline/trigger values
-        self.big_data.Major_spline = MAJOR_SPLINE(self.big_data, self.big_data.combined_spline,
+        self.big_data.Major_spline = MAJOR_SPLINE(self.big_data,
                                                   upper_threshold, lower_threshold)
 
     # ================================================================================

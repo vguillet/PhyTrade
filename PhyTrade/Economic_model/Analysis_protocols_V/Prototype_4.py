@@ -18,7 +18,7 @@ from PhyTrade.Economic_model.MAJOR_SPLINE_gen import MAJOR_SPLINE
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE
 
-from PhyTrade.Tools.MATH_tools import MATH
+from PhyTrade.Tools.MATH_tools import MATH_tools
 
 import pandas as pd
 import threading
@@ -45,7 +45,7 @@ class Prototype_4:
         # ------------------ Tools initialisation
         self.oc_tools = OC()
         self.spline_tools = SPLINE(self.big_data)
-        self.math_tools = MATH()
+        self.math_tools = MATH_tools()
 
         # ------------------ Technical_Indicators initialisation
         # -- RSI initialisation

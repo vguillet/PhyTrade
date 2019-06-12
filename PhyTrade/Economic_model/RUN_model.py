@@ -12,7 +12,7 @@ class RUN_model:
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch multi_trade_sim settings
         settings = SETTINGS()
-        settings.gen_model_settings()
+        settings.gen_run_model_settings()
 
         eval_name = settings.evaluation_name
         parameter_set = settings.parameter_set
@@ -21,6 +21,8 @@ class RUN_model:
         start_date = settings.start_date
         data_slice_size = settings.data_slice_size
         look_ahead = settings.look_ahead
+
+        print_trade_process = settings.print_trade_process
 
         # ---- Initiate run parameters
         self.ticker = ticker
@@ -50,7 +52,7 @@ class RUN_model:
         # ============================ ECONOMIC ANALYSIS ================================
         # ---- Generate economic model and perform trade run
         self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=True)
-        self.individual.perform_trade_run(self.data_slice, print_trade_process=True)
+        self.individual.perform_trade_run(self.data_slice, print_trade_process=print_trade_process)
 
         # ---- Generate evaluation summary
         self.results = EVAL_parameter_set_results_gen(eval_name)

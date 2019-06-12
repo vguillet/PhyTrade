@@ -4,6 +4,7 @@ This script contains the Volume class for all calculations relating to Volume
 Victor Guillet
 29/11/2018
 """
+import numpy as np
 
 
 class VOLUME:
@@ -14,13 +15,12 @@ class VOLUME:
         :param big_data: BIGDATA class instance
         :param amplification_factor: Amplification factor of the signal
         """
-        from PhyTrade.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        self.volume = big_data.volume
-        self.amp_coef = []
+        self.volume = np.array(big_data.data_slice.sliced_data["Volume"])
 
         # Normalising volume signal values between 0 and 1
-        self.amp_coef = MATH().normalise_zero_one(self.volume)
+        self.amp_coef = MATH_tools().normalise_zero_one(self.volume)
 
         # Amplifying volume signal
-        self.amp_coef = MATH().amplify(self.amp_coef, amplification_factor)
+        self.amp_coef = MATH_tools().amplify(self.amp_coef, amplification_factor)

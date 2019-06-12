@@ -1,3 +1,4 @@
+
 """
 This script contains the BIGDATA class, necessary to collect and move around data in the model generation prototypes
 
@@ -9,7 +10,7 @@ import numpy as np
 
 
 class BIGDATA:
-    def __init__(self, data, data_slice_start_ind=0, data_slice_stop_ind=200):
+    def __init__(self, data_slice):
         """
         Contains all the information relating to a specific analysis,
         modules can be called, and their instance attribute should be saved in the big_data instance
@@ -17,21 +18,10 @@ class BIGDATA:
         To compute specific attributes, run the corresponding Technical_Indicators/modules.
         The list of all options can be found in the PhyTrade Library file
 
-        :param data: Pandas dataframe
-        :param data_slice_start_ind: Start index of processed data slice
-        :param data_slice_stop_ind: Stop index of processed data slice
+        :param data_slice: DATA_SLICE class instance
         """
 
-        self.data = data
-
-        self.dates = []
-        for index, row in self.data.iterrows():
-            self.dates.append(row['index'])
-
-        self.data_slice_start_ind = data_slice_start_ind
-        self.data_slice_stop_ind = data_slice_stop_ind
-        self.data_slice = data[data_slice_start_ind:data_slice_stop_ind]
-        self.data_slice_dates = list(self.data_slice.index.values)
+        self.data_slice = data_slice
 
         self.sell_trigger_values = []
         self.buy_trigger_values = []
@@ -39,54 +29,26 @@ class BIGDATA:
         self.sell_trigger_dates = []
         self.buy_trigger_dates = []
 
-        # --------------------- List close/open values
-        # ... in data
-        self.data_open_values = []
-        self.data_close_values = []
-
-        for index, row in self.data.iterrows():
-            self.data_close_values.append(row['Close'])
-            self.data_open_values.append(row['Open'])
-
-        # ... in data slice
-        self.data_slice_open_values = []
-        self.data_slice_close_values = []
-
-        for index, row in self.data_slice.iterrows():
-            self.data_slice_close_values.append(row['Close'])
-            self.data_slice_open_values.append(row['Open'])
-
-        # --------------------- List Volume values
-        # ... in data slice
-        self.volume = []
-        for index, row in self.data_slice.iterrows():
-            self.volume.append(row['Volume'])
-
         # ------- Calculate value fluctuation for each point in data slice
-        values_fluctuation = []
-        for i in range(len(self.data_slice)):
-            values_fluctuation.append(self.data_slice_close_values[i] - self.data_slice_open_values[i])
+        self.values_fluctuation = np.zeros(self.data_slice.slice_size)
 
-        self.values_fluctuation = values_fluctuation
+        for i in range(self.data_slice.slice_size):
+            self.values_fluctuation[i] = self.data_slice.sliced_data.iloc[i, 5] - self.data_slice.sliced_data.iloc[i, 4]
 
         # -------Calculate open/close values gradient:
-        close_values_gradient = np.gradient(self.data_slice_close_values)
-        open_values_gradient = np.gradient(self.data_slice_open_values)
-
-        self.close_values_gradient = close_values_gradient
-        self.open_values_gradient = open_values_gradient
+        self.close_values_gradient = np.gradient(self.data_slice.sliced_data["Close"])
+        self.open_values_gradient = np.gradient(self.data_slice.sliced_data["Open"])
 
         # -----------------Bear/Bullish continuous signal of dataset gradient
-        from PhyTrade.Tools.MATH_tools import MATH
+        from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        avg_gradient = []
+        avg_gradient = np.zeros(self.data_slice.slice_size)
 
         # Obtaining the average gradient
-        for i in range(len(self.data_slice)):
-            avg_gradient.append(
-                (self.close_values_gradient[i] + self.open_values_gradient[i]) / 2)
+        for i in range(self.data_slice.slice_size):
+            avg_gradient[i] = (self.close_values_gradient[i] + self.open_values_gradient[i]) / 2
 
         # Normalising avg gradient values between -1 and 1
-        avg_gradient_bb_signal = MATH().normalise_minus_one_one(avg_gradient)
+        avg_gradient_bb_signal = MATH_tools().normalise_minus_one_one(avg_gradient)
 
         self.oc_avg_gradient_bb_signal = avg_gradient_bb_signal
