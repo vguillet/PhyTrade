@@ -31,11 +31,12 @@ class EVOA_tools:
 
         confusion_matrix_analysis = []
         metalabel_accuracies = []
+        metalabel_accuracies_bs = []
+        avg_metalabel_accuracies = []
         net_worth = []
 
         data_slice.perform_trade_run()
         metalabel_net_worth = data_slice.metalabels_account.net_worth_history[-1]
-        net_worth_percentage = []
 
         # -- List based evaluation
         for i in range(len(population_lst)):
@@ -48,7 +49,8 @@ class EVOA_tools:
             population_lst[i].perform_trade_run(data_slice)
 
             if print_evaluation_status:
-                print("\nFinal net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
+                print("\nMetalabels net worth:", round(metalabel_net_worth), "$")
+                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].trade_signal,
                                                                              data_slice.metalabels,
@@ -60,11 +62,12 @@ class EVOA_tools:
 
             # --> Save metalabel accuracies
             metalabel_accuracies.append(individual_confusion_matrix_analysis.overall_accuracy_bs)
+            metalabel_accuracies_bs.append(individual_confusion_matrix_analysis.overall_accuracy)
+
+            avg_metalabel_accuracies.append((individual_confusion_matrix_analysis.overall_accuracy+individual_confusion_matrix_analysis.overall_accuracy_bs)/2)
 
             # --> Save net worth
             net_worth.append(population_lst[i].account.net_worth_history[-1])
-
-            net_worth_percentage.append((metalabel_net_worth - net_worth[-1]) / metalabel_net_worth*100)
 
         # -- Multi-process evaluation
         # TODO: Add multiprocessing
@@ -77,13 +80,15 @@ class EVOA_tools:
         elif evaluation_setting == 1:
             fitness_evaluation = metalabel_accuracies
 
-        # --> Perform evaluation based on the average of net worth and metalabel accuracies
+        # --> Perform evaluation based on metalabels buy/sell accuracies
         elif evaluation_setting == 2:
-            fitness_evaluation = []
-            for i in range(len(population_lst)):
-                fitness_evaluation.append((net_worth_percentage[i]+metalabel_accuracies[i])/2)
+            fitness_evaluation = metalabel_accuracies_bs
 
-        return fitness_evaluation, metalabel_accuracies, confusion_matrix_analysis, net_worth
+        # --> Perform evaluation based on the average of net worth and metalabel accuracies
+        elif evaluation_setting == 3:
+            fitness_evaluation = avg_metalabel_accuracies
+
+        return fitness_evaluation, confusion_matrix_analysis, net_worth
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):

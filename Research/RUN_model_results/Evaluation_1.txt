@@ -17,16 +17,16 @@ Number of data points processed: 200
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 1196.278023769942
+Net worth achieved: 1056.4546250484595
 
 ---> Fitness: 
 Fitness achieved: 57.99999999999999
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     0    0
-Hold    40   116   40
-Buy      0     4    0
+Sell     0     3    1
+Hold    39   116   39
+Buy      1     1    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -39,29 +39,8 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         0
-Non-Sell    40       160
-
-TPR = 0.0
-TNR = 1.0
-PPV = inf
-NPV = 0.8
-FNR = 1.0
-FPR = 0.0
-FDR = inf
-FOR = 0.2
-ACC = 0.8
-F1 = 0.0
-MCC = inf
-BM = 0.0
-MK = inf
-
------------> Buy classification results: 
-
-Buy Confusion Table: 
-         Buy  Non-Buy
-Buy        0        4
-Non-Buy   40      156
+Sell         0         4
+Non-Sell    40       156
 
 TPR = 0.0
 TNR = 0.975
@@ -77,24 +56,45 @@ MCC = -0.071
 BM = -0.025
 MK = -0.204
 
+-----------> Buy classification results: 
+
+Buy Confusion Table: 
+         Buy  Non-Buy
+Buy        0        2
+Non-Buy   40      158
+
+TPR = 0.0
+TNR = 0.988
+PPV = 0.0
+NPV = 0.798
+FNR = 1.0
+FPR = 0.013
+FDR = 1.0
+FOR = 0.202
+ACC = 0.79
+F1 = 0.0
+MCC = -0.05
+BM = -0.012
+MK = -0.202
+
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       116        80
-Non-Hold     4         0
+Hold       116        78
+Non-Hold     4         2
 
 TPR = 0.967
-TNR = 0.0
-PPV = 0.592
-NPV = 0.0
+TNR = 0.025
+PPV = 0.598
+NPV = 0.333
 FNR = 0.033
-FPR = 1.0
-FDR = 0.408
-FOR = 1.0
-ACC = 0.58
-F1 = 0.734
-MCC = -0.117
-BM = -0.033
-MK = -0.408
+FPR = 0.975
+FDR = 0.402
+FOR = 0.667
+ACC = 0.59
+F1 = 0.739
+MCC = -0.024
+BM = -0.008
+MK = -0.069
 

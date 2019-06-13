@@ -146,6 +146,7 @@ class Confusion_matrix_analysis:
             # Calc stats
             self.hold_stats = self.calc_stats(self.confusion_table_hold)
 
+        # TODO: Fix overall accuracy bs calc
         if print_benchmark_results:
             print("Overall accuracy achieved:", round(self.overall_accuracy))
             print("Overall accuracy achieved (excluding hold):", round(self.overall_accuracy_bs))

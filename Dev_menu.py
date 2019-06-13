@@ -10,6 +10,7 @@ from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim
 
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
+import sys
 
 print("-- Welcome to the PhyTrade Economic analyser and modeling tool --")
 print("Select the wanted run process:")
@@ -24,7 +25,8 @@ run = True
 while run is True:
     settings = SETTINGS()
 
-    selection = int(input("Enter selection:\n"))
+    # selection = int(input("Enter selection:\n"))
+    selection = 1
     # ============================ EVOLUTION-OPTIMISER =============================
     if selection == 1:
 
@@ -42,7 +44,7 @@ while run is True:
         #     except:
         #         print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
         #         continue
-
+        sys.exit()
     # ============================ ECONOMIC ANALYSIS ===============================
     elif selection == 2:
         run_model = RUN_model()

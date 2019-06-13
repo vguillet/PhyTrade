@@ -61,20 +61,20 @@ class SETTINGS:
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 3
+        self.population_size = 20
         self.nb_of_generations = 20
 
         self.mutation_rate = 0.4
-        self.nb_parents = 1
-        self.nb_random_ind = 0
+        self.nb_parents = 8
+        self.nb_random_ind = 4
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_date = "2017-01-01"
+        self.data_slice_start_date = "2000-01-01"
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 200
-        self.data_slice_cycle_count = 1
+        self.data_slice_shift_per_gen = 0
+        self.data_slice_cycle_count = 20
 
         self.data_looper = False
 
@@ -91,8 +91,8 @@ class SETTINGS:
         self.starting_parameters = None
 
         # -- Generations settings
-        self.evaluation_methods = ["Profit", "MetaLabels", "P/M average"]
-        self.evaluation_method = 0
+        self.evaluation_methods = ["Profit", "MetaLabels", "MetaLabels bs", "MetaLabels avg"]
+        self.evaluation_method = 3
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
@@ -116,11 +116,12 @@ class SETTINGS:
     # =============================== METALABELING SETTINGS =======================
     def gen_metalabels_settings(self):
         # -- Metalabeling settings:
-        self.metalabeling_setting = 0
+        self.metalabeling_settings = ["Peak", "Simple", "Hybrid"]
+        self.metalabeling_setting = 2
 
         self.upper_barrier = 20
         self.lower_barrier = -20
-        self.look_ahead = 10
+        self.look_ahead = 20
 
     # =============================== TRADEBOT SETTINGS ===========================
     def gen_tradebot_settings(self):

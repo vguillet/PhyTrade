@@ -60,6 +60,7 @@ class EVOA_optimiser:
 
         print("-- Settings selected --")
         print("Selected evaluation method:", settings.evaluation_methods[settings.evaluation_method])
+        print("Selected metalabeling method:", settings.metalabeling_settings[settings.metalabeling_setting])
         print("")
         print("Selected parent function:", settings.decay_functions[settings.parents_decay_function])
         print("Selected random individual function:", settings.decay_functions[settings.random_ind_decay_function])
@@ -143,7 +144,7 @@ class EVOA_optimiser:
                     self.population = self.new_population
 
             # ------------------ Evaluate population
-            self.fitness_evaluation, self.metalabel_accuracies, _, self.net_worth = \
+            self.fitness_evaluation, _, self.net_worth = \
                 self.evoa_tools.evaluate_population(self.population,
                                                     self.data_slice,
                                                     evaluation_setting=settings.evaluation_method,

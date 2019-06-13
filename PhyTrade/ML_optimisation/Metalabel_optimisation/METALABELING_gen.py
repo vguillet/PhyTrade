@@ -28,6 +28,13 @@ class MetaLabeling:
                                                          lower_barrier,
                                                          self.look_ahead)
 
+        # --> Simple labels
+        elif metalabel_setting == 2:
+            self.metalabels = self.hybrid_metalabel_data(self.data_slice,
+                                                         upper_barrier,
+                                                         lower_barrier,
+                                                         self.look_ahead)
+
     def peak_dip_metalabel_data(self, sliced_data):
 
         labels = [0]*len(sliced_data)
@@ -78,13 +85,44 @@ class MetaLabeling:
                 percent_difference = (data[data_slice.start_index+j]-data[data_slice.start_index+i])/data[data_slice.start_index+i]*100
 
             if percent_difference >= upper_barrier:
-                labels.append(1)
-            elif percent_difference <= lower_barrier:
                 labels.append(-1)
+            elif percent_difference <= lower_barrier:
+                labels.append(1)
             else:
                 labels.append(0)
 
         return labels
 
     def hybrid_metalabel_data(self, data_slice, upper_barrier, lower_barrier, look_ahead):
-        labels = self.peak_dip_metalabel_data(data_slice.sliced_data_selection)
+        sliced_data = data_slice.sliced_data_selection
+        data = data_slice.data_selection
+
+        labels = self.peak_dip_metalabel_data(sliced_data)
+
+        # --> Filter labels by simple metalabel
+        for i in range(len(labels)):
+            # --> Day tracker
+            j = i + 1
+
+            if labels[i] != 0:
+                labels[i] = 0
+                # --> Compute difference from current day
+                percent_difference = (data[data_slice.start_index + j] - data[data_slice.start_index + i]) / data[
+                    data_slice.start_index + i] * 100
+
+                # --> While barriers not hit, compute next day percentage difference
+                while not percent_difference >= upper_barrier and not percent_difference <= lower_barrier and j - i != look_ahead:
+                    j += 1
+                    if j > len(data):
+                        labels[i] = 0
+                        break
+
+                    percent_difference = (data[data_slice.start_index + j] - data[data_slice.start_index + i]) / data[
+                        data_slice.start_index + i] * 100
+
+                if percent_difference >= upper_barrier:
+                    labels[i] = -1
+                elif percent_difference <= lower_barrier:
+                    labels[i] = 1
+
+        return labels
