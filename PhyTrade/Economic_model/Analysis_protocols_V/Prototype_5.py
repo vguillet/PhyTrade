@@ -47,7 +47,6 @@ class Prototype_5:
         :param data_slice: data_slice class instance
         """
 
-        start_time = time.time()
         # ========================= ANALYSIS INITIALISATION ==============================
         # --> Fetch model settings
         settings = SETTINGS()
@@ -306,7 +305,6 @@ class Prototype_5:
         self.big_data.Major_spline = MAJOR_SPLINE(self.big_data,
                                                   upper_threshold, lower_threshold)
 
-        print("--> Model Run time:", round(time.time()-start_time, 3), "s")
     # ================================================================================
     """
 

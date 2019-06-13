@@ -28,6 +28,7 @@ class EVOA_tools:
                             evaluation_setting=0,
                             calculate_stats=False, print_evaluation_status=False, plot_eco_model_results=False):
         from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+        from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
         confusion_matrix_analysis = []
         metalabel_accuracies = []
@@ -39,6 +40,7 @@ class EVOA_tools:
         metalabel_net_worth = data_slice.metalabels_account.net_worth_history[-1]
 
         # -- List based evaluation
+        progress_bar = Progress_bar(len(population_lst))
         for i in range(len(population_lst)):
 
             if print_evaluation_status:
@@ -68,6 +70,8 @@ class EVOA_tools:
 
             # --> Save net worth
             net_worth.append(population_lst[i].account.net_worth_history[-1])
+
+            progress_bar.update_progress_bar(i)
 
         # -- Multi-process evaluation
         # TODO: Add multiprocessing

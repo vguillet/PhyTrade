@@ -55,8 +55,8 @@ class SETTINGS:
         self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
-        self.print_evoa_parameters_per_gen = True
-        self.print_evaluation_status = True
+        self.print_evoa_parameters_per_gen = False
+        self.print_evaluation_status = False
 
         self.plot_eco_model_results = False
 
