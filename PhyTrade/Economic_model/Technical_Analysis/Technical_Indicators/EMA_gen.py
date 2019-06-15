@@ -8,6 +8,7 @@ Victor Guillet
 11/28/2018
 """
 import numpy as np
+import pandas as pd
 
 
 class EMA:
@@ -24,46 +25,15 @@ class EMA:
         self.timeperiod_2 = timeperiod_2
 
         # -------------------------- EMA CALCULATION ---------------------------
-        self.ema_1 = np.zeros(big_data.data_slice.slice_size)
-        self.ema_2 = np.zeros(big_data.data_slice.slice_size)
+        # --> Slice data to obtain Data falling in data slice + max timeframe
+        ewma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
-        # --> SMA CALCULATION
-        self.sma_1 = np.zeros(big_data.data_slice.slice_size)
-        self.sma_2 = np.zeros(big_data.data_slice.slice_size)
+        # TODO: Check whether adjust should be True or False
+        ema_1 = pd.ewma(ewma_df[big_data.data_slice.selection], window=self.timeperiod_1, adjust=True)
+        ema_2 = pd.ewma(ewma_df[big_data.data_slice.selection], window=self.timeperiod_2, adjust=True)
 
-        for i in range(big_data.data_slice.slice_size):
-
-            # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_1:
-                self.timeperiod_1 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
-
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_2:
-                self.timeperiod_2 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
-
-            # ------------------ Calculate values falling in timeperiod_1 and 2
-            timeperiod_1_close_values = np.array(big_data.data_slice.data_selection[
-                                                 big_data.data_slice.start_index+i-self.timeperiod_1+1:
-                                                 big_data.data_slice.start_index+i+1])[::-1]
-
-            timeperiod_2_close_values = np.array(big_data.data_slice.data_selection[
-                                                 big_data.data_slice.start_index+i-self.timeperiod_2+1:
-                                                 big_data.data_slice.start_index+i+1])[::-1]
-
-            # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
-            self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
-            self.sma_2[i] = sum(timeperiod_2_close_values)/len(timeperiod_2_close_values)
-
-        self.ema_1[0] = self.sma_1[0]
-        self.ema_2[0] = self.sma_2[0]
-
-        # ------------------ Calculate the multiplier for weighting the EMA
-        multiplier_1 = 2 / (self.timeperiod_1 + 1)
-        multiplier_2 = 2 / (self.timeperiod_2 + 1)
-
-        for i in range(1, big_data.data_slice.slice_size):
-            # ------------------ Calculate the EMA
-            self.ema_1[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_1[i-1]*multiplier_1 + self.ema_1[i-1]
-            self.ema_2[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_2[i-1]*multiplier_2 + self.ema_2[i-1]
+        self.ema_1 = ema_1.values[self.timeperiod_1:]
+        self.ema_2 = ema_2.values[self.timeperiod_2:]
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):

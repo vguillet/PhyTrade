@@ -7,6 +7,7 @@ Victor Guillet
 import numpy as np
 import pandas as pd
 
+
 class SMA:
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
         """
@@ -21,6 +22,7 @@ class SMA:
         self.timeperiod_2 = timeperiod_2
 
         # -------------------------- SMA CALCULATION ---------------------------
+        # --> Slice data to obtain Data falling in data slice + max timeframe
         sma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
         sma_1 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_1)
