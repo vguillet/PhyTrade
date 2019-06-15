@@ -5,11 +5,11 @@ import json
 class SETTINGS:
     # =============================== ECONOMIC MODEL SETTINGS =====================
     def gen_model_settings(self):
-        self.spline_interpolation_factor = 5
+        self.spline_interpolation_factor = 4
 
         # ___________________________ RSI parameters _____________________________
         self.buffer_setting = 0
-        self.rsi_include_triggers_in_bb_signal = False
+        self.rsi_include_triggers_in_bb_signal = True
 
         # ___________________________ SMA parameters _____________________________
         self.sma_include_triggers_in_bb_signal = False
@@ -38,9 +38,9 @@ class SETTINGS:
         self.evaluation_name = "1"
 
         self.ticker = "AAPL"
-        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_2_AAPL.json".replace('\\', '/')))
+        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Metalabels_test2_AAPL.json".replace('\\', '/')))
 
-        self.start_date = "2010-01-01"
+        self.start_date = "2018-01-01"
         self.data_slice_size = 200
 
         # ___________________________ Metalabels parameters ______________________
@@ -55,26 +55,26 @@ class SETTINGS:
         self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
-        self.print_evoa_parameters_per_gen = False
+        self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = False
 
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 20
-        self.nb_of_generations = 20
+        self.population_size = 60
+        self.nb_of_generations = 200
 
         self.mutation_rate = 0.4
-        self.nb_parents = 8
-        self.nb_random_ind = 4
+        self.nb_parents = 25
+        self.nb_random_ind = 15
 
-        self.exploitation_phase_len_percent = 0.15
+        self.exploitation_phase_len_percent = 0.1
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_date = "2000-01-01"
+        self.data_slice_start_date = "2010-01-01"
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 0
-        self.data_slice_cycle_count = 20
+        self.data_slice_shift_per_gen = 100
+        self.data_slice_cycle_count = 5
 
         self.data_looper = False
 
@@ -92,7 +92,7 @@ class SETTINGS:
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels", "MetaLabels bs", "MetaLabels avg"]
-        self.evaluation_method = 3
+        self.evaluation_method = 0
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         self.parents_decay_function = 1
@@ -107,7 +107,7 @@ class SETTINGS:
 
         # ___________________________ Benchmark parameters _______________________
         # -- Benchmarking data slice settings
-        self.benchmark_data_slice_start_date = "2017-01-01"
+        self.benchmark_data_slice_start_date = "2018-03-01"
         self.benchmark_data_slice_size = 200
 
         # ___________________________ Metalabels parameters ______________________

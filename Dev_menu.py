@@ -25,8 +25,9 @@ run = True
 while run is True:
     settings = SETTINGS()
 
-    # selection = int(input("Enter selection:\n"))
-    selection = 1
+    selection = int(input("Enter selection:\n"))
+    # selection = 1
+    print("\n")
     # ============================ EVOLUTION-OPTIMISER =============================
     if selection == 1:
 

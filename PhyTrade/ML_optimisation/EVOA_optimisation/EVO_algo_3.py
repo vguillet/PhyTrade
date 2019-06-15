@@ -138,12 +138,13 @@ class EVOA_optimiser:
                                                                               self.nb_random_ind,
                                                                               mutation_rate=settings.mutation_rate)
 
-                    print("\nParameter sets evolution completed (Darwin put in charge)")
-                    print("Length new pop", len(self.new_population))
+                    print("\nParameter sets evolution completed (Darwin put in charge)\n")
+                    # print("Length new pop", len(self.new_population), "\n")
 
                     self.population = self.new_population
 
             # ------------------ Evaluate population
+            print("---------------> Evaluating population")
             self.fitness_evaluation, _, self.net_worth = \
                 self.evoa_tools.evaluate_population(self.population,
                                                     self.data_slice,
@@ -175,15 +176,14 @@ class EVOA_optimiser:
                 # ------------------ Print generation info
                 generation_end_time = time.time()
                 print("\n-- Generation", gen + 1, "population evaluation completed --")
-                print("Generation Run time:", round(generation_end_time-generation_start_time, 3))
-                print("\nMetalabel net worth from previous generation:", round(self.results.data_slice_metalabel_pp[-1], 3))
+                print("Total generation Run time:", round(generation_end_time-generation_start_time, 3))
+                print("\nMetalabel net worth:", round(self.results.data_slice_metalabel_pp[-1], 3))
 
-                print("\nBest Individual fitness from previous generation:", round(max(self.fitness_evaluation), 3))
-                print("Average fitness from previous generation:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
+                print("\nBest Individual fitness:", round(max(self.fitness_evaluation), 3))
+                print("Average fitness:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
 
-                print("\nBest Individual net worth from previous generation:", round(max(self.net_worth), 3))
-                print("Average net worth from previous generation:", round((sum(self.net_worth) / len(self.net_worth)), 3))
-                print("\n")
+                print("\nBest Individual net worth:", round(max(self.net_worth), 3))
+                print("Average net worth:", round((sum(self.net_worth) / len(self.net_worth)), 3))
 
         # ===============================================================================
         print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -197,7 +197,6 @@ class EVOA_optimiser:
         self.results.run_stop_time = time.time()
         print("\nEnd time:", time.strftime('%X %x %Z'), "\n")
 
-        # ------------------ Final results benchmarking
         # Select best individual from final population
         if self.fitness_evaluation is None:
             self.fitness_evaluation = [1]
@@ -207,20 +206,21 @@ class EVOA_optimiser:
                                                                       selection_method=settings.parents_selection_method,
                                                                       nb_parents=1)[0]
 
-        _, _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
+        self.results.individual = self.best_individual
+        self.results.gen_parameters_json()
+
+        # ------------------ Final results benchmarking
+        _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
                                                                                            self.benchmark_data_slice,
                                                                                            evaluation_setting=settings.evaluation_method,
                                                                                            calculate_stats=True,
                                                                                            print_evaluation_status=False,
                                                                                            plot_eco_model_results=True)
 
-        # Generate run results summary
-        self.results.individual = self.best_individual
+        # --> Generate run results summary
         self.results.benchmark_confusion_matrix_analysis = benchmark_confusion_matrix_analysis[0]
         self.results.gen_stats()
-
         self.results.gen_result_recap_file()
-        self.results.gen_parameters_json()
         self.results.plot_results()
 
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")

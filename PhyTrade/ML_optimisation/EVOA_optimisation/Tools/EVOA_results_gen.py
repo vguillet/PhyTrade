@@ -72,7 +72,7 @@ class EVOA_results_gen:
 
         with open(file_name, 'w') as fout:
             json.dump(self.individual.parameter_dictionary, fout)
-        print("Parameters recorded to ", file_name, " successfully")
+        print("Parameters recorded to ", file_name, " successfully\n")
         return
 
     def gen_result_recap_file(self):
