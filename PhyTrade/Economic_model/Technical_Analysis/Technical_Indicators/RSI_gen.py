@@ -31,7 +31,7 @@ class RSI:
         rsi_df = big_data.data_slice.data[big_data.data_slice.start_index-self.timeframe:big_data.data_slice.stop_index]
 
         # --> Get the difference in price from previous step
-        delta = rsi_df["Close"].diff()
+        delta = rsi_df[big_data.data_slice.selection].diff()
 
         # --> Make the positive gains (up) and negative gains (down) Series
         up, down = delta.copy(), delta.copy()
@@ -44,8 +44,6 @@ class RSI:
 
         # --> Calculate the RSI based on EWMA
         rsi = 100 - 100 / (1 + roll_up / roll_down)
-
-        print(rsi[self.timeframe:])
 
         self.rsi_values = rsi.values[self.timeframe:]
 

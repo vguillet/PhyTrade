@@ -5,7 +5,7 @@ Victor Guillet
 11/28/2018
 """
 import numpy as np
-
+import pandas as pd
 
 class SMA:
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
@@ -21,30 +21,13 @@ class SMA:
         self.timeperiod_2 = timeperiod_2
 
         # -------------------------- SMA CALCULATION ---------------------------
-        self.sma_1 = np.zeros(big_data.data_slice.slice_size)
-        self.sma_2 = np.zeros(big_data.data_slice.slice_size)
+        sma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
-        for i in range(big_data.data_slice.slice_size):
+        sma_1 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_1)
+        sma_2 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_2)
 
-            # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_1:
-                self.timeperiod_1 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
-
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_2:
-                self.timeperiod_2 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
-
-            # ------------------ Calculate values falling in timeperiod_1 and 2
-            timeperiod_1_close_values = np.array(big_data.data_slice.data_selection[
-                                                  big_data.data_slice.start_index+i-self.timeperiod_1+1:
-                                                  big_data.data_slice.start_index+i+1])[::-1]
-
-            timeperiod_2_close_values = np.array(big_data.data_slice.data_selection[
-                                                  big_data.data_slice.start_index+i-self.timeperiod_2+1:
-                                                  big_data.data_slice.start_index+i+1])[::-1]
-
-            # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
-            self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
-            self.sma_2[i] = sum(timeperiod_2_close_values)/len(timeperiod_2_close_values)
+        self.sma_1 = sma_1.values[self.timeperiod_1:]
+        self.sma_2 = sma_2.values[self.timeperiod_2:]
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
