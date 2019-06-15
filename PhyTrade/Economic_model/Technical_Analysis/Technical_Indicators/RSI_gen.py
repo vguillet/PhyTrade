@@ -5,7 +5,7 @@ Victor Guillet
 11/28/2018
 """
 import numpy as np
-
+import pandas as pd
 
 class RSI:
     def __init__(self, big_data, timeframe=14, standard_upper_threshold=70, standard_lower_threshold=30,
@@ -21,57 +21,34 @@ class RSI:
         """
 
         # --> RSI initialisation
-        self.timeframe = timeframe
+        self.timeframe = 10
         self.buffer_setting = buffer_setting
         self.standard_upper_threshold = standard_upper_threshold
         self.standard_lower_threshold = standard_lower_threshold
         
         # -------------------------- RSI CALCULATION ---------------------------
-        self.rsi_values = np.zeros(big_data.data_slice.slice_size)
-        
-        for i in range(big_data.data_slice.slice_size):
-            # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeframe:
-                self.timeframe = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+        # --> Slice data to obtain Data falling in data slice + rsi timeframe
+        rsi_df = big_data.data_slice.data[big_data.data_slice.start_index-self.timeframe:big_data.data_slice.stop_index]
 
-            timeframe_open_values = np.array(big_data.data_slice.data[
-                                               big_data.data_slice.start_index+i-self.timeframe+1:
-                                               big_data.data_slice.start_index+i+1]["Open"])[::-1]
+        # --> Get the difference in price from previous step
+        delta = rsi_df["Close"].diff()
 
-            timeframe_close_values = np.array(big_data.data_slice.data[
-                                               big_data.data_slice.start_index+i-self.timeframe+1:
-                                               big_data.data_slice.start_index+i+1]["Close"])[::-1]
+        # --> Make the positive gains (up) and negative gains (down) Series
+        up, down = delta.copy(), delta.copy()
+        up[up < 0] = 0
+        down[down > 0] = 0
 
-            # -- Calculate gains and losses in timeframe
-            # Calculate the net loss or gain for each date falling
-            # in the data frame and store them in gains and loss lists
-            gains = []
-            losses = []
-            for j in range(self.timeframe):
-                net = timeframe_close_values[j] - timeframe_open_values[j]
-                if net > 0:
-                    gains.append(net)
-                elif net < 0:
-                    losses.append(net)
+        # --> Calculate the EWMA
+        roll_up = up.ewm(com=self.timeframe - 1, adjust=False).mean()
+        roll_down = down.ewm(com=self.timeframe - 1, adjust=False).mean().abs()
 
-            # -- Calculate rs and rsi values for data_slice
+        # --> Calculate the RSI based on EWMA
+        rsi = 100 - 100 / (1 + roll_up / roll_down)
 
-            if gains:                                       # If gains != Null, calculate rsi_value, else rsi_value = 50
-                avg_gain = sum(gains)/len(gains)
-                if losses:                                  # If losses != Null, calculate rsi_value, else rsi_value = 50
-                    avg_loss = sum(losses)/len(losses)
-                    if avg_loss != 0:                       # If avg_loss != Null, calculate rsi_value, else rsi_value = 50
-                        rs = avg_gain/avg_loss
-                        current_rsi_value = 100-100/(1-rs)
-                    else:
-                        current_rsi_value = 50
-                else:
-                    current_rsi_value = 50
-            else:
-                current_rsi_value = 50
+        print(rsi[self.timeframe:])
 
-            self.rsi_values[i] = current_rsi_value
-        
+        self.rsi_values = rsi.values[self.timeframe:]
+
     # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer

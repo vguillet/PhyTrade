@@ -40,7 +40,7 @@ class SETTINGS:
         self.ticker = "AAPL"
         self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Metalabels_test2_AAPL.json".replace('\\', '/')))
 
-        self.start_date = "2018-01-01"
+        self.start_date = "2008-01-02"
         self.data_slice_size = 200
 
         # ___________________________ Metalabels parameters ______________________
@@ -107,7 +107,7 @@ class SETTINGS:
 
         # ___________________________ Benchmark parameters _______________________
         # -- Benchmarking data slice settings
-        self.benchmark_data_slice_start_date = "2018-03-01"
+        self.benchmark_data_slice_start_date = "2018-01-01"
         self.benchmark_data_slice_size = 200
 
         # ___________________________ Metalabels parameters ______________________

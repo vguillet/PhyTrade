@@ -17,8 +17,8 @@ def fetch_technical_data(ticker):
         file_name = ticker + "_Yahoo_data.csv"
 
         # ------------------ Fill in missing values (weekends)
-        idx = pandas.date_range(data.index[0], data.index[-1])
-        data = data.reindex(idx)
+        # idx = pandas.date_range(data.index[0], data.index[-1])
+        # data = data.reindex(idx)
         # data = data.fillna(method='ffill')
 
         data = data.reset_index()
