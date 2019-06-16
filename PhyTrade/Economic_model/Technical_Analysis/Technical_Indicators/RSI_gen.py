@@ -7,6 +7,7 @@ Victor Guillet
 import numpy as np
 import pandas as pd
 
+
 class RSI:
     def __init__(self, big_data, timeframe=14, standard_upper_threshold=70, standard_lower_threshold=30,
                  buffer_setting=0):

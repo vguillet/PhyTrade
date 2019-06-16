@@ -19,6 +19,8 @@ class SETTINGS:
 
         # ___________________________ LWMA parameters ____________________________
         self.lwma_include_triggers_in_bb_signal = False
+        # ___________________________ LWMA parameters ____________________________
+        self.oc_gradient_include_triggers_in_bb_signal = False
 
         # ___________________________ Modulation parameters ______________________
         # TODO: Add to evoa algo

@@ -137,7 +137,7 @@ class Individual:
                 self.parameter_dictionary["spline_property"]["weights"]["cci_" + str(i)] = ga_random.weight_random_gen()
                 self.parameter_dictionary["spline_property"]["flip"]["cci_" + str(i)] = ga_random.flip_random_gen()
 
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ OC parameters:
+        # ========================================================== OC parameters:
         self.parameter_dictionary["indicators_count"]["oc_gradient"] = 1
 
         self.parameter_dictionary["spline_property"]["smoothing_factors"]["oc_gradient_0"] = ga_random.smoothing_factor_random_gen()

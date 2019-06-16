@@ -22,6 +22,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen imp
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.SMA_gen import SMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.EMA_gen import EMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.LWMA_gen import LWMA
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.OC_AVG_GRADIENT_gen import OC_AVG_GRADIENT
 
 # ---> Import amplification signals
 from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volume_gen import VOLUME
@@ -92,6 +93,11 @@ class Prototype_5:
             self.big_data.lwma_indicators.append(LWMA(self.big_data,
                                                       timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["lwma_"+str(i)]))
 
+        # -- OC_AVG_GRADIENT initialisation
+        self.big_data.oc_gradient_indicators = []
+        for i in range(parameter_dictionary["indicators_count"]["oc_gradient"]):
+            self.big_data.oc_gradient_indicators.append(OC_AVG_GRADIENT(self.big_data))
+
         # ~~~~~~~~~~~~~~~~~~ Amplification signal initialisation
         # -- Volume initialisation
         self.big_data.volume = VOLUME(self.big_data,
@@ -112,20 +118,12 @@ class Prototype_5:
         # ========================= DATA GENERATION AND PROCESSING =======================
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators output generation
         # -- RSI
-        for indicator in self.big_data.rsi_indicators:
-            indicator.get_output(self.big_data, include_triggers_in_bb_signal=settings.rsi_include_triggers_in_bb_signal)
-
-        # -- SMA
-        for indicator in self.big_data.sma_indicators:
-            indicator.get_output(self.big_data, include_triggers_in_bb_signal=settings.sma_include_triggers_in_bb_signal)
-
-        # -- EMA
-        for indicator in self.big_data.ema_indicators:
-            indicator.get_output(self.big_data, include_triggers_in_bb_signal=settings.ema_include_triggers_in_bb_signal)
-
-        # -- LWMA
-        for indicator in self.big_data.lwma_indicators:
-            indicator.get_output(self.big_data, include_triggers_in_bb_signal=settings.lwma_include_triggers_in_bb_signal)
+        for indicator_type in parameter_dictionary["indicators_count"]:
+            if parameter_dictionary["indicators_count"][indicator_type] != 0:
+                for indicator in getattr(self.big_data, str(indicator_type + "_indicators")):
+                    indicator.get_output(self.big_data,
+                                         include_triggers_in_bb_signal=getattr(settings,
+                                                                               str(indicator_type + "_include_triggers_in_bb_signal")))
 
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # ---> Creating splines from indicator signals
@@ -160,7 +158,7 @@ class Prototype_5:
         # -- OC avg gradient
         self.big_data.oc_gradient_splines = []
         self.big_data.oc_gradient_splines.append(
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.oc_avg_gradient_bb_signal,
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.oc_gradient_indicators[0].bb_signal,
                                                     smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["oc_gradient_0"]))
 
         # ---> Generating amplification signals
@@ -175,7 +173,6 @@ class Prototype_5:
                                                     smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"]))
 
         # ---> Tuning separate signals
-        # TODO: Figure out a systematic way of flipping spline when necessary
         self.big_data.fliped_splines = []
         for flip in parameter_dictionary["spline_property"]["flip"]:
             if parameter_dictionary["spline_property"]["flip"][flip] is True:
