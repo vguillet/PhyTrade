@@ -21,7 +21,7 @@ class RSI:
         """
 
         # --> RSI initialisation
-        self.timeframe = 10
+        self.timeframe = timeframe
         self.buffer_setting = buffer_setting
         self.standard_upper_threshold = standard_upper_threshold
         self.standard_lower_threshold = standard_lower_threshold
@@ -45,7 +45,7 @@ class RSI:
         # --> Calculate the RSI based on EWMA
         rsi = 100 - 100 / (1 + roll_up / roll_down)
 
-        self.rsi_values = rsi.values[self.timeframe:]
+        self.rsi_values = np.array(rsi.values[self.timeframe:])
 
     # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:

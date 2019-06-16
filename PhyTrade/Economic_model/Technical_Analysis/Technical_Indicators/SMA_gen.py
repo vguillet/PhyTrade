@@ -28,8 +28,8 @@ class SMA:
         sma_1 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_1)
         sma_2 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_2)
 
-        self.sma_1 = sma_1.values[self.timeperiod_1:]
-        self.sma_2 = sma_2.values[self.timeperiod_2:]
+        self.sma_1 = np.array(sma_1.values[self.timeperiod_1:])
+        self.sma_2 = np.array(sma_2.values[self.timeperiod_2:])
 
         # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):

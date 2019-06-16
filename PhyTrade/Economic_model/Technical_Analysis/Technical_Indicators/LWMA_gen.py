@@ -12,41 +12,41 @@ import pandas as pd
 
 
 class LWMA:
-    def __init__(self, big_data, lookback_period=10, max_weight=1):
+    def __init__(self, big_data, timeperiod=10, max_weight=1):
         """
         Generates an LWMA indicator instance
 
         :param big_data: BIGDATA class
-        :param lookback_period: Lookback period to be used, if larger than dataslice length, dataslice length is used
+        :param timeperiod: Lookback period to be used, if larger than dataslice length, dataslice length is used
         :param max_weight: Weight given to current day value
         """
 
-        self.lookback_period = lookback_period
+        self.timeperiod = timeperiod
         self.lwma = np.zeros(big_data.data_slice.slice_size)
 
         for i in range(big_data.data_slice.slice_size):
 
             # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.lookback_period:
-                self.lookback_period = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod:
+                self.timeperiod = len(big_data.data_slice.data[:big_data.data_slice.start_index])
 
             # ------------------ Calculate values falling in timeperiod_1 and 2
-            lookback_period_values = np.array(big_data.data_slice.data_selection[
-                                              big_data.data_slice.start_index + i - self.lookback_period + 1:
+            timeperiod_values = np.array(big_data.data_slice.data_selection[
+                                              big_data.data_slice.start_index + i - self.timeperiod + 1:
                                               big_data.data_slice.start_index + i + 1])[::-1]
 
             # ---> Compute weights for each days based on max weight param and lookback period
-            weights = np.zeros(self.lookback_period)
+            weights = np.zeros(self.timeperiod)
 
-            for j in range(self.lookback_period):
-                weights[j] = max_weight-(max_weight/self.lookback_period)*j
+            for j in range(self.timeperiod):
+                weights[j] = max_weight-(max_weight/self.timeperiod)*j
             # print(weights)
             weights = weights[::-1]
 
             # ---> Compute weighted daily values
             weighted_values = np.zeros(big_data.data_slice.slice_size)
-            for j in range(self.lookback_period):
-                weighted_values[j] = lookback_period_values[j]*weights[j]
+            for j in range(self.timeperiod):
+                weighted_values[j] = timeperiod_values[j]*weights[j]
 
             self.lwma[i] = sum(weighted_values)/sum(weights)
 
@@ -104,7 +104,7 @@ class LWMA:
         import matplotlib.pyplot as plt
 
         if plot_lwma:
-            plt.plot(big_data.data_slice_dates, self.lwma, label="LWMA " + str(self.lookback_period) + " days")  # Plot LWMA
+            plt.plot(big_data.data_slice_dates, self.lwma, label="LWMA " + str(self.timeperiod) + " days")  # Plot LWMA
 
         if plot_trigger_signals:
             plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")  # Plot sell signals

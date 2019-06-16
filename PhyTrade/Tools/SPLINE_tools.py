@@ -90,7 +90,9 @@ class SPLINE:
 
     @staticmethod
     def flip_spline(spline):
-        flipped_spline = [-x for x in spline]
+        flipped_spline = np.zeros(len(spline))
+        for i in range(len(spline)):
+            flipped_spline[i] = -spline[i]
 
         return flipped_spline
 

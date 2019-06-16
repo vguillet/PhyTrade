@@ -77,6 +77,11 @@ class EVOA_random_gen:
                     offspring.parameter_dictionary["major_spline_standard_lower_thresholds"][parameter],
                     current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
+        elif parameter_type_to_modify == "flip":
+            parameter = random.choice(list(offspring.parameter_dictionary["flip"]))
+
+            offspring.parameter_dictionary["flip"][parameter] = self.flip_gen()
+
         return offspring
 
     # ===============================================================================
@@ -211,10 +216,6 @@ class EVOA_random_gen:
         return random.randint(51, 90)
 
     @staticmethod
-    def rsi_lower_threshold_random_gen():
-        return random.randint(10, 49)
-
-    @staticmethod
     def rsi_upper_threshold_gen(current_parameter,
                                 current_generation, nb_of_generations,
                                 current_slice_cycle, nb_of_slice_cycles,
@@ -237,6 +238,10 @@ class EVOA_random_gen:
             new_parameter = 90
 
         return new_parameter
+
+    @staticmethod
+    def rsi_lower_threshold_random_gen():
+        return random.randint(10, 49)
 
     @staticmethod
     def rsi_lower_threshold_gen(current_parameter,
@@ -267,10 +272,6 @@ class EVOA_random_gen:
         return random.uniform(0.3, 0.6)
 
     @staticmethod
-    def major_spline_lower_threshold_random_gen():
-        return random.uniform(-0.3, -0.6)
-
-    @staticmethod
     def major_spline_upper_threshold_gen(current_parameter,
                                          current_generation, nb_of_generations,
                                          current_slice_cycle, nb_of_slice_cycles,
@@ -295,6 +296,10 @@ class EVOA_random_gen:
         return new_parameter
 
     @staticmethod
+    def major_spline_lower_threshold_random_gen():
+        return random.uniform(-0.3, -0.6)
+
+    @staticmethod
     def major_spline_lower_threshold_gen(current_parameter,
                                          current_generation, nb_of_generations,
                                          current_slice_cycle, nb_of_slice_cycles,
@@ -317,3 +322,11 @@ class EVOA_random_gen:
             new_parameter = -0.6
 
         return new_parameter
+
+    @staticmethod
+    def flip_random_gen():
+        return bool(random.getrandbits(1))
+
+    @staticmethod
+    def flip_gen():
+        return bool(random.getrandbits(1))

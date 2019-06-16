@@ -38,7 +38,8 @@ class SETTINGS:
         self.evaluation_name = "1"
 
         self.ticker = "AAPL"
-        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Metalabels_test2_AAPL.json".replace('\\', '/')))
+        # self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Metalabels_test2_AAPL.json".replace('\\', '/')))
+        self.parameter_set = None
 
         self.start_date = "2008-01-02"
         self.data_slice_size = 200
