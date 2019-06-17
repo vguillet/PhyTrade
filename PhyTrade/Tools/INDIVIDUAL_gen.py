@@ -71,7 +71,7 @@ class Individual:
         self.account = self.tradebot.account
         # self.big_data = tradebot.analysis.big_data
 
-    def gen_parameter_set(self, rsi_count=1, sma_count=1, ema_count=1, lwma_count=0, cci_count=0, eom_count=0):
+    def gen_parameter_set(self, rsi_count=1, sma_count=1, ema_count=1, lwma_count=1, cci_count=1, eom_count=1):
         ga_random = EVOA_random_gen()
         self.parameter_dictionary = {"indicators_count": {},
                                      "spline_property": {"weights": {},
@@ -147,9 +147,16 @@ class Individual:
                 self.parameter_dictionary["spline_property"]["weights"]["cci_" + str(i)] = ga_random.weight_random_gen()
                 self.parameter_dictionary["spline_property"]["flip"]["cci_" + str(i)] = ga_random.flip_random_gen()
 
-        # ========================================================== EVM parameters:
+        # ========================================================== EOM parameters:
         self.parameter_dictionary["indicators_count"]["eom"] = eom_count
-        # TODO: Implement evm entry gen
+
+        if eom_count != 0:
+            for i in range(eom_count):
+                self.parameter_dictionary["indicator_properties"]["timeframes"]["eom_"+str(i)] = ga_random.timeframe_random_gen()
+
+                self.parameter_dictionary["spline_property"]["smoothing_factors"]["eom_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_dictionary["spline_property"]["weights"]["eom_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_dictionary["spline_property"]["flip"]["eom_" + str(i)] = ga_random.flip_random_gen()
 
         # ========================================================== OC parameters:
         self.parameter_dictionary["indicators_count"]["oc_gradient"] = 1

@@ -43,7 +43,7 @@ class SETTINGS:
         self.ema_count = 2
         self.lwma_count = 0
         self.cci_count = 2
-        self.eom_count = 0
+        self.eom_count = 2
 
     # =============================== SINGLE TRADE SIM SETTINGS ===================
     def gen_run_model_settings(self):

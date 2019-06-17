@@ -99,6 +99,12 @@ class Prototype_5:
             self.big_data.content["indicators"]["lwma"].append(CCI(self.big_data,
                     timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["cci_"+str(i)]))
 
+        # --> CCI initialisation
+        self.big_data.content["indicators"]["eom"] = []
+        for i in range(parameter_dictionary["indicators_count"]["eom"]):
+            self.big_data.content["indicators"]["lwma"].append(CCI(self.big_data,
+                    timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["eom_"+str(i)]))
+
         # --> OC_AVG_GRADIENT initialisation
         self.big_data.content["indicators"]["oc_gradient"] = []
         for i in range(parameter_dictionary["indicators_count"]["oc_gradient"]):
@@ -123,6 +129,7 @@ class Prototype_5:
         """
         # ========================= DATA GENERATION AND PROCESSING =======================
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators output generation
+        # --> Generate output of every indicator
         for indicator_type in parameter_dictionary["indicators_count"]:
             if parameter_dictionary["indicators_count"][indicator_type] != 0:
                 for indicator in self.big_data.content["indicators"][indicator_type]:
@@ -130,7 +137,6 @@ class Prototype_5:
                                          include_triggers_in_bb_signal=getattr(settings,
                                                                                indicator_type + "_include_triggers_in_bb_signal"))
 
-        # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # --> Creating splines from indicator signals
         for indicator_type in parameter_dictionary["indicators_count"]:
             if parameter_dictionary["indicators_count"][indicator_type] != 0:
@@ -142,6 +148,7 @@ class Prototype_5:
                                                                 smoothing_factor=parameter_dictionary["spline_property"]
                                                                 ["smoothing_factors"][indicator_type + "_" + str(i)]))
 
+        # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # --> Generating amplification signals
         self.big_data.spline_volume = self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
                                                                               smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volume_0"])
