@@ -1,10 +1,10 @@
 "https://blog.quantinsti.com/build-technical-indicators-in-python/#cci"
-
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import pandas as pd
 import numpy as np
 
 
-class CCI:
+class CCI(ABSTRACT_indicator):
     def __init__(self, big_data, timeperiod=12):
         # --> CCI initialisation
         self.timeperiod = timeperiod
@@ -20,7 +20,13 @@ class CCI:
 
         self.cci_values = np.array(cci.values[self.timeperiod:])
 
-        # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    """
+
+
+
+
+    """
+    # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
         from PhyTrade.Tools.MATH_tools import MATH_tools
 

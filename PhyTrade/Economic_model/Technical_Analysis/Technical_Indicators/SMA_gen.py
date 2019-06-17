@@ -4,11 +4,11 @@ This script enables computing the SMA indicator
 Victor Guillet
 11/28/2018
 """
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import numpy as np
-import pandas as pd
 
 
-class SMA:
+class SMA(ABSTRACT_indicator):
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
         """
         Generates an SMA indicator instance
@@ -31,7 +31,13 @@ class SMA:
         self.sma_1 = np.array(sma_1.values[self.timeperiod_1:])
         self.sma_2 = np.array(sma_2.values[self.timeperiod_2:])
 
-        # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    """
+
+
+
+
+    """
+    # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
         """
         Generate SMA indicator output
@@ -67,37 +73,3 @@ class SMA:
                     if self.sma_1[i] > self.sma_2[i]:
                         self.bb_signal[i] = -1
                         sma_config = 0
-
-    """
-
-
-
-
-    """
-    # ------------------------- PLOT SMA ----------------------------------
-    def plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
-        """
-        :param big_data: BIGDATA class instance
-        :param plot_sma_1: Plot SMA indicator based on timeperiod_1
-        :param plot_sma_2: Plot SMA indicator based on timeperiod_2
-        :param plot_trigger_signals: Include trigger signals in plot
-        """
-
-        import matplotlib.pyplot as plt
-
-        if plot_sma_1:
-            plt.plot(big_data.data_slice_dates, self.sma_1, label="SMA "+str(self.timeperiod_1)+" days")          # Plot SMA_1
-
-        if plot_sma_2:
-            plt.plot(big_data.data_slice_dates, self.sma_2, label="SMA "+str(self.timeperiod_2)+" days")          # Plot SMA_2
-
-        if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")       # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_SMA, label="Buy trigger")          # Plot buy signals
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("SMA")
-        plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("SMA")

@@ -7,11 +7,11 @@ moving averages (EMA).
 Victor Guillet
 11/28/2018
 """
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import numpy as np
-import pandas as pd
 
 
-class LWMA:
+class LWMA(ABSTRACT_indicator):
     def __init__(self, big_data, timeperiod=10, max_weight=1):
         """
         Generates an LWMA indicator instance
@@ -50,7 +50,13 @@ class LWMA:
 
             self.lwma[i] = sum(weighted_values)/sum(weights)
 
-            # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    """
+
+
+
+
+    """
+    # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
         """
         Generate LWMA indicator output
@@ -86,36 +92,3 @@ class LWMA:
                     if self.lwma[i] > big_data.data_slice.sliced_data_selection[i]:
                         self.bb_signal[i] = -1
                         lwma_config = 0
-
-    """
-
-
-
-
-    """
-    # ------------------------- PLOT LWMA ----------------------------------
-    def plot_lwma(self, big_data, plot_lwma=True, plot_trigger_signals=True):
-        """
-        :param big_data: BIGDATA class instance
-        :param plot_lwma: Plot LWMA indicator
-        :param plot_trigger_signals: Include trigger signals in plot
-        """
-
-        import matplotlib.pyplot as plt
-
-        if plot_lwma:
-            plt.plot(big_data.data_slice_dates, self.lwma, label="LWMA " + str(self.timeperiod) + " days")  # Plot LWMA
-
-        if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")  # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_SMA, label="Buy trigger")  # Plot buy signals
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("LWMA")
-        plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("LWMA")
-
-
-

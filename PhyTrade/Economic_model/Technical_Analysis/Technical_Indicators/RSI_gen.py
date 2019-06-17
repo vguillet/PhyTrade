@@ -4,11 +4,11 @@ This script enables computing the RSI indicator
 Victor Guillet
 11/28/2018
 """
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import numpy as np
-import pandas as pd
 
 
-class RSI:
+class RSI(ABSTRACT_indicator):
     def __init__(self, big_data, timeframe=14, standard_upper_threshold=70, standard_lower_threshold=30,
                  buffer_setting=0):
         """
@@ -159,43 +159,3 @@ class RSI:
 
                 if self.rsi_values[i] > self.standard_lower_threshold and sell_trigger == 2:  # Reset trigger
                     buy_trigger = 0
-
-    """
-
-
-
-
-    """
-    # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
-    def plot_rsi(self, big_data, plot_rsi=True, plot_upper_bound=True, plot_lower_bound=True, plot_trigger_signals=True):
-        """
-        :param big_data: BIGDATA class instance
-        :param plot_rsi: Plot RSI indicator
-        :param plot_upper_bound: Include RSI upper bound in plot
-        :param plot_lower_bound: Include RSI upper bound in plot
-        :param plot_trigger_signals: Include RSI trigger signals in plot
-        """
-
-        import matplotlib.pyplot as plt
-
-        if plot_rsi:
-            plt.plot(big_data.data_slice_dates, self.rsi_values, linewidth=1, label="RSI values")    # Plot RSI
-
-        if plot_upper_bound:
-            plt.plot(big_data.data_slice_dates, self.upper_bound, linewidth=1, label="Upper bound")  # Plot upper bound
-
-        if plot_lower_bound:
-            plt.plot(big_data.data_slice_dates, self.lower_bound, linewidth=1, label="Lower bound")  # Plot lower bound
-
-        if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_rsi, label="Sell trigger")           # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_rsi, label="Buy trigger")              # Plot buy signals
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("RSI")
-        plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("RSI - %")
-
-
