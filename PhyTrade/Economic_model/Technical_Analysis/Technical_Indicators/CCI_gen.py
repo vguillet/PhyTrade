@@ -5,7 +5,7 @@ import numpy as np
 
 
 class CCI(ABSTRACT_indicator):
-    def __init__(self, big_data, timeperiod=12):
+    def __init__(self, big_data, timeperiod=20):
         # --> CCI initialisation
         self.timeperiod = timeperiod
 

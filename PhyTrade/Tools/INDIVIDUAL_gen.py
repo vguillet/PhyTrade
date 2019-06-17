@@ -2,6 +2,7 @@ from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVO
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 from SETTINGS import SETTINGS
 
+
 class Individual:
     def __init__(self, ticker="AAPL", parameter_set=None):
         # ========================= DATA COLLECTION INITIALISATION =======================
@@ -16,7 +17,7 @@ class Individual:
                                    ema_count=settings.ema_count,
                                    lwma_count=settings.lwma_count,
                                    cci_count=settings.cci_count,
-                                   evm_count=settings.evm_count)
+                                   eom_count=settings.eom_count)
         else:
             self.parameter_dictionary = parameter_set
 
@@ -70,7 +71,7 @@ class Individual:
         self.account = self.tradebot.account
         # self.big_data = tradebot.analysis.big_data
 
-    def gen_parameter_set(self, rsi_count=1, sma_count=1, ema_count=1, lwma_count=0, cci_count=0, evm_count=0):
+    def gen_parameter_set(self, rsi_count=1, sma_count=1, ema_count=1, lwma_count=0, cci_count=0, eom_count=0):
         ga_random = EVOA_random_gen()
         self.parameter_dictionary = {"indicators_count": {},
                                      "spline_property": {"weights": {},
@@ -147,7 +148,7 @@ class Individual:
                 self.parameter_dictionary["spline_property"]["flip"]["cci_" + str(i)] = ga_random.flip_random_gen()
 
         # ========================================================== EVM parameters:
-        self.parameter_dictionary["indicators_count"]["evm"] = evm_count
+        self.parameter_dictionary["indicators_count"]["eom"] = eom_count
         # TODO: Implement evm entry gen
 
         # ========================================================== OC parameters:

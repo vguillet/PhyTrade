@@ -66,7 +66,7 @@ class EVOA_optimiser:
             print("                  -> EMA:", settings.ema_count)
             print("                  -> LWMA:", settings.lwma_count)
             print("                  -> CCI:", settings.cci_count)
-            print("                  -> EVM:", settings.evm_count)
+            print("                  -> EVM:", settings.eom_count)
             print("                  -> OC gradient:", 1)
 
         else:
@@ -75,7 +75,7 @@ class EVOA_optimiser:
             print("                  -> EMA:", settings.starting_parameters["indicators_count"]["ema"])
             print("                  -> LWMA:", settings.starting_parameters["indicators_count"]["lwma"])
             print("                  -> CCI:", settings.starting_parameters["indicators_count"]["cci"])
-            print("                  -> EVM:", settings.starting_parameters["indicators_count"]["evm"])
+            print("                  -> EVM:", settings.starting_parameters["indicators_count"]["eom"])
             print("                  -> OC gradient:", 1)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= EVO OPTIMISATION PROCESS =============================
