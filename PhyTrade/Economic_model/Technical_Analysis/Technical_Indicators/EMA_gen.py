@@ -29,8 +29,8 @@ class EMA:
         ewma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
         # TODO: Check whether adjust should be True or False
-        ema_1 = pd.ewma(ewma_df[big_data.data_slice.selection], span=self.timeperiod_1, adjust=True)
-        ema_2 = pd.ewma(ewma_df[big_data.data_slice.selection], span=self.timeperiod_2, adjust=True)
+        ema_1 = ewma_df[big_data.data_slice.selection].ewm(span=self.timeperiod_1, min_periods=0, adjust=True, ignore_na=False).mean()
+        ema_2 = ewma_df[big_data.data_slice.selection].ewm(span=self.timeperiod_2, min_periods=0, adjust=True, ignore_na=False).mean()
 
         self.ema_1 = np.array(ema_1.values[self.timeperiod_1:])
         self.ema_2 = np.array(ema_2.values[self.timeperiod_2:])

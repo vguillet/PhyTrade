@@ -25,8 +25,8 @@ class SMA:
         # --> Slice data to obtain Data falling in data slice + max timeframe
         sma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
-        sma_1 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_1)
-        sma_2 = pd.rolling_mean(sma_df[big_data.data_slice.selection], window=self.timeperiod_2)
+        sma_1 = sma_df[big_data.data_slice.selection].rolling(window=self.timeperiod_1, center=False).mean()
+        sma_2 = sma_df[big_data.data_slice.selection].rolling(window=self.timeperiod_2, center=False).mean()
 
         self.sma_1 = np.array(sma_1.values[self.timeperiod_1:])
         self.sma_2 = np.array(sma_2.values[self.timeperiod_2:])
