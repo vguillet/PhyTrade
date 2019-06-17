@@ -74,7 +74,7 @@ class SETTINGS:
         self.exploitation_phase_len_percent = 0.1
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_date = "2010-01-01"
+        self.data_slice_start_date = "2008-01-02"
         self.data_slice_size = 200
         self.data_slice_shift_per_gen = 100
         self.data_slice_cycle_count = 5
@@ -82,7 +82,7 @@ class SETTINGS:
         self.data_looper = False
 
         # TODO: Add slize size auto scaling according to generation count/cycle count and start/end date
-        self.end_date = "2018-01-01"
+        self.end_date = "2018-01-02"
         # self.end_date = None
 
         # ___________________________ Generation 0 parameters ____________________
@@ -110,7 +110,7 @@ class SETTINGS:
 
         # ___________________________ Benchmark parameters _______________________
         # -- Benchmarking data slice settings
-        self.benchmark_data_slice_start_date = "2018-01-01"
+        self.benchmark_data_slice_start_date = "2019-01-02"
         self.benchmark_data_slice_size = 200
 
         # ___________________________ Metalabels parameters ______________________

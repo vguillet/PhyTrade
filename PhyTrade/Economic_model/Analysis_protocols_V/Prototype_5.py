@@ -149,7 +149,6 @@ class Prototype_5:
                     if parameter_dictionary["spline_property"]["flip"][indicator_type+"_"+str(i)] is True:
                         self.big_data.content["splines"][indicator_type][i] = \
                             self.spline_tools.flip_spline(self.big_data.content["splines"][indicator_type][i])
-                        print("spline flipped")
 
         # --> Adding signals together
         # Creating signal array

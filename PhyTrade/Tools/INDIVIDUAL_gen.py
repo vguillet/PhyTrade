@@ -72,15 +72,15 @@ class Individual:
                                                          "flip": {},
                                                          "major_spline_standard_upper_thresholds": {},
                                                          "major_spline_standard_lower_thresholds": {}},
-                                     "indicator_properties": {"timeframes": {},
-                                                              "rsi_standard_upper_thresholds": {},
-                                                              "rsi_standard_lower_thresholds": {},
-                                                              "lwma_max_weights": {}}}
+                                     "indicator_properties": {"timeframes": {}}}
 
         # ========================================================== RSI parameters:
         self.parameter_dictionary["indicators_count"]["rsi"] = rsi_count
 
         if rsi_count != 0:
+            self.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"] = {}
+            self.parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"] = {}
+
             for i in range(rsi_count):
                 self.parameter_dictionary["indicator_properties"]["timeframes"]["rsi_"+str(i)] = ga_random.timeframe_random_gen()
                 self.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"]["rsi_" + str(i)] = ga_random.rsi_upper_threshold_random_gen()
@@ -118,6 +118,8 @@ class Individual:
         self.parameter_dictionary["indicators_count"]["lwma"] = lwma_count
 
         if lwma_count != 0:
+            self.parameter_dictionary["indicator_properties"]["lwma_max_weights"] = {}
+
             for i in range(lwma_count):
                 self.parameter_dictionary["indicator_properties"]["timeframes"]["lwma_"+str(i)] = ga_random.timeframe_random_gen()
                 self.parameter_dictionary["indicator_properties"]["lwma_max_weights"]["lwma_"+str(i)] = ga_random.lwma_max_weight_random_gen()
