@@ -1,6 +1,6 @@
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-
+from SETTINGS import SETTINGS
 
 class Individual:
     def __init__(self, ticker="AAPL", parameter_set=None):
@@ -9,7 +9,14 @@ class Individual:
         self.data = fetch_technical_data(self.ticker)
 
         if parameter_set is None:
-            self.gen_parameter_set()
+            settings = SETTINGS()
+            settings.gen_individual_settings()
+            self.gen_parameter_set(rsi_count=settings.rsi_count,
+                                   sma_count=settings.sma_count,
+                                   ema_count=settings.ema_count,
+                                   lwma_count=settings.lwma_count,
+                                   cci_count=settings.cci_count,
+                                   evm_count=settings.evm_count)
         else:
             self.parameter_dictionary = parameter_set
 
@@ -139,6 +146,9 @@ class Individual:
                 self.parameter_dictionary["spline_property"]["weights"]["cci_" + str(i)] = ga_random.weight_random_gen()
                 self.parameter_dictionary["spline_property"]["flip"]["cci_" + str(i)] = ga_random.flip_random_gen()
 
+        # ========================================================== EVM parameters:
+        self.parameter_dictionary["indicators_count"]["evm"] = evm_count
+        # TODO: Implement evm entry gen
         # ========================================================== OC parameters:
         self.parameter_dictionary["indicators_count"]["oc_gradient"] = 1
 

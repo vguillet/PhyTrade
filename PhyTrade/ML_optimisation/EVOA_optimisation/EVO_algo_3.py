@@ -59,6 +59,24 @@ class EVOA_optimiser:
         print("")
         print("Configuration sheet:", settings.config_name)
         print("Starting parameters:", settings.starting_parameters)
+        print("")
+        if settings.starting_parameters is None:
+            print("Indicators tuned: -> RSI:", settings.rsi_count)
+            print("                  -> SMA:", settings.sma_count)
+            print("                  -> EMA:", settings.ema_count)
+            print("                  -> LWMA:", settings.lwma_count)
+            print("                  -> CCI:", settings.cci_count)
+            print("                  -> EVM:", settings.evm_count)
+            print("                  -> OC gradient:", 1)
+
+        else:
+            print("Indicators tuned: -> RSI:", settings.starting_parameters["indicators_count"]["rsi"])
+            print("                  -> SMA:", settings.starting_parameters["indicators_count"]["sma"])
+            print("                  -> EMA:", settings.starting_parameters["indicators_count"]["ema"])
+            print("                  -> LWMA:", settings.starting_parameters["indicators_count"]["lwma"])
+            print("                  -> CCI:", settings.starting_parameters["indicators_count"]["cci"])
+            print("                  -> EVM:", settings.starting_parameters["indicators_count"]["evm"])
+            print("                  -> OC gradient:", 1)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ========================= EVO OPTIMISATION PROCESS =============================
 

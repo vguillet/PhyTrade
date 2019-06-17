@@ -17,16 +17,16 @@ Number of data points processed: 200
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 918.8468283318663
+Net worth achieved: 847.4073284280598
 
 ---> Fitness: 
-Fitness achieved: 78.5
+Fitness achieved: 77.5
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     1    0
-Hold    22   156   16
-Buy      0     4    1
+Sell     2     4    2
+Hold    19   153   15
+Buy      1     4    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -39,62 +39,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         1
-Non-Sell    22       177
+Sell         2         6
+Non-Sell    20       172
 
-TPR = 0.0
-TNR = 0.994
-PPV = 0.0
-NPV = 0.889
-FNR = 1.0
-FPR = 0.006
-FDR = 1.0
-FOR = 0.111
-ACC = 0.885
-F1 = 0.0
-MCC = -0.025
-BM = -0.006
-MK = -0.111
+TPR = 0.091
+TNR = 0.966
+PPV = 0.25
+NPV = 0.896
+FNR = 0.909
+FPR = 0.034
+FDR = 0.75
+FOR = 0.104
+ACC = 0.87
+F1 = 0.133
+MCC = 0.091
+BM = 0.057
+MK = 0.146
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        1        4
-Non-Buy   16      179
+Buy        0        5
+Non-Buy   17      178
 
-TPR = 0.059
-TNR = 0.978
-PPV = 0.2
-NPV = 0.918
-FNR = 0.941
-FPR = 0.022
-FDR = 0.8
-FOR = 0.082
-ACC = 0.9
-F1 = 0.091
-MCC = 0.066
-BM = 0.037
-MK = 0.118
+TPR = 0.0
+TNR = 0.973
+PPV = 0.0
+NPV = 0.913
+FNR = 1.0
+FPR = 0.027
+FDR = 1.0
+FOR = 0.087
+ACC = 0.89
+F1 = 0.0
+MCC = -0.049
+BM = -0.027
+MK = -0.087
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       156        38
-Non-Hold     5         1
+Hold       153        34
+Non-Hold     8         5
 
-TPR = 0.969
-TNR = 0.026
-PPV = 0.804
-NPV = 0.167
-FNR = 0.031
-FPR = 0.974
-FDR = 0.196
-FOR = 0.833
-ACC = 0.785
+TPR = 0.95
+TNR = 0.128
+PPV = 0.818
+NPV = 0.385
+FNR = 0.05
+FPR = 0.872
+FDR = 0.182
+FOR = 0.615
+ACC = 0.79
 F1 = 0.879
-MCC = -0.013
-BM = -0.005
-MK = -0.029
+MCC = 0.126
+BM = 0.079
+MK = 0.203
 
