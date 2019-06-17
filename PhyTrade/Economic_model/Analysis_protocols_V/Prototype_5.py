@@ -153,8 +153,8 @@ class Prototype_5:
 
         # --> Adding signals together
         # Creating signal array
-        self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values), data_slice.slice_size))
-        self.big_data.weights_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values), 1))
+        self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), data_slice.slice_size*settings.spline_interpolation_factor))
+        self.big_data.weights_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), 1))
 
         counter = 0
         for indicator_type in self.big_data.content["splines"]:
@@ -186,8 +186,8 @@ class Prototype_5:
         upper_threshold, lower_threshold = \
             self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
                                               buffer=settings.buffer, buffer_setting=settings.buffer_setting,
-                                              standard_upper_threshold=parameter_dictionary["major_spline_standard_upper_thresholds"]["major_spline_standard_upper_threshold"],
-                                              standard_lower_threshold=parameter_dictionary["major_spline_standard_lower_thresholds"]["major_spline_standard_lower_threshold"])
+                                              standard_upper_threshold=parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"],
+                                              standard_lower_threshold=parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"])
 
         # ---> Modulating threshold with SMA 3 value
         # upper_threshold = self.spline_tools.modulate_amplitude_spline(

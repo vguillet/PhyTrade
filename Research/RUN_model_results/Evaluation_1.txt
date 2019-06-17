@@ -17,16 +17,16 @@ Number of data points processed: 200
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 785.8148034637209
+Net worth achieved: 1004.7279332299388
 
 ---> Fitness: 
-Fitness achieved: 74.0
+Fitness achieved: 79.5
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     6    1
-Hold    21   147   15
-Buy      1     8    1
+Sell     4     5    0
+Hold    18   155   17
+Buy      0     1    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -39,62 +39,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         7
-Non-Sell    22       171
+Sell         4         5
+Non-Sell    18       173
 
-TPR = 0.0
-TNR = 0.961
-PPV = 0.0
-NPV = 0.886
-FNR = 1.0
-FPR = 0.039
-FDR = 1.0
-FOR = 0.114
-ACC = 0.855
-F1 = 0.0
-MCC = -0.067
-BM = -0.039
-MK = -0.114
+TPR = 0.182
+TNR = 0.972
+PPV = 0.444
+NPV = 0.906
+FNR = 0.818
+FPR = 0.028
+FDR = 0.556
+FOR = 0.094
+ACC = 0.885
+F1 = 0.258
+MCC = 0.232
+BM = 0.154
+MK = 0.35
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        1        9
-Non-Buy   16      174
+Buy        0        1
+Non-Buy   17      182
 
-TPR = 0.059
-TNR = 0.951
-PPV = 0.1
-NPV = 0.916
-FNR = 0.941
-FPR = 0.049
-FDR = 0.9
-FOR = 0.084
-ACC = 0.875
-F1 = 0.074
-MCC = 0.012
-BM = 0.01
-MK = 0.016
+TPR = 0.0
+TNR = 0.995
+PPV = 0.0
+NPV = 0.915
+FNR = 1.0
+FPR = 0.005
+FDR = 1.0
+FOR = 0.085
+ACC = 0.91
+F1 = 0.0
+MCC = -0.022
+BM = -0.005
+MK = -0.085
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold       147        36
-Non-Hold    14         3
+Hold       155        35
+Non-Hold     6         4
 
-TPR = 0.913
-TNR = 0.077
-PPV = 0.803
-NPV = 0.176
-FNR = 0.087
-FPR = 0.923
-FDR = 0.197
-FOR = 0.824
-ACC = 0.75
-F1 = 0.855
-MCC = -0.014
-BM = -0.01
-MK = -0.02
+TPR = 0.963
+TNR = 0.103
+PPV = 0.816
+NPV = 0.4
+FNR = 0.037
+FPR = 0.897
+FDR = 0.184
+FOR = 0.6
+ACC = 0.795
+F1 = 0.883
+MCC = 0.119
+BM = 0.065
+MK = 0.216
 
