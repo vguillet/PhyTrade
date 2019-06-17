@@ -1,9 +1,10 @@
 "https://blog.quantinsti.com/build-technical-indicators-in-python/#cci"
 
 import pandas as pd
+import numpy as np
 
 
-class CCI_gen:
+class CCI:
     def __init__(self, big_data, timeperiod=12):
         # --> CCI initialisation
         self.timeperiod = timeperiod
@@ -17,4 +18,11 @@ class CCI_gen:
         cci = pd.Series((tp - tp.rolling(window=self.timeperiod, center=False).mean()) /
                         (0.015 * tp.rolling(window=self.timeperiod, center=False).std()), name='CCI')
 
-        print(cci.values[self.timeperiod:])
+        self.cci_values = np.array(cci.values[self.timeperiod:])
+
+        # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    def get_output(self, big_data, include_triggers_in_bb_signal=False):
+        from PhyTrade.Tools.MATH_tools import MATH_tools
+
+        # ----------------- Bear/Bullish continuous signal
+        self.bb_signal = MATH_tools().normalise_minus_one_one(self.cci_values)

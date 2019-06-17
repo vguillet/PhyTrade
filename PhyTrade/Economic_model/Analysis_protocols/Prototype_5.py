@@ -22,6 +22,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen imp
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.SMA_gen import SMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.EMA_gen import EMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.LWMA_gen import LWMA
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.CCI_gen import CCI
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.OC_AVG_GRADIENT_gen import OC_AVG_GRADIENT
 
 # ---> Import amplification signals
@@ -91,6 +92,12 @@ class Prototype_5:
         for i in range(parameter_dictionary["indicators_count"]["lwma"]):
             self.big_data.content["indicators"]["lwma"].append(LWMA(self.big_data,
                     timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["lwma_"+str(i)]))
+
+        # --> CCI initialisation
+        self.big_data.content["indicators"]["cci"] = []
+        for i in range(parameter_dictionary["indicators_count"]["cci"]):
+            self.big_data.content["indicators"]["lwma"].append(CCI(self.big_data,
+                    timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["cci_"+str(i)]))
 
         # --> OC_AVG_GRADIENT initialisation
         self.big_data.content["indicators"]["oc_gradient"] = []

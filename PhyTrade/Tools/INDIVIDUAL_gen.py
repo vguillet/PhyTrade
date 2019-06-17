@@ -27,7 +27,7 @@ class Individual:
                 self.nb_of_parameters += 1
 
     def gen_economic_model(self, data_slice, plot_eco_model_results=False):
-        from PhyTrade.Economic_model.Analysis_protocols_V.Prototype_5 import Prototype_5
+        from PhyTrade.Economic_model.Analysis_protocols.Prototype_5 import Prototype_5
         import matplotlib.pyplot as plt
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
@@ -149,6 +149,7 @@ class Individual:
         # ========================================================== EVM parameters:
         self.parameter_dictionary["indicators_count"]["evm"] = evm_count
         # TODO: Implement evm entry gen
+
         # ========================================================== OC parameters:
         self.parameter_dictionary["indicators_count"]["oc_gradient"] = 1
 

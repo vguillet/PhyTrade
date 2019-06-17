@@ -19,7 +19,11 @@ class SETTINGS:
 
         # ___________________________ LWMA parameters ____________________________
         self.lwma_include_triggers_in_bb_signal = False
-        # ___________________________ LWMA parameters ____________________________
+
+        # ___________________________ CCI parameters ____________________________
+        self.cci_include_triggers_in_bb_signal = False
+
+        # ___________________________ OC_GRADIENT parameters ____________________________
         self.oc_gradient_include_triggers_in_bb_signal = False
 
         # ___________________________ Modulation parameters ______________________
@@ -34,11 +38,11 @@ class SETTINGS:
 
     # =============================== INDIVIDUAL GEN SETTINGS =====================
     def gen_individual_settings(self):
-        self.rsi_count = 3
-        self.sma_count = 3
-        self.ema_count = 3
+        self.rsi_count = 2
+        self.sma_count = 2
+        self.ema_count = 2
         self.lwma_count = 0
-        self.cci_count = 0
+        self.cci_count = 2
         self.evm_count = 0
 
     # =============================== SINGLE TRADE SIM SETTINGS ===================
@@ -73,20 +77,20 @@ class SETTINGS:
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 30
-        self.nb_of_generations = 1
+        self.population_size = 60
+        self.nb_of_generations = 20
 
         self.mutation_rate = 0.4
-        self.nb_parents = 10
-        self.nb_random_ind = 5
+        self.nb_parents = 20
+        self.nb_random_ind = 10
 
         self.exploitation_phase_len_percent = 0.1
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_date = "2008-01-02"
         self.data_slice_size = 200
-        self.data_slice_shift_per_gen = 100
-        self.data_slice_cycle_count = 5
+        self.data_slice_shift_per_gen = 0
+        self.data_slice_cycle_count = 20
 
         self.data_looper = False
 
@@ -97,8 +101,8 @@ class SETTINGS:
         # ___________________________ Generation 0 parameters ____________________
         # -- Starting parameters
         # --> Set to None if random initial population wanted
-        self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_4_AAPL.json".replace('\\', '/')))
-        # self.starting_parameters = None
+        # self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_4_AAPL.json".replace('\\', '/')))
+        self.starting_parameters = None
 
         # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels", "MetaLabels bs", "MetaLabels avg"]
