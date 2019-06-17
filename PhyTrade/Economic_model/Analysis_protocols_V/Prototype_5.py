@@ -73,7 +73,7 @@ class Prototype_5:
                     buffer_setting=settings.buffer_setting))
 
         # --> SMA initialisation
-        self.big_data.content["indicators"]["sma"]= []
+        self.big_data.content["indicators"]["sma"] = []
         for i in range(parameter_dictionary["indicators_count"]["sma"]):
             self.big_data.content["indicators"]["sma"].append(SMA(self.big_data,
                     timeperiod_1=parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_1"],
@@ -126,61 +126,42 @@ class Prototype_5:
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # --> Creating splines from indicator signals
         for indicator_type in parameter_dictionary["indicators_count"]:
-            self.big_data.content["splines"][indicator_type] = []
-            for i in range(len(self.big_data.content["indicators"][indicator_type])):
-                self.big_data.content["splines"][indicator_type].append(
-                    self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.content["indicators"][indicator_type][i].bb_signal,
-                                                            smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"][
-                                                                indicator_type + "_" + str(i)]))
+            if parameter_dictionary["indicators_count"][indicator_type] != 0:
+                self.big_data.content["splines"][indicator_type] = []
+                for i in range(len(self.big_data.content["indicators"][indicator_type])):
+                    self.big_data.content["splines"][indicator_type].append(
+                        self.spline_tools.calc_signal_to_spline(self.big_data,
+                                                                self.big_data.content["indicators"][indicator_type][i].bb_signal,
+                                                                smoothing_factor=parameter_dictionary["spline_property"]
+                                                                ["smoothing_factors"][indicator_type + "_" + str(i)]))
 
         # --> Generating amplification signals
-        self.big_data.volume_splines = []
-        self.big_data.volume_splines.append(
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
-                                                    smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volume_0"]))
+        self.big_data.spline_volume = self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
+                                                                              smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volume_0"])
 
-        self.big_data.volatility_splines = []
-        self.big_data.volatility_splines.append(
-            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
-                                                    smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"]))
+        self.big_data.spline_volatility = self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
+                                                                                  smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"])
 
         # --> Tuning separate signals
-        self.big_data.fliped_splines = []
-        for flip in parameter_dictionary["spline_property"]["flip"]:
-            if parameter_dictionary["spline_property"]["flip"][flip] is True:
-                property_to_call = getattr(self.big_data, str(flip[:-1])+"splines")
-
-                self.big_data.fliped_splines.append(self.spline_tools.flip_spline(property_to_call[int(flip[-1])]))
-                print("spline flipped")
+        for indicator_type in parameter_dictionary["indicators_count"]:
+            if parameter_dictionary["indicators_count"][indicator_type] != 0:
+                for i in range(len(self.big_data.content["splines"][indicator_type])):
+                    if parameter_dictionary["spline_property"]["flip"][indicator_type+"_"+str(i)] is True:
+                        self.big_data.content["splines"][indicator_type][i] = \
+                            self.spline_tools.flip_spline(self.big_data.content["splines"][indicator_type][i])
+                        print("spline flipped")
 
         # --> Adding signals together
         # Creating signal array
-        self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"]), data_slice.slice_size))
+        self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values), data_slice.slice_size))
+        self.big_data.weights_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values), 1))
 
         counter = 0
         for indicator_type in self.big_data.content["splines"]:
-            for indicator in self.big_data.content["splines"][indicator_type]:
-                self.big_data.spline_array[counter] = indicator
+            for i in range(len(self.big_data.content["splines"][indicator_type])):
+                self.big_data.spline_array[counter] = self.big_data.content["splines"][indicator_type][i]
+                self.big_data.weights_array[counter] = parameter_dictionary["spline_property"]["weights"][indicator_type+"_"+str(i)]
                 counter += 1
-
-        sys.exit()
-
-        for i in parameter_dictionary["spline_property"]["weights"]:
-            break
-
-        self.big_data.weights_array = np.array([[parameter_dictionary["weights"]["oc_avg_gradient_spline_weight"]],
-                                               [parameter_dictionary["weights"]["rsi_1_spline_weight"]],
-                                               [parameter_dictionary["weights"]["rsi_2_spline_weight"]],
-                                               [parameter_dictionary["weights"]["rsi_3_spline_weight"]],
-                                               [parameter_dictionary["weights"]["sma_1_spline_weight"]],
-                                               [parameter_dictionary["weights"]["sma_2_spline_weight"]],
-                                               [parameter_dictionary["weights"]["sma_3_spline_weight"]],
-                                               [parameter_dictionary["weights"]["ema_1_spline_weight"]],
-                                               [parameter_dictionary["weights"]["ema_2_spline_weight"]],
-                                               [parameter_dictionary["weights"]["ema_3_spline_weight"]],
-                                               [parameter_dictionary["weights"]["lwma_1_spline_weight"]],
-                                               [parameter_dictionary["weights"]["lwma_2_spline_weight"]],
-                                               [parameter_dictionary["weights"]["lwma_3_spline_weight"]]])
 
         self.big_data.combined_spline = \
             self.spline_tools.combine_splines(self.big_data.spline_array,
@@ -221,109 +202,3 @@ class Prototype_5:
         self.big_data.Major_spline = MAJOR_SPLINE(self.big_data,
                                                   upper_threshold, lower_threshold)
 
-    # ================================================================================
-    """
-
-
-
-
-    """
-
-    # ========================= SIGNAL PLOTS =========================================
-    def plot(self, plot_1=True, plot_2=True, plot_3=True):
-        """
-        :param plot_1: Plot Open/Close prices & RSI
-        :param plot_2: Plot Open/Close prices & SMA
-        :param plot_3: Plot Open/Close prices & Bullish/Bearish signal
-        """
-        import matplotlib.pyplot as plt
-
-        if plot_1:
-            # ---------------------------------------------- Plot 1
-            # ------------------ Plot Open/Close prices
-            ax1 = plt.subplot(211)
-            self.oc_tools.plot_oc_values(self.big_data)
-            # oc.plot_trigger_values(self.big_data)
-
-            # ------------------ Plot RSI
-            ax2 = plt.subplot(212, sharex=ax1)
-            self.big_data.rsi.plot_rsi(self.big_data)
-            plt.show()
-
-        if plot_2:
-            # ---------------------------------------------- Plot 2
-            # ------------------ Plot Open/Close prices
-            ax3 = plt.subplot(211)
-            self.oc_tools.plot_oc_values(self.big_data)
-            # oc.plot_trigger_values(self.big_data)
-
-            # ------------------ Plot SMA Signal
-            ax4 = plt.subplot(212, sharex=ax3)
-            self.big_data.sma_1.plot_sma(self.big_data, plot_trigger_signals=False)
-            plt.show()
-
-        if plot_3:
-            # ---------------------------------------------- Plot 3
-            # ------------------ Plot Open/Close prices
-            ax5 = plt.subplot(211)
-            self.oc_tools.plot_oc_values(self.big_data)
-            self.oc_tools.plot_trigger_values(
-                self.big_data, self.big_data.Major_spline.sell_dates, self.big_data.Major_spline.buy_dates)
-
-            # ------------------ Plot bb signal(s)
-            ax6 = plt.subplot(212)
-            # ---> RSI signals
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_rsi_1, label="RSI bb spline")
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_rsi_2, label="RSI bb spline")
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_rsi_3, label="RSI bb spline")
-
-            # ---> OC gradient signals
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_oc_avg_gradient, label="OC gradient bb spline", color='m')
-
-            # ---> SMA signals
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_sma_1, label="SMA_1 bb spline", color='b')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_sma_2, label="SMA_2 bb spline", color='b')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_sma_3, label="SMA_3 bb spline", color='r')
-
-            # # ---> EMA signals
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_ema_1, label="EMA_1 bb spline", color='b')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_ema_2, label="EMA_2 bb spline", color='b')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_ema_3, label="EMA_3 bb spline", color='r')
-
-            # ---> LWMA signals
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_lwma_1, label="LWMA_1 bb spline", color='b')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_lwma_2, label="LWMA_2 bb spline", color='b')
-            # self.spline_tools.plot_spline(
-            #     self.big_data, self.big_data.spline_lwma_3, label="LWMA_3 bb spline", color='r')
-
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.Major_spline.spline, label="Major spline", color='y')
-
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.Major_spline.upper_threshold, label="Upper threshold")
-            self.spline_tools.plot_spline(
-                self.big_data, self.big_data.Major_spline.lower_threshold, label="Lower threshold")
-
-            self.spline_tools.plot_spline_trigger(
-                self.big_data, self.big_data.Major_spline.spline, self.big_data.Major_spline.sell_dates,
-                self.big_data.Major_spline.buy_dates)
-
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volume, label="Volume", color='k')
-            # self.spline_tools.plot_spline(self.big_data, self.big_data.spline_volatility, label="Volatility", color='grey')
-
-            plt.legend()
-            plt.show()
-
-        return
