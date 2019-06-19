@@ -32,8 +32,8 @@ class SETTINGS:
         self.volatility_std_dev_max = 3
 
         # ___________________________ Threshold parameters _______________________
-        self.threshold_type = ["Fixed value", "Bollinger bands"]
-        self.threshold_setting = 0
+        self.threshold_type = ["Fixed value", "Bollinger bands size", "Bollinger bands/price diff"]
+        self.threshold_setting = 2
 
         self.buffer_type = ["No buffer", "Fixed value buffer", "Google-trend based evolutive buffer"]
         self.buffer_setting = 1
@@ -83,7 +83,7 @@ class SETTINGS:
 
         # ___________________________ EVO_algo main parameters ___________________
         self.population_size = 30
-        self.nb_of_generations = 150
+        self.nb_of_generations = 25
 
         self.mutation_rate = 0.5
         self.nb_parents = 7
@@ -93,9 +93,9 @@ class SETTINGS:
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.data_slice_start_date = "2017-01-03"
-        self.data_slice_size = 24
-        self.data_slice_shift_per_gen = 12
-        self.data_slice_cycle_count = 5
+        self.data_slice_size = 200
+        self.data_slice_shift_per_gen = 0
+        self.data_slice_cycle_count = 10
 
         self.data_looper = False
 

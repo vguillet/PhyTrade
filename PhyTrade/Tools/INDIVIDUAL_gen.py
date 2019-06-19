@@ -177,4 +177,4 @@ class Individual:
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dynamic threshold parameters:
         self.parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"] = ga_random.major_spline_upper_threshold_random_gen()
         self.parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"] = ga_random.major_spline_lower_threshold_random_gen()
-        self.parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"] = ga_random.timeframe_random_gen()
+        self.parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"] = 20
