@@ -33,7 +33,7 @@ class SETTINGS:
 
         # ___________________________ Threshold parameters _______________________
         self.threshold_type = ["Fixed value", "Bollinger bands size", "Bollinger bands/price diff"]
-        self.threshold_setting = 2
+        self.threshold_setting = 1
 
         self.buffer_type = ["No buffer", "Fixed value buffer", "Google-trend based evolutive buffer"]
         self.buffer_setting = 1
