@@ -4,10 +4,11 @@ This script enables computing the SMA indicator
 Victor Guillet
 11/28/2018
 """
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import numpy as np
 
 
-class SMA:
+class SMA(ABSTRACT_indicator):
     def __init__(self, big_data, timeperiod_1=50, timeperiod_2=200):
         """
         Generates an SMA indicator instance
@@ -21,32 +22,22 @@ class SMA:
         self.timeperiod_2 = timeperiod_2
 
         # -------------------------- SMA CALCULATION ---------------------------
-        self.sma_1 = np.zeros(big_data.data_slice.slice_size)
-        self.sma_2 = np.zeros(big_data.data_slice.slice_size)
+        # --> Slice data to obtain Data falling in data slice + max timeframe
+        sma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
-        for i in range(big_data.data_slice.slice_size):
+        sma_1 = sma_df[big_data.data_slice.selection].rolling(window=self.timeperiod_1, center=False).mean()
+        sma_2 = sma_df[big_data.data_slice.selection].rolling(window=self.timeperiod_2, center=False).mean()
 
-            # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_1:
-                self.timeperiod_1 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+        self.sma_1 = np.array(sma_1.values[self.timeperiod_1:])
+        self.sma_2 = np.array(sma_2.values[self.timeperiod_2:])
 
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_2:
-                self.timeperiod_2 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+    """
 
-            # ------------------ Calculate values falling in timeperiod_1 and 2
-            timeperiod_1_close_values = np.array(big_data.data_slice.data_selection[
-                                                  big_data.data_slice.start_index+i-self.timeperiod_1+1:
-                                                  big_data.data_slice.start_index+i+1])[::-1]
 
-            timeperiod_2_close_values = np.array(big_data.data_slice.data_selection[
-                                                  big_data.data_slice.start_index+i-self.timeperiod_2+1:
-                                                  big_data.data_slice.start_index+i+1])[::-1]
 
-            # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
-            self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
-            self.sma_2[i] = sum(timeperiod_2_close_values)/len(timeperiod_2_close_values)
 
-        # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    """
+    # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
         """
         Generate SMA indicator output
@@ -82,37 +73,3 @@ class SMA:
                     if self.sma_1[i] > self.sma_2[i]:
                         self.bb_signal[i] = -1
                         sma_config = 0
-
-    """
-
-
-
-
-    """
-    # ------------------------- PLOT SMA ----------------------------------
-    def plot_sma(self, big_data, plot_sma_1=True, plot_sma_2=True, plot_trigger_signals=True):
-        """
-        :param big_data: BIGDATA class instance
-        :param plot_sma_1: Plot SMA indicator based on timeperiod_1
-        :param plot_sma_2: Plot SMA indicator based on timeperiod_2
-        :param plot_trigger_signals: Include trigger signals in plot
-        """
-
-        import matplotlib.pyplot as plt
-
-        if plot_sma_1:
-            plt.plot(big_data.data_slice_dates, self.sma_1, label="SMA "+str(self.timeperiod_1)+" days")          # Plot SMA_1
-
-        if plot_sma_2:
-            plt.plot(big_data.data_slice_dates, self.sma_2, label="SMA "+str(self.timeperiod_2)+" days")          # Plot SMA_2
-
-        if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_SMA, label="Sell trigger")       # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_SMA, label="Buy trigger")          # Plot buy signals
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("SMA")
-        plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("SMA")

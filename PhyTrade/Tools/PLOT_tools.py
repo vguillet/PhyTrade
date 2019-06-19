@@ -28,11 +28,11 @@ class PLOT_tools:
         """
 
         if plot_close_values:
-            plt.plot(list(data_slice.sliced_data["index"]), list(data_slice.sliced_data["Close"]),
+            plt.plot(list(data_slice.sliced_data["Date"]), list(data_slice.sliced_data["Close"]),
                      linewidth=1, label="Close values")   # Plot closing value
 
         if plot_open_values:
-            plt.plot(list(data_slice.sliced_data["index"]), list(data_slice.sliced_data["Open"]),
+            plt.plot(list(data_slice.sliced_data["Date"]), list(data_slice.sliced_data["Open"]),
                      linewidth=1, label="Open values")
 
         plt.gcf().autofmt_xdate()
@@ -92,11 +92,11 @@ class PLOT_tools:
         for i in range(len(trade_signal)):
             if trade_signal[i] == 1:
                 sell_values.append(data_slice.sliced_data_selection[i])
-                sell_date.append(list(data_slice.sliced_data["index"])[i])
+                sell_date.append(list(data_slice.sliced_data["Date"])[i])
 
             elif trade_signal[i] == -1:
                 buy_values.append(data_slice.sliced_data_selection[i])
-                buy_date.append(list(data_slice.sliced_data["index"])[i])
+                buy_date.append(list(data_slice.sliced_data["Date"])[i])
 
         plt.scatter(sell_date,  sell_values, label="Sell trigger")
         plt.scatter(buy_date, buy_values, label="Buy trigger")

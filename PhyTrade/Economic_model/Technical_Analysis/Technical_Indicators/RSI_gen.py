@@ -4,10 +4,11 @@ This script enables computing the RSI indicator
 Victor Guillet
 11/28/2018
 """
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import numpy as np
 
 
-class RSI:
+class RSI(ABSTRACT_indicator):
     def __init__(self, big_data, timeframe=14, standard_upper_threshold=70, standard_lower_threshold=30,
                  buffer_setting=0):
         """
@@ -27,51 +28,26 @@ class RSI:
         self.standard_lower_threshold = standard_lower_threshold
         
         # -------------------------- RSI CALCULATION ---------------------------
-        self.rsi_values = np.zeros(big_data.data_slice.slice_size)
-        
-        for i in range(big_data.data_slice.slice_size):
-            # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeframe:
-                self.timeframe = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+        # --> Slice data to obtain Data falling in data slice + rsi timeframe
+        rsi_df = big_data.data_slice.data[big_data.data_slice.start_index-self.timeframe:big_data.data_slice.stop_index]
 
-            timeframe_open_values = np.array(big_data.data_slice.data[
-                                               big_data.data_slice.start_index+i-self.timeframe+1:
-                                               big_data.data_slice.start_index+i+1]["Open"])[::-1]
+        # --> Get the difference in price from previous step
+        delta = rsi_df[big_data.data_slice.selection].diff()
 
-            timeframe_close_values = np.array(big_data.data_slice.data[
-                                               big_data.data_slice.start_index+i-self.timeframe+1:
-                                               big_data.data_slice.start_index+i+1]["Close"])[::-1]
+        # --> Make the positive gains (up) and negative gains (down) Series
+        up, down = delta.copy(), delta.copy()
+        up[up < 0] = 0
+        down[down > 0] = 0
 
-            # -- Calculate gains and losses in timeframe
-            # Calculate the net loss or gain for each date falling
-            # in the data frame and store them in gains and loss lists
-            gains = []
-            losses = []
-            for j in range(self.timeframe):
-                net = timeframe_close_values[j] - timeframe_open_values[j]
-                if net > 0:
-                    gains.append(net)
-                elif net < 0:
-                    losses.append(net)
+        # --> Calculate the EWMA
+        roll_up = up.ewm(com=self.timeframe - 1, adjust=False).mean()
+        roll_down = down.ewm(com=self.timeframe - 1, adjust=False).mean().abs()
 
-            # -- Calculate rs and rsi values for data_slice
+        # --> Calculate the RSI based on EWMA
+        rsi = 100 - 100 / (1 + roll_up / roll_down)
 
-            if gains:                                       # If gains != Null, calculate rsi_value, else rsi_value = 50
-                avg_gain = sum(gains)/len(gains)
-                if losses:                                  # If losses != Null, calculate rsi_value, else rsi_value = 50
-                    avg_loss = sum(losses)/len(losses)
-                    if avg_loss != 0:                       # If avg_loss != Null, calculate rsi_value, else rsi_value = 50
-                        rs = avg_gain/avg_loss
-                        current_rsi_value = 100-100/(1-rs)
-                    else:
-                        current_rsi_value = 50
-                else:
-                    current_rsi_value = 50
-            else:
-                current_rsi_value = 50
+        self.rsi_values = np.array(rsi.values[self.timeframe:])
 
-            self.rsi_values[i] = current_rsi_value
-        
     # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer
@@ -183,43 +159,3 @@ class RSI:
 
                 if self.rsi_values[i] > self.standard_lower_threshold and sell_trigger == 2:  # Reset trigger
                     buy_trigger = 0
-
-    """
-
-
-
-
-    """
-    # -------------------------PLOT RSI AND DYNAMIC BOUNDS----------------
-    def plot_rsi(self, big_data, plot_rsi=True, plot_upper_bound=True, plot_lower_bound=True, plot_trigger_signals=True):
-        """
-        :param big_data: BIGDATA class instance
-        :param plot_rsi: Plot RSI indicator
-        :param plot_upper_bound: Include RSI upper bound in plot
-        :param plot_lower_bound: Include RSI upper bound in plot
-        :param plot_trigger_signals: Include RSI trigger signals in plot
-        """
-
-        import matplotlib.pyplot as plt
-
-        if plot_rsi:
-            plt.plot(big_data.data_slice_dates, self.rsi_values, linewidth=1, label="RSI values")    # Plot RSI
-
-        if plot_upper_bound:
-            plt.plot(big_data.data_slice_dates, self.upper_bound, linewidth=1, label="Upper bound")  # Plot upper bound
-
-        if plot_lower_bound:
-            plt.plot(big_data.data_slice_dates, self.lower_bound, linewidth=1, label="Lower bound")  # Plot lower bound
-
-        if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_rsi, label="Sell trigger")           # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_rsi, label="Buy trigger")              # Plot buy signals
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("RSI")
-        plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("RSI - %")
-
-

@@ -7,10 +7,11 @@ a simple moving average (SMA), which applies an equal weight to all observations
 Victor Guillet
 11/28/2018
 """
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
 import numpy as np
 
 
-class EMA:
+class EMA(ABSTRACT_indicator):
     def __init__(self, big_data, timeperiod_1=12, timeperiod_2=26):
         """
         Generates an EMA indicator instance
@@ -24,48 +25,23 @@ class EMA:
         self.timeperiod_2 = timeperiod_2
 
         # -------------------------- EMA CALCULATION ---------------------------
-        self.ema_1 = np.zeros(big_data.data_slice.slice_size)
-        self.ema_2 = np.zeros(big_data.data_slice.slice_size)
+        # --> Slice data to obtain Data falling in data slice + max timeframe
+        ewma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
 
-        # --> SMA CALCULATION
-        self.sma_1 = np.zeros(big_data.data_slice.slice_size)
-        self.sma_2 = np.zeros(big_data.data_slice.slice_size)
+        # TODO: Check whether adjust should be True or False
+        ema_1 = ewma_df[big_data.data_slice.selection].ewm(span=self.timeperiod_1, min_periods=0, adjust=True, ignore_na=False).mean()
+        ema_2 = ewma_df[big_data.data_slice.selection].ewm(span=self.timeperiod_2, min_periods=0, adjust=True, ignore_na=False).mean()
 
-        for i in range(big_data.data_slice.slice_size):
+        self.ema_1 = np.array(ema_1.values[self.timeperiod_1:])
+        self.ema_2 = np.array(ema_2.values[self.timeperiod_2:])
 
-            # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_1:
-                self.timeperiod_1 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+    """
 
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod_2:
-                self.timeperiod_2 = len(big_data.data_slice.data[:big_data.data_slice.start_index])
 
-            # ------------------ Calculate values falling in timeperiod_1 and 2
-            timeperiod_1_close_values = np.array(big_data.data_slice.data_selection[
-                                                 big_data.data_slice.start_index+i-self.timeperiod_1+1:
-                                                 big_data.data_slice.start_index+i+1])[::-1]
 
-            timeperiod_2_close_values = np.array(big_data.data_slice.data_selection[
-                                                 big_data.data_slice.start_index+i-self.timeperiod_2+1:
-                                                 big_data.data_slice.start_index+i+1])[::-1]
 
-            # ------------------ Sum close values for timeperiod_1 and 2, and calc sma
-            self.sma_1[i] = sum(timeperiod_1_close_values)/len(timeperiod_1_close_values)
-            self.sma_2[i] = sum(timeperiod_2_close_values)/len(timeperiod_2_close_values)
-
-        self.ema_1[0] = self.sma_1[0]
-        self.ema_2[0] = self.sma_2[0]
-
-        # ------------------ Calculate the multiplier for weighting the EMA
-        multiplier_1 = 2 / (self.timeperiod_1 + 1)
-        multiplier_2 = 2 / (self.timeperiod_2 + 1)
-
-        for i in range(1, big_data.data_slice.slice_size):
-            # ------------------ Calculate the EMA
-            self.ema_1[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_1[i-1]*multiplier_1 + self.ema_1[i-1]
-            self.ema_2[i] = big_data.data_slice.data_selection[big_data.data_slice.start_index + i] - self.ema_2[i-1]*multiplier_2 + self.ema_2[i-1]
-
-        # ===================== INDICATOR OUTPUT DETERMINATION ==============
+    """
+    # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
         """
         Generate EMA indicator output
@@ -101,41 +77,3 @@ class EMA:
                     if self.ema_1[i] > self.ema_2[i]:
                         self.bb_signal[i] = -1
                         ema_config = 0
-
-    """
-
-
-
-
-    """
-    # ------------------------- PLOT SMA ----------------------------------
-    def plot_ema(self, big_data, plot_ema_1=True, plot_ema_2=True, plot_trigger_signals=True):
-        """
-        :param big_data: BIGDATA class instance
-        :param plot_ema_1: Plot EMA indicator based on timeperiod_1
-        :param plot_ema_2: Plot EMA indicator based on timeperiod_2
-        :param plot_trigger_signals: Include trigger signals in plot
-        """
-
-        import matplotlib.pyplot as plt
-
-        if plot_ema_1:
-            plt.plot(big_data.data_slice_dates, self.ema_1, label="EMA "+str(self.timeperiod_1)+" days")          # Plot SMA_1
-
-        if plot_ema_2:
-            plt.plot(big_data.data_slice_dates, self.ema_2, label="EMA "+str(self.timeperiod_2)+" days")          # Plot SMA_2
-
-        if plot_trigger_signals:
-            plt.scatter(self.sell_dates, self.sell_EMA, label="Sell trigger")       # Plot sell signals
-            plt.scatter(self.buy_dates, self.buy_EMA, label="Buy trigger")          # Plot buy signals
-
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.title("EMA")
-        plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("EMA")
-
-
-
-

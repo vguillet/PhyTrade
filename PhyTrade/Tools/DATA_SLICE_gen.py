@@ -18,7 +18,7 @@ class data_slice:
         # ---- Data slice properties
         # --> Find corresponding starting data index from start date
         self.start_date = start_date
-        self.start_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.start_date)[0]
+        self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.start_date)[0]
 
         # --> Adjust slice size according to data available if necessary
         self.slice_size = slice_size
@@ -29,8 +29,9 @@ class data_slice:
 
         # --> Find corresponding stop data index
         self.stop_index = self.start_index + self.slice_size
-        self.stop_date = self.data.iloc[self.stop_index]['index']
+        self.stop_date = self.data.iloc[self.stop_index]['Date']
 
+        # ---- Generate special dataframes
         # --> Slice Pandas dataframe according to start/stop indexes
         self.sliced_data = self.data[self.start_index:self.stop_index]
 
@@ -45,7 +46,7 @@ class data_slice:
 
         self.default_end_date = end_date
         if self.default_end_date is not None:
-            self.default_end_index = -len(self.data)+np.flatnonzero(self.data['index'] == self.default_end_date)[0]
+            self.default_end_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.default_end_date)[0]
 
         self.default_slice_size = slice_size
         self.data_slice_shift_per_gen = data_slice_shift_per_gen
@@ -81,7 +82,7 @@ class data_slice:
     def get_next_data_slice(self):
         # --> Determine new start/stop indexes
         self.start_index += self.slice_size
-        self.start_date = self.data.iloc[self.start_index]['index']
+        self.start_date = self.data.iloc[self.start_index]['Date']
 
         self.stop_index += self.slice_size
 
@@ -89,8 +90,8 @@ class data_slice:
         self.check_end_data()
 
         # --> Determine start/stop date
-        self.start_date = self.data.iloc[self.start_index]['index']
-        self.stop_date = self.data.iloc[self.stop_index]['index']
+        self.start_date = self.data.iloc[self.start_index]['Date']
+        self.stop_date = self.data.iloc[self.stop_index]['Date']
 
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]
@@ -99,7 +100,7 @@ class data_slice:
     def get_shifted_data_slice(self):
         # --> Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
-        self.start_date = self.data.iloc[self.start_index]['index']
+        self.start_date = self.data.iloc[self.start_index]['Date']
 
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
 
@@ -107,8 +108,8 @@ class data_slice:
         self.check_end_data()
 
         # --> Determine stop date
-        self.start_date = self.data.iloc[self.start_index]['index']
-        self.stop_date = self.data.iloc[self.stop_index]['index']
+        self.start_date = self.data.iloc[self.start_index]['Date']
+        self.stop_date = self.data.iloc[self.stop_index]['Date']
 
         # --> Update slice data
         self.sliced_data = self.data[self.start_index:self.stop_index]

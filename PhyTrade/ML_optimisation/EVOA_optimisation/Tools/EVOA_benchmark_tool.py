@@ -67,7 +67,7 @@ class Confusion_matrix_analysis:
                     wrong_prediction_bs += 1
 
         self.overall_accuracy = correct_prediction / len(self.model_predictions) * 100
-        self.overall_accuracy_bs = correct_prediction_bs / (correct_prediction_bs + wrong_prediction_bs) * 100
+        self.overall_accuracy_bs = correct_prediction_bs / (correct_prediction_bs + wrong_prediction_bs or 1) * 100
         
         if calculate_stats:
             # ------------------------------------------------- Confusion tables

@@ -27,6 +27,18 @@ class MATH_tools:
         return signal_normalised
 
     @staticmethod
+    def normalise_minus_x_x(signal, x):
+        signal_normalised = np.zeros(len(signal))
+
+        signal_min = min(signal)
+        signal_max = max(signal)
+
+        for i in range(len(signal)):
+            signal_normalised[i] = x*(signal[i] - signal_min) / ((signal_max - signal_min) or 1)-x/2
+
+        return signal_normalised
+
+    @staticmethod
     def amplify(signal, amplification_factor):
 
         signal_amplified = np.zeros(len(signal))
