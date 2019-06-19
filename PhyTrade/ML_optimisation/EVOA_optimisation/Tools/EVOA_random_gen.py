@@ -83,6 +83,14 @@ class EVOA_random_gen:
     # ------- Timeframes
     @staticmethod
     def timeframe_random_gen():
+        return random.randint(2, 250)
+
+    @staticmethod
+    def large_timeframe_random_gen():
+        return random.randint(150, 250)
+
+    @staticmethod
+    def small_timeframe_random_gen():
         return random.randint(2, 100)
 
     @staticmethod
@@ -93,7 +101,7 @@ class EVOA_random_gen:
         
         # Throttle variation parameters according to generation
         throttled_param = round(EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                      6, 1, decay_function))
+                                                      30, 1, decay_function))
         # Throttle variation parameters according to slice cycle
         throttled_param = round(EVOA_tools().throttle(current_slice_cycle, nb_of_slice_cycles,
                                                       throttled_param, 1, decay_function))
@@ -320,7 +328,8 @@ class EVOA_random_gen:
 
     @staticmethod
     def flip_random_gen():
-        return bool(random.getrandbits(1))
+        # return bool(random.getrandbits(1))
+        return False
 
     @staticmethod
     def flip_gen():

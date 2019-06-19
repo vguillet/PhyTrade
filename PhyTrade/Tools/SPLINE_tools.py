@@ -106,7 +106,7 @@ class SPLINE:
         plt.title("Splines")
         # plt.legend()
         plt.xlabel("Trade date")
-        plt.ylabel("Buy <-- Signal power --> Sell")
+        plt.ylabel("Buy <-- Signal Strength --> Sell")
         """
 
 
@@ -114,17 +114,21 @@ class SPLINE:
 
         """
     @staticmethod
-    def calc_thresholds(big_data, spline, buffer=0.05, buffer_setting=0,
-                        standard_upper_threshold=0.5, standard_lower_threshold=-0.5):
+    def calc_thresholds(big_data, spline, buffer=0.05,
+                        standard_upper_threshold=0.5, standard_lower_threshold=-0.5,
+                        bband_timeframe=15,
+                        threshold_setting=1, buffer_setting=0):
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Google_trends import pull_google_trends_data
+        from PhyTrade.Tools.MATH_tools import MATH_tools
+
         import pandas as pd
 
         """        
         Buffer settings:
               - 0: no buffer
               - 1: fixed value buffer
-              - 2: variable value buffer
+              - 2: variable value buffer (google trends)
         """
 
         # TODO decide whether to keep google trends-modulated buffer size?
@@ -145,11 +149,11 @@ class SPLINE:
 
             timeframe = start_date + " " + end_date
 
-            google_trends_data = pull_google_trends_data(["Apple"], cat=7, timeframe=timeframe, gprop="news")
+            google_trends_data = pull_google_trends_data([big_data.data_slice.ticker], cat=7, timeframe=timeframe, gprop="news")
 
             google_trends_lst = []
             for index, row in google_trends_data.iterrows():
-                google_trends_lst.append(row['Apple'])
+                google_trends_lst.append(row[big_data.data_slice.ticker])
 
             # ---- Normalising the list obtained
             google_trends_lst_normalised = []
@@ -173,7 +177,29 @@ class SPLINE:
 
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # ---- Define upper dynamic bound method
-        upper_threshold = [standard_upper_threshold]*len(big_data.spline_xs)
+        if threshold_setting == 0:
+            upper_threshold = [standard_upper_threshold]*len(big_data.spline_xs)
+            lower_threshold = [standard_lower_threshold] * len(big_data.spline_xs)
+
+        elif threshold_setting == 1:
+            bbands_df = big_data.data_slice.data[big_data.data_slice.start_index - bband_timeframe:big_data.data_slice.stop_index]
+            mean_avg = bbands_df.Close.rolling(window=bband_timeframe).mean()
+            standard_dev = bbands_df.Close.rolling(window=bband_timeframe).std()
+
+            upper_band = np.array(mean_avg + (2 * standard_dev))[bband_timeframe:]
+            lower_band = np.array(mean_avg - (2 * standard_dev))[bband_timeframe:]
+
+            upper_band_normalised = MATH_tools().normalise_minus_one_one(upper_band)
+            lower_band_normalised = MATH_tools().normalise_minus_one_one(lower_band)
+
+            upper_band_spline = SPLINE(big_data).calc_signal_to_spline(big_data, upper_band_normalised)
+            lower_band_spline = SPLINE(big_data).calc_signal_to_spline(big_data, lower_band_normalised)
+
+            difference_band_spline = abs(upper_band_spline-lower_band_spline)
+
+            upper_threshold = standard_upper_threshold + 0.2*difference_band_spline
+            lower_threshold = standard_lower_threshold - 0.2*difference_band_spline
+
         max_prev = 1
         freeze_trade = False
         for i in range(len(spline)):
@@ -194,7 +220,6 @@ class SPLINE:
                     upper_threshold[i] = upper_threshold[i - 1]
 
         # ---- Define lower dynamic bound method
-        lower_threshold = [standard_lower_threshold]*len(big_data.spline_xs)
         min_prev = -1
         freeze_trade = False
         for i in range(len(spline)):

@@ -185,17 +185,28 @@ class EVOA_optimiser:
                 # ------------------ Print generation info
                 generation_end_time = time.time()
                 print("\n-- Generation", gen + 1, "population evaluation completed --")
-                print("Total generation Run time:", round(generation_end_time-generation_start_time, 3))
+                print("Total generation Run time:", round(generation_end_time-generation_start_time, 3), "s")
+
                 print("\nMetalabel net worth:", round(self.results.data_slice_metalabel_pp[-1], 3))
-
-                print("\nBest Individual fitness:", round(max(self.fitness_evaluation), 3))
-                print("Average fitness:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3))
-
-                print("\nBest Individual net worth:", round(max(self.net_worth), 3))
                 print("Average net worth:", round((sum(self.net_worth) / len(self.net_worth)), 3))
 
+                print("\n-> Best individual:")
+                index_best_individual = self.fitness_evaluation.index(max(self.fitness_evaluation))
+
+                print("Net worth:", round(self.net_worth[index_best_individual], 3))
+                print("Transaction count:", self.population[index_best_individual].tradebot.buy_count +
+                      self.population[index_best_individual].tradebot.sell_count)
+                print("Buy count:", self.population[index_best_individual].tradebot.buy_count)
+                print("Sell count:", self.population[index_best_individual].tradebot.sell_count)
+
+                print("\nBest Individual fitness:", round(max(self.fitness_evaluation), 3))
+                print("Average fitness:", round((sum(self.fitness_evaluation) / len(self.fitness_evaluation)), 3), "\n")
+
+                if settings.plot_best_individual_eco_model_results is True:
+                    self.population[index_best_individual].gen_economic_model(self.data_slice, plot_eco_model_results=True)
+
         # ===============================================================================
-        print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("All data processed")
         total_data_points_processed = -self.results.data_slice_start_index + self.data_slice.stop_index
         print("Number of data points processed:", total_data_points_processed)
@@ -218,27 +229,27 @@ class EVOA_optimiser:
         self.results.individual = self.best_individual
         self.results.gen_parameters_json()
 
-        # ------------------ Final results benchmarking
-        # -- Initialise benchmark data slice
-        self.benchmark_data_slice = data_slice(ticker,
-                                               settings.benchmark_data_slice_start_date,
-                                               settings.benchmark_data_slice_size,
-                                               0)
-
-        self.benchmark_data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                                       settings.metalabeling_setting)
-
-        _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
-                                                                                        self.benchmark_data_slice,
-                                                                                        evaluation_setting=settings.evaluation_method,
-                                                                                        calculate_stats=True,
-                                                                                        print_evaluation_status=False,
-                                                                                        plot_eco_model_results=True)
-
-        # --> Generate run results summary
-        self.results.benchmark_confusion_matrix_analysis = benchmark_confusion_matrix_analysis[0]
-        self.results.gen_stats()
-        self.results.gen_result_recap_file()
-        self.results.plot_results()
+        # # ------------------ Final results benchmarking
+        # # -- Initialise benchmark data slice
+        # self.benchmark_data_slice = data_slice(ticker,
+        #                                        settings.benchmark_data_slice_start_date,
+        #                                        settings.benchmark_data_slice_size,
+        #                                        0)
+        #
+        # self.benchmark_data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+        #                                                settings.metalabeling_setting)
+        #
+        # _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
+        #                                                                                 self.benchmark_data_slice,
+        #                                                                                 evaluation_setting=settings.evaluation_method,
+        #                                                                                 calculate_stats=True,
+        #                                                                                 print_evaluation_status=False,
+        #                                                                                 plot_eco_model_results=True)
+        #
+        # # --> Generate run results summary
+        # self.results.benchmark_confusion_matrix_analysis = benchmark_confusion_matrix_analysis[0]
+        # self.results.gen_stats()
+        # self.results.gen_result_recap_file()
+        # self.results.plot_results()
 
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")

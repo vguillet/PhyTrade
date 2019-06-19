@@ -71,7 +71,7 @@ class Prototype_5:
                     timeframe=parameter_dictionary["indicator_properties"]["timeframes"]["rsi_"+str(i)],
                     standard_upper_threshold=parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"]["rsi_" + str(i)],
                     standard_lower_threshold=parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"]["rsi_" + str(i)],
-                    buffer_setting=settings.buffer_setting))
+                    buffer_setting=settings.rsi_buffer_setting))
 
         # --> SMA initialisation
         self.big_data.content["indicators"]["sma"] = []
@@ -181,13 +181,13 @@ class Prototype_5:
                                               self.big_data.weights_array)
 
         # ---> Tuning combined signal
-        self.big_data.combined_spline = \
-            self.spline_tools.modulate_amplitude_spline(
-                self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=settings.volume_std_dev_max)
-
-        self.big_data.combined_spline = \
-            self.spline_tools.modulate_amplitude_spline(
-                self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=settings.volatility_std_dev_max)
+        # self.big_data.combined_spline = \
+        #     self.spline_tools.modulate_amplitude_spline(
+        #         self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=settings.volume_std_dev_max)
+        #
+        # self.big_data.combined_spline = \
+        #     self.spline_tools.modulate_amplitude_spline(
+        #         self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=settings.volatility_std_dev_max)
 
         # print(self.big_data.combined_spline)
         # print(np.shape(self.big_data.combined_spline))
@@ -198,9 +198,12 @@ class Prototype_5:
         # ---> Creating dynamic thresholds
         upper_threshold, lower_threshold = \
             self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
-                                              buffer=settings.buffer, buffer_setting=settings.buffer_setting,
+                                              buffer=settings.buffer,
                                               standard_upper_threshold=parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"],
-                                              standard_lower_threshold=parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"])
+                                              standard_lower_threshold=parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"],
+                                              bband_timeframe=parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"],
+                                              threshold_setting=settings.threshold_setting,
+                                              buffer_setting=settings.buffer_setting)
 
         # ---> Modulating threshold with SMA 3 value
         # upper_threshold = self.spline_tools.modulate_amplitude_spline(

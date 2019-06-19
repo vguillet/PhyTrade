@@ -29,7 +29,6 @@ class Individual:
 
     def gen_economic_model(self, data_slice, plot_eco_model_results=False):
         from PhyTrade.Economic_model.Analysis_protocols.Prototype_5 import Prototype_5
-        import matplotlib.pyplot as plt
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
         self.analysis = Prototype_5(self.parameter_dictionary, data_slice)
@@ -77,9 +76,7 @@ class Individual:
                                      "spline_property": {"weights": {},
                                                          "smoothing_factors": {},
                                                          "amplification_factor": {},
-                                                         "flip": {},
-                                                         "major_spline_standard_upper_thresholds": {},
-                                                         "major_spline_standard_lower_thresholds": {}},
+                                                         "flip": {}},
                                      "indicator_properties": {"timeframes": {}}}
 
         # ========================================================== RSI parameters:
@@ -103,8 +100,8 @@ class Individual:
 
         if sma_count != 0:
             for i in range(sma_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_1"] = ga_random.timeframe_random_gen()
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_2"] = ga_random.timeframe_random_gen()
+                self.parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_1"] = ga_random.small_timeframe_random_gen()
+                self.parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_2"] = ga_random.large_timeframe_random_gen()
 
                 self.parameter_dictionary["spline_property"]["smoothing_factors"]["sma_" + str(i)] = ga_random.smoothing_factor_random_gen()
                 self.parameter_dictionary["spline_property"]["weights"]["sma_" + str(i)] = ga_random.weight_random_gen()
@@ -115,8 +112,8 @@ class Individual:
 
         if ema_count != 0:
             for i in range(ema_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["ema_"+str(i)+"_1"] = ga_random.timeframe_random_gen()
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["ema_"+str(i)+"_2"] = ga_random.timeframe_random_gen()
+                self.parameter_dictionary["indicator_properties"]["timeframes"]["ema_"+str(i)+"_1"] = ga_random.small_timeframe_random_gen()
+                self.parameter_dictionary["indicator_properties"]["timeframes"]["ema_"+str(i)+"_2"] = ga_random.large_timeframe_random_gen()
 
                 self.parameter_dictionary["spline_property"]["smoothing_factors"]["ema_" + str(i)] = ga_random.smoothing_factor_random_gen()
                 self.parameter_dictionary["spline_property"]["weights"]["ema_" + str(i)] = ga_random.weight_random_gen()
@@ -177,7 +174,7 @@ class Individual:
         self.parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"] = ga_random.smoothing_factor_random_gen()
         self.parameter_dictionary["spline_property"]["flip"]["volatility_0"] = ga_random.flip_random_gen()
 
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dynamic threshold values:
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dynamic threshold parameters:
         self.parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"] = ga_random.major_spline_upper_threshold_random_gen()
         self.parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"] = ga_random.major_spline_lower_threshold_random_gen()
-
+        self.parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"] = ga_random.timeframe_random_gen()

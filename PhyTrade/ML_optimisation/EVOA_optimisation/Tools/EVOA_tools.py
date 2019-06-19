@@ -35,6 +35,9 @@ class EVOA_tools:
         metalabel_accuracies_bs = []
         avg_metalabel_accuracies = []
         net_worth = []
+        buy_count = []
+        sell_count = []
+        transaction_count = []
 
         data_slice.perform_trade_run()
         metalabel_net_worth = data_slice.metalabels_account.net_worth_history[-1]
@@ -52,7 +55,10 @@ class EVOA_tools:
 
             if print_evaluation_status:
                 print("\nMetalabels net worth:", round(metalabel_net_worth), "$")
-                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$\n")
+                print("Final net worth:", round(population_lst[i].account.net_worth_history[-1], 3), "$")
+                print("\nTransaction count:", population_lst[i].tradebot.buy_count + population_lst[i].tradebot.sell_count)
+                print("Buy count:", population_lst[i].tradebot.buy_count)
+                print("Sell count:", population_lst[i].tradebot.sell_count, "\n")
 
             individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].trade_signal,
                                                                              data_slice.metalabels,
@@ -70,6 +76,9 @@ class EVOA_tools:
 
             # --> Save net worth
             net_worth.append(population_lst[i].account.net_worth_history[-1])
+            buy_count.append(population_lst[i].tradebot.buy_count)
+            sell_count.append(population_lst[i].tradebot.sell_count)
+            transaction_count.append(population_lst[i].tradebot.buy_count + population_lst[i].tradebot.sell_count)
 
             progress_bar.update_progress_bar(i)
 
@@ -91,6 +100,15 @@ class EVOA_tools:
         # --> Perform evaluation based on the average of net worth and metalabel accuracies
         elif evaluation_setting == 3:
             fitness_evaluation = avg_metalabel_accuracies
+
+        elif evaluation_setting == 4:
+            fitness_evaluation = buy_count
+
+        elif evaluation_setting == 5:
+            fitness_evaluation = sell_count
+
+        elif evaluation_setting == 6:
+            fitness_evaluation = transaction_count
 
         return fitness_evaluation, confusion_matrix_analysis, net_worth
 
