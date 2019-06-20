@@ -33,17 +33,27 @@ while run is True:
         # --> Generate evoa settings
         settings.gen_evoa_settings()
 
-        ticker = settings.tickers[0]
-        settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-        EVO_optimisation = EVOA_optimiser(ticker)
+        def optimise(ticker):
+            try:
+                # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+                EVOA_optimiser(ticker)
+            except:
+                print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
 
-        # for ticker in settings.tickers:
-        #     try:
-        #         # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-        #         EVO_optimisation = EVOA_optimiser(ticker)
-        #     except:
-        #         print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
-        #         continue
+        # ticker = settings.tickers[0]
+        # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+        # EVO_optimisation = EVOA_optimiser(ticker)
+
+        if settings.multiprocessing is False:
+            for ticker in settings.tickers:
+                optimise(ticker)
+            continue
+
+        else:
+            import multiprocessing
+            for i in range(5):
+                p = multiprocessing.Process(target=optimise, args=settings.tickers)
+                p.start()
 
     # ============================ ECONOMIC ANALYSIS ===============================
     elif selection == 2:

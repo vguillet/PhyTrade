@@ -69,26 +69,26 @@ class SETTINGS:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_5"
+        self.config_name = "Run_6"
         self.multiprocessing = True
 
-        self.tickers = ["AAPL", "INTC", "NVDA", "AMZN"]
-        # self.tickers = ["AAPL"]
+        # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN"]
+        self.tickers = ["AAPL"]
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = False
 
-        self.plot_best_individual_eco_model_results = True
+        self.plot_best_individual_eco_model_results = False
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
-        self.population_size = 120
-        self.nb_of_generations = 300
+        self.population_size = 30
+        self.nb_of_generations = 10
 
         self.mutation_rate = 0.5
-        self.nb_parents = 40
-        self.nb_random_ind = 20
+        self.nb_parents = 10
+        self.nb_random_ind = 3
 
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)

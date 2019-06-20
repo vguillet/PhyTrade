@@ -9,6 +9,7 @@ from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_too
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 import time
 
@@ -57,6 +58,7 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap()
+        progress_bar = Progress_bar(settings.nb_of_generations, 50, label=ticker)
 
         # ------------------ Initialise population
         if settings.starting_parameters is None:
@@ -75,7 +77,7 @@ class EVOA_optimiser:
         prints.init_pop_success_msg()
 
         # ------------------ Run for # nb of generations:
-        for gen in range(settings.nb_of_generations+1):
+        for gen in range(settings.nb_of_generations):
             generation_start_time = time.time()
 
             if gen == settings.nb_of_generations-settings.exploitation_phase_len-1:
@@ -160,6 +162,8 @@ class EVOA_optimiser:
                 prints.generation_info(gen, generation_start_time, generation_end_time,
                                        self.results, self.net_worth, self.fitness_evaluation,
                                        self.population)
+
+                progress_bar.update_progress_bar(gen)
 
                 if settings.plot_best_individual_eco_model_results is True:
                     self.population[self.fitness_evaluation.index(max(self.fitness_evaluation))].gen_economic_model(

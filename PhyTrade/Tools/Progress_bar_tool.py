@@ -2,7 +2,7 @@ import time
 
 
 class Progress_bar:
-    def __init__(self, max_step, bar_size=30):
+    def __init__(self, max_step, bar_size=30, label=None):
 
         # --> Initiate Progress bar
         self.bar_size = bar_size
@@ -10,6 +10,10 @@ class Progress_bar:
         self.step = max_step/self.bar_size
 
         self.current = 0
+        if label is not None:
+            self.label = label+" | "
+        else:
+            self.label = ""
 
         # --> Initiate time tracker
         self.start_time = time.time()
@@ -39,4 +43,4 @@ class Progress_bar:
         # --> Compute ETA
         eta = round(sum(self.run_time_lst)/len(self.run_time_lst) * (self.max_step-self.current))
 
-        return str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Run time: " + str(self.run_time) + "s, - ETA: " + str(eta) + "s"
+        return self.label+str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Run time: " + str(self.run_time) + "s, - ETA: " + str(eta) + "s"
