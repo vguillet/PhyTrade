@@ -26,7 +26,8 @@ class EVOA_tools:
     def evaluate_population(population_lst, data_slice,
                             max_worker_processes=4,
                             evaluation_setting=0,
-                            calculate_stats=False, print_evaluation_status=False, plot_eco_model_results=False):
+                            calculate_stats=False, multiprocessing=False,
+                            print_evaluation_status=False, plot_eco_model_results=False):
         from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
         from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
@@ -42,10 +43,12 @@ class EVOA_tools:
         data_slice.perform_trade_run()
         metalabel_net_worth = data_slice.metalabels_account.net_worth_history[-1]
 
-        # -- List based evaluation
-        progress_bar = Progress_bar(len(population_lst))
-        for i in range(len(population_lst)):
+        # Disable progress bar and all print functions in case of multiprocessing run case
+        if multiprocessing is False:
+            progress_bar = Progress_bar(len(population_lst))
 
+        # -- List based evaluation
+        for i in range(len(population_lst)):
             if print_evaluation_status:
                 print("\n--------------------------------------------------")
                 print("Parameter set", i + 1)
@@ -80,10 +83,11 @@ class EVOA_tools:
             sell_count.append(population_lst[i].tradebot.sell_count)
             transaction_count.append(population_lst[i].tradebot.buy_count + population_lst[i].tradebot.sell_count)
 
-            progress_bar.update_progress_bar(i)
+            if multiprocessing is False:
+                progress_bar.update_progress_bar(i)
 
-        # -- Multi-process evaluation
-        # TODO: Add multiprocessing
+        # -- Multi-thread evaluation
+        # TODO: Add multithreading
 
         # --> Perform evaluation based on net worth
         if evaluation_setting == 0:
@@ -254,11 +258,7 @@ class EVOA_tools:
         return throttled_value
 
     @staticmethod
-    def determine_evolving_gen_parameters(current_generation,
-                                          data_slice_cycle_count):
-        from SETTINGS import SETTINGS
-        settings = SETTINGS()
-        settings.gen_evoa_settings()
+    def determine_evolving_gen_parameters(settings, current_generation, data_slice_cycle_count):
         # ------------------ Throttle the individual count to be used by the generation
         # --> Based on generation count
         nb_parents = round(EVOA_tools().throttle(current_generation,

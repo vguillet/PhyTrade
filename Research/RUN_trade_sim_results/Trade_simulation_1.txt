@@ -1,7 +1,7 @@
 ====================== Trade_simulation_1 ======================
 
 -----------> Model settings:
-Tickers: ['AAPL', 'NVDA', 'INTC']
+Tickers: ['AAPL', 'NVDA', 'INTC', 'AMZN']
 
 data_slice_start_index = 2019-01-02
 data_slice_size = 24
@@ -12,10 +12,10 @@ Model parameters: None
 -----------> Run stats: 
 
 Number of data points processed: 1200
-Buy trigger count: 13
-Sell trigger count: 5
+Buy trigger count: 38
+Sell trigger count: 27
 
-Final net worth: 1798$
+Final net worth: 2948$
 Average profit per gen: 0%
 Max profit achieved: 0%
 Min profit achieved: 0%

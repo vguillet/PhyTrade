@@ -9,6 +9,7 @@ class PLOT_tools:
         ax1 = plt.subplot(211)
         plot_tools.plot_oc_values(data_slice)
         plot_tools.plot_values_trigger(data_slice, trade_signal)
+        plt.title("Trade process: " + data_slice.ticker + "        " + data_slice.start_date + " --> " + data_slice.stop_date)
 
         # ------------------ Plot bb signal(s)
         ax2 = plt.subplot(212)

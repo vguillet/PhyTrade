@@ -2,10 +2,10 @@ import time
 
 
 class Progress_bar:
-    def __init__(self, max_step):
+    def __init__(self, max_step, bar_size=30):
 
         # --> Initiate Progress bar
-        self.bar_size = 30
+        self.bar_size = bar_size
         self.max_step = max_step
         self.step = max_step/self.bar_size
 
