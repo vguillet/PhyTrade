@@ -119,7 +119,7 @@ class SPLINE:
                         bband_timeframe=15,
                         threshold_setting=1, buffer_setting=0):
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
-        from PhyTrade.Data_Collection_preparation.Google_trends import pull_google_trends_data
+        from PhyTrade.Data_Collection_preparation.Data_sources.Google_trends import pull_google_trends_data
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
         """        

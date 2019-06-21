@@ -1,4 +1,4 @@
-from PhyTrade.Data_Collection_preparation.Yahoo import pull_yahoo_data
+from PhyTrade.Data_Collection_preparation.Data_sources.Yahoo import pull_yahoo_data
 import pandas
 import os
 
