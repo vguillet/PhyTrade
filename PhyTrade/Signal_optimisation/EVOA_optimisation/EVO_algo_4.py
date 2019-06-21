@@ -2,12 +2,12 @@
 This script contains the EVOA_optimiser class, which is a refactored and optimised version of EVO_algo3 tailored for multiprocessing
 """
 
-from Settings.Metalabeling_settings import Metalabeling_settings
+from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
 
-from PhyTrade.ML_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
+from PhyTrade.Signal_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
 
-from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_results_gen import EVOA_results_gen
+from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar

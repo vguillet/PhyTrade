@@ -1,9 +1,8 @@
-from PhyTrade.ML_optimisation.Metalabel_optimisation.METALABELING_gen import MetaLabeling
+from PhyTrade.Backtesting.Metalabel_optimisation.METALABELS_gen import MetaLabeling
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 from PhyTrade.Tools.PLOT_tools import PLOT_tools
 from pylab import *
-import numpy as np
 
 N = 40
 ticker = "AAPL"
