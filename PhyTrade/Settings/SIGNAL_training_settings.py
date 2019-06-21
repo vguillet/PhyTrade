@@ -5,8 +5,10 @@ class SIGNAL_training_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_6"
         self.multiprocessing = False
+        self.max_process_count = multiprocessing.cpu_count() - 1
+
+        self.config_name = "Run_6"
 
         self.tickers = ["AAPL", "INTC", "NVDA", "AMZN"]
         # self.tickers = ["AAPL"]
@@ -29,16 +31,16 @@ class SIGNAL_training_settings:
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.data_slice_start_date = "2017-01-03"
+        # TODO: Add slize size auto scaling according to generation count/cycle count and start/end date
+        self.start_date = "2017-01-03"
+        self.end_date = "2019-01-02"
+        # self.end_date = None
+
         self.data_slice_size = 24
         self.data_slice_shift_per_gen = 12
         self.data_slice_cycle_count = 5
 
         self.data_looper = False
-
-        # TODO: Add slize size auto scaling according to generation count/cycle count and start/end date
-        self.end_date = "2019-01-02"
-        # self.end_date = None
 
         # ___________________________ Generation 0 parameters ____________________
         # -- Starting parameters
@@ -57,8 +59,3 @@ class SIGNAL_training_settings:
 
         self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0
-
-        # -- max_worker_processes
-        self.max_worker_processes = multiprocessing.cpu_count() - 1
-
-

@@ -38,7 +38,7 @@ class EVOA_optimiser:
 
         # --> Initialise data slice for gen and metalabels
         self.data_slice = data_slice(ticker,
-                                     evoa_settings.data_slice_start_date,
+                                     evoa_settings.start_date,
                                      evoa_settings.data_slice_size,
                                      evoa_settings.data_slice_shift_per_gen,
                                      end_date=evoa_settings.end_date,
@@ -137,7 +137,7 @@ class EVOA_optimiser:
                 self.evoa_tools.evaluate_population(self.population,
                                                     self.data_slice,
                                                     evaluation_setting=evoa_settings.evaluation_method,
-                                                    max_worker_processes=evoa_settings.max_worker_processes,
+                                                    max_worker_processes=evoa_settings.max_process_count,
                                                     multiprocessing=evoa_settings.multiprocessing,
                                                     print_evaluation_status=evoa_settings.print_evaluation_status,
                                                     plot_eco_model_results=evoa_settings.plot_eco_model_results)

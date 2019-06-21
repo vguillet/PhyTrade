@@ -3,7 +3,7 @@ This script contains the data_slice class used by the EVOA Optimisation. The sli
 information about the slice analysed, including the starting and stopping index, along with the metalabels generated
 """
 from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Backtesting.Metalabel_optimisation.METALABELS_gen import MetaLabeling
+from PhyTrade.Backtesting.Metalabeling.METALABELS_gen import MetaLabels_gen
 
 import numpy as np
 
@@ -73,10 +73,10 @@ class data_slice:
         mock_data_slice.start_index = self.start_index
         mock_data_slice.stop_index = self.stop_index
 
-        self.metalabels = MetaLabeling(upper_barrier, lower_barrier,
-                                       look_ahead,
-                                       mock_data_slice,
-                                       metalabel_setting=metalabeling_setting).metalabels
+        self.metalabels = MetaLabels_gen(upper_barrier, lower_barrier,
+                                         look_ahead,
+                                         mock_data_slice,
+                                         metalabel_setting=metalabeling_setting).metalabels
         return
 
     def get_next_data_slice(self):

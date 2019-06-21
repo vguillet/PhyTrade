@@ -4,7 +4,7 @@ to be used by the EVOA Optimisation
 """
 
 
-class MetaLabeling:
+class MetaLabels_gen:
     def __init__(self, upper_barrier, lower_barrier, look_ahead,
                  data_slice,
                  metalabel_setting=0):

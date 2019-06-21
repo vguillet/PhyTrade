@@ -1,4 +1,4 @@
-from PhyTrade.Settings.SIGNAL_training_settings import SIGNAL_training_settings
+from PhyTrade.Settings.Signal_training_settings import SIGNAL_training_settings
 from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
 from PhyTrade.Settings.Individual_settings import Individual_settings
 import time

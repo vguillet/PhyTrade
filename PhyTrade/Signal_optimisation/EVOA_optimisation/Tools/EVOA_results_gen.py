@@ -2,7 +2,7 @@
 This class contains the results_gen class, used to generate results form the various runs
 """
 
-from PhyTrade.Settings.SIGNAL_training_settings import SIGNAL_training_settings
+from PhyTrade.Settings.Signal_training_settings import SIGNAL_training_settings
 import time
 from PhyTrade.Tools.MATH_tools import MATH_tools
 
