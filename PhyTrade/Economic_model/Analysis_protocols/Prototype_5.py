@@ -15,7 +15,7 @@ Victor Guillet
 
 from PhyTrade.Economic_model.Big_Data import BIGDATA
 # ---> Import model settings
-from Settings.Model_settings import Model_settings
+from PhyTrade.Settings.Model_settings import Model_settings
 
 # ---> Import indicators
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen import RSI

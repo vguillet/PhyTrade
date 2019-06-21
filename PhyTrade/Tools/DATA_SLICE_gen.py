@@ -2,8 +2,8 @@
 This script contains the data_slice class used by the EVOA Optimisation. The slice itself contains
 information about the slice analysed, including the starting and stopping index, along with the metalabels generated
 """
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.ML_optimisation.Metalabel_optimisation.METALABELING_gen import MetaLabeling
+from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Backtesting.Metalabel_optimisation.METALABELS_gen import MetaLabeling
 
 import numpy as np
 

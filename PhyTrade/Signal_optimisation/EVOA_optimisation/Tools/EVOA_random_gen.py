@@ -1,5 +1,5 @@
 import random
-from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 
 
 class EVOA_random_gen:

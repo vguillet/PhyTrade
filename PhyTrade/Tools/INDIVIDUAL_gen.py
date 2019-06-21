@@ -1,6 +1,6 @@
-from Settings.Individual_settings import Individual_settings
-from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Settings.Individual_settings import Individual_settings
+from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
+from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 
 class Individual:

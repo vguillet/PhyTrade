@@ -2,7 +2,6 @@
 This script contains the EVOA_optimiser class, which is a refactored and optimised version of EVO_algo3 tailored for multiprocessing
 """
 
-from Settings.EVOA_settings import EVOA_settings
 from Settings.Metalabeling_settings import Metalabeling_settings
 
 from PhyTrade.ML_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
@@ -17,10 +16,10 @@ import time
 
 
 class EVOA_optimiser:
-    def __init__(self, ticker="AAPL"):
+    def __init__(self, settings, ticker="AAPL"):
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
-        evoa_settings = EVOA_settings()
+        evoa_settings = settings
         evoa_settings.gen_evoa_settings()
 
         metalabeling_settings = Metalabeling_settings()

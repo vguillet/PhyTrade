@@ -6,11 +6,11 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
-from Settings.Trade_sim import Trade_sim
-from Settings.Metalabeling_settings import Metalabeling_settings
+from PhyTrade.Settings.Trade_sim import Trade_sim
+from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
 
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
-from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 
 

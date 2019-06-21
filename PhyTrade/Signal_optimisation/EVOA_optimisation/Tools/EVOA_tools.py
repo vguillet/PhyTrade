@@ -28,7 +28,7 @@ class EVOA_tools:
                             evaluation_setting=0,
                             calculate_stats=False, multiprocessing=False,
                             print_evaluation_status=False, plot_eco_model_results=False):
-        from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+        from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
         from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
         confusion_matrix_analysis = []
@@ -166,7 +166,7 @@ class EVOA_tools:
                             decay_function,
                             population_size, parents, nb_random_ind, mutation_rate=0.2):
 
-        from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
+        from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.Tools.INDIVIDUAL_gen import Individual
         import random
         from copy import deepcopy

@@ -2,15 +2,13 @@
 The Dev_menu script is used to initiate all economic analysis, trading simulations,
 and economic model parameters evaluations and optimisations.
 """
-from Settings.EVOA_settings import EVOA_settings
-from PhyTrade.ML_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
+from PhyTrade.Settings.SIGNAL_training_settings import SIGNAL_training_settings
+from PhyTrade.Signal_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
 from PhyTrade.Economic_model.RUN_model import RUN_model
 from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
 from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim
 
-from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-
-import sys
+from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 
 print("-- Welcome to the PhyTrade Economic analyser and modeling tool --")
 print("Select the wanted run process:")
@@ -29,22 +27,22 @@ while run is True:
     # ============================ EVOLUTION-OPTIMISER =============================
     if selection == 1:
         # --> Generate evoa settings
-        settings = EVOA_settings()
+        settings = SIGNAL_training_settings()
         settings.gen_evoa_settings()
 
-        def optimise(ticker):
+        def optimise(settings, ticker):
             try:
                 # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-                EVOA_optimiser(ticker)
+                EVOA_optimiser(settings, ticker)
             except:
                 print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
 
         ticker = settings.tickers[0]
         settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-        EVO_optimisation = EVOA_optimiser(ticker)
+        EVO_optimisation = EVOA_optimiser(settings, ticker)
 
         # for ticker in settings.tickers:
-        #     optimise(ticker)
+        #     optimise(settings, ticker)
 
     # ============================ ECONOMIC ANALYSIS ===============================
     elif selection == 2:

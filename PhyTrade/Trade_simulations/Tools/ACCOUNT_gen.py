@@ -1,7 +1,7 @@
 """
 Contains information about a Tradebot's account, along with it's transaction history etc...
 """
-from Settings.Tradebot_settings import Tradebot_settings
+from PhyTrade.Settings.Tradebot_settings import Tradebot_settings
 from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
 
 

@@ -1,12 +1,12 @@
-from Settings.EVOA_settings import EVOA_settings
-from Settings.Metalabeling_settings import Metalabeling_settings
-from Settings.Individual_settings import Individual_settings
+from PhyTrade.Settings.SIGNAL_training_settings import SIGNAL_training_settings
+from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
+from PhyTrade.Settings.Individual_settings import Individual_settings
 import time
 
 
 class EVOA_prints:
     def __init__(self, ticker, evoa_version):
-        self.evoa_settings = EVOA_settings()
+        self.evoa_settings = SIGNAL_training_settings()
         self.evoa_settings.gen_evoa_settings()
 
         self.metalabels_settings = Metalabeling_settings()

@@ -2,7 +2,7 @@
 This class contains the results_gen class, used to generate results form the various runs
 """
 
-from Settings.EVOA_settings import EVOA_settings
+from PhyTrade.Settings.SIGNAL_training_settings import SIGNAL_training_settings
 import time
 from PhyTrade.Tools.MATH_tools import MATH_tools
 
@@ -11,7 +11,7 @@ class EVOA_results_gen:
     def __init__(self, ticker):
         
         # ---- Fetch EVOA settings
-        settings = EVOA_settings()
+        settings = SIGNAL_training_settings()
         settings.gen_evoa_settings()
         
         self.settings = settings

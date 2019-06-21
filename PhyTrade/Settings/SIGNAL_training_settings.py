@@ -1,7 +1,7 @@
 import multiprocessing
 
 
-class EVOA_settings:
+class SIGNAL_training_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
@@ -61,7 +61,4 @@ class EVOA_settings:
         # -- max_worker_processes
         self.max_worker_processes = multiprocessing.cpu_count() - 1
 
-        # ___________________________ Benchmark parameters _______________________
-        # -- Benchmarking data slice settings
-        self.benchmark_data_slice_start_date = "2019-01-02"
-        self.benchmark_data_slice_size = 200
+
