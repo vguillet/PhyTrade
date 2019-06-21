@@ -1,6 +1,6 @@
+from Settings.Individual_settings import Individual_settings
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
 from PhyTrade.Economic_model.Technical_Analysis.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from SETTINGS import SETTINGS
 
 
 class Individual:
@@ -10,14 +10,14 @@ class Individual:
         self.data = fetch_technical_data(self.ticker)
 
         if parameter_set is None:
-            settings = SETTINGS()
-            settings.gen_individual_settings()
-            self.gen_parameter_set(rsi_count=settings.rsi_count,
-                                   sma_count=settings.sma_count,
-                                   ema_count=settings.ema_count,
-                                   lwma_count=settings.lwma_count,
-                                   cci_count=settings.cci_count,
-                                   eom_count=settings.eom_count)
+            individual_settings = Individual_settings()
+            individual_settings.gen_individual_settings()
+            self.gen_parameter_set(rsi_count=individual_settings.rsi_count,
+                                   sma_count=individual_settings.sma_count,
+                                   ema_count=individual_settings.ema_count,
+                                   lwma_count=individual_settings.lwma_count,
+                                   cci_count=individual_settings.cci_count,
+                                   eom_count=individual_settings.eom_count)
         else:
             self.parameter_dictionary = parameter_set
 

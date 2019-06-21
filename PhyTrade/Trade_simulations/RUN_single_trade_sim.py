@@ -7,7 +7,9 @@ Input that still require manual input:
     - Stop-loss settings
 """
 
-from SETTINGS import SETTINGS
+from Settings.Trade_sim import Trade_sim
+from Settings.Metalabeling_settings import Metalabeling_settings
+
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
@@ -18,52 +20,57 @@ class RUN_single_trade_sim:
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch single_trade_sim settings
-        settings = SETTINGS()
-        settings.gen_single_trade_sim()
+        trade_sim_settings = Trade_sim()
+        trade_sim_settings.gen_single_trade_sim()
 
         # --> Simulation parameters
-        eval_name = settings.simulation_name
+        eval_name = trade_sim_settings.simulation_name
 
-        ticker = settings.ticker
-        parameter_set = settings.parameter_set
+        ticker = trade_sim_settings.ticker
+        parameter_set = trade_sim_settings.parameter_set
 
-        start_date = settings.start_date
-        data_slice_size = settings.data_slice_size
-        nb_data_slices = settings.nb_data_slices
+        start_date = trade_sim_settings.start_date
+        data_slice_size = trade_sim_settings.data_slice_size
+        nb_data_slices = trade_sim_settings.nb_data_slices
 
         # --> Print parameters
-        plot_eco_model_results = settings.plot_eco_model_results
-        print_trade_process = settings.print_trade_process
+        plot_eco_model_results = trade_sim_settings.plot_eco_model_results
+        print_trade_process = trade_sim_settings.print_trade_process
 
-        # --> Metalabeling settings
-        self.run_metalabels = settings.run_metalabels         # Can be switched off for performance increase
+        # ---- Fetch Metalabeling settings
+        self.run_metalabels = trade_sim_settings.run_metalabels         # Can be switched off for performance increase
 
-        self.upper_barrier = settings.upper_barrier
-        self.lower_barrier = settings.lower_barrier
-        self.look_ahead = settings.look_ahead
+        metalabels_settings = Metalabeling_settings()
+        metalabels_settings.gen_metalabels_settings()
 
-        self.m_investment_settings = settings.m_investment_settings
-        self.m_cash_in_settings = settings.m_cash_in_settings
+        self.metalabeling_setting = metalabels_settings.metalabeling_setting
+
+        self.upper_barrier = metalabels_settings.upper_barrier
+        self.lower_barrier = metalabels_settings
+        self.look_ahead = metalabels_settings.look_ahead
+
+        self.m_investment_settings = trade_sim_settings.m_investment_settings
+        self.m_cash_in_settings = trade_sim_settings.m_cash_in_settings
 
         # --> Investment settings
-        self.investment_settings = settings.investment_settings
-        self.cash_in_settings = settings.cash_in_settings
+        self.investment_settings = trade_sim_settings.investment_settings
+        self.cash_in_settings = trade_sim_settings.cash_in_settings
 
-        max_investment_per_trade_percent = settings.max_investment_per_trade_percent
-        min_investment_per_trade_percent = settings.min_investment_per_trade_percent
+        max_investment_per_trade_percent = trade_sim_settings.max_investment_per_trade_percent
+        min_investment_per_trade_percent = trade_sim_settings.min_investment_per_trade_percent
 
-        investment_per_trade_decay_function = settings.investment_per_trade_decay_function
+        investment_per_trade_decay_function = trade_sim_settings.investment_per_trade_decay_function
 
         # --> Stop-loss settings
-        max_prev_stop_loss = settings.max_prev_stop_loss
-        min_prev_stop_loss = settings.min_prev_stop_loss
+        max_prev_stop_loss = trade_sim_settings.max_prev_stop_loss
+        min_prev_stop_loss = trade_sim_settings.min_prev_stop_loss
 
-        prev_stop_loss_decay_function = settings.prev_stop_loss_decay_function
+        prev_stop_loss_decay_function = trade_sim_settings.prev_stop_loss_decay_function
 
-        max_max_stop_loss = settings.max_max_stop_loss
-        min_max_stop_loss = settings.min_max_stop_loss
+        max_max_stop_loss = trade_sim_settings.max_max_stop_loss
+        min_max_stop_loss = trade_sim_settings.min_max_stop_loss
 
-        max_stop_loss_decay_function = settings.max_stop_loss_decay_function
+        max_stop_loss_decay_function = trade_sim_settings.max_stop_loss_decay_function
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -94,8 +101,8 @@ class RUN_single_trade_sim:
         # ---- Generate data slice
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
                                      data_looper=False)
-        self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                             settings.metalabeling_setting)
+        self.data_slice.gen_slice_metalabels(self.upper_barrier, self.lower_barrier, self.look_ahead,
+                                             self.metalabeling_setting)
 
         if self.run_metalabels is True:
             self.data_slice.perform_trade_run(investment_settings=self.m_investment_settings,
@@ -131,8 +138,8 @@ class RUN_single_trade_sim:
             print("================== Data slice", i+1, "==================")
             # --> Calc new data slice parameters
             self.data_slice.get_next_data_slice()
-            self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                                 settings.metalabeling_setting)
+            self.data_slice.gen_slice_metalabels(self.upper_barrier, self.lower_barrier, self.look_ahead,
+                                                 self.metalabeling_setting)
 
             print(self.data_slice.start_date, "-->", self.data_slice.stop_date)
             print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])

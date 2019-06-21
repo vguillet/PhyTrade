@@ -2,7 +2,7 @@
 The Dev_menu script is used to initiate all economic analysis, trading simulations,
 and economic model parameters evaluations and optimisations.
 """
-from SETTINGS import SETTINGS
+from Settings.EVOA_settings import EVOA_settings
 from PhyTrade.ML_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
 from PhyTrade.Economic_model.RUN_model import RUN_model
 from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
@@ -23,14 +23,13 @@ print("0 - Exit")
 
 run = True
 while run is True:
-    settings = SETTINGS()
-
     selection = int(input("Enter selection:\n"))
     # selection = 1
     print("\n")
     # ============================ EVOLUTION-OPTIMISER =============================
     if selection == 1:
         # --> Generate evoa settings
+        settings = EVOA_settings()
         settings.gen_evoa_settings()
 
         def optimise(ticker):
@@ -40,20 +39,12 @@ while run is True:
             except:
                 print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
 
-        # ticker = settings.tickers[0]
-        # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-        # EVO_optimisation = EVOA_optimiser(ticker)
+        ticker = settings.tickers[0]
+        settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+        EVO_optimisation = EVOA_optimiser(ticker)
 
-        if settings.multiprocessing is False:
-            for ticker in settings.tickers:
-                optimise(ticker)
-            continue
-
-        else:
-            import multiprocessing
-            for i in range(5):
-                p = multiprocessing.Process(target=optimise, args=settings.tickers)
-                p.start()
+        # for ticker in settings.tickers:
+        #     optimise(ticker)
 
     # ============================ ECONOMIC ANALYSIS ===============================
     elif selection == 2:

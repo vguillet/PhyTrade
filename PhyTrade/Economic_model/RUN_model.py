@@ -1,7 +1,9 @@
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
-from SETTINGS import SETTINGS
+from Settings.Model_settings import Model_settings
+from Settings.Metalabeling_settings import Metalabeling_settings
+
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
@@ -10,19 +12,28 @@ from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import
 class RUN_model:
     def __init__(self):
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # ---- Fetch multi_trade_sim settings
-        settings = SETTINGS()
-        settings.gen_run_model_settings()
+        # ---- Fetch run_model settings
+        model_settings = Model_settings()
+        model_settings.gen_run_model_settings()
 
-        eval_name = settings.evaluation_name
-        parameter_set = settings.parameter_set
-        ticker = settings.ticker
+        print_trade_process = model_settings.print_trade_process
 
-        start_date = settings.start_date
-        data_slice_size = settings.data_slice_size
-        look_ahead = settings.look_ahead
+        eval_name = model_settings.evaluation_name
+        ticker = model_settings.ticker
+        parameter_set = model_settings.parameter_set
 
-        print_trade_process = settings.print_trade_process
+        start_date = model_settings.start_date
+        data_slice_size = model_settings.data_slice_size
+
+        # ---- Fetch metalabeling settings
+        metalabels_settings = Metalabeling_settings()
+        metalabels_settings.gen_metalabels_settings()
+
+        metalabeling_setting = metalabels_settings.metalabeling_setting
+
+        upper_barrier = metalabels_settings.upper_barrier
+        lower_barrier = metalabels_settings
+        look_ahead = metalabels_settings.look_ahead
 
         # ---- Initiate run parameters
         self.ticker = ticker
@@ -30,8 +41,8 @@ class RUN_model:
 
         # ---- Generate data slice
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0, data_selection="Close")
-        self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                             settings.metalabeling_setting)
+        self.data_slice.gen_slice_metalabels(upper_barrier, lower_barrier, look_ahead,
+                                             metalabeling_setting)
         self.data_slice.perform_trade_run()
 
         # ---- Generate Individual

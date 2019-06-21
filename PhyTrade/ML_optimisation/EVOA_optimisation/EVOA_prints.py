@@ -1,17 +1,25 @@
-from SETTINGS import SETTINGS
+from Settings.EVOA_settings import EVOA_settings
+from Settings.Metalabeling_settings import Metalabeling_settings
+from Settings.Individual_settings import Individual_settings
 import time
 
 
 class EVOA_prints:
     def __init__(self, ticker, evoa_version):
-        self.settings = SETTINGS()
-        self.settings.gen_evoa_settings()
+        self.evoa_settings = EVOA_settings()
+        self.evoa_settings.gen_evoa_settings()
+
+        self.metalabels_settings = Metalabeling_settings()
+        self.metalabels_settings.gen_metalabels_settings()
+
+        self.individual_settings = Individual_settings()
+        self.individual_settings.gen_individual_settings()
 
         self.ticker = ticker
         self.evoa_version = evoa_version
 
         # --> Perform Monkey Patching update of print methods if multiprocessing
-        if self.settings.multiprocessing:
+        if self.evoa_settings.multiprocessing:
             self.evoa_run_initialisation_recap = self.monkey_patch_pass
             self.new_slice_info = self.monkey_patch_pass
             self.generation_info = self.monkey_patch_pass
@@ -38,38 +46,38 @@ class EVOA_prints:
         print("Start time:", time.strftime('%X %x %Z'), "\n")
 
         print("-- Settings selected --")
-        print("Selected evaluation method:", self.settings.evaluation_methods[self.settings.evaluation_method])
-        print("Selected metalabeling method:", self.settings.metalabeling_settings[self.settings.metalabeling_setting])
+        print("Selected evaluation method:", self.evoa_settings.evaluation_methods[self.evoa_settings.evaluation_method])
+        print("Selected metalabeling method:", self.metalabels_settings.metalabeling_settings[self.metalabels_settings.metalabeling_setting])
         print("")
-        print("Selected parent function:", self.settings.decay_functions[self.settings.parents_decay_function])
-        print("Selected random individual function:", self.settings.decay_functions[self.settings.random_ind_decay_function])
-        print("Selected mutation range function:", self.settings.decay_functions[self.settings.mutation_decay_function])
+        print("Selected parent function:", self.evoa_settings.decay_functions[self.evoa_settings.parents_decay_function])
+        print("Selected random individual function:", self.evoa_settings.decay_functions[self.evoa_settings.random_ind_decay_function])
+        print("Selected mutation range function:", self.evoa_settings.decay_functions[self.evoa_settings.mutation_decay_function])
         print("")
-        print("Configuration sheet:", self.settings.config_name)
-        print("Starting parameters:", self.settings.starting_parameters)
+        print("Configuration sheet:", self.evoa_settings.config_name)
+        print("Starting parameters:", self.evoa_settings.starting_parameters)
         print("")
 
-        if self.settings.starting_parameters is None:
-            print("Indicators tuned: -> RSI:", self.settings.rsi_count)
-            print("                  -> SMA:", self.settings.sma_count)
-            print("                  -> EMA:", self.settings.ema_count)
-            print("                  -> LWMA:", self.settings.lwma_count)
-            print("                  -> CCI:", self.settings.cci_count)
-            print("                  -> EVM:", self.settings.eom_count)
+        if self.evoa_settings.starting_parameters is None:
+            print("Indicators tuned: -> RSI:", self.individual_settings.rsi_count)
+            print("                  -> SMA:", self.individual_settings.sma_count)
+            print("                  -> EMA:", self.individual_settings.ema_count)
+            print("                  -> LWMA:", self.individual_settings.lwma_count)
+            print("                  -> CCI:", self.individual_settings.cci_count)
+            print("                  -> EVM:", self.individual_settings.eom_count)
             print("                  -> OC gradient:", 1)
 
         else:
-            print("Indicators tuned: -> RSI:", self.settings.starting_parameters["indicators_count"]["rsi"])
-            print("                  -> SMA:", self.settings.starting_parameters["indicators_count"]["sma"])
-            print("                  -> EMA:", self.settings.starting_parameters["indicators_count"]["ema"])
-            print("                  -> LWMA:", self.settings.starting_parameters["indicators_count"]["lwma"])
-            print("                  -> CCI:", self.settings.starting_parameters["indicators_count"]["cci"])
-            print("                  -> EVM:", self.settings.starting_parameters["indicators_count"]["eom"])
+            print("Indicators tuned: -> RSI:", self.evoa_settings.starting_parameters["indicators_count"]["rsi"])
+            print("                  -> SMA:", self.evoa_settings.starting_parameters["indicators_count"]["sma"])
+            print("                  -> EMA:", self.evoa_settings.starting_parameters["indicators_count"]["ema"])
+            print("                  -> LWMA:", self.evoa_settings.starting_parameters["indicators_count"]["lwma"])
+            print("                  -> CCI:", self.evoa_settings.starting_parameters["indicators_count"]["cci"])
+            print("                  -> EVM:", self.evoa_settings.starting_parameters["indicators_count"]["eom"])
             print("                  -> OC gradient:", 1)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     def new_slice_info(self, data_slice, gen, cycle_count):
-        print("\n=================================", self.ticker, " - Generation", gen, "/", self.settings.nb_of_generations + 1,
+        print("\n================================= Generation", gen, "/", self.evoa_settings.nb_of_generations + 1,
               "=================================")
         print("Data slice analysed:", data_slice.start_date, "-->", data_slice.stop_date)
         print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index)

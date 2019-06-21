@@ -15,7 +15,7 @@ Victor Guillet
 
 from PhyTrade.Economic_model.Big_Data import BIGDATA
 # ---> Import model settings
-from SETTINGS import SETTINGS
+from Settings.Model_settings import Model_settings
 
 # ---> Import indicators
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.RSI_gen import RSI
@@ -36,7 +36,6 @@ from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
 from PhyTrade.Tools.SPLINE_tools import SPLINE
 
 import numpy as np
-import sys
 
 
 class Prototype_5:
@@ -50,7 +49,7 @@ class Prototype_5:
 
         # ========================= ANALYSIS INITIALISATION ==============================
         # --> Fetch model settings
-        settings = SETTINGS()
+        settings = Model_settings()
         settings.gen_model_settings()
 
         # --> Initiate records

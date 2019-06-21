@@ -6,11 +6,12 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
-from SETTINGS import SETTINGS
+from Settings.Trade_sim import Trade_sim
+from Settings.Metalabeling_settings import Metalabeling_settings
+
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
-import sys
 
 
 class RUN_multi_trade_sim:
@@ -18,60 +19,65 @@ class RUN_multi_trade_sim:
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch multi_trade_sim settings
-        settings = SETTINGS()
-        settings.gen_multi_trade_sim()
+        multi_trade_settings = Trade_sim()
+        multi_trade_settings.gen_multi_trade_sim()
 
         # --> Simulation parameters
-        eval_name = settings.simulation_name
+        eval_name = multi_trade_settings.simulation_name
 
-        tickers = settings.tickers
-        parameter_sets = settings.parameter_sets
+        tickers = multi_trade_settings.tickers
+        parameter_sets = multi_trade_settings.parameter_sets
 
-        start_date = settings.start_date
-        data_slice_size = settings.data_slice_size
-        nb_data_slices = settings.nb_data_slices
+        start_date = multi_trade_settings.start_date
+        data_slice_size = multi_trade_settings.data_slice_size
+        nb_data_slices = multi_trade_settings.nb_data_slices
 
         # --> Print parameters
-        plot_eco_model_results = settings.plot_eco_model_results
-        print_trade_process = settings.print_trade_process
+        plot_eco_model_results = multi_trade_settings.plot_eco_model_results
+        print_trade_process = multi_trade_settings.print_trade_process
 
-        # --> Metalabeling settings
-        self.upper_barrier = settings.upper_barrier
-        self.lower_barrier = settings.lower_barrier
-        self.look_ahead = settings.look_ahead
+        # ---- Fetch Metalabeling settings
+        metalabels_settings = Metalabeling_settings()
+        metalabels_settings.gen_metalabels_settings()
+
+        self.metalabeling_setting = metalabels_settings.metalabeling_setting
+
+        self.upper_barrier = metalabels_settings.upper_barrier
+        self.lower_barrier = metalabels_settings
+        self.look_ahead = metalabels_settings.look_ahead
 
         # --> Investment settings
-        self.investment_settings = settings.investment_settings
-        self.cash_in_settings = settings.cash_in_settings
+        self.investment_settings = multi_trade_settings.investment_settings
+        self.cash_in_settings = multi_trade_settings.cash_in_settings
 
-        self.initial_investment = settings.initial_investment
+        self.initial_investment = multi_trade_settings.initial_investment
 
         # Max --> Min
-        max_investment_per_trade_percent = settings.max_investment_per_trade_percent
-        min_investment_per_trade_percent = settings.min_investment_per_trade_percent
+        max_investment_per_trade_percent = multi_trade_settings.max_investment_per_trade_percent
+        min_investment_per_trade_percent = multi_trade_settings.min_investment_per_trade_percent
 
-        investment_per_trade_decay_function = settings.investment_per_trade_decay_function
+        investment_per_trade_decay_function = multi_trade_settings.investment_per_trade_decay_function
 
         # --> Stop-loss settings
         # Account
         # Max --> Min
-        max_account_prev_stop_loss = settings.max_account_prev_stop_loss
-        min_account_prev_stop_loss = settings.min_account_prev_stop_loss
+        max_account_prev_stop_loss = multi_trade_settings.max_account_prev_stop_loss
+        min_account_prev_stop_loss = multi_trade_settings.min_account_prev_stop_loss
 
-        account_prev_stop_loss_decay_function = settings.account_prev_stop_loss_decay_function
+        account_prev_stop_loss_decay_function = multi_trade_settings.account_prev_stop_loss_decay_function
 
         # Max --> Min
-        max_account_max_stop_loss = settings.max_account_max_stop_loss
-        min_account_max_stop_loss = settings.min_account_max_stop_loss
+        max_account_max_stop_loss = multi_trade_settings.max_account_max_stop_loss
+        min_account_max_stop_loss = multi_trade_settings.min_account_max_stop_loss
 
-        account_max_stop_loss_decay_function = settings.account_max_stop_loss_decay_function
+        account_max_stop_loss_decay_function = multi_trade_settings.account_max_stop_loss_decay_function
 
         # Ticker
         # Max --> Min
-        max_ticker_prev_stop_loss = settings.max_ticker_prev_stop_loss
-        min_ticker_prev_stop_loss = settings.min_ticker_prev_stop_loss
+        max_ticker_prev_stop_loss = multi_trade_settings.max_ticker_prev_stop_loss
+        min_ticker_prev_stop_loss = multi_trade_settings.min_ticker_prev_stop_loss
 
-        ticker_prev_stop_loss_decay_function = settings.ticker_prev_stop_loss_decay_function
+        ticker_prev_stop_loss_decay_function = multi_trade_settings.ticker_prev_stop_loss_decay_function
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Initiate run parameters
@@ -291,4 +297,3 @@ class Trade_simulation_results_gen:
 
         plt.show()
         return
-

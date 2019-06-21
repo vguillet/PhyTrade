@@ -5,7 +5,7 @@ Input that still require manual input:
     - Simple investment settings
     - Investment settings
 """
-from SETTINGS import SETTINGS
+from Settings.Tradebot_settings import Tradebot_settings
 from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
 
 
@@ -50,7 +50,7 @@ class Tradebot_v5:
         # ============================ TRADE_BOT ATTRIBUTES ============================
         # ~~~~~~~~~~~~~~~~ Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch tradebot settings
-        settings = SETTINGS()
+        settings = Tradebot_settings()
         settings.gen_tradebot_settings()
 
         # --> Simple investment settings

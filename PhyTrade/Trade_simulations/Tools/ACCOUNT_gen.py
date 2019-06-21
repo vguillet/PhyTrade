@@ -1,7 +1,7 @@
 """
 Contains information about a Tradebot's account, along with it's transaction history etc...
 """
-from SETTINGS import SETTINGS
+from Settings.Tradebot_settings import Tradebot_settings
 from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
 
 
@@ -27,7 +27,7 @@ class ACCOUNT:
         :param initial_simple_investment_content: Initial orders in the account (as order class instances)
         """
 
-        settings = SETTINGS()
+        settings = Tradebot_settings()
         settings.gen_tradebot_settings()
         # ---- Account initialisation
         self.current_funds = initial_funds

@@ -2,7 +2,9 @@
 This script contains the EVOA_optimiser class, which is a refactored and optimised version of EVO_algo3 tailored for multiprocessing
 """
 
-from SETTINGS import SETTINGS
+from Settings.EVOA_settings import EVOA_settings
+from Settings.Metalabeling_settings import Metalabeling_settings
+
 from PhyTrade.ML_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
 
 from PhyTrade.ML_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
@@ -18,30 +20,34 @@ class EVOA_optimiser:
     def __init__(self, ticker="AAPL"):
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
-        settings = SETTINGS()
-        settings.gen_evoa_settings()
+        evoa_settings = EVOA_settings()
+        evoa_settings.gen_evoa_settings()
+
+        metalabeling_settings = Metalabeling_settings()
+        metalabeling_settings.gen_metalabels_settings()
 
         prints = EVOA_prints(ticker, 4)
 
         # --> Disable all prints/plots in case of multiprocessing
-        if settings.multiprocessing:
-            settings.print_evoa_parameters_per_gen = False
-            settings.print_evaluation_status = False
-            settings.print_trade_process = False
+        if evoa_settings.multiprocessing:
+            evoa_settings.print_evoa_parameters_per_gen = False
+            evoa_settings.print_evaluation_status = False
+            evoa_settings.print_trade_process = False
 
-            settings.plot_eco_model_results = False
-            settings.plot_best_individual_eco_model_results = False
+            evoa_settings.plot_eco_model_results = False
+            evoa_settings.plot_best_individual_eco_model_results = False
 
         # --> Initialise data slice for gen and metalabels
         self.data_slice = data_slice(ticker,
-                                     settings.data_slice_start_date,
-                                     settings.data_slice_size,
-                                     settings.data_slice_shift_per_gen,
-                                     end_date=settings.end_date,
-                                     data_looper=settings.data_looper)
+                                     evoa_settings.data_slice_start_date,
+                                     evoa_settings.data_slice_size,
+                                     evoa_settings.data_slice_shift_per_gen,
+                                     end_date=evoa_settings.end_date,
+                                     data_looper=evoa_settings.data_looper)
 
-        self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                             settings.metalabeling_setting)
+        self.data_slice.gen_slice_metalabels(metalabeling_settings.upper_barrier, metalabeling_settings.lower_barrier,
+                                             metalabeling_settings.look_ahead,
+                                             metalabeling_settings.metalabeling_setting)
 
         # --> Initialise tools and counters
         self.evoa_tools = EVOA_tools()
@@ -58,11 +64,11 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap()
-        progress_bar = Progress_bar(settings.nb_of_generations, 50, label=ticker)
+        progress_bar = Progress_bar(evoa_settings.nb_of_generations, 50, label=ticker)
 
         # ------------------ Initialise population
-        if settings.starting_parameters is None:
-            self.population = self.evoa_tools.gen_initial_population(ticker, settings.population_size)
+        if evoa_settings.starting_parameters is None:
+            self.population = self.evoa_tools.gen_initial_population(ticker, evoa_settings.population_size)
         else:
             self.population = self.evoa_tools.generate_offsprings(ticker,
                                                                   1,
@@ -70,26 +76,27 @@ class EVOA_optimiser:
                                                                   1,
                                                                   1,
                                                                   0,
-                                                                  settings.population_size,
-                                                                  [Individual(parameter_set=settings.starting_parameters)],
-                                                                  settings.nb_random_ind,
-                                                                  mutation_rate=settings.mutation_rate)
+                                                                  evoa_settings.population_size,
+                                                                  [Individual(parameter_set=evoa_settings.starting_parameters)],
+                                                                  evoa_settings.nb_random_ind,
+                                                                  mutation_rate=evoa_settings.mutation_rate)
         prints.init_pop_success_msg()
 
         # ------------------ Run for # nb of generations:
-        for gen in range(settings.nb_of_generations):
+        for gen in range(evoa_settings.nb_of_generations):
             generation_start_time = time.time()
 
-            if gen == settings.nb_of_generations-settings.exploitation_phase_len-1:
+            if gen == evoa_settings.nb_of_generations-evoa_settings.exploitation_phase_len-1:
                 prints.exploration_phase_complete_msg()
 
             if gen != 0:
                 # ------------------ Define the data slice to be used by the generation
                 self.data_slice_cycle_count += 1
-                if self.data_slice_cycle_count > settings.data_slice_cycle_count:
+                if self.data_slice_cycle_count > evoa_settings.data_slice_cycle_count:
                     self.data_slice.get_shifted_data_slice()
-                    self.data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                                         settings.metalabeling_setting)
+                    self.data_slice.gen_slice_metalabels(metalabeling_settings.upper_barrier, metalabeling_settings.lower_barrier,
+                                                         metalabeling_settings.look_ahead,
+                                                         metalabeling_settings.metalabeling_setting)
                     self.data_slice_cycle_count = 1
 
                     if self.data_slice.end_of_dataset is True:
@@ -100,28 +107,28 @@ class EVOA_optimiser:
                 # ------------------ Determine new generation GA parameters
                 prints.det_new_generation_param_msg()
                 self.nb_parents, self.nb_random_ind = \
-                    self.evoa_tools.determine_evolving_gen_parameters(settings, gen, self.data_slice_cycle_count)
+                    self.evoa_tools.determine_evolving_gen_parameters(evoa_settings, gen, self.data_slice_cycle_count)
 
                 if sum(self.fitness_evaluation) != 0:
                     # ------------------ Select individuals from previous generation
                     prints.select_ind_msg()
                     self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
                                                                           self.population,
-                                                                          selection_method=settings.parents_selection_method,
+                                                                          selection_method=evoa_settings.parents_selection_method,
                                                                           nb_parents=self.nb_parents)
 
                     # ------------------ Generate offsprings with mutations
                     prints.gen_offsprings_msg()
                     self.new_population = self.evoa_tools.generate_offsprings(ticker,
                                                                               gen,
-                                                                              settings.nb_of_generations,
+                                                                              evoa_settings.nb_of_generations,
                                                                               self.data_slice_cycle_count,
-                                                                              settings.data_slice_cycle_count,
-                                                                              settings.mutation_decay_function,
-                                                                              settings.population_size,
+                                                                              evoa_settings.data_slice_cycle_count,
+                                                                              evoa_settings.mutation_decay_function,
+                                                                              evoa_settings.population_size,
                                                                               self.parents,
                                                                               self.nb_random_ind,
-                                                                              mutation_rate=settings.mutation_rate)
+                                                                              mutation_rate=evoa_settings.mutation_rate)
                     prints.darwin_in_charge_msg()
                     self.population = self.new_population
 
@@ -130,16 +137,16 @@ class EVOA_optimiser:
             self.fitness_evaluation, _, self.net_worth = \
                 self.evoa_tools.evaluate_population(self.population,
                                                     self.data_slice,
-                                                    evaluation_setting=settings.evaluation_method,
-                                                    max_worker_processes=settings.max_worker_processes,
-                                                    multiprocessing=settings.multiprocessing,
-                                                    print_evaluation_status=settings.print_evaluation_status,
-                                                    plot_eco_model_results=settings.plot_eco_model_results)
+                                                    evaluation_setting=evoa_settings.evaluation_method,
+                                                    max_worker_processes=evoa_settings.max_worker_processes,
+                                                    multiprocessing=evoa_settings.multiprocessing,
+                                                    print_evaluation_status=evoa_settings.print_evaluation_status,
+                                                    plot_eco_model_results=evoa_settings.plot_eco_model_results)
 
-            if settings.evaluation_method == 1 and sum(self.fitness_evaluation) == 0:
+            if evoa_settings.evaluation_method == 1 and sum(self.fitness_evaluation) == 0:
                 prints.invalid_slice_msg()
                 self.results.invalid_slice_count += 1
-                self.data_slice_cycle_count = settings.data_slice_cycle_count
+                self.data_slice_cycle_count = evoa_settings.data_slice_cycle_count
 
             else:
                 # ------------------ Collect generation data
@@ -165,7 +172,7 @@ class EVOA_optimiser:
 
                 progress_bar.update_progress_bar(gen)
 
-                if settings.plot_best_individual_eco_model_results is True:
+                if evoa_settings.plot_best_individual_eco_model_results is True:
                     self.population[self.fitness_evaluation.index(max(self.fitness_evaluation))].gen_economic_model(
                         self.data_slice, plot_eco_model_results=True)
 
@@ -183,7 +190,7 @@ class EVOA_optimiser:
 
         self.best_individual = self.evoa_tools.select_from_population(self.fitness_evaluation,
                                                                       self.population,
-                                                                      selection_method=settings.parents_selection_method,
+                                                                      selection_method=evoa_settings.parents_selection_method,
                                                                       nb_parents=1)[0]
 
         self.results.individual = self.best_individual
