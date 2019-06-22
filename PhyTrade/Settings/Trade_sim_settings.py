@@ -9,7 +9,7 @@ class Trade_sim_settings:
         self.nb_data_slices = 100
 
         # ___________________________ Print/plot parameters ______________________
-        self.plot_eco_model_results = False
+        self.plot_eco_model_results = True
         self.print_trade_process = False
 
         # ___________________________ Metalabels parameters ______________________

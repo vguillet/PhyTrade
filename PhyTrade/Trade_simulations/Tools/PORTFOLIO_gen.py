@@ -5,7 +5,7 @@ from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 
 class PORTFOLIO_gen:
     def __init__(self, tickers, parameter_sets,
-                 start_date, data_slice_size,
+                 start_date, end_date, data_slice_size,
                  plot_eco_model_results=False):
 
         self.plot_eco_model_results = plot_eco_model_results
@@ -21,7 +21,7 @@ class PORTFOLIO_gen:
 
         # ---- Generate initial data slices
         for ticker in self.content.keys():
-            self.content[ticker]["Data_slice"] = data_slice(ticker, start_date, data_slice_size, 0)
+            self.content[ticker]["Data_slice"] = data_slice(ticker, start_date, data_slice_size, 0, end_date=end_date)
 
         # ---- Generate initial economic models
         print("-- Generating initial economic models --")

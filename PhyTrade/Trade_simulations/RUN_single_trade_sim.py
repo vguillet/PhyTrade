@@ -27,6 +27,7 @@ class RUN_single_trade_sim:
         parameter_set = settings.market_settings.parameter_set
 
         start_date = settings.market_settings.start_date
+        end_date = settings.market_settings.end_date
         data_slice_size = settings.market_settings.data_slice_size
 
         # --> Simulation parameters
@@ -99,7 +100,7 @@ class RUN_single_trade_sim:
 
         # ---- Generate data slice
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
-                                     data_looper=False)
+                                     end_date=end_date, data_looper=False)
         self.data_slice.gen_slice_metalabels(self.upper_barrier, self.lower_barrier, self.look_ahead,
                                              self.metalabeling_setting)
 
@@ -246,7 +247,7 @@ class Trade_simulation_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\RUN_trade_sim_results".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\RUN_trade_sim_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")

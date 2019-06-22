@@ -17,16 +17,16 @@ Number of data points processed: 24
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 1056.2717019867132
+Net worth achieved: 1076.626927086491
 
 ---> Fitness: 
-Fitness achieved: 58.333333333333336
+Fitness achieved: 54.166666666666664
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     0    0
-Hold     5    13    5
-Buy      0     0    1
+Sell     0     0    1
+Hold     5    12    4
+Buy      0     1    1
 
 -----------> Benchmark Confusion tables: 
 
@@ -39,62 +39,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         0
-Non-Sell     5        19
+Sell         0         1
+Non-Sell     5        18
 
 TPR = 0.0
-TNR = 1.0
-PPV = inf
-NPV = 0.792
+TNR = 0.947
+PPV = 0.0
+NPV = 0.783
 FNR = 1.0
-FPR = 0.0
-FDR = inf
-FOR = 0.208
-ACC = 0.792
+FPR = 0.053
+FDR = 1.0
+FOR = 0.217
+ACC = 0.75
 F1 = 0.0
-MCC = inf
-BM = 0.0
-MK = inf
+MCC = -0.107
+BM = -0.053
+MK = -0.217
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        1        0
-Non-Buy    5       18
+Buy        1        1
+Non-Buy    5       17
 
 TPR = 0.167
-TNR = 1.0
-PPV = 1.0
-NPV = 0.783
+TNR = 0.944
+PPV = 0.5
+NPV = 0.773
 FNR = 0.833
-FPR = 0.0
-FDR = 0.0
-FOR = 0.217
-ACC = 0.792
-F1 = 0.286
-MCC = 0.361
-BM = 0.167
-MK = 0.783
+FPR = 0.056
+FDR = 0.5
+FOR = 0.227
+ACC = 0.75
+F1 = 0.25
+MCC = 0.174
+BM = 0.111
+MK = 0.273
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold        13        10
-Non-Hold     0         1
+Hold        12         9
+Non-Hold     1         2
 
-TPR = 1.0
-TNR = 0.091
-PPV = 0.565
-NPV = 1.0
-FNR = 0.0
-FPR = 0.909
-FDR = 0.435
-FOR = 0.0
+TPR = 0.923
+TNR = 0.182
+PPV = 0.571
+NPV = 0.667
+FNR = 0.077
+FPR = 0.818
+FDR = 0.429
+FOR = 0.333
 ACC = 0.583
-F1 = 0.722
-MCC = 0.227
-BM = 0.091
-MK = 0.565
+F1 = 0.706
+MCC = 0.158
+BM = 0.105
+MK = 0.238
 
