@@ -221,6 +221,7 @@ class SPLINE:
         freeze_trade = False
         for i in range(len(spline)):
             if spline[i] < upper_threshold[i]:
+                max_prev = 1
                 freeze_trade = False
 
             if spline[i] > (upper_threshold[i] + (buffer * spline_buffer[i])) and freeze_trade is False or spline[i] > max_prev:
@@ -241,6 +242,7 @@ class SPLINE:
         freeze_trade = False
         for i in range(len(spline)):
             if spline[i] > lower_threshold[i]:
+                min_prev = -1
                 freeze_trade = False
 
             if spline[i] < (lower_threshold[i] - (buffer * spline_buffer[i])) and freeze_trade is False or spline[i] < min_prev:
