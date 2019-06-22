@@ -127,8 +127,11 @@ class RUN_multi_trade_sim:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ TRADING SIMULATION ===============================
         # ---- Generate economic model and perform trade run for all data slices
-        for i in range(nb_data_slices-1):
-            print("================== Data slice", i+1, "==================")
+        data_slice_count = 0
+        while self.ref_data_slice.end_of_dataset is False:
+            data_slice_count += 1
+
+            print("================== Data slice", data_slice_count+1, "==================")
             print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.stop_date)
             # --> Perform trade run
             self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
@@ -173,28 +176,26 @@ class RUN_multi_trade_sim:
 
             print("--------------------------------------------------")
 
-            # ---- Calc next data slice parameters
+            # ---- Calc next data slice parameters and stop simulation if end date reached
             self.ref_data_slice.get_next_data_slice()
-            if self.ref_data_slice.end_of_dataset is True:
-                break
 
             # --> Throttle values
             # Account stop-losses
-            self.current_account_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+            self.current_account_prev_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
                                                                               max_account_prev_stop_loss, min_account_prev_stop_loss,
                                                                               decay_function=account_prev_stop_loss_decay_function), 3)
 
-            self.current_account_max_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+            self.current_account_max_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
                                                                              max_account_max_stop_loss, min_account_max_stop_loss,
                                                                              decay_function=account_max_stop_loss_decay_function), 3)
 
             # Ticker stop-losses
-            self.current_ticker_prev_stop_loss = round(EVOA_tools().throttle(i, self.nb_data_slices,
+            self.current_ticker_prev_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
                                                                              max_ticker_prev_stop_loss, min_ticker_prev_stop_loss,
                                                                              decay_function=ticker_prev_stop_loss_decay_function), 3)
 
             # Max investment per trade
-            self.current_max_investment_per_trade = round(EVOA_tools().throttle(i, self.nb_data_slices,
+            self.current_max_investment_per_trade = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
                                                                                 max_investment_per_trade_percent,
                                                                                 min_investment_per_trade_percent,
                                                                                 decay_function=investment_per_trade_decay_function), 3)

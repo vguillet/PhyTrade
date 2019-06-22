@@ -2,30 +2,34 @@ import json
 
 
 class Trade_sim_settings:
+    # ___________________________ Simulation parameters ______________________
+    simulation_name = "1"
+    nb_data_slices = 100
+
+    # ___________________________ Print/plot parameters ______________________
+    plot_eco_model_results = True
+    print_trade_process = False
+
+    # ___________________________ Investment settings ________________________
+    investment_settings = 3
+    cash_in_settings = 2
+
+    initial_investment = 1000
+
+    # Max --> Min
+    max_investment_per_trade_percent = 0.1
+    min_investment_per_trade_percent = 0.000001
+
+    investment_per_trade_decay_function = 1
+
     # =============================== SINGLE TRADE SIM SETTINGS ===================
     def gen_single_trade_sim(self):
-        # ___________________________ Simulation parameters ______________________
-        self.simulation_name = "1"
-        self.nb_data_slices = 100
-
-        # ___________________________ Print/plot parameters ______________________
-        self.plot_eco_model_results = True
-        self.print_trade_process = False
 
         # ___________________________ Metalabels parameters ______________________
         self.run_metalabels = False     # Can be switched off for performance increase
 
         self.m_investment_settings = 1
         self.m_cash_in_settings = 0
-
-        # ___________________________ Investment settings ________________________
-        self.investment_settings = 3
-        self.cash_in_settings = 2
-
-        self.max_investment_per_trade_percent = 0.3
-        self.min_investment_per_trade_percent = 0.01
-
-        self.investment_per_trade_decay_function = 1
 
         # ___________________________ Stop-loss settings  ________________________
         # Max --> Min
@@ -42,26 +46,6 @@ class Trade_sim_settings:
 
     # =============================== MULTI TRADE SIM SETTINGS ====================
     def gen_multi_trade_sim(self):
-        # ___________________________ Simulation parameters ______________________
-        self.simulation_name = "1"
-        self.nb_data_slices = 50
-
-        # ___________________________ Print/plot parameters ______________________
-        self.plot_eco_model_results = True
-        self.print_trade_process = False
-
-        # ___________________________ Investment settings ________________________
-        self.investment_settings = 3
-        self.cash_in_settings = 2
-
-        self.initial_investment = 1000
-
-        # Max --> Min
-        self.max_investment_per_trade_percent = 0.1
-        self.min_investment_per_trade_percent = 0.000001
-
-        self.investment_per_trade_decay_function = 1
-
         # ___________________________ Stop-loss settings  ________________________
         # Account
         # Max --> Min
