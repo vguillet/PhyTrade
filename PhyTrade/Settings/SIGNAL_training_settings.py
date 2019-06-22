@@ -1,3 +1,4 @@
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
 import multiprocessing
 
 
@@ -51,5 +52,4 @@ class Signal_training_settings:
         # ___________________________ Generation 0 parameters ____________________
         # -- Starting parameters
         # --> Set to None if random initial population wanted
-        # self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_4_AAPL.json".replace('\\', '/')))
         self.starting_parameters = None

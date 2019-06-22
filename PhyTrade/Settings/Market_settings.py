@@ -1,4 +1,4 @@
-import json
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
 
 
 class Market_settings:
@@ -7,22 +7,12 @@ class Market_settings:
         self.tickers = ["AAPL", "INTC", "NVDA", "AMZN"]
         self.ticker = "AAPL"
 
-        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\EVOA_results\Parameter_sets\Run_6_AAPL.json".replace('\\', '/')))
+        self.parameter_set = fetch_parameter_set(self.ticker, 6)
         # self.parameter_set = None
 
         self.parameter_sets = []
-        # self.parameter_sets.append(json.load(open(
-        #     r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_AAPL.json".replace(
-        #         '\\', '/'))))
-        # self.parameter_sets.append(json.load(open(
-        #     r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_NVDA.json".replace(
-        #         '\\', '/'))))
-        # self.parameter_sets.append(json.load(open(
-        #     r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_INTC.json".replace(
-        #         '\\', '/'))))
-        # self.parameter_sets.append(json.load(open(
-        #     r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_AMZN.json".replace(
-        #         '\\', '/'))))
+        for ticker in self.tickers:
+            self.parameter_sets.append(fetch_parameter_set(ticker, 6))
 
         self.price_selection = "Open"
         # ---- Date settings
