@@ -1,17 +1,15 @@
 import multiprocessing
 
 
-class SIGNAL_training_settings:
+class Signal_training_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.multiprocessing = False
-        self.max_process_count = multiprocessing.cpu_count() - 1
-
         self.config_name = "Run_6"
 
-        self.tickers = ["AAPL", "INTC", "NVDA", "AMZN"]
-        # self.tickers = ["AAPL"]
+        # ---- Multiprocessing settings
+        self.multiprocessing = False
+        self.max_process_count = multiprocessing.cpu_count() - 1
 
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
@@ -21,6 +19,13 @@ class SIGNAL_training_settings:
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
+        # ---- Data slice parameters
+        self.data_slice_shift_per_gen = 12
+        self.data_slice_cycle_count = 5
+
+        self.data_looper = False
+
+        # ---- Population parameters
         self.population_size = 30
         self.nb_of_generations = 20
 
@@ -28,27 +33,10 @@ class SIGNAL_training_settings:
         self.nb_parents = 10
         self.nb_random_ind = 3
 
+        # -- Generations settings
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        # TODO: Add slize size auto scaling according to generation count/cycle count and start/end date
-        self.start_date = "2017-01-03"
-        self.end_date = "2019-01-02"
-        # self.end_date = None
-
-        self.data_slice_size = 24
-        self.data_slice_shift_per_gen = 12
-        self.data_slice_cycle_count = 5
-
-        self.data_looper = False
-
-        # ___________________________ Generation 0 parameters ____________________
-        # -- Starting parameters
-        # --> Set to None if random initial population wanted
-        # self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_4_AAPL.json".replace('\\', '/')))
-        self.starting_parameters = None
-
-        # -- Generations settings
         self.evaluation_methods = ["Profit", "MetaLabels", "MetaLabels bs", "MetaLabels avg", "Buy count", "Sell count", "Transaction count"]
         self.evaluation_method = 0
 
@@ -59,3 +47,9 @@ class SIGNAL_training_settings:
 
         self.parents_selection_methods = ["Elitic"]
         self.parents_selection_method = 0
+
+        # ___________________________ Generation 0 parameters ____________________
+        # -- Starting parameters
+        # --> Set to None if random initial population wanted
+        # self.starting_parameters = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_4_AAPL.json".replace('\\', '/')))
+        self.starting_parameters = None

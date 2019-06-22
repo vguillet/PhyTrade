@@ -6,7 +6,7 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
-from PhyTrade.Settings.Trade_sim import Trade_sim
+from PhyTrade.Settings.Trade_sim_settings import Trade_sim_settings
 from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
 
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
@@ -19,7 +19,7 @@ class RUN_multi_trade_sim:
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch multi_trade_sim settings
-        multi_trade_settings = Trade_sim()
+        multi_trade_settings = Trade_sim_settings()
         multi_trade_settings.gen_multi_trade_sim()
 
         # --> Simulation parameters

@@ -2,7 +2,8 @@
 The Dev_menu script is used to initiate all economic analysis, trading simulations,
 and economic model parameters evaluations and optimisations.
 """
-from PhyTrade.Settings.Signal_training_settings import SIGNAL_training_settings
+from PhyTrade.Settings.SETTINGS import SETTINGS
+
 from PhyTrade.Signal_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
 from PhyTrade.Economic_model.RUN_model import RUN_model
 from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
@@ -23,25 +24,24 @@ run = True
 while run is True:
     selection = int(input("Enter selection:\n"))
     # selection = 1
+    settings = SETTINGS()
     print("\n")
     # ============================ EVOLUTION-OPTIMISER =============================
     if selection == 1:
         # --> Generate evoa settings
-        settings = SIGNAL_training_settings()
-        settings.gen_evoa_settings()
+        settings.market_settings.gen_market_settings()
 
-        def optimise(settings, ticker):
-            try:
-                # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
-                EVOA_optimiser(settings, ticker)
-            except:
-                print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
-
-        ticker = settings.tickers[0]
-        settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+        ticker = settings.market_settings.tickers[0]
         EVO_optimisation = EVOA_optimiser(settings, ticker)
 
-        # for ticker in settings.tickers:
+        # def optimise(settings, ticker):
+        #     try:
+        #         # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+        #         EVOA_optimiser(settings, ticker)
+        #     except:
+        #         print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
+        #
+        # for ticker in market_settings.tickers:
         #     optimise(settings, ticker)
 
     # ============================ ECONOMIC ANALYSIS ===============================

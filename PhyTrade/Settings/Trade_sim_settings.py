@@ -1,17 +1,11 @@
 import json
 
 
-class Trade_sim:
+class Trade_sim_settings:
     # =============================== SINGLE TRADE SIM SETTINGS ===================
     def gen_single_trade_sim(self):
         # ___________________________ Simulation parameters ______________________
         self.simulation_name = "1"
-
-        self.ticker = "INTC"
-        self.parameter_set = json.load(open(r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_INTC.json".replace('\\', '/')))
-
-        self.start_date = "2019-01-03"
-        self.data_slice_size = 24
         self.nb_data_slices = 100
 
         # ___________________________ Print/plot parameters ______________________
@@ -50,26 +44,6 @@ class Trade_sim:
     def gen_multi_trade_sim(self):
         # ___________________________ Simulation parameters ______________________
         self.simulation_name = "1"
-
-        self.parameter_sets = []
-        self.parameter_sets.append(json.load(open(
-            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_AAPL.json".replace(
-                '\\', '/'))))
-        self.parameter_sets.append(json.load(open(
-            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_NVDA.json".replace(
-                '\\', '/'))))
-        self.parameter_sets.append(json.load(open(
-            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_INTC.json".replace(
-                '\\', '/'))))
-        self.parameter_sets.append(json.load(open(
-            r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\EVOA_results\Parameter_sets\Run_5_AMZN.json".replace(
-                '\\', '/'))))
-
-        self.tickers = ["AAPL", "NVDA", "INTC", "AMZN"]
-        # self.tickers = ["AAPL"]
-
-        self.start_date = "2019-01-02"
-        self.data_slice_size = 24
         self.nb_data_slices = 50
 
         # ___________________________ Print/plot parameters ______________________

@@ -1,8 +1,7 @@
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
-from PhyTrade.Settings.Model_settings import Model_settings
-from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
+from PhyTrade.Settings.SETTINGS import SETTINGS
 
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
@@ -12,28 +11,30 @@ from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool im
 class RUN_model:
     def __init__(self):
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        settings = SETTINGS()
+        
+        # ---- Fetch market settings
+        settings.market_settings.gen_market_settings()
+
+        ticker = settings.market_settings.ticker
+        parameter_set = settings.market_settings.parameter_set
+
+        start_date = settings.market_settings.start_date
+        data_slice_size = settings.market_settings.data_slice_size
+
         # ---- Fetch run_model settings
-        model_settings = Model_settings()
-        model_settings.gen_run_model_settings()
+        settings.model_settings.gen_run_model_settings()
 
-        print_trade_process = model_settings.print_trade_process
-
-        eval_name = model_settings.evaluation_name
-        ticker = model_settings.ticker
-        parameter_set = model_settings.parameter_set
-
-        start_date = model_settings.start_date
-        data_slice_size = model_settings.data_slice_size
+        eval_name = settings.model_settings.evaluation_name
+        print_trade_process = settings.model_settings.print_trade_process
 
         # ---- Fetch metalabeling settings
-        metalabels_settings = Metalabeling_settings()
-        metalabels_settings.gen_metalabels_settings()
+        settings.metalabeling_settings.gen_metalabels_settings()
 
-        metalabeling_setting = metalabels_settings.metalabeling_setting
-
-        upper_barrier = metalabels_settings.upper_barrier
-        lower_barrier = metalabels_settings
-        look_ahead = metalabels_settings.look_ahead
+        metalabeling_setting = settings.metalabeling_settings.metalabeling_setting
+        upper_barrier = settings.metalabeling_settings.upper_barrier
+        lower_barrier = settings.metalabeling_settings
+        look_ahead = settings.metalabeling_settings.look_ahead
 
         # ---- Initiate run parameters
         self.ticker = ticker
@@ -97,7 +98,7 @@ class EVAL_parameter_set_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Research\RUN_model_results".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\RUN_model_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")

@@ -7,8 +7,7 @@ Input that still require manual input:
     - Stop-loss settings
 """
 
-from PhyTrade.Settings.Trade_sim import Trade_sim
-from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
+from PhyTrade.Settings.SETTINGS import SETTINGS
 
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
@@ -19,58 +18,58 @@ class RUN_single_trade_sim:
     def __init__(self):
 
         # ~~~~~~~~~~~~~~~~ Dev options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        settings = SETTINGS()
         # ---- Fetch single_trade_sim settings
-        trade_sim_settings = Trade_sim()
-        trade_sim_settings.gen_single_trade_sim()
+        settings.market_settings.gen_market_settings()
+        settings.trade_sim_settings.gen_single_trade_sim()
+
+        ticker = settings.market_settings.ticker
+        parameter_set = settings.market_settings.parameter_set
+
+        start_date = settings.market_settings.start_date
+        data_slice_size = settings.market_settings.data_slice_size
 
         # --> Simulation parameters
-        eval_name = trade_sim_settings.simulation_name
-
-        ticker = trade_sim_settings.ticker
-        parameter_set = trade_sim_settings.parameter_set
-
-        start_date = trade_sim_settings.start_date
-        data_slice_size = trade_sim_settings.data_slice_size
-        nb_data_slices = trade_sim_settings.nb_data_slices
+        eval_name = settings.trade_sim_settings.simulation_name
+        nb_data_slices = settings.trade_sim_settings.nb_data_slices
 
         # --> Print parameters
-        plot_eco_model_results = trade_sim_settings.plot_eco_model_results
-        print_trade_process = trade_sim_settings.print_trade_process
+        plot_eco_model_results = settings.trade_sim_settings.plot_eco_model_results
+        print_trade_process = settings.trade_sim_settings.print_trade_process
 
         # ---- Fetch Metalabeling settings
-        self.run_metalabels = trade_sim_settings.run_metalabels         # Can be switched off for performance increase
+        self.run_metalabels = settings.trade_sim_settings.run_metalabels         # Can be switched off for performance increase
 
-        metalabels_settings = Metalabeling_settings()
-        metalabels_settings.gen_metalabels_settings()
+        settings.metalabeling_settings.gen_metalabels_settings()
 
-        self.metalabeling_setting = metalabels_settings.metalabeling_setting
+        self.metalabeling_setting = settings.metalabeling_settings.metalabeling_setting
 
-        self.upper_barrier = metalabels_settings.upper_barrier
-        self.lower_barrier = metalabels_settings
-        self.look_ahead = metalabels_settings.look_ahead
+        self.upper_barrier = settings.metalabeling_settings.upper_barrier
+        self.lower_barrier = settings.metalabeling_settings
+        self.look_ahead = settings.metalabeling_settings.look_ahead
 
-        self.m_investment_settings = trade_sim_settings.m_investment_settings
-        self.m_cash_in_settings = trade_sim_settings.m_cash_in_settings
+        self.m_investment_settings = settings.trade_sim_settings.m_investment_settings
+        self.m_cash_in_settings = settings.trade_sim_settings.m_cash_in_settings
 
         # --> Investment settings
-        self.investment_settings = trade_sim_settings.investment_settings
-        self.cash_in_settings = trade_sim_settings.cash_in_settings
+        self.investment_settings = settings.trade_sim_settings.investment_settings
+        self.cash_in_settings = settings.trade_sim_settings.cash_in_settings
 
-        max_investment_per_trade_percent = trade_sim_settings.max_investment_per_trade_percent
-        min_investment_per_trade_percent = trade_sim_settings.min_investment_per_trade_percent
+        max_investment_per_trade_percent = settings.trade_sim_settings.max_investment_per_trade_percent
+        min_investment_per_trade_percent = settings.trade_sim_settings.min_investment_per_trade_percent
 
-        investment_per_trade_decay_function = trade_sim_settings.investment_per_trade_decay_function
+        investment_per_trade_decay_function = settings.trade_sim_settings.investment_per_trade_decay_function
 
         # --> Stop-loss settings
-        max_prev_stop_loss = trade_sim_settings.max_prev_stop_loss
-        min_prev_stop_loss = trade_sim_settings.min_prev_stop_loss
+        max_prev_stop_loss = settings.trade_sim_settings.max_prev_stop_loss
+        min_prev_stop_loss = settings.trade_sim_settings.min_prev_stop_loss
 
-        prev_stop_loss_decay_function = trade_sim_settings.prev_stop_loss_decay_function
+        prev_stop_loss_decay_function = settings.trade_sim_settings.prev_stop_loss_decay_function
 
-        max_max_stop_loss = trade_sim_settings.max_max_stop_loss
-        min_max_stop_loss = trade_sim_settings.min_max_stop_loss
+        max_max_stop_loss = settings.trade_sim_settings.max_max_stop_loss
+        min_max_stop_loss = settings.trade_sim_settings.min_max_stop_loss
 
-        max_stop_loss_decay_function = trade_sim_settings.max_stop_loss_decay_function
+        max_stop_loss_decay_function = settings.trade_sim_settings.max_stop_loss_decay_function
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

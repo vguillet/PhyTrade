@@ -56,7 +56,7 @@ class Prototype_5:
         self.big_data = BIGDATA(data_slice)
 
         # ~~~~~~~~~~~~~~~~~~ Tools initialisation
-        self.big_data.spline_multiplication_coef = settings.spline_interpolation_factor
+        self.big_data.spline_multiplication_coef = parameter_dictionary["general_settings"]["spline_interpolation_factor"]
 
         self.oc_tools = OC()
         self.spline_tools = SPLINE(self.big_data)
@@ -70,7 +70,7 @@ class Prototype_5:
                     timeframe=parameter_dictionary["indicator_properties"]["timeframes"]["rsi_"+str(i)],
                     standard_upper_threshold=parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"]["rsi_" + str(i)],
                     standard_lower_threshold=parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"]["rsi_" + str(i)],
-                    buffer_setting=settings.rsi_buffer_setting))
+                    buffer_setting=parameter_dictionary["general_settings"]["rsi_buffer_setting"]))
 
         # --> SMA initialisation
         self.big_data.content["indicators"]["sma"] = []
@@ -133,8 +133,7 @@ class Prototype_5:
             if parameter_dictionary["indicators_count"][indicator_type] != 0:
                 for indicator in self.big_data.content["indicators"][indicator_type]:
                     indicator.get_output(self.big_data,
-                                         include_triggers_in_bb_signal=getattr(settings,
-                                                                               indicator_type + "_include_triggers_in_bb_signal"))
+                                         include_triggers_in_bb_signal=parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"][indicator_type])
 
         # --> Creating splines from indicator signals
         for indicator_type in parameter_dictionary["indicators_count"]:
@@ -165,7 +164,7 @@ class Prototype_5:
 
         # --> Adding signals together
         # Creating signal array
-        self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), data_slice.slice_size*settings.spline_interpolation_factor))
+        self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), data_slice.slice_size*self.big_data.spline_multiplication_coef))
         self.big_data.weights_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), 1))
 
         counter = 0
@@ -201,8 +200,8 @@ class Prototype_5:
                                               standard_upper_threshold=parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"],
                                               standard_lower_threshold=parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"],
                                               bband_timeframe=parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"],
-                                              threshold_setting=settings.threshold_setting,
-                                              buffer_setting=settings.buffer_setting)
+                                              threshold_setting=parameter_dictionary["general_settings"]["threshold_setting"],
+                                              buffer_setting=parameter_dictionary["general_settings"]["buffer_setting"])
 
         # ---> Modulating threshold with SMA 3 value
         # upper_threshold = self.spline_tools.modulate_amplitude_spline(
