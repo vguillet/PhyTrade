@@ -79,9 +79,10 @@ class ACCOUNT:
         self.simple_investment_net_worth.append(self.simple_investment_assets*current_value)
 
     def print_account_status(self, current_value):
-        print("Money =", self.current_funds, "$")
-        print("Share owned=", self.current_assets)
-        print("Total asset value=", self.calc_net_worth(current_value), "$")
+        print("Current funds =", round(self.current_funds), "$")
+        print("Share owned=", round(self.current_assets))
+        print("Total net worth=", round(self.calc_net_worth(current_value)), "$")
+        print("")
 
     def plot_net_worth(self, dates):
         import matplotlib.pyplot as plt

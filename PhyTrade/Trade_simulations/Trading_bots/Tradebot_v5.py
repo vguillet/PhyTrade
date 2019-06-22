@@ -130,11 +130,11 @@ class Tradebot_v5:
         # ~~~~~~~~~~~~~~~~~~ Define the assets sold per trade
         # --> Total asset liquidation
         if cash_in_settings == 0:
-            assets_sold_per_trade = self.account.content[ticker]["Net_worth"]
+            assets_sold_per_trade = self.account.content[ticker]["Net_worth"][-1]
 
         # --> Fixed asset liquidation percentage
         elif cash_in_settings == 1:
-            assets_sold_per_trade = self.account.content[ticker]["Net_worth"] * self.asset_liquidation_percentage
+            assets_sold_per_trade = self.account.content[ticker]["Net_worth"][-1] * self.asset_liquidation_percentage
 
         # --> Asset liquidation percentage per trade pegged to signal strength
         elif cash_in_settings == 2:

@@ -99,12 +99,9 @@ class Tradebot_v4:
             self.account.simple_investment_assets = prev_simple_investment_assets
 
         for i in range(len(self.trade_actions)):
+            print(self.daily_values[i]*self.account.current_assets)
             if self.print_trade_process:
                 print("----------------- Day ", i)
-                print("-------------------> Action", self.trade_actions[i])
-                if self.trade_spline is not None:
-                    print("-------------------> Signal", self.trade_spline[i])
-
             # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value
             self.account.calc_simple_investment_value(self.daily_values[i])
 

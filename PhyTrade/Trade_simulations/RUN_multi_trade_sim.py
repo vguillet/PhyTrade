@@ -106,11 +106,12 @@ class RUN_multi_trade_sim:
         # Ticker stop-losses
         self.current_ticker_prev_stop_loss = max_ticker_prev_stop_loss
 
-        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
-
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
         self.results.net_worth = [self.initial_investment]
+
+        # ---- Initiate data slice
+        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -131,7 +132,7 @@ class RUN_multi_trade_sim:
         while self.ref_data_slice.end_of_dataset is False:
             data_slice_count += 1
 
-            print("================== Data slice", data_slice_count+1, "==================")
+            print("================== Data slice", data_slice_count, "==================\n")
             print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.stop_date)
             # --> Perform trade run
             self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
@@ -160,24 +161,25 @@ class RUN_multi_trade_sim:
             self.results.profit.append(
                 (self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
 
-            # --> Update current parameters
-            self.current_funds = self.portfolio.tradebot.account.current_funds
-            self.current_account_content = self.portfolio.tradebot.account.content
-            self.current_account_simple_investments_content = self.portfolio.tradebot.account.simple_investment_content
-
             # --> Print Data slice results
             print("--------------------------------------------------")
             print("Buy count:", self.portfolio.tradebot.buy_count,
                   "; Sell count:", self.portfolio.tradebot.sell_count,)
             print("Account stop loss count:", self.portfolio.tradebot.account_stop_loss_count,
                   "; Ticker stop loss count:", self.portfolio.tradebot.ticker_stop_loss_count)
-
             self.portfolio.tradebot.account.print_account_status()
-
             print("--------------------------------------------------")
 
             # ---- Calc next data slice parameters and stop simulation if end date reached
             self.ref_data_slice.get_next_data_slice()
+            if self.ref_data_slice.end_of_dataset:
+                break
+
+
+            # --> Update current parameters
+            self.current_funds = self.portfolio.tradebot.account.current_funds
+            self.current_account_content = self.portfolio.tradebot.account.content
+            self.current_account_simple_investments_content = self.portfolio.tradebot.account.simple_investment_content
 
             # --> Throttle values
             # Account stop-losses

@@ -345,13 +345,12 @@ class ACCOUNT:
     # ----------------------------------- Print/plot functions
     def print_account_status(self):
         print("-> ACCOUNT status:")
-        print("Current funds =", self.current_funds, "$")
+        print("Current funds =", round(self.current_funds), "$")
         print("Open orders =")
         for ticker in self.content.keys():
             print(ticker, ":", self.content[ticker]["Open_order_count"])
 
-        print("Total net worth=", self.calc_net_worth(), "$")
-
+        print("Total net worth=", round(self.calc_net_worth()), "$")
         print("")
 
     def plot_net_worth(self, dates):
