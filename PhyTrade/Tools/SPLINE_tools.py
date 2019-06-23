@@ -283,6 +283,10 @@ class SPLINE:
         max_prev = None
         min_prev = None
 
+        back_range = 10
+        if back_range > len(trade_spline):
+            back_range = len(trade_spline)
+
         # Defining indicator trigger for...
         for i in range(big_data.data_slice.slice_size):
             # ...upper bound
@@ -294,7 +298,7 @@ class SPLINE:
                     sell_trigger = 1
                     max_prev = None
 
-            if trade_spline[i] <= max(list(trade_upper_threshold[i-j] for j in range(10))) and sell_trigger == 1:   # Initiate sell trigger
+            if trade_spline[i] <= max(list(trade_upper_threshold[i-j] for j in range(back_range))) and sell_trigger == 1:   # Initiate sell trigger
                 trade_signal[i] = 1
                 max_prev = trade_spline[i]
                 sell_trigger = 2
@@ -312,7 +316,7 @@ class SPLINE:
                     buy_trigger = 1
                     min_prev = None
 
-            if trade_spline[i] >= min(list(trade_lower_threshold[i-j] for j in range(10))) and buy_trigger == 1:    # Initiate sell trigger
+            if trade_spline[i] >= min(list(trade_lower_threshold[i-j] for j in range(back_range))) and buy_trigger == 1:    # Initiate sell trigger
                 trade_signal[i] = -1
                 min_prev = trade_spline[i]
                 buy_trigger = 2

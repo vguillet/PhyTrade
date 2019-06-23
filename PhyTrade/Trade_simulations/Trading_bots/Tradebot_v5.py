@@ -226,7 +226,7 @@ class Tradebot_v5:
             # --> Round according to current stock price
             asset_count = round(investment_per_trade/self.account.content[ticker]["Current_price"], 0)
 
-            if self.account.current_funds != 0:
+            if not self.account.current_funds < self.account.content[ticker]["Current_price"]:
                 self.account.convert_funds_to_assets(ticker, asset_count)
                 self.buy_count += 1
 

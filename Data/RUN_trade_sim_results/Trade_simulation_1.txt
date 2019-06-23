@@ -12,13 +12,13 @@ Model parameters: None
 -----------> Run stats: 
 
 Number of data points processed: 2400
-Buy trigger count: 2
-Sell trigger count: 2
+Buy trigger count: 26
+Sell trigger count: 14
 
-Final net worth: 1839$
-Average profit per gen: 0%
-Max profit achieved: 0%
-Min profit achieved: 0%
+Final net worth: 116901.0$
+Average profit per gen: 0.0%
+Max profit achieved: 0.0%
+Min profit achieved: 0.0%
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
