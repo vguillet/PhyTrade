@@ -171,10 +171,6 @@ class ACCOUNT:
             order = self.content[ticker]["Open_orders"][0]
             order.close_order()
 
-            # --> Record close worth
-            print("-----------------------------------------> order.close_worth", order.close_worth)
-            sell_worth += order.close_worth
-
             # --> Move closed order to order history
             self.content[ticker]["Open_orders"].remove(order)
             self.content[ticker]["Closed_orders"].append(order)
@@ -185,13 +181,16 @@ class ACCOUNT:
 
             # --> Update current parameters
             self.current_asset_worth -= order.close_worth
+
             self.current_order_count -= 1
 
+            # --> Record close worth
+            sell_worth += order.close_worth
             if self.content[ticker]["Open_order_count"] == 0:
                 break
 
         # --> Update funds and ticker net worth
-        self.current_funds = self.current_funds + sell_worth
+        self.current_funds += sell_worth
         self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
 
     def close_all_ticker_order(self, ticker):
@@ -265,7 +264,6 @@ class ACCOUNT:
 
         for order in self.content[ticker]["Open_orders"]:
             net_worth += order.current_worth
-            print(order)
 
         return net_worth
 
