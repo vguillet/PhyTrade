@@ -45,8 +45,8 @@ class PORTFOLIO_gen:
                                                                   plot_eco_model_results=self.plot_eco_model_results)
 
             # --> Update counter
-            self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
             print(ticker, "model generated")
+        self.data_slice_length = self.content[self.tickers[0]]["Data_slice"].slice_size
 
     def perform_trade_run(self,
                           investment_settings=3, cash_in_settings=0,

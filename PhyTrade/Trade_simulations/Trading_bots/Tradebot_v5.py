@@ -213,7 +213,7 @@ class Tradebot_v5:
         # ----- Define hold action
         if trade_action == 0:
             if self.print_trade_process:
-                print("->Hold\n")
+                print("-> Hold\n")
             return
 
         # ----- Define buy action
@@ -238,7 +238,6 @@ class Tradebot_v5:
                 return
 
             else:
-                self.account.record_net_worth()
                 if self.print_trade_process:
                     print("Trade action 'Buy' canceled because insufficient funds\n")
                 return

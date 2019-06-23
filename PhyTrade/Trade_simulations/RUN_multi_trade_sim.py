@@ -108,7 +108,6 @@ class RUN_multi_trade_sim:
 
         # ---- Initiate records
         self.results = Trade_simulation_results_gen(eval_name)
-        self.results.net_worth = [self.initial_investment]
 
         # ---- Initiate data slice
         self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
@@ -154,9 +153,13 @@ class RUN_multi_trade_sim:
             self.results.ticker_stop_loss_count += self.portfolio.tradebot.ticker_stop_loss_count
 
             # --> Record finance
-            self.results.funds += self.portfolio.tradebot.account.funds_history
+            print("----------------------------------------------> prev net worth len", len(self.results.net_worth))
             self.results.net_worth += self.portfolio.tradebot.account.net_worth_history
+            self.results.funds += self.portfolio.tradebot.account.funds_history
             self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
+            print("----------------------------------------------> net worth len", len(self.results.net_worth))
+            print("----------------------------------------------> funds len", len(self.results.funds))
+            print("----------------------------------------------> asset worth len", len(self.results.assets_worth))
 
             self.results.profit.append(
                 (self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
@@ -174,7 +177,6 @@ class RUN_multi_trade_sim:
             self.ref_data_slice.get_next_data_slice()
             if self.ref_data_slice.end_of_dataset:
                 break
-
 
             # --> Update current parameters
             self.current_funds = self.portfolio.tradebot.account.current_funds
@@ -223,13 +225,13 @@ class RUN_multi_trade_sim:
         self.results.nb_data_slices = nb_data_slices
 
         # TODO: Fixed total_datapoint count
-        self.results.total_data_points_processed = data_slice_size*nb_data_slices
-
+        # self.results.total_data_points_processed = data_slice_size*nb_data_slices
+        self.results.total_data_points_processed = abs(self.ref_data_slice.default_start_index-self.ref_data_slice.default_end_index)
         self.results.gen_result_recap_file()
         self.results.plot_results()
 
         print("-- Trade simulation completed --")
-        print("Number of data points processed:", self.results.total_data_points_processed)
+        print("Number of days processed:", self.results.total_data_points_processed)
 
 
 class Trade_simulation_results_gen:
@@ -250,7 +252,7 @@ class Trade_simulation_results_gen:
         self.account_stop_loss_count = 0
         self.ticker_stop_loss_count = 0
 
-        self.net_worth = None
+        self.net_worth = []
         self.profit = []
         self.funds = []
         self.assets_worth = []
