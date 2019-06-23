@@ -7,7 +7,7 @@ class Trade_sim_settings:
     nb_data_slices = 100
 
     # ___________________________ Print/plot parameters ______________________
-    plot_eco_model_results = True
+    plot_eco_model_results = False
     print_trade_process = True
 
     # ___________________________ Investment settings ________________________

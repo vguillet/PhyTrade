@@ -172,8 +172,8 @@ class ACCOUNT:
             order.close_order()
 
             # --> Record close worth
+            print("-----------------------------------------> order.close_worth", order.close_worth)
             sell_worth += order.close_worth
-            self.current_funds += order.close_worth
 
             # --> Move closed order to order history
             self.content[ticker]["Open_orders"].remove(order)
@@ -262,8 +262,10 @@ class ACCOUNT:
         :return: Ticker specific current worth
         """
         net_worth = 0
+
         for order in self.content[ticker]["Open_orders"]:
             net_worth += order.current_worth
+            print(order)
 
         return net_worth
 
