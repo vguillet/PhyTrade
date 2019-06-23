@@ -99,7 +99,6 @@ class Tradebot_v4:
             self.account.simple_investment_assets = prev_simple_investment_assets
 
         for i in range(len(self.trade_actions)):
-            print(self.daily_values[i]*self.account.current_assets)
             if self.print_trade_process:
                 print("----------------- Day ", i)
             # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value

@@ -20,7 +20,7 @@ class Market_settings:
         # ---- Date settings
         # TODO: Add slice size auto scaling according to generation count/cycle count and start/end date
         self.start_date = "2017-01-03"
-        self.end_date = "2017-03-02"
+        self.end_date = "2018-03-02"
         # self.end_date = None
 
         self.data_slice_size = 24

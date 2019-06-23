@@ -103,7 +103,7 @@ class EVOA_optimiser:
 
                 # ------------------ Determine new generation GA parameters
                 prints.det_new_generation_param_msg()
-                self.nb_parents, self.nb_random_ind = \
+                self.nb_parents, self.nb_parents_in_next_gen, self.nb_random_ind = \
                     self.evoa_tools.determine_evolving_gen_parameters(settings.signal_training_settings, gen, self.data_slice_cycle_count)
 
                 if sum(self.fitness_evaluation) != 0:
@@ -123,7 +123,7 @@ class EVOA_optimiser:
                                                                               settings.signal_training_settings.data_slice_cycle_count,
                                                                               settings.signal_training_settings.mutation_decay_function,
                                                                               settings.signal_training_settings.population_size,
-                                                                              self.parents,
+                                                                              self.parents, self.nb_parents_in_next_gen,
                                                                               self.nb_random_ind,
                                                                               mutation_rate=settings.signal_training_settings.mutation_rate)
                     prints.darwin_in_charge_msg()
@@ -153,6 +153,7 @@ class EVOA_optimiser:
 
                 self.results.best_individual_fitness_per_gen.append(max(self.fitness_evaluation))
                 self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation)/len(self.fitness_evaluation))
+                # self.results.avg_fitness_per_gen.append(sum(self.fitness_evaluation[:-self.nb_random_ind])/len(self.fitness_evaluation[:-self.nb_random_ind]))
 
                 self.results.best_individual_net_worth_per_gen.append(max(self.net_worth))
                 self.results.avg_net_worth_per_gen.append(sum(self.net_worth) / len(self.net_worth))

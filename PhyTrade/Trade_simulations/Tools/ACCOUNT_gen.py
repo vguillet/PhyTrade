@@ -207,10 +207,6 @@ class ACCOUNT:
             # --> Record close worth
             self.current_funds += order.close_worth
 
-            # --> Move closed order to order history
-            self.content[ticker]["Open_orders"].remove(order)
-            self.content[ticker]["Closed_orders"].append(order)
-
             # --> Edit counters
             self.content[ticker]["Open_order_count"] -= 1
             self.content[ticker]["Closed_orders_count"] += 1
@@ -218,6 +214,10 @@ class ACCOUNT:
             # --> Update current parameters
             self.current_asset_worth -= order.close_worth
             self.current_order_count -= 1
+
+            # --> Move closed order to order history
+            self.content[ticker]["Closed_orders"].append(order)
+            self.content[ticker]["Open_orders"].remove(order)
 
     # =================================== Account generation functions
     # ----------------------------------- Ticker specific functions
@@ -252,7 +252,7 @@ class ACCOUNT:
         # --> Update current parameters
         self.current_asset_worth += order.current_worth
         self.current_order_count += 1
-        self.calc_ticker_net_worth(ticker)
+        # self.calc_ticker_net_worth(ticker)
 
     def calc_ticker_net_worth(self, ticker):
         """

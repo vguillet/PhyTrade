@@ -22,23 +22,25 @@ class Signal_training_settings:
         # ___________________________ EVO_algo main parameters ___________________
         # ---- Data slice parameters
         self.data_slice_shift_per_gen = 12
-        self.data_slice_cycle_count = 5
+        self.data_slice_cycle_count = 10
 
         self.data_looper = False
 
         # ---- Population parameters
         self.population_size = 30
-        self.nb_of_generations = 20
+        self.nb_of_generations = 40
 
         self.mutation_rate = 0.5
         self.nb_parents = 10
         self.nb_random_ind = 3
+        
+        self.nb_parents_in_next_gen = 5
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15
         self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
-        self.evaluation_methods = ["Profit", "MetaLabels", "MetaLabels bs", "MetaLabels avg", "Buy count", "Sell count", "Transaction count"]
+        self.evaluation_methods = ["Net Worth", "MetaLabels", "MetaLabels bs", "MetaLabels avg", "Buy count", "Sell count", "Transaction count"]
         self.evaluation_method = 0
 
         self.decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]

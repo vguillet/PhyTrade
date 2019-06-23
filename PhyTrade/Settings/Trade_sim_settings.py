@@ -12,7 +12,7 @@ class Trade_sim_settings:
 
     # ___________________________ Investment settings ________________________
     investment_settings = 3
-    cash_in_settings = 0
+    cash_in_settings = 2
 
     initial_investment = 1000
 

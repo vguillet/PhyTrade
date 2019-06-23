@@ -164,7 +164,8 @@ class EVOA_tools:
                             current_generation, nb_of_generations,
                             current_slice_cycle, nb_of_slice_cycles,
                             decay_function,
-                            population_size, parents, nb_random_ind, mutation_rate=0.2):
+                            population_size, parents, nb_parents_in_next_gen,
+                            nb_random_ind, mutation_rate=0.2):
 
         from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.Tools.INDIVIDUAL_gen import Individual
@@ -175,7 +176,7 @@ class EVOA_tools:
         nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate)
 
         # --> Save single best parent to new population
-        new_population = [parents[0]]
+        new_population = parents[:nb_parents_in_next_gen]
 
         # --> Generate offsprings from parents with mutations
         cycling = -1
@@ -263,6 +264,7 @@ class EVOA_tools:
     @staticmethod
     def determine_evolving_gen_parameters(settings, current_generation, data_slice_cycle_count):
         # ------------------ Throttle the individual count to be used by the generation
+        # ---- Number of parents
         # --> Based on generation count
         nb_parents = round(EVOA_tools().throttle(current_generation,
                                                  settings.nb_of_generations-settings.exploitation_phase_len,
@@ -276,6 +278,21 @@ class EVOA_tools:
                                                  min_value=1,
                                                  decay_function=settings.parents_decay_function))
 
+        # ---- Number of parents included in next gen
+        # --> Based on generation count
+        nb_parents_in_next_gen = round(EVOA_tools().throttle(current_generation,
+                                                             settings.nb_of_generations-settings.exploitation_phase_len,
+                                                             settings.nb_parents_in_next_gen,
+                                                             min_value=1,
+                                                             decay_function=settings.random_ind_decay_function))
+        # --> Based on cycle count
+        nb_parents_in_next_gen = round(EVOA_tools().throttle(data_slice_cycle_count,
+                                                             settings.data_slice_cycle_count,
+                                                             nb_parents_in_next_gen,
+                                                             min_value=1,
+                                                             decay_function=settings.random_ind_decay_function))
+
+        # ---- Number of random individual
         # --> Based on generation count
         nb_random_ind = round(EVOA_tools().throttle(current_generation,
                                                     settings.nb_of_generations-settings.exploitation_phase_len,
@@ -291,6 +308,7 @@ class EVOA_tools:
 
         if settings.print_evoa_parameters_per_gen:
             print("\nNumber of parents selected for this generation", nb_parents)
+            print("Number of parents included in this generation", nb_parents_in_next_gen)
             print("Number of random individuals generated for this generation", nb_random_ind, "\n")
 
-        return nb_parents, nb_random_ind
+        return nb_parents, nb_parents_in_next_gen, nb_random_ind
