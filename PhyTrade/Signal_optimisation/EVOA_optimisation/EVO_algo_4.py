@@ -142,7 +142,7 @@ class EVOA_optimiser:
                                                                               self.parents, self.nb_parents_in_next_gen,
                                                                               self.nb_random_ind,
                                                                               mutation_rate=self.mutation_rate)
-                    prints.darwin_in_charge_msg()
+                    # prints.darwin_in_charge_msg()
                     self.population = self.new_population
 
             # ------------------ Evaluate population

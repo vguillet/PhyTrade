@@ -322,10 +322,10 @@ class EVOA_tools:
                                               decay_function=settings.random_ind_decay_function)
 
         if settings.print_evoa_parameters_per_gen:
-            print("\nNumber of parents selected for this generation", nb_parents)
-            print("Number of parents included in this generation", nb_parents_in_next_gen)
-            print("Number of random individuals generated for this generation", nb_random_ind)
-            print("Number of parameters mutated for this generation",
+            print("Number of parents selected:", nb_parents)
+            print("Number of parents included:", nb_parents_in_next_gen)
+            print("Number of random individuals generated:", nb_random_ind)
+            print("Number of parameters mutated:",
                   str(round(Individual().nb_of_parameters*mutation_rate) or 1)+"/"+str(Individual().nb_of_parameters), "\n")
 
         return nb_parents, nb_parents_in_next_gen, nb_random_ind, mutation_rate
