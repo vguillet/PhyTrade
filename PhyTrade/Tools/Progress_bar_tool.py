@@ -2,9 +2,11 @@ import time
 
 
 class Progress_bar:
-    def __init__(self, max_step, bar_size=30, label=None):
+    def __init__(self, max_step, bar_size=30, label=None, overwrite_setting=True):
 
         # --> Initiate Progress bar
+        self.overwrite_setting = overwrite_setting
+
         self.bar_size = bar_size
         self.max_step = max_step
         self.step = max_step/self.bar_size
@@ -24,7 +26,10 @@ class Progress_bar:
         self.run_time = -round(self.start_time - time.time(), 3)
         self.run_time_lst.append(self.run_time)
 
-        print(self.build_bar())
+        if self.overwrite_setting:
+            print("\r"+self.build_bar(), end="")
+        else:
+            print(self.build_bar())
 
         # --> Reset start time for next iteration
         self.start_time = time.time()

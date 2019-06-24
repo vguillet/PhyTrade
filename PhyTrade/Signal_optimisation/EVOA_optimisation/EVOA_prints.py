@@ -70,13 +70,6 @@ class EVOA_prints:
             print("                  -> OC gradient:", 1)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-    def new_slice_info(self, data_slice, gen, cycle_count):
-        print("\n================================= Generation", gen, "/", self.settings.signal_training_settings.nb_of_generations + 1,
-              "=================================")
-        print("Data slice analysed:", data_slice.start_date, "-->", data_slice.stop_date)
-        print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index)
-        print("Data slice analysis cycle:", cycle_count, "\n")
-
     def generation_info(self, gen, generation_start_time, generation_end_time,
                         results, net_worth, fitness_evaluation,
                         population):
@@ -97,6 +90,14 @@ class EVOA_prints:
 
         print("\nBest Individual fitness:", round(max(fitness_evaluation), 3))
         print("Average fitness:", round((sum(fitness_evaluation) / len(fitness_evaluation)), 3), "\n")
+
+    @staticmethod
+    def new_slice_info(data_slice, gen, max_gen, cycle_count):
+        print("\n================================= Generation", gen, "/", max_gen + 1,
+              "=================================")
+        print("Data slice analysed:", data_slice.start_date, "-->", data_slice.stop_date)
+        print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index)
+        print("Data slice analysis cycle:", cycle_count, "\n")
 
     @staticmethod
     def end_of_optimisation_msg(total_data_points_processed):

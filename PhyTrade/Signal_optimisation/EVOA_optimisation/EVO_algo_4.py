@@ -13,6 +13,7 @@ from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 import time
+import math
 
 
 class EVOA_optimiser:
@@ -24,6 +25,7 @@ class EVOA_optimiser:
 
         prints = EVOA_prints(ticker, 4)
 
+        # ---- Update settings according to run case
         # --> Disable all prints/plots in case of multiprocessing
         if settings.signal_training_settings.multiprocessing:
             settings.signal_training_settings.print_evoa_parameters_per_gen = False
@@ -33,7 +35,10 @@ class EVOA_optimiser:
             settings.signal_training_settings.plot_eco_model_results = False
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
-        # --> Initialise data slice for gen and metalabels
+            overwrite_setting = True
+        else:
+            overwrite_setting = False
+
         self.data_slice = data_slice(ticker,
                                      settings.market_settings.start_date,
                                      settings.market_settings.data_slice_size,
@@ -46,6 +51,13 @@ class EVOA_optimiser:
                                              settings.metalabeling_settings.look_ahead,
                                              settings.metalabeling_settings.metalabeling_setting)
 
+        # --> Update generation count if end_date results in lower slice count
+        if abs(self.data_slice.default_start_index+self.data_slice.default_end_index) < settings.market_settings.data_slice_size*settings.signal_training_settings.nb_of_generations:
+            settings.signal_training_settings.nb_of_generations =\
+                math.ceil(abs(self.data_slice.default_start_index+self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
+            print("\n--> Generation count updated to", settings.signal_training_settings.nb_of_generations, "to match available data <--\n")
+
+        # --> Initialise data slice for gen and metalabels
         # --> Initialise tools and counters
         self.evoa_tools = EVOA_tools()
         self.data_slice_cycle_count = 0
@@ -61,7 +73,7 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap()
-        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker)
+        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=overwrite_setting)
 
         # ------------------ Initialise population
         if settings.signal_training_settings.starting_parameters is None:
@@ -99,7 +111,7 @@ class EVOA_optimiser:
                     if self.data_slice.end_of_dataset is True:
                         break
 
-                prints.new_slice_info(self.data_slice, gen, self.data_slice_cycle_count)
+                prints.new_slice_info(self.data_slice, gen, settings.signal_training_settings.nb_of_generations, self.data_slice_cycle_count)
 
                 # ------------------ Determine new generation GA parameters
                 prints.det_new_generation_param_msg()

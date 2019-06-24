@@ -11,7 +11,7 @@ def fetch_parameter_set(ticker, run_count):
     if os.path.exists(path):
         return json.load(open(path))
     else:
-        print("Run_"+ticker+"_"+str(run_count), "parameter set does not exist")
+        # print("Run_"+ticker+"_"+str(run_count), "parameter set does not exist")
         return None
 
 
@@ -19,7 +19,7 @@ def fetch_parameter_sets(tickers, run_count):
     parameter_sets = []
     traded_tickers = []
     for ticker in tickers:
-        param_set = fetch_parameter_set(ticker, 6)
+        param_set = fetch_parameter_set(ticker, run_count)
         if param_set is not None:
             traded_tickers.append(ticker)
             parameter_sets.append(param_set)
