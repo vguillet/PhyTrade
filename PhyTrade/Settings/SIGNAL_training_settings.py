@@ -21,16 +21,17 @@ class Signal_training_settings:
 
         # ___________________________ EVO_algo main parameters ___________________
         # ---- Data slice parameters
-        self.data_slice_shift_per_gen = 12
-        self.data_slice_cycle_count = 5
 
-        self.data_looper = False
 
         # ---- Population parameters
-        self.population_size = 50
         self.nb_of_generations = 500
+        self.data_slice_cycle_count = 10
+        self.data_slice_shift_per_gen = 12
+        self.data_looper = False
 
-        self.mutation_rate = 0.5
+        self.population_size = 50
+
+        self.mutation_rate = 1
         self.nb_parents = 10
         self.nb_random_ind = 10
         

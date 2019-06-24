@@ -314,7 +314,6 @@ class EVOA_tools:
                                               settings.mutation_rate,
                                               min_value=0.001,
                                               decay_function=settings.random_ind_decay_function)
-        print(mutation_rate)
         # --> Based on cycle count
         mutation_rate = EVOA_tools().throttle(data_slice_cycle_count,
                                               settings.data_slice_cycle_count,

@@ -74,6 +74,7 @@ class EVOA_optimiser:
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap()
         progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=overwrite_setting)
+        cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
 
         # ------------------ Initialise population
         if settings.signal_training_settings.starting_parameters is None:
@@ -93,7 +94,7 @@ class EVOA_optimiser:
         prints.init_pop_success_msg()
 
         # ------------------ Run for # nb of generations:
-        for gen in range(settings.signal_training_settings.nb_of_generations):
+        for gen in range(settings.signal_training_settings.nb_of_generations+1):
             generation_start_time = time.time()
 
             if gen == settings.signal_training_settings.nb_of_generations-settings.signal_training_settings.exploitation_phase_len-1:
@@ -108,6 +109,8 @@ class EVOA_optimiser:
                                                          settings.metalabeling_settings.look_ahead,
                                                          settings.metalabeling_settings.metalabeling_setting)
                     self.data_slice_cycle_count = 1
+                    if settings.signal_training_settings.multiprocessing is False:
+                        cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
 
                     if self.data_slice.end_of_dataset is True:
                         break
@@ -181,7 +184,10 @@ class EVOA_optimiser:
                                        self.results, self.net_worth, self.fitness_evaluation,
                                        self.population)
 
-                progress_bar.update_progress_bar(gen)
+                if gen != 0:
+                    if settings.signal_training_settings.multiprocessing is False:
+                        cycle_progress_bar.update_progress_bar(self.data_slice_cycle_count-1)
+                    progress_bar.update_progress_bar(gen-1)
 
                 if settings.signal_training_settings.plot_best_individual_eco_model_results is True:
                     self.population[self.fitness_evaluation.index(max(self.fitness_evaluation))].gen_economic_model(
