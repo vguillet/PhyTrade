@@ -2,6 +2,7 @@ from PhyTrade.Settings.SETTINGS import SETTINGS
 
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
 from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Tools.GENERAL_tools import GENERAL_tools
 
 
 class Individual:
@@ -34,7 +35,11 @@ class Individual:
             self.parameter_dictionary = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        self.nb_of_parameters = 0
+        exclude_keys = ["general_settings"]
+        new_d = {k: self.parameter_dictionary[k] for k in set(list(self.parameter_dictionary.keys())) - set(exclude_keys)}
+
+        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(new_d)
+
         for i in self.parameter_dictionary:
             for j in range(len(self.parameter_dictionary[i])):
                 self.nb_of_parameters += 1

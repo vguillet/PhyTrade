@@ -172,8 +172,7 @@ class EVOA_tools:
         import random
         from copy import deepcopy
 
-        mutation_rate = EVOA_tools().throttle(current_generation, nb_of_generations, mutation_rate, 0.05, decay_function)
-        nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate)
+        nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate) or 1
 
         # --> Save single best parent to new population
         new_population = parents[:nb_parents_in_next_gen]
@@ -263,6 +262,8 @@ class EVOA_tools:
 
     @staticmethod
     def determine_evolving_gen_parameters(settings, current_generation, data_slice_cycle_count):
+        from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+
         # ------------------ Throttle the individual count to be used by the generation
         # ---- Number of parents
         # --> Based on generation count
@@ -306,9 +307,26 @@ class EVOA_tools:
                                                     min_value=0,
                                                     decay_function=settings.random_ind_decay_function))
 
+        # ---- Mutation rate
+        # --> Based on generation count
+        mutation_rate = EVOA_tools().throttle(current_generation,
+                                              settings.nb_of_generations-settings.exploitation_phase_len,
+                                              settings.mutation_rate,
+                                              min_value=0.001,
+                                              decay_function=settings.random_ind_decay_function)
+        print(mutation_rate)
+        # --> Based on cycle count
+        mutation_rate = EVOA_tools().throttle(data_slice_cycle_count,
+                                              settings.data_slice_cycle_count,
+                                              mutation_rate,
+                                              min_value=0.001,
+                                              decay_function=settings.random_ind_decay_function)
+
         if settings.print_evoa_parameters_per_gen:
             print("\nNumber of parents selected for this generation", nb_parents)
             print("Number of parents included in this generation", nb_parents_in_next_gen)
-            print("Number of random individuals generated for this generation", nb_random_ind, "\n")
+            print("Number of random individuals generated for this generation", nb_random_ind)
+            print("Number of parameters mutated for this generation",
+                  str(round(Individual().nb_of_parameters*mutation_rate) or 1)+"/"+str(Individual().nb_of_parameters), "\n")
 
-        return nb_parents, nb_parents_in_next_gen, nb_random_ind
+        return nb_parents, nb_parents_in_next_gen, nb_random_ind, mutation_rate

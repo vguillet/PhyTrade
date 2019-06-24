@@ -87,7 +87,8 @@ class EVOA_optimiser:
                                                                   0,
                                                                   settings.signal_training_settings.population_size,
                                                                   [Individual(parameter_set=settings.signal_training_settings.starting_parameters)],
-                                                                  settings.signal_training_settings.nb_random_ind,
+                                                                  settings.signal_training_settings.nb_parents_in_next_gen,
+                                                                  1,
                                                                   mutation_rate=settings.signal_training_settings.mutation_rate)
         prints.init_pop_success_msg()
 
@@ -115,7 +116,7 @@ class EVOA_optimiser:
 
                 # ------------------ Determine new generation GA parameters
                 prints.det_new_generation_param_msg()
-                self.nb_parents, self.nb_parents_in_next_gen, self.nb_random_ind = \
+                self.nb_parents, self.nb_parents_in_next_gen, self.nb_random_ind, self.mutation_rate = \
                     self.evoa_tools.determine_evolving_gen_parameters(settings.signal_training_settings, gen, self.data_slice_cycle_count)
 
                 if sum(self.fitness_evaluation) != 0:
@@ -137,7 +138,7 @@ class EVOA_optimiser:
                                                                               settings.signal_training_settings.population_size,
                                                                               self.parents, self.nb_parents_in_next_gen,
                                                                               self.nb_random_ind,
-                                                                              mutation_rate=settings.signal_training_settings.mutation_rate)
+                                                                              mutation_rate=self.mutation_rate)
                     prints.darwin_in_charge_msg()
                     self.population = self.new_population
 

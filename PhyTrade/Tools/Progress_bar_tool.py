@@ -65,5 +65,7 @@ class Progress_bar:
                         unit = " years"
 
         eta = round(eta, 3)
-
-        return self.label+str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Run time: " + str(self.run_time) + "s, - ETA: " + str(eta) + unit
+        if eta != 0:
+            return self.label+str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Run time: " + str(self.run_time) + "s, - ETA: " + str(eta) + unit
+        else:
+            return self.label+str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Process Completed"

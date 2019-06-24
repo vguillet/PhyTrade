@@ -73,7 +73,7 @@ class EVOA_prints:
     def generation_info(self, gen, generation_start_time, generation_end_time,
                         results, net_worth, fitness_evaluation,
                         population):
-        print("\n--", self.ticker, "- Generation", gen + 1, "population evaluation completed --")
+        print("\n\n--", self.ticker, "- Generation", gen + 1, "population evaluation completed --")
         print("Total generation Run time:", round(generation_end_time - generation_start_time, 3), "s")
 
         print("\nMetalabel net worth:", round(results.data_slice_metalabel_pp[-1], 3))
