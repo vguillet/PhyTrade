@@ -131,7 +131,7 @@ class RUN_multi_trade_sim:
         while self.ref_data_slice.end_of_dataset is False:
             data_slice_count += 1
 
-            print("================== Data slice", data_slice_count, "==================\n")
+            print("\n===================== Data slice", data_slice_count, "=====================\n")
             print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.stop_date)
             # --> Perform trade run
             self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
@@ -153,13 +153,9 @@ class RUN_multi_trade_sim:
             self.results.ticker_stop_loss_count += self.portfolio.tradebot.ticker_stop_loss_count
 
             # --> Record finance
-            print("----------------------------------------------> prev net worth len", len(self.results.net_worth))
             self.results.net_worth += self.portfolio.tradebot.account.net_worth_history
             self.results.funds += self.portfolio.tradebot.account.funds_history
             self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
-            print("----------------------------------------------> net worth len", len(self.results.net_worth))
-            print("----------------------------------------------> funds len", len(self.results.funds))
-            print("----------------------------------------------> asset worth len", len(self.results.assets_worth))
 
             self.results.profit.append(
                 (self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)

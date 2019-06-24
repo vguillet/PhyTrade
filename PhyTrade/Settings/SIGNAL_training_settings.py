@@ -16,7 +16,7 @@ class Signal_training_settings:
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = False
 
-        self.plot_best_individual_eco_model_results = True
+        self.plot_best_individual_eco_model_results = False
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
@@ -27,12 +27,12 @@ class Signal_training_settings:
         self.data_looper = False
 
         # ---- Population parameters
-        self.population_size = 30
-        self.nb_of_generations = 40
+        self.population_size = 50
+        self.nb_of_generations = 500
 
         self.mutation_rate = 0.5
         self.nb_parents = 10
-        self.nb_random_ind = 3
+        self.nb_random_ind = 10
         
         self.nb_parents_in_next_gen = 1
 

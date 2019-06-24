@@ -8,16 +8,16 @@ class Trade_sim_settings:
 
     # ___________________________ Print/plot parameters ______________________
     plot_eco_model_results = False
-    print_trade_process = True
+    print_trade_process = False
 
     # ___________________________ Investment settings ________________________
     investment_settings = 3
     cash_in_settings = 2
 
-    initial_investment = 1000
+    initial_investment = 10000
 
     # Max --> Min
-    max_investment_per_trade_percent = 0.3
+    max_investment_per_trade_percent = 0.20
     min_investment_per_trade_percent = 0.000001
 
     investment_per_trade_decay_function = 1
@@ -26,7 +26,7 @@ class Trade_sim_settings:
     def gen_single_trade_sim(self):
 
         # ___________________________ Metalabels parameters ______________________
-        self.run_metalabels = True     # Can be switched off for performance increase
+        self.run_metalabels = False     # Can be switched off for performance increase
 
         self.m_investment_settings = 1
         self.m_cash_in_settings = 0

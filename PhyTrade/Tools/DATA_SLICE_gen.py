@@ -47,6 +47,9 @@ class data_slice:
         self.default_end_date = end_date
         if self.default_end_date is not None:
             self.default_end_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.default_end_date)[0]
+        else:
+            self.default_end_index = -1
+            self.default_end_date = self.data.iloc[self.default_end_index]['Date']
 
         self.default_slice_size = slice_size
         self.data_slice_shift_per_gen = data_slice_shift_per_gen

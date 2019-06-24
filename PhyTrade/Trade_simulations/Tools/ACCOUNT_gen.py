@@ -104,7 +104,6 @@ class ACCOUNT:
         self.record_net_worth()
         self.funds_history.append(self.current_funds)
         self.record_asset_worth()
-        print("===========================================> updated", len(self.net_worth_history))
 
     def update_ticker_entry(self, ticker, current_date, current_price):
         """
@@ -193,7 +192,6 @@ class ACCOUNT:
         # --> Update funds and ticker net worth
         self.current_funds += sell_worth
         self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
-        print("===========================================>", len(self.net_worth_history))
 
     def close_all_ticker_order(self, ticker):
         """
