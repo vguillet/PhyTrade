@@ -3,6 +3,7 @@ from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_param
 from Data.Company_data.Fetch_company_tickers import fetch_company_tickers
 import sys
 
+
 class Market_settings:
     def gen_market_settings(self):
         # ---- Market settings

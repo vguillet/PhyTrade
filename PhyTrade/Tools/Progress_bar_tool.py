@@ -42,10 +42,28 @@ class Progress_bar:
             bar = bar + "="
         bar = bar + ">"
         for _ in range(self.bar_size-nb_of_steps):
-            bar = bar + "."
+            bar = bar + " "
         bar = bar + "]"
 
         # --> Compute ETA
-        eta = round(sum(self.run_time_lst)/len(self.run_time_lst) * (self.max_step-self.current))
+        eta = sum(self.run_time_lst)/len(self.run_time_lst) * (self.max_step-self.current)
+        unit = "s"
+        if eta > 60:
+            eta = eta/60
+            unit = " minutes"
 
-        return self.label+str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Run time: " + str(self.run_time) + "s, - ETA: " + str(eta) + "s"
+            if eta > 60:
+                eta = eta/60
+                unit = " hours"
+
+                if eta > 24:
+                    eta = eta/24
+                    unit = " days"
+
+                    if eta > 365:
+                        eta = eta/365
+                        unit = " years"
+
+        eta = round(eta, 3)
+
+        return self.label+str(self.current) + "/" + str(self.max_step) + " - " + bar + " - Run time: " + str(self.run_time) + "s, - ETA: " + str(eta) + unit
