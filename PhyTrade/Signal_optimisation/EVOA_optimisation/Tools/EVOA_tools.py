@@ -323,13 +323,13 @@ class EVOA_tools:
         mutation_rate_gen = EVOA_tools().throttle(current_generation,
                                                   settings.nb_of_generations-settings.exploitation_phase_len,
                                                   settings.mutation_rate,
-                                                  min_value=0.001,
+                                                  min_value=0.1,
                                                   decay_function=settings.random_ind_decay_function)
         # --> Based on cycle count
         mutation_rate_cycle = EVOA_tools().throttle(data_slice_cycle_count,
                                                     settings.data_slice_cycle_count,
                                                     settings.mutation_rate,
-                                                    min_value=0.001,
+                                                    min_value=0.1,
                                                     decay_function=settings.random_ind_decay_function)
         # --> Select smallest one
         mutation_rate = min(mutation_rate_gen, mutation_rate_cycle)
