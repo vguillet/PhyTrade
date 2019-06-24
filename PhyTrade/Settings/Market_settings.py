@@ -1,4 +1,5 @@
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_sets
 
 
 class Market_settings:
@@ -6,15 +7,11 @@ class Market_settings:
         # ---- Market settings
         self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
         # self.tickers = ["AAPL"]
+        self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, 6)
 
         self.ticker = "AAPL"
-
         self.parameter_set = fetch_parameter_set(self.ticker, 6)
         # self.parameter_set = None
-
-        self.parameter_sets = []
-        for ticker in self.tickers:
-            self.parameter_sets.append(fetch_parameter_set(ticker, 6))
 
         self.price_selection = "Open"
         # ---- Date settings
