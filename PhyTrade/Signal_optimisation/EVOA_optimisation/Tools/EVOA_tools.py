@@ -164,8 +164,9 @@ class EVOA_tools:
                             current_generation, nb_of_generations,
                             current_slice_cycle, nb_of_slice_cycles,
                             decay_function,
-                            population_size, parents, nb_parents_in_next_gen,
-                            nb_random_ind, mutation_rate=0.2):
+                            population_size, parents, nb_parents_in_next_gen, nb_random_ind,
+                            parameter_blacklist=["general_settings"],
+                            mutation_rate=0.2):
 
         from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
         from PhyTrade.Tools.INDIVIDUAL_gen import Individual
@@ -188,11 +189,15 @@ class EVOA_tools:
 
             # --> Mutate offspring
             for _ in range(nb_of_parameters_to_mutate):
+                # --> Select parameter class to modify
                 parameter_class_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
-                while parameter_class_to_modify == "general_settings":
+                while parameter_class_to_modify in parameter_blacklist:
                     parameter_class_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
 
+                # --> Select parameter type to modify
                 parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary[parameter_class_to_modify].keys()))
+                while parameter_type_to_modify in parameter_blacklist:
+                    parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary[parameter_class_to_modify].keys()))
 
                 offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify,
                                                            current_generation, nb_of_generations,
@@ -267,64 +272,72 @@ class EVOA_tools:
         # ------------------ Throttle the individual count to be used by the generation
         # ---- Number of parents
         # --> Based on generation count
-        nb_parents = round(EVOA_tools().throttle(current_generation,
-                                                 settings.nb_of_generations-settings.exploitation_phase_len,
-                                                 settings.nb_parents,
-                                                 min_value=1,
-                                                 decay_function=settings.parents_decay_function))
+        nb_parents_gen = round(EVOA_tools().throttle(current_generation,
+                                                     settings.nb_of_generations-settings.exploitation_phase_len,
+                                                     settings.nb_parents,
+                                                     min_value=1,
+                                                     decay_function=settings.parents_decay_function))
         # --> Based on cycle count
-        nb_parents = round(EVOA_tools().throttle(data_slice_cycle_count,
-                                                 settings.data_slice_cycle_count,
-                                                 nb_parents,
-                                                 min_value=1,
-                                                 decay_function=settings.parents_decay_function))
+        nb_parents_cycle = round(EVOA_tools().throttle(data_slice_cycle_count,
+                                                       settings.data_slice_cycle_count,
+                                                       settings.nb_parents,
+                                                       min_value=1,
+                                                       decay_function=settings.parents_decay_function))
+        # --> Select smallest one
+        nb_parents = min(nb_parents_gen, nb_parents_cycle)
 
         # ---- Number of parents included in next gen
         # --> Based on generation count
-        nb_parents_in_next_gen = round(EVOA_tools().throttle(current_generation,
-                                                             settings.nb_of_generations-settings.exploitation_phase_len,
-                                                             settings.nb_parents_in_next_gen,
-                                                             min_value=1,
-                                                             decay_function=settings.random_ind_decay_function))
+        nb_parents_in_next_gen_gen = round(EVOA_tools().throttle(current_generation,
+                                                                 settings.nb_of_generations-settings.exploitation_phase_len,
+                                                                 settings.nb_parents_in_next_gen,
+                                                                 min_value=1,
+                                                                 decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
-        nb_parents_in_next_gen = round(EVOA_tools().throttle(data_slice_cycle_count,
-                                                             settings.data_slice_cycle_count,
-                                                             nb_parents_in_next_gen,
-                                                             min_value=1,
-                                                             decay_function=settings.random_ind_decay_function))
+        nb_parents_in_next_gen_cycle = round(EVOA_tools().throttle(data_slice_cycle_count,
+                                                                   settings.data_slice_cycle_count,
+                                                                   settings.nb_parents_in_next_gen,
+                                                                   min_value=1,
+                                                                   decay_function=settings.random_ind_decay_function))
+        # --> Select smallest one
+        nb_parents_in_next_gen = min(nb_parents_in_next_gen_gen, nb_parents_in_next_gen_cycle)
 
         # ---- Number of random individual
         # --> Based on generation count
-        nb_random_ind = round(EVOA_tools().throttle(current_generation,
-                                                    settings.nb_of_generations-settings.exploitation_phase_len,
-                                                    settings.nb_random_ind,
-                                                    min_value=0,
-                                                    decay_function=settings.random_ind_decay_function))
+        nb_random_ind_gen = round(EVOA_tools().throttle(current_generation,
+                                                        settings.nb_of_generations-settings.exploitation_phase_len,
+                                                        settings.nb_random_ind,
+                                                        min_value=0,
+                                                        decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
-        nb_random_ind = round(EVOA_tools().throttle(data_slice_cycle_count,
-                                                    settings.data_slice_cycle_count,
-                                                    nb_random_ind,
-                                                    min_value=0,
-                                                    decay_function=settings.random_ind_decay_function))
+        nb_random_ind_cycle = round(EVOA_tools().throttle(data_slice_cycle_count,
+                                                          settings.data_slice_cycle_count,
+                                                          settings.nb_random_ind,
+                                                          min_value=0,
+                                                          decay_function=settings.random_ind_decay_function))
+        # --> Select smallest one
+        nb_random_ind = min(nb_random_ind_gen, nb_random_ind_cycle)
 
         # ---- Mutation rate
         # --> Based on generation count
-        mutation_rate = EVOA_tools().throttle(current_generation,
-                                              settings.nb_of_generations-settings.exploitation_phase_len,
-                                              settings.mutation_rate,
-                                              min_value=0.001,
-                                              decay_function=settings.random_ind_decay_function)
+        mutation_rate_gen = EVOA_tools().throttle(current_generation,
+                                                  settings.nb_of_generations-settings.exploitation_phase_len,
+                                                  settings.mutation_rate,
+                                                  min_value=0.001,
+                                                  decay_function=settings.random_ind_decay_function)
         # --> Based on cycle count
-        mutation_rate = EVOA_tools().throttle(data_slice_cycle_count,
-                                              settings.data_slice_cycle_count,
-                                              mutation_rate,
-                                              min_value=0.001,
-                                              decay_function=settings.random_ind_decay_function)
+        mutation_rate_cycle = EVOA_tools().throttle(data_slice_cycle_count,
+                                                    settings.data_slice_cycle_count,
+                                                    settings.mutation_rate,
+                                                    min_value=0.001,
+                                                    decay_function=settings.random_ind_decay_function)
+        # --> Select smallest one
+        mutation_rate = min(mutation_rate_gen, mutation_rate_cycle)
 
         if settings.print_evoa_parameters_per_gen:
             print("Number of parents selected:", nb_parents)
             print("Number of parents included:", nb_parents_in_next_gen)
-            print("Number of random individuals generated:", nb_random_ind)
+            print("Number of random individuals included:", nb_random_ind)
             print("Number of parameters mutated:",
                   str(round(Individual().nb_of_parameters*mutation_rate) or 1)+"/"+str(Individual().nb_of_parameters), "\n")
 

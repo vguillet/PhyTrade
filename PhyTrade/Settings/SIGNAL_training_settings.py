@@ -21,7 +21,7 @@ class Signal_training_settings:
 
         # ___________________________ EVO_algo main parameters ___________________
         # ---- Data slice parameters
-
+        self.parameter_blacklist = ["general_settings", "flip"]
 
         # ---- Population parameters
         self.nb_of_generations = 500

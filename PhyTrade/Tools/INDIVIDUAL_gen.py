@@ -10,9 +10,10 @@ class Individual:
         # ========================= DATA COLLECTION INITIALISATION =======================
         self.ticker = ticker
         self.data = fetch_technical_data(self.ticker)
+        settings = SETTINGS()
+        settings.signal_training_settings.gen_evoa_settings()
 
         if parameter_set is None:
-            settings = SETTINGS()
             settings.individual_settings.gen_individual_settings()
             self.gen_parameter_set(threshold_setting=settings.individual_settings.threshold_setting,
                                    buffer_setting=settings.individual_settings.buffer_setting,
@@ -35,8 +36,9 @@ class Individual:
             self.parameter_dictionary = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        exclude_keys = ["general_settings"]
-        new_d = {k: self.parameter_dictionary[k] for k in set(list(self.parameter_dictionary.keys())) - set(exclude_keys)}
+        # TODO: Fix parameter count
+        new_d = {k: self.parameter_dictionary[k] for k in set(list(self.parameter_dictionary.keys()))
+                 - set(settings.signal_training_settings.parameter_blacklist)}
 
         self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(new_d)
 

@@ -52,10 +52,13 @@ class EVOA_optimiser:
                                              settings.metalabeling_settings.metalabeling_setting)
 
         # --> Update generation count if end_date results in lower slice count
-        if abs(self.data_slice.default_start_index+self.data_slice.default_end_index) < settings.market_settings.data_slice_size*settings.signal_training_settings.nb_of_generations:
+        if abs(self.data_slice.default_start_index-self.data_slice.default_end_index) < settings.market_settings.data_slice_size*settings.signal_training_settings.nb_of_generations:
             settings.signal_training_settings.nb_of_generations =\
-                math.ceil(abs(self.data_slice.default_start_index+self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
+                math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
             print("\n--> Generation count updated to", settings.signal_training_settings.nb_of_generations, "to match available data <--\n")
+
+        settings.signal_training_settings.exploitation_phase_len = \
+            round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
 
         # --> Initialise data slice for gen and metalabels
         # --> Initialise tools and counters
@@ -141,6 +144,7 @@ class EVOA_optimiser:
                                                                               settings.signal_training_settings.population_size,
                                                                               self.parents, self.nb_parents_in_next_gen,
                                                                               self.nb_random_ind,
+                                                                              parameter_blacklist=settings.signal_training_settings.parameter_blacklist,
                                                                               mutation_rate=self.mutation_rate)
                     # prints.darwin_in_charge_msg()
                     self.population = self.new_population

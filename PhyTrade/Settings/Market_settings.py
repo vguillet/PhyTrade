@@ -8,9 +8,9 @@ class Market_settings:
     def gen_market_settings(self):
         # ---- Market settings
         # --> Multi-ticker
-        self.tickers = fetch_company_tickers(0, 60)
+        # self.tickers = fetch_company_tickers(0, 60)
         # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
-        # self.tickers = ["AAPL"]
+        self.tickers = ["AAPL"]
         # self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, 6)
 
         # --> Single ticker
@@ -22,7 +22,7 @@ class Market_settings:
         # ---- Date settings
         # TODO: Add slice size auto scaling according to generation count/cycle count and start/end date
         self.start_date = "2017-01-03"
-        self.end_date = "2019-01-02"
+        self.end_date = "2018-01-02"
 
         # self.start_date = "2019-01-02"
         # self.end_date = None
