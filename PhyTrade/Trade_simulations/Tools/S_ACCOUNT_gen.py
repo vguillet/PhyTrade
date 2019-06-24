@@ -1,6 +1,7 @@
 """
 Contains information about a Tradebot's account, along with it's transaction history etc...
 """
+from PhyTrade.Tools.MARKET_tools import MARKET_tools
 
 
 class ACCOUNT:
@@ -40,7 +41,11 @@ class ACCOUNT:
         :param investment_per_trade: Amount of investment to be performed
         """
 
-        self.current_funds = self.current_funds - investment_per_trade
+        # --> Calculate transaction cost
+        self.current_funds -= MARKET_tools().calc_transaction_cost(investment_per_trade/current_value)
+
+        # --> Create order
+        self.current_funds -= investment_per_trade
         self.current_assets = self.current_assets + investment_per_trade / current_value
 
         self.funds_history.append(self.current_funds)
@@ -54,7 +59,12 @@ class ACCOUNT:
         :param current_value: Current value of the stock sold
         :param assets_sold_per_trade: Amount of assets to be sold
         """
-        self.current_funds = self.current_funds + assets_sold_per_trade * current_value
+
+        # --> Calculate transaction cost
+        # --> Calculate transaction cost
+        self.current_funds -= MARKET_tools().calc_transaction_cost(assets_sold_per_trade/current_value)
+
+        self.current_funds += assets_sold_per_trade * current_value
         self.current_assets = self.current_assets - assets_sold_per_trade
 
         self.funds_history.append(self.current_funds)
