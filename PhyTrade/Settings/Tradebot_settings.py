@@ -4,7 +4,7 @@ class Tradebot_settings:
     # =============================== TRADEBOT SETTINGS ===========================
     def gen_tradebot_settings(self):
         # --> Simple investment settings
-        self.s_initial_investment = 10000
+        self.s_initial_investment = 1000
 
         # --> Investment settings
         self.fixed_investment = 100

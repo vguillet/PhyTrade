@@ -1,8 +1,8 @@
 """
 Contains information about a Tradebot's account, along with it's transaction history etc...
 """
-from PhyTrade.Settings.Tradebot_settings import Tradebot_settings
 from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
+from PhyTrade.Tools.MARKET_tools import MARKET_tools
 
 
 class ACCOUNT:
@@ -27,8 +27,6 @@ class ACCOUNT:
         :param initial_simple_investment_content: Initial orders in the account (as order class instances)
         """
 
-        settings = Tradebot_settings()
-        settings.gen_tradebot_settings()
         # ---- Account initialisation
         self.current_funds = initial_funds
         self.content = initial_content
@@ -135,6 +133,9 @@ class ACCOUNT:
         :param ticker: Ticker traded
         :param asset_count: Amount of investment to be performed
         """
+        # --> Calculate transaction cost
+        self.current_funds -= MARKET_tools().calc_transaction_cost(asset_count)
+
         # --> Create order
         new_order = ORDER_gen(ticker, self.current_date, asset_count, self.content[ticker]["Current_price"])
         self.add_order_to_content(ticker, new_order)
@@ -152,6 +153,8 @@ class ACCOUNT:
         """
         # TODO: Develop order sell choice
         sell_worth = 0
+        asset_count_sold = 0
+
         while sell_worth < assets_sold_per_trade:
             # --> Select which order to close if multiple
             if self.content[ticker]["Open_order_count"] > 1:
@@ -181,13 +184,16 @@ class ACCOUNT:
 
             # --> Update current parameters
             self.current_asset_worth -= order.close_worth
-
             self.current_order_count -= 1
 
             # --> Record close worth
             sell_worth += order.close_worth
+            asset_count_sold += order.asset_count
             if self.content[ticker]["Open_order_count"] == 0:
                 break
+
+        # --> Calculate transaction cost
+        self.current_funds -= MARKET_tools().calc_transaction_cost(asset_count_sold)
 
         # --> Update funds and ticker net worth
         self.current_funds += sell_worth
@@ -209,6 +215,9 @@ class ACCOUNT:
             # --> Edit counters
             self.content[ticker]["Open_order_count"] -= 1
             self.content[ticker]["Closed_orders_count"] += 1
+
+            # --> Calculate transaction cost
+            self.current_funds -= MARKET_tools().calc_transaction_cost(order.asset_count)
 
             # --> Update current parameters
             self.current_asset_worth -= order.close_worth

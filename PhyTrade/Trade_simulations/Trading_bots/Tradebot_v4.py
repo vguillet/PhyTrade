@@ -5,7 +5,7 @@ Input that still require manual input:
     - Simple investment settings
     - Investment settings
 """
-from PhyTrade.Settings.Tradebot_settings import Tradebot_settings
+from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.S_ACCOUNT_gen import ACCOUNT
 
 
@@ -52,17 +52,18 @@ class Tradebot_v4:
         # ============================ TRADE_BOT ATTRIBUTES ============================
         # ~~~~~~~~~~~~~~~~ Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Fetch tradebot settings
-        tradebot_settings = Tradebot_settings()
-        tradebot_settings.gen_tradebot_settings()
+        settings = SETTINGS()
+        settings.tradebot_settings.gen_tradebot_settings()
+        settings.market_settings.gen_market_settings()
 
         # --> Simple investment settings
-        self.s_initial_investment = tradebot_settings.s_initial_investment
+        self.s_initial_investment = initial_funds
 
         # --> Investment settings
-        self.fixed_investment = tradebot_settings.fixed_investment
-        self.investment_percentage = tradebot_settings.investment_percentage
+        self.fixed_investment = settings.tradebot_settings.fixed_investment
+        self.investment_percentage = settings.tradebot_settings.investment_percentage
 
-        self.asset_liquidation_percentage = tradebot_settings.asset_liquidation_percentage
+        self.asset_liquidation_percentage = settings.tradebot_settings.asset_liquidation_percentage
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.print_trade_process = print_trade_process

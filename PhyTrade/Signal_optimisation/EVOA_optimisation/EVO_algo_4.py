@@ -35,10 +35,6 @@ class EVOA_optimiser:
             settings.signal_training_settings.plot_eco_model_results = False
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
-            overwrite_setting = True
-        else:
-            overwrite_setting = False
-
         self.data_slice = data_slice(ticker,
                                      settings.market_settings.start_date,
                                      settings.market_settings.data_slice_size,
@@ -76,7 +72,7 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap()
-        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=overwrite_setting)
+        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
         cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
 
         # ------------------ Initialise population

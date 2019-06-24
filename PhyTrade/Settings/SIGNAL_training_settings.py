@@ -9,7 +9,7 @@ class Signal_training_settings:
         self.config_name = "Run_6"
 
         # ---- Multiprocessing settings
-        self.multiprocessing = False
+        self.multiprocessing = True
         self.max_process_count = multiprocessing.cpu_count() - 1
 
         # ___________________________ Print/plot parameters ______________________
@@ -25,7 +25,7 @@ class Signal_training_settings:
 
         # ---- Population parameters
         self.nb_of_generations = 500
-        self.data_slice_cycle_count = 10
+        self.data_slice_cycle_count = 5
         self.data_slice_shift_per_gen = 12
         self.data_looper = False
 
