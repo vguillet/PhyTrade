@@ -75,8 +75,13 @@ class EVOA_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
+        if self.settings.market_settings.data_slice_size >= 253:
+            term = "Long_term"
+        else:
+            term = "Short_term"
+
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\EVOA_results\RUN_EVOA_recaps".replace('\\', '/')
-        full_file_name = path + '/' + self.run_label + "_" + self.ticker
+        full_file_name = path + '/' + term + "/" + self.run_label + "_" + self.ticker
 
         self.results_file = open(full_file_name + ".txt", "w+")
 

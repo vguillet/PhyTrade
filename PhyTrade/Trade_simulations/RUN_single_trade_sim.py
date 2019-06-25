@@ -22,8 +22,8 @@ class RUN_single_trade_sim:
         # ---- Fetch single_trade_sim settings
         settings.market_settings.gen_market_settings()
 
-        ticker = settings.market_settings.ticker
-        parameter_set = settings.market_settings.parameter_set
+        ticker = settings.market_settings.tickers[0]
+        parameter_set = settings.market_settings.parameter_sets[0]
 
         start_date = settings.market_settings.start_date
         end_date = settings.market_settings.end_date

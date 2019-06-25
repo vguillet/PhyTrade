@@ -17,7 +17,7 @@ class Trade_sim_settings:
     initial_investment = 1000
 
     # Max --> Min
-    max_investment_per_trade_percent = 0.20
+    max_investment_per_trade_percent = 0.10
     min_investment_per_trade_percent = 0.05
 
     investment_per_trade_decay_function = 1

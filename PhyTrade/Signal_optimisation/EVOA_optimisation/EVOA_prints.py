@@ -41,7 +41,8 @@ class EVOA_prints:
 
         print("-- Settings selected --")
         print("Selected evaluation method:", self.settings.signal_training_settings.evaluation_methods[self.settings.signal_training_settings.evaluation_method])
-        print("Selected metalabeling method:", self.settings.metalabeling_settings.metalabeling_settings[self.settings.metalabeling_settings.metalabeling_setting])
+        print("Selected met "
+              "alabeling method:", self.settings.metalabeling_settings.metalabeling_settings[self.settings.metalabeling_settings.metalabeling_setting])
         print("")
         print("Selected parent function:", self.settings.signal_training_settings.decay_functions[self.settings.signal_training_settings.parents_decay_function])
         print("Selected random individual function:", self.settings.signal_training_settings.decay_functions[self.settings.signal_training_settings.random_ind_decay_function])

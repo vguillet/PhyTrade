@@ -56,7 +56,6 @@ class EVOA_optimiser:
         settings.signal_training_settings.exploitation_phase_len = \
             round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
 
-        # --> Initialise data slice for gen and metalabels
         # --> Initialise tools and counters
         self.evoa_tools = EVOA_tools()
         self.data_slice_cycle_count = 0

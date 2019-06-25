@@ -1,24 +1,24 @@
 ====================== Trade_simulation_1 ======================
 
 -----------> Model settings:
-Tickers: ['VNET', 'TWOU', 'DDD', 'JOBS', 'WUBA', 'EGHT', 'ATEN', 'AAN', 'ACIA', 'ACIW', 'ATVI', 'ATU', 'IOTS', 'ADBE', 'AMD', 'AER', 'ACY', 'HIVE', 'AGYS', 'AL', 'AYR', 'AIRG', 'ALLT', 'MDRX', 'AOSL', 'GOOG', 'GOOGL', 'AABA', 'AMBR', 'DOX', 'AMRH', 'AAPL', 'INTC', 'NVDA', 'AMZN', 'MSFT', 'FB', 'CSCO', 'ADSK']
+Tickers: ['AAPL']
 
-data_slice_start_index = 2019-01-02
-data_slice_size = 24
+data_slice_start_index = 2014-01-03
+data_slice_size = 253
 nb_data_slices = 5
 Model parameters: None
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Run stats: 
 
-Number of data points processed: 118
-Buy trigger count: 224
-Sell trigger count: 197
+Number of data points processed: 1257
+Buy trigger count: 16
+Sell trigger count: 20
 
-Final net worth: 821.0$
-Average profit per gen: 0.0%
-Max profit achieved: 0.0%
-Min profit achieved: 0.0%
+Final net worth: 917$
+Average profit per gen: 0%
+Max profit achieved: 0%
+Min profit achieved: 0%
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

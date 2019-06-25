@@ -116,6 +116,7 @@ class RUN_multi_trade_sim:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("Multi ticker trade simulation \n")
 
+        print("Number of evaluated tickers:", len(tickers))
         print("Evaluated tickers:", tickers)
         print("\nStart date:", start_date)
         print("Data slice size:", data_slice_size)
