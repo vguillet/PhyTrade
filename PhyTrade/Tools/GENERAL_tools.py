@@ -2,16 +2,18 @@
 
 class GENERAL_tools:
     @staticmethod
-    def calc_nested_dic_item_count(dictionary):
+    def calc_nested_dic_item_count(dictionary, blacklist):
         count = 0
         for key in dictionary:
-            if type(dictionary[key]) is dict:
-                count += GENERAL_tools().calc_nested_dic_item_count(dictionary[key])
+            if key in blacklist:
+                continue
+            elif type(dictionary[key]) is dict:
+                count += GENERAL_tools().calc_nested_dic_item_count(dictionary[key], blacklist)
             else:
                 if type(dictionary[key]) is list:
                     count += len(dictionary[key])
                 elif type(dictionary[key]) is int or type(dictionary[key]) is float or type(dictionary[key]) is bool:
                     count += 1
                 else:
-                    print("ERROR", type(dictionary[key]))
+                    print("ERROR", type(dictionary[key]), "not accounted for")
         return count

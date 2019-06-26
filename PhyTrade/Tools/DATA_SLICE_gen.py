@@ -10,7 +10,7 @@ import numpy as np
 
 class data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
-                 data_selection="Open", end_date=None, data_looper=True):
+                 data_selection="Open", end_date=None, data_looper=False):
 
         self.ticker = ticker
         self.data = fetch_technical_data(ticker)
@@ -18,7 +18,11 @@ class data_slice:
         # ---- Data slice properties
         # --> Find corresponding starting data index from start date
         self.start_date = start_date
-        self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.start_date)[0]
+
+        try:
+            self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.start_date)[0]
+        except:
+            print("!!!!! Start Date selected not present in data !!!!!")
 
         # --> Adjust slice size according to data available if necessary
         self.slice_size = slice_size
@@ -162,7 +166,7 @@ class data_slice:
                     else:
                         # --> Trigger End of dataset
                         self.end_of_dataset = True
-                        print("End of dataset reached\n")
+                        print("\nEnd of dataset reached\n")
                         return
             else:
                 return
@@ -182,7 +186,7 @@ class data_slice:
                     else:
                         # --> Trigger End of dataset
                         self.end_of_dataset = True
-                        print("End of dataset reached\n")
+                        print("\nEnd of dataset reached\n")
                         return
             else:
                 return

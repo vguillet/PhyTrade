@@ -25,8 +25,8 @@ class RUN_multi_trade_sim:
         tickers = settings.market_settings.tickers
         parameter_sets = settings.market_settings.parameter_sets
 
-        start_date = settings.market_settings.start_date
-        end_date = settings.market_settings.end_date
+        start_date = settings.market_settings.testing_start_date
+        end_date = settings.market_settings.testing_end_date
         data_slice_size = settings.market_settings.data_slice_size
 
         # ---- Fetch multi_trade_sim settings
@@ -221,8 +221,6 @@ class RUN_multi_trade_sim:
         self.results.data_slice_size = data_slice_size
         self.results.nb_data_slices = nb_data_slices
 
-        # TODO: Fixed total_datapoint count
-        # self.results.total_data_points_processed = data_slice_size*nb_data_slices
         self.results.total_data_points_processed = abs(self.ref_data_slice.default_start_index-self.ref_data_slice.default_end_index)
         self.results.gen_result_recap_file()
         self.results.plot_results()

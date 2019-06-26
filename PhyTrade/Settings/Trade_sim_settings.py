@@ -8,7 +8,7 @@ class Trade_sim_settings:
 
     # ___________________________ Print/plot parameters ______________________
     plot_eco_model_results = False
-    print_trade_process = False
+    print_trade_process = True
 
     # ___________________________ Investment settings ________________________
     investment_settings = 3

@@ -25,8 +25,8 @@ class RUN_single_trade_sim:
         ticker = settings.market_settings.tickers[0]
         parameter_set = settings.market_settings.parameter_sets[0]
 
-        start_date = settings.market_settings.start_date
-        end_date = settings.market_settings.end_date
+        start_date = settings.market_settings.testing_start_date
+        end_date = settings.market_settings.testing_end_date
         data_slice_size = settings.market_settings.data_slice_size
 
         # --> Simulation parameters
@@ -222,7 +222,7 @@ class RUN_single_trade_sim:
         self.results.data_slice_size = self.data_slice.slice_size
         self.results.nb_data_slices = self.nb_data_slices
 
-        self.results.total_data_points_processed = self.data_slice.slice_size*self.nb_data_slices
+        self.results.total_data_points_processed = abs(self.data_slice.default_start_index-self.data_slice.default_end_index)
 
         self.results.gen_result_recap_file()
         self.results.plot_results(run_metalabels)

@@ -180,7 +180,7 @@ class EVOA_tools:
 
         # --> Generate offsprings from parents with mutations
         cycling = -1
-        for _ in range(population_size - 1 - nb_random_ind):
+        for _ in range(population_size - nb_parents_in_next_gen - nb_random_ind):
             cycling += 1
             if cycling >= len(parents):
                 cycling = 0

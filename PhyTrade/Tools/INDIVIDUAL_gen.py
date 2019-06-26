@@ -36,11 +36,7 @@ class Individual:
             self.parameter_dictionary = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        # TODO: Fix parameter count
-        new_d = {k: self.parameter_dictionary[k] for k in set(list(self.parameter_dictionary.keys()))
-                 - set(settings.signal_training_settings.parameter_blacklist)}
-
-        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(new_d)
+        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(self.parameter_dictionary, settings.signal_training_settings.parameter_blacklist)
 
         for i in self.parameter_dictionary:
             for j in range(len(self.parameter_dictionary[i])):

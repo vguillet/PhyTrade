@@ -21,12 +21,12 @@ class Signal_training_settings:
 
         # ___________________________ EVO_algo main parameters ___________________
         # ---- Data slice parameters
-        self.parameter_blacklist = ["general_settings", "flip"]
+        self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
         self.nb_of_generations = 500
         self.data_slice_cycle_count = 5
-        self.data_slice_shift_per_gen = 17
+        self.data_slice_shift_per_gen = 12
         self.data_looper = False
 
         self.population_size = 50

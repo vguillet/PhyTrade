@@ -69,7 +69,7 @@ class PORTFOLIO_gen:
         # --> For every day in current data slice
         for i in range(self.data_slice_length):
             # date = self.content[self.tickers[0]]["Data_slice"].data["index"][-self.content[self.tickers[0]]["Data_slice"].start_index + i + len(self.tickers[0]["Data_slice"].data["index"])]
-            date = "NEW DATE"
+            date = self.content[self.tickers[0]]["Data_slice"].sliced_data.iloc[i]['Date']
 
             # ---- Update account
             # --> Update current values
@@ -80,7 +80,7 @@ class PORTFOLIO_gen:
             self.tradebot.account.update_account(date, self.current_values)
 
             if print_trade_process:
-                print("------------- Trade Date:", i + 1, "-------------")
+                print("------------- Trade Date:", date, "-------------")
 
             sell_orders = []
             hold_orders = []

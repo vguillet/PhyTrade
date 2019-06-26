@@ -36,11 +36,11 @@ class EVOA_optimiser:
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
         self.data_slice = data_slice(ticker,
-                                     settings.market_settings.start_date,
+                                     settings.market_settings.training_start_date,
                                      settings.market_settings.data_slice_size,
                                      settings.signal_training_settings.data_slice_shift_per_gen,
                                      data_selection=settings.market_settings.price_selection,
-                                     end_date=settings.market_settings.end_date,
+                                     end_date=settings.market_settings.training_end_date,
                                      data_looper=settings.signal_training_settings.data_looper)
 
         self.data_slice.gen_slice_metalabels(settings.metalabeling_settings.upper_barrier, settings.metalabeling_settings.lower_barrier,
