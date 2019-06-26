@@ -8,10 +8,14 @@ Input that still require manual input:
 """
 
 from PhyTrade.Settings.SETTINGS import SETTINGS
+from PhyTrade.Tools.Progress_bar_tool import Progress_bar
+
 
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+
+import math
 
 
 class RUN_single_trade_sim:
@@ -79,8 +83,6 @@ class RUN_single_trade_sim:
         self.ticker = ticker
         self.parameter_set = parameter_set
 
-        self.nb_data_slices = nb_data_slices
-        
         # ---- Current param setup
         # Finance
         self.current_funds = settings.trade_sim_settings.initial_investment
@@ -107,6 +109,8 @@ class RUN_single_trade_sim:
         self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
                                      end_date=end_date, data_looper=False)
         self.data_slice.gen_slice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
+
+        self.nb_data_slices = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/data_slice_size)
         
         # ---- Generate Individual
         self.individual = Individual(ticker=self.ticker, parameter_set=parameter_set)
@@ -126,6 +130,8 @@ class RUN_single_trade_sim:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
         # ============================ TRADING SIMULATION ===============================
         # ---- Generate economic model and perform trade run for all data slices
+        progress_bar = Progress_bar(self.nb_data_slices, bar_size=40, label="Simulation progress", overwrite_setting=False)
+
         data_slice_count = 0
         while self.data_slice.end_of_dataset is False:
             data_slice_count += 1
@@ -170,12 +176,20 @@ class RUN_single_trade_sim:
             self.results.assets += self.individual.account.assets_history
             self.results.simple_investment += self.individual.account.simple_investment_net_worth
 
+            # --> Record model
+            self.results.spline += list(self.individual.spline)
+            self.results.trade_signal += list(self.individual.trade_signal)
+            self.results.upper_threshold_spline += list(self.individual.analysis.big_data.Major_spline.upper_threshold)
+            self.results.lower_threshold_spline += list(self.individual.analysis.big_data.Major_spline.lower_threshold)
+            self.results.metalabels += list(self.data_slice.metalabels)
+
             # --> Print Data slice results
             print("--------------------------------------------------")
             print("Net worth =", round(self.results.net_worth[-1]), "$; Simple investment worth=", self.results.simple_investment[-1])
             print("Buy count:", self.individual.tradebot.buy_count,
                   "; Sell count:", self.individual.tradebot.sell_count,
-                  "; Stop loss count:", self.individual.tradebot.stop_loss_count)
+                  "; Stop loss count:", self.individual.tradebot.stop_loss_count, "\n")
+            progress_bar.update_progress_bar(data_slice_count-1)
             print("\n--------------------------------------------------")
 
             # ---- Calc next data slice parameters and stop simulation if end date reached
@@ -208,7 +222,7 @@ class RUN_single_trade_sim:
                                                                         decay_function=investment_per_trade_decay_function), 3)
 
             # --> Print throttled values
-            print("Account:")
+            print("Next slice parameters:")
             print("Prev stop loss", self.prev_stop_loss)
             print("Max stop loss", self.max_stop_loss)
             print("Max investment per trade", self.max_investment_per_trade, "\n")
@@ -218,7 +232,8 @@ class RUN_single_trade_sim:
         self.results.individual = self.individual
         self.parameter_set = self.parameter_set
 
-        self.results.data_slice_start = self.data_slice.default_start_index
+        self.results.data_slice_start_date = self.data_slice.default_start_date
+        self.results.data_slice_stop_date = self.data_slice.default_end_date
         self.results.data_slice_size = self.data_slice.slice_size
         self.results.nb_data_slices = self.nb_data_slices
 
@@ -239,15 +254,20 @@ class Trade_simulation_results_gen:
         self.individual = None
         self.parameter_set = None
 
-        self.data_slice_start = None
+        self.data_slice_start_date = None
+        self.data_slice_stop_date = None
         self.data_slice_size = None
         self.nb_data_slices = None
 
+        self.benchmark_confusion_matrix_analysis = None
         self.total_data_points_processed = None
+
+        # --> Trade history
         self.buy_count = 0
         self.sell_count = 0
         self.stop_loss_count = 0
 
+        # --> Finance history
         self.net_worth = []
         self.profit = []
         self.funds = []
@@ -255,6 +275,13 @@ class Trade_simulation_results_gen:
 
         self.simple_investment = []
         self.metalabel_net_worth = []
+
+        # --> Model history
+        self.spline = []
+        self.trade_signal = []
+        self.upper_threshold_spline = []
+        self.lower_threshold_spline = []
+        self.metalabels = []
 
     def gen_result_recap_file(self):
         # -- Create results file
@@ -266,7 +293,8 @@ class Trade_simulation_results_gen:
         self.results_file.write("====================== " + self.run_label + " ======================\n")
         self.results_file.write("\n-----------> Model settings:" + "\n")
         self.results_file.write("Ticker: " + str(self.individual.ticker) + "\n")
-        self.results_file.write("\ndata_slice_start_index = " + str(self.data_slice_start) + "\n")
+        self.results_file.write("\ndata_slice_start_date = " + str(self.data_slice_start_date))
+        self.results_file.write("\ndata_slice_end_date = " + str(self.data_slice_stop_date) + "\n")
         self.results_file.write("data_slice_size = " + str(self.data_slice_size) + "\n")
         self.results_file.write("nb_data_slices = " + str(self.nb_data_slices) + "\n")
         self.results_file.write("Model parameters: " + str(self.parameter_set) + "\n")
@@ -301,7 +329,9 @@ class Trade_simulation_results_gen:
 
     def plot_results(self, run_metalabels):
         import matplotlib.pyplot as plt
+        from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
+        # --> Plot trade results
         plt.plot(self.net_worth, label="Net worth")
         plt.plot(self.funds, label="Funds")
         plt.plot(self.assets, label="Assets")
@@ -314,5 +344,13 @@ class Trade_simulation_results_gen:
         plt.legend()
 
         plt.show()
+
+        # --> Plot model results
+        print_data_slice = data_slice(self.ticker, self.data_slice_start_date, self.total_data_points_processed, 0)
+        PLOT_tools().plot_trade_process(print_data_slice,
+                                        self.spline,
+                                        self.upper_threshold_spline,
+                                        self.lower_threshold_spline,
+                                        self.trade_signal)
         return
 

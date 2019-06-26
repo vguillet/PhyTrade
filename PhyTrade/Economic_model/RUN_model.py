@@ -114,6 +114,7 @@ class RUN_model:
 class EVAL_parameter_set_results_gen:
     def __init__(self, ticker, run_label):
         self.run_label = "Evaluation_" + run_label
+
         self.ticker = ticker
         self.individual = None
         self.benchmark_confusion_matrix_analysis = None
