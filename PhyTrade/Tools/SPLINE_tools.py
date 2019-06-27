@@ -172,7 +172,6 @@ class SPLINE:
             spline_buffer = spline_buffer_normalised
 
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
-
         if threshold_setting == 0:
             upper_threshold = [standard_upper_threshold]*len(big_data.spline_xs)
             lower_threshold = [standard_lower_threshold] * len(big_data.spline_xs)
@@ -185,8 +184,12 @@ class SPLINE:
             upper_band = np.array(mean_avg + (2 * standard_dev))[bband_timeframe:]
             lower_band = np.array(mean_avg - (2 * standard_dev))[bband_timeframe:]
 
+            # --> Normalise thresholds between -1 and 1
             upper_band_normalised = MATH_tools().normalise_minus_one_one(upper_band)
             lower_band_normalised = MATH_tools().normalise_minus_one_one(lower_band)
+
+            # upper_band_normalised = MATH_tools().alignator_minus_one_one(upper_band, signal_max=200, signal_min=100)
+            # lower_band_normalised = MATH_tools().alignator_minus_one_one(lower_band, signal_max=200, signal_min=100)
 
             upper_band_spline = SPLINE(big_data).calc_signal_to_spline(big_data, upper_band_normalised)
             lower_band_spline = SPLINE(big_data).calc_signal_to_spline(big_data, lower_band_normalised)
@@ -207,8 +210,12 @@ class SPLINE:
             upper_band_price_diff = (upper_band-np.array(bbands_df[big_data.data_slice.selection]))[bband_timeframe:]
             lower_band_price_diff = (np.array(bbands_df[big_data.data_slice.selection])-lower_band)[bband_timeframe:]
 
+            # --> Normalise thresholds between -1 and 1
             upper_band_price_diff_normalised = MATH_tools().normalise_minus_one_one(upper_band_price_diff)
             lower_band_price_diff_normalised = MATH_tools().normalise_minus_one_one(lower_band_price_diff)
+
+            # upper_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(upper_band_price_diff, signal_max=25, signal_min=0)
+            # lower_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(lower_band_price_diff, signal_max=25, signal_min=0)
 
             upper_band_price_diff_spline = SPLINE(big_data).calc_signal_to_spline(big_data, upper_band_price_diff_normalised)
             lower_band_price_diff_spline = SPLINE(big_data).calc_signal_to_spline(big_data, lower_band_price_diff_normalised)
@@ -292,15 +299,18 @@ class SPLINE:
                 # ...upper bound
                 if trade_spline[i] >= trade_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                     sell_trigger = 1
+                    continue
 
                 if trade_spline[i] <= max(list(trade_upper_threshold[i-j] for j in range(back_range))) and sell_trigger == 1:   # Initiate sell trigger
                     trade_signal[i] = 1
                     max_prev = trade_spline[i]
                     sell_trigger = 2
+                    continue
 
                 if trade_spline[i] <= trade_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
                     max_prev = None
                     sell_trigger = 0
+                    continue
 
                 if max_prev is not None:  # Re-initiate sell trigger if signal increase past previous max
                     if trade_spline[i] > max_prev and sell_trigger == 2:
@@ -311,20 +321,29 @@ class SPLINE:
                 # ...lower bound
                 if trade_spline[i] <= trade_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                     buy_trigger = 1
+                    continue
 
                 if trade_spline[i] >= min(list(trade_lower_threshold[i-j] for j in range(back_range))) and buy_trigger == 1:    # Initiate sell trigger
                     trade_signal[i] = -1
                     min_prev = trade_spline[i]
                     buy_trigger = 2
+                    continue
 
                 if trade_spline[i] >= trade_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
                     min_prev = None
                     buy_trigger = 0
+                    continue
 
                 if min_prev is not None:        # Re-initiate buy trigger if signal decrease past previous min
                     if trade_spline[i] < min_prev and buy_trigger == 2:
                         buy_trigger = 1
                         min_prev = None
+
+        if buy_trigger == 1:
+            trade_signal[-1] = -1
+
+        if sell_trigger == 1:
+            trade_signal[-1] = 1
 
         return trade_signal, trade_spline
 

@@ -15,7 +15,7 @@ class EOM(ABSTRACT_indicator):
         dm = ((eom_df['High'] + eom_df['Low'])/2) - ((eom_df['High'].shift(1) + eom_df['Low'].shift(1))/2)
         br = (eom_df['Volume'] / 100000000) / (eom_df['High'] - eom_df['Low'])
         eom = dm / br
-        eom_values = pd.Series(pd.rolling_mean(eom, self.timeperiod), name='EMV')
+        eom_values = eom.rolling(self.timeperiod, center=False).mean()
 
         self.eom_values = np.array(eom_values.values[self.timeperiod:])
 

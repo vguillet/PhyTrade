@@ -10,12 +10,11 @@ class MATH_tools:
             signal_normalised[i] = 2*(signal[i] - signal_min) / ((signal_max - signal_min) or 1)-1
 
         for i in range(len(signal_normalised)):
+            if signal_normalised[i] > 1:
+                signal_normalised[i] = 1
 
-            if signal_normalised[i] > signal_max:
-                signal_normalised[i] = signal_max
-
-            elif signal_normalised[i] < signal_min:
-                signal_normalised[i] = signal_min
+            elif signal_normalised[i] < -1:
+                signal_normalised[i] = -1
 
         return signal_normalised
 

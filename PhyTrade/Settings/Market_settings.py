@@ -27,7 +27,7 @@ class Market_settings:
 
         # --> Testing dates
         self.testing_start_date = "2019-01-02"
-        self.testing_end_date = None
+        self.testing_end_date = "2019-03-04"
 
         self.data_slice_size = 24
         # ---- Broker settings

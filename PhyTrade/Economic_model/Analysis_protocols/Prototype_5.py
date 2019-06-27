@@ -192,6 +192,7 @@ class Prototype_5:
         # print(np.shape(self.big_data.combined_spline))
 
         self.big_data.combined_spline = self.math_tools.normalise_minus_one_one(self.big_data.combined_spline)
+        # self.big_data.combined_spline = self.math_tools.alignator_minus_one_one(self.big_data.combined_spline, 25, -25)
 
         # ~~~~~~~~~~~~~~~~~~ Threshold determination
         # ---> Creating dynamic thresholds

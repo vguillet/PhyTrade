@@ -10,12 +10,13 @@ class PLOT_tools:
         plot_tools.plot_oc_values(data_slice)
         plot_tools.plot_values_trigger(data_slice, trade_signal)
         plt.title("Trade process: " + data_slice.ticker + "        " + data_slice.start_date + " --> " + data_slice.stop_date)
+        plt.legend()
 
         # ------------------ Plot bb signal(s)
         ax2 = plt.subplot(212)
         plot_tools.plot_spline(spline, color="y")
-        plot_tools.plot_spline(upper_threshold_spline, label="Upper threshold")
-        plot_tools.plot_spline(lower_threshold_spline, label="Lower threshold")
+        plot_tools.plot_spline(upper_threshold_spline)
+        plot_tools.plot_spline(lower_threshold_spline)
         plot_tools.plot_spline_trigger(spline, trade_signal)
 
         plt.show()
@@ -41,19 +42,21 @@ class PLOT_tools:
         plt.xlabel("Trade date")
         plt.ylabel("Value")
 
-        plt.legend()
         plt.grid()
 
     @staticmethod
-    def plot_spline(spline, label=" ", color='g'):
+    def plot_spline(spline, label=None, color='g'):
 
-        plt.plot(range(len(spline)), spline, linewidth=1, label=label, c=color)
+        if label is not None:
+            plt.plot(range(len(spline)), spline, linewidth=1, label=label, c=color)
+        else:
+            plt.plot(range(len(spline)), spline, linewidth=1, c=color)
+
 
         plt.title("Splines")
         plt.xlabel("Trade date")
         plt.ylabel("Buy <-- Signal power --> Sell")
 
-        plt.legend()
         plt.grid()
 
     @staticmethod
@@ -77,7 +80,6 @@ class PLOT_tools:
         plt.scatter(sell_index,  sell_spline_values, label="Sell trigger")
         plt.scatter(buy_index, buy_spline_values, label="Buy trigger")
 
-        plt.legend()
         plt.grid()
 
     @staticmethod
@@ -102,6 +104,5 @@ class PLOT_tools:
         plt.scatter(sell_date,  sell_values, label="Sell trigger")
         plt.scatter(buy_date, buy_values, label="Buy trigger")
 
-        plt.legend()
         plt.grid()
 
