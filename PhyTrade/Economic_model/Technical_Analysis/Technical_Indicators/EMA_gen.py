@@ -57,8 +57,9 @@ class EMA(ABSTRACT_indicator):
         for i in range(big_data.data_slice.slice_size):
             self.bb_signal[i] = (self.ema_1[i] - self.ema_2[i])/2
 
-        # Normalising ema bb signal values between -1 and 1
-            self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
+        # --> Normalising ema bb signal values between -1 and 1
+        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
+        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=15, signal_min=-15)
 
         if include_triggers_in_bb_signal:
             # ----------------- Trigger points determination

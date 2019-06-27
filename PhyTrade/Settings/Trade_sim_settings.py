@@ -26,7 +26,7 @@ class Trade_sim_settings:
     def gen_single_trade_sim(self):
 
         # ___________________________ Metalabels parameters ______________________
-        self.run_metalabels = False     # Can be switched off for performance increase
+        self.run_metalabels = True     # Can be switched off for performance increase
 
         self.m_investment_settings = 1
         self.m_cash_in_settings = 0

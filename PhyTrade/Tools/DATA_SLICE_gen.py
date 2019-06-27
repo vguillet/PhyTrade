@@ -14,13 +14,12 @@ class data_slice:
 
         self.ticker = ticker
         self.data = fetch_technical_data(ticker)
+        self.selection = data_selection
 
         # ---- Data slice properties
         # --> Find corresponding starting data index from start date
-        self.start_date = start_date
-
         try:
-            self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.start_date)[0]
+            self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == start_date)[0]
         except:
             print("!!!!! Start Date selected not present in data !!!!!")
 
@@ -33,16 +32,6 @@ class data_slice:
 
         # --> Find corresponding stop data index
         self.stop_index = self.start_index + self.slice_size
-        self.stop_date = self.data.iloc[self.stop_index]['Date']
-
-        # ---- Generate special dataframes
-        # --> Slice Pandas dataframe according to start/stop indexes
-        self.sliced_data = self.data[self.start_index:self.stop_index]
-
-        # --> List open/closed price according to selection
-        self.selection = data_selection
-        self.data_selection = list(self.data[self.selection])
-        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
         # ---- Default properties
         self.default_start_date = self.start_date
@@ -50,7 +39,10 @@ class data_slice:
 
         self.default_end_date = end_date
         if self.default_end_date is not None:
-            self.default_end_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.default_end_date)[0]
+            try:
+                self.default_end_index = -len(self.data)+np.flatnonzero(self.data['Date'] == self.default_end_date)[0]
+            except:
+                print("!!!!! End Date selected not present in data !!!!!")
         else:
             self.default_end_index = -1
             self.default_end_date = self.data.iloc[self.default_end_index]['Date']
@@ -62,6 +54,26 @@ class data_slice:
         # --> Disable/enable  data looping
         self.data_looper = data_looper
         self.end_of_dataset = False
+
+    @property
+    def start_date(self):
+        return self.data.iloc[self.start_index]['Date']
+
+    @property
+    def stop_date(self):
+        return self.data.iloc[self.stop_index]['Date']
+
+    @property
+    def sliced_data(self):
+        return self.data[self.start_index:self.stop_index]
+
+    @property
+    def data_selection(self):
+        return list(self.data[self.selection])
+
+    @property
+    def sliced_data_selection(self):
+        return list(self.sliced_data[self.selection])
 
     def gen_slice_metalabels(self, upper_barrier, lower_barrier, look_ahead, metalabeling_setting=0):
         """
@@ -89,38 +101,18 @@ class data_slice:
     def get_next_data_slice(self):
         # --> Determine new start/stop indexes
         self.start_index += self.slice_size
-        self.start_date = self.data.iloc[self.start_index]['Date']
-
         self.stop_index += self.slice_size
 
         # --> Check for end of data
         self.check_end_data()
 
-        # --> Determine start/stop date
-        self.start_date = self.data.iloc[self.start_index]['Date']
-        self.stop_date = self.data.iloc[self.stop_index]['Date']
-
-        # --> Update slice data
-        self.sliced_data = self.data[self.start_index:self.stop_index]
-        self.sliced_data_selection = list(self.sliced_data[self.selection])
-
     def get_shifted_data_slice(self):
         # --> Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
-        self.start_date = self.data.iloc[self.start_index]['Date']
-
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
 
         # --> Check for end of data
         self.check_end_data()
-
-        # --> Determine stop date
-        self.start_date = self.data.iloc[self.start_index]['Date']
-        self.stop_date = self.data.iloc[self.stop_index]['Date']
-
-        # --> Update slice data
-        self.sliced_data = self.data[self.start_index:self.stop_index]
-        self.sliced_data_selection = list(self.sliced_data[self.selection])
 
     def perform_trade_run(self,
                           investment_settings=1, cash_in_settings=0,

@@ -18,8 +18,13 @@ class BIGDATA:
 
         :param data_slice: DATA_SLICE class instance
         """
-
+        self.buffer = 0
+        print("----------------------------------------------------->", self.buffer)
         self.data_slice = data_slice
+
+        # --> Apply buffer to data slice
+        self.data_slice.start_index -= self.buffer
+        self.data_slice.slice_size += self.buffer
 
         self.sell_trigger_values = []
         self.buy_trigger_values = []

@@ -22,16 +22,18 @@ class OC_AVG_GRADIENT(ABSTRACT_indicator):
     """
     # ===================== INDICATOR OUTPUT DETERMINATION ==============
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
-        # -----------------Bear/Bullish continuous signal of dataset gradient
+
+        # ----------------- Bear/Bullish continuous signal of dataset gradient
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
         avg_gradient = np.zeros(big_data.data_slice.slice_size)
 
-        # Obtaining the average gradient
+        # --> Obtaining the average gradient
         for i in range(big_data.data_slice.slice_size):
             avg_gradient[i] = (self.close_values_gradient[i] + self.open_values_gradient[i]) / 2
 
-        # Normalising avg gradient values between -1 and 1
-        avg_gradient_bb_signal = MATH_tools().normalise_minus_one_one(avg_gradient)
+        # --> Normalising avg gradient values between -1 and 1
+        # avg_gradient_bb_signal = MATH_tools().normalise_minus_one_one(avg_gradient)
+        avg_gradient_bb_signal = MATH_tools().alignator_minus_one_one(avg_gradient, signal_max=10, signal_min=-10)
 
         self.bb_signal = avg_gradient_bb_signal

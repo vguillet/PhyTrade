@@ -30,4 +30,9 @@ class EOM(ABSTRACT_indicator):
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
         # ----------------- Bear/Bullish continuous signal
-        self.bb_signal = MATH_tools().normalise_minus_one_one(self.eom_values)
+        self.bb_signal = self.eom_values
+
+        # --> Normalising eom bb signal values between -1 and 1
+        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.eom_values)
+        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=5, signal_min=-5)
+

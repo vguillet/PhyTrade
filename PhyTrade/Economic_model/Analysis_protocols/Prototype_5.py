@@ -23,6 +23,7 @@ from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.SMA_gen imp
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.EMA_gen import EMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.LWMA_gen import LWMA
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.CCI_gen import CCI
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.EOM_gen import EOM
 from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.OC_AVG_GRADIENT_gen import OC_AVG_GRADIENT
 
 # ---> Import amplification signals
@@ -95,13 +96,13 @@ class Prototype_5:
         # --> CCI initialisation
         self.big_data.content["indicators"]["cci"] = []
         for i in range(parameter_dictionary["indicators_count"]["cci"]):
-            self.big_data.content["indicators"]["lwma"].append(CCI(self.big_data,
+            self.big_data.content["indicators"]["cci"].append(CCI(self.big_data,
                     timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["cci_"+str(i)]))
 
-        # --> CCI initialisation
+        # --> EOM initialisation
         self.big_data.content["indicators"]["eom"] = []
         for i in range(parameter_dictionary["indicators_count"]["eom"]):
-            self.big_data.content["indicators"]["lwma"].append(CCI(self.big_data,
+            self.big_data.content["indicators"]["eom"].append(EOM(self.big_data,
                     timeperiod=parameter_dictionary["indicator_properties"]["timeframes"]["eom_"+str(i)]))
 
         # --> OC_AVG_GRADIENT initialisation

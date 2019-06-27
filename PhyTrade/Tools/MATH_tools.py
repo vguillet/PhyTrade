@@ -3,6 +3,23 @@ import numpy as np
 
 class MATH_tools:
     @staticmethod
+    def alignator_minus_one_one(signal, signal_max=100, signal_min=-100):
+        signal_normalised = np.zeros(len(signal))
+
+        for i in range(len(signal)):
+            signal_normalised[i] = 2*(signal[i] - signal_min) / ((signal_max - signal_min) or 1)-1
+
+        for i in range(len(signal_normalised)):
+
+            if signal_normalised[i] > signal_max:
+                signal_normalised[i] = signal_max
+
+            elif signal_normalised[i] < signal_min:
+                signal_normalised[i] = signal_min
+
+        return signal_normalised
+
+    @staticmethod
     def normalise_zero_one(signal):
         signal_normalised = np.zeros(len(signal))
 

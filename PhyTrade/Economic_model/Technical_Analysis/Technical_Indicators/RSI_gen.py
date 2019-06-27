@@ -125,12 +125,15 @@ class RSI(ABSTRACT_indicator):
         """
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        # -----------------Bear/Bullish continuous signal
-        # Normalising rsi bb signal values between -1 and 1
-        self.bb_signal = MATH_tools().normalise_minus_one_one(self.rsi_values)
+        # ----------------- Bear/Bullish continuous signal
+        self.bb_signal = self.rsi_values
+
+        # --> Normalising rsi bb signal values between -1 and 1
+        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
+        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=100, signal_min=-100)
 
         if include_triggers_in_bb_signal:
-            # -----------------Trigger points determination
+            # ----------------- Trigger points determination
             # Buy and sell triggers can take three values:
             # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
             sell_trigger = 0

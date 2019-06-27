@@ -73,7 +73,10 @@ class LWMA(ABSTRACT_indicator):
             self.bb_signal[i] = (self.lwma[i] - big_data.data_slice.sliced_data_selection[i]) / 2
 
         # Normalising lwma bb signal values between -1 and 1
-        self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
+        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
+        # TODO: Fix alignator boundaries
+        print(self.bb_signal)
+        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=100, signal_min=-100)
 
         if include_triggers_in_bb_signal:
             # ----------------- Trigger points determination

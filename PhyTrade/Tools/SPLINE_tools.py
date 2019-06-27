@@ -262,9 +262,6 @@ class SPLINE:
 
     @staticmethod
     def calc_trading_spline(big_data, spline, upper_threshold, lower_threshold):
-
-        trade_signal = np.zeros(big_data.data_slice.slice_size)
-
         # Listing out point of spline which are date points
         trade_spline = []
         trade_upper_threshold = []
@@ -275,6 +272,7 @@ class SPLINE:
             trade_upper_threshold.append(upper_threshold[i])
             trade_lower_threshold.append(lower_threshold[i])
 
+        trade_signal = np.zeros(len(trade_spline))
         # Buy and sell triggers can take three values:
         # 0 for neutral, 1 for sell at next bound crossing and 2 for post-sell
         sell_trigger = 0
@@ -289,41 +287,44 @@ class SPLINE:
 
         # Defining indicator trigger for...
         for i in range(big_data.data_slice.slice_size):
-            # ...upper bound
-            if trade_spline[i] >= trade_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
-                sell_trigger = 1
-
-            if max_prev is not None:        # Re-initiate sell trigger if signal increase past previous max
-                if trade_spline[i] > max_prev:
+            # print("Sell: ({0})  {1:.3f} | {2:.3f} | {3:.3f}  ({4}) :Buy".format(sell_trigger, round(trade_upper_threshold[i], 3), round(trade_spline[i], 3), round(trade_lower_threshold[i], 3), round(buy_trigger)))
+            if trade_spline[i] > 0:
+                # ...upper bound
+                if trade_spline[i] >= trade_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
                     sell_trigger = 1
+
+                if trade_spline[i] <= max(list(trade_upper_threshold[i-j] for j in range(back_range))) and sell_trigger == 1:   # Initiate sell trigger
+                    trade_signal[i] = 1
+                    max_prev = trade_spline[i]
+                    sell_trigger = 2
+
+                if trade_spline[i] <= trade_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
                     max_prev = None
+                    sell_trigger = 0
 
-            if trade_spline[i] <= max(list(trade_upper_threshold[i-j] for j in range(back_range))) and sell_trigger == 1:   # Initiate sell trigger
-                trade_signal[i] = 1
-                max_prev = trade_spline[i]
-                sell_trigger = 2
+                if max_prev is not None:  # Re-initiate sell trigger if signal increase past previous max
+                    if trade_spline[i] > max_prev and sell_trigger == 2:
+                        sell_trigger = 1
+                        max_prev = None
 
-            if trade_spline[i] <= min(trade_upper_threshold) and sell_trigger == 2:   # Reset trigger
-                max_prev = None
-                sell_trigger = 0
-
-            # ...lower bound
-            if trade_spline[i] <= trade_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
-                buy_trigger = 1
-
-            if min_prev is not None:        # Re-initiate buy trigger if signal decrease past previous min
-                if trade_spline[i] < min_prev:
+            else:
+                # ...lower bound
+                if trade_spline[i] <= trade_lower_threshold[i] and buy_trigger == 0:     # Initiate buy trigger
                     buy_trigger = 1
+
+                if trade_spline[i] >= min(list(trade_lower_threshold[i-j] for j in range(back_range))) and buy_trigger == 1:    # Initiate sell trigger
+                    trade_signal[i] = -1
+                    min_prev = trade_spline[i]
+                    buy_trigger = 2
+
+                if trade_spline[i] >= trade_lower_threshold[i] and buy_trigger == 2:    # Reset trigger
                     min_prev = None
+                    buy_trigger = 0
 
-            if trade_spline[i] >= min(list(trade_lower_threshold[i-j] for j in range(back_range))) and buy_trigger == 1:    # Initiate sell trigger
-                trade_signal[i] = -1
-                min_prev = trade_spline[i]
-                buy_trigger = 2
-
-            if trade_spline[i] >= max(trade_lower_threshold) and buy_trigger == 2:    # Reset trigger
-                min_prev = None
-                buy_trigger = 0
+                if min_prev is not None:        # Re-initiate buy trigger if signal decrease past previous min
+                    if trade_spline[i] < min_prev and buy_trigger == 2:
+                        buy_trigger = 1
+                        min_prev = None
 
         return trade_signal, trade_spline
 

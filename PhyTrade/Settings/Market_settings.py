@@ -14,7 +14,7 @@ class Market_settings:
                 self.tickers.append(x)
 
         # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
-        # self.tickers = ["INTC"]
+        self.tickers = ["AAPL"]
 
         self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, 6, "Short_term")
 
@@ -29,7 +29,7 @@ class Market_settings:
         self.testing_start_date = "2019-01-02"
         self.testing_end_date = None
 
-        self.data_slice_size = 72
+        self.data_slice_size = 24
         # ---- Broker settings
         self.min_transaction_cost = 1
         self.transaction_cost_per_share = 0.005

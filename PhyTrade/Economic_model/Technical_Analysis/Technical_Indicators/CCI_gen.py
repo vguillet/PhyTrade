@@ -31,4 +31,8 @@ class CCI(ABSTRACT_indicator):
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
         # ----------------- Bear/Bullish continuous signal
-        self.bb_signal = MATH_tools().normalise_minus_one_one(self.cci_values)
+        self.bb_signal = self.cci_values
+
+        # --> Normalising cci bb signal values between -1 and 1
+        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.cci_values)
+        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=150, signal_min=-150)
