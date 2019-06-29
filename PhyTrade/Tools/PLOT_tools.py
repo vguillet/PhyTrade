@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
-
+import matplotlib.dates as mdates
+import pandas as pd
 
 class PLOT_tools:
     @staticmethod
@@ -29,12 +30,14 @@ class PLOT_tools:
         :param plot_open_values:  Plot open values
         """
 
+        datelist = list(pd.to_datetime(date) for date in data_slice.sliced_data["Date"])
+
         if plot_close_values:
-            plt.plot(list(data_slice.sliced_data["Date"]), list(data_slice.sliced_data["Close"]),
+            plt.plot(datelist, list(data_slice.sliced_data["Close"]),
                      linewidth=1, label="Close values")   # Plot closing value
 
         if plot_open_values:
-            plt.plot(list(data_slice.sliced_data["Date"]), list(data_slice.sliced_data["Open"]),
+            plt.plot(datelist, list(data_slice.sliced_data["Open"]),
                      linewidth=1, label="Open values")
 
         plt.gcf().autofmt_xdate()

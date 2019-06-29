@@ -27,9 +27,9 @@ class Market_settings:
 
         # --> Testing dates
         self.testing_start_date = "2019-01-02"
-        self.testing_end_date = "2019-03-04"
+        self.testing_end_date = None
 
-        self.data_slice_size = 24
+        self.data_slice_size = 72
         # ---- Broker settings
         self.min_transaction_cost = 1
         self.transaction_cost_per_share = 0.005

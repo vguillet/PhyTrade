@@ -18,7 +18,7 @@ class BIGDATA:
 
         :param data_slice: DATA_SLICE class instance
         """
-        self.buffer = 5
+        self.buffer = 0
         self.data_slice = data_slice
 
         # --> Apply buffer to data slice

@@ -179,7 +179,7 @@ class Prototype_5:
             self.spline_tools.combine_splines(self.big_data.spline_array,
                                               self.big_data.weights_array)
 
-        # ---> Tuning combined signal
+        # ---- Tuning combined signal
         # self.big_data.combined_spline = \
         #     self.spline_tools.modulate_amplitude_spline(
         #         self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=settings.volume_std_dev_max)
@@ -188,14 +188,12 @@ class Prototype_5:
         #     self.spline_tools.modulate_amplitude_spline(
         #         self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=settings.volatility_std_dev_max)
 
-        # print(self.big_data.combined_spline)
-        # print(np.shape(self.big_data.combined_spline))
-
+        # ---- Normalise combined_spline between -1 and 1
         self.big_data.combined_spline = self.math_tools.normalise_minus_one_one(self.big_data.combined_spline)
         # self.big_data.combined_spline = self.math_tools.alignator_minus_one_one(self.big_data.combined_spline, 25, -25)
 
         # ~~~~~~~~~~~~~~~~~~ Threshold determination
-        # ---> Creating dynamic thresholds
+        # ---- Creating dynamic thresholds
         upper_threshold, lower_threshold = \
             self.spline_tools.calc_thresholds(self.big_data, self.big_data.combined_spline,
                                               buffer=settings.buffer,
@@ -204,15 +202,6 @@ class Prototype_5:
                                               bband_timeframe=parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"],
                                               threshold_setting=parameter_dictionary["general_settings"]["threshold_setting"],
                                               buffer_setting=parameter_dictionary["general_settings"]["buffer_setting"])
-
-        # ---> Modulating threshold with SMA 3 value
-        # upper_threshold = self.spline_tools.modulate_amplitude_spline(
-        #         upper_threshold,  self.math_tools.amplify(
-        #             self.math_tools.normalise_zero_one(self.big_data.spline_sma_3), 0.3))
-        #
-        # lower_threshold = self.spline_tools.modulate_amplitude_spline(
-        #         lower_threshold,  self.math_tools.amplify(
-        #             self.math_tools.normalise_zero_one(self.big_data.spline_sma_3), 0.3))
 
         # ~~~~~~~~~~~~~~~~~~ Creating Major Spline/trigger values
         self.big_data.Major_spline = MAJOR_SPLINE(self.big_data,
