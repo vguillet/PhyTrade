@@ -17,12 +17,22 @@ import math
 
 
 class EVOA_optimiser:
-    def __init__(self, settings, ticker="AAPL"):
+    def __init__(self, settings, ticker="AAPL", optimiser_setting="1"):
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
-        settings.signal_training_settings.gen_evoa_settings()
+        # --> EVOA run as signal tuner
+        if optimiser_setting == 1:
+            settings.signal_training_settings.gen_evoa_settings()
+
+        # --> EVOA run as optimiser
+        elif optimiser_setting == 2:
+            settings.signal_training_settings.gen_evoa_settings()
+            settings.signal_training_settings.data_slice_cycle_count = settings.signal_training_settings.nb_of_generations
+            settings.signal_training_settings.data_looper = False
+
         settings.metalabeling_settings.gen_metalabels_settings()
 
+        # --> Initiate prints
         prints = EVOA_prints(ticker, 4)
 
         # ---- Update settings according to run case
@@ -49,9 +59,13 @@ class EVOA_optimiser:
 
         # --> Update generation count if end_date results in lower slice count
         if abs(self.data_slice.default_start_index-self.data_slice.default_end_index) < settings.market_settings.data_slice_size*settings.signal_training_settings.nb_of_generations:
-            settings.signal_training_settings.nb_of_generations =\
+            settings.signal_training_settings.nb_of_generations = \
                 math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
             print("\n--> Generation count updated to", settings.signal_training_settings.nb_of_generations, "to match available data <--\n")
+
+            # Re-adjust cycle count if evoa run as optimiser
+            if optimiser_setting == 2:
+                settings.signal_training_settings.data_slice_cycle_count = settings.signal_training_settings.nb_of_generations
 
         settings.signal_training_settings.exploitation_phase_len = \
             round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
@@ -70,7 +84,7 @@ class EVOA_optimiser:
         self.results.run_start_time = time.time()
 
         # ========================= EVO OPTIMISATION PROCESS =============================
-        prints.evoa_run_initialisation_recap()
+        prints.evoa_run_initialisation_recap(optimiser_setting)
         progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
         cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
 
@@ -202,6 +216,7 @@ class EVOA_optimiser:
 
         # Select best individual from final population
         if self.fitness_evaluation is None:
+            print("!!!!!!!!!!!!!!!!!!!!!!!!! BEST INDIVIDUAL NOT SELECTED !!!!!!!!!!!!!!!!!!!!!!!!!")
             self.fitness_evaluation = [1]
 
         self.best_individual = self.evoa_tools.select_from_population(self.fitness_evaluation,

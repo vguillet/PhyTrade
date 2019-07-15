@@ -214,8 +214,8 @@ class SPLINE:
             upper_band_price_diff_normalised = MATH_tools().normalise_minus_one_one(upper_band_price_diff)
             lower_band_price_diff_normalised = MATH_tools().normalise_minus_one_one(lower_band_price_diff)
 
-            # upper_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(upper_band_price_diff, signal_max=25, signal_min=0)
-            # lower_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(lower_band_price_diff, signal_max=25, signal_min=0)
+            # upper_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(upper_band_price_diff, signal_max=2.5, signal_min=-2.5)
+            # lower_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(lower_band_price_diff, signal_max=2.5, signal_min=-2.5)
 
             upper_band_price_diff_spline = SPLINE(big_data).calc_signal_to_spline(big_data, upper_band_price_diff_normalised)
             lower_band_price_diff_spline = SPLINE(big_data).calc_signal_to_spline(big_data, lower_band_price_diff_normalised)
@@ -288,13 +288,15 @@ class SPLINE:
         max_prev = None
         min_prev = None
 
-        back_range = 10
-        if back_range > len(trade_spline):
-            back_range = len(trade_spline)
+        back_range = 1
 
         # Defining indicator trigger for...
         for i in range(big_data.data_slice.slice_size):
             # print("Sell: ({0})  {1:.3f} | {2:.3f} | {3:.3f}  ({4}) :Buy".format(sell_trigger, round(trade_upper_threshold[i], 3), round(trade_spline[i], 3), round(trade_lower_threshold[i], 3), round(buy_trigger)))
+
+            if sell_trigger == 1 or buy_trigger == 1:
+                back_range += 1
+
             if trade_spline[i] > 0:
                 # ...upper bound
                 if trade_spline[i] >= trade_upper_threshold[i] and sell_trigger == 0:    # Initiate sell trigger
@@ -305,6 +307,8 @@ class SPLINE:
                     trade_signal[i] = 1
                     max_prev = trade_spline[i]
                     sell_trigger = 2
+
+                    back_range = 1
                     continue
 
                 if trade_spline[i] <= trade_upper_threshold[i] and sell_trigger == 2:   # Reset trigger
@@ -327,6 +331,8 @@ class SPLINE:
                     trade_signal[i] = -1
                     min_prev = trade_spline[i]
                     buy_trigger = 2
+
+                    back_range = 1
                     continue
 
                 if trade_spline[i] >= trade_lower_threshold[i] and buy_trigger == 2:    # Reset trigger

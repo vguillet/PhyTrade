@@ -2,7 +2,7 @@ from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_param
 import multiprocessing
 
 
-class Signal_training_settings:
+class Optimiser_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
@@ -24,18 +24,17 @@ class Signal_training_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 500
+        self.nb_of_generations = 2
         self.data_slice_cycle_count = 5
         self.data_slice_shift_per_gen = 12
         self.data_looper = False
 
         self.population_size = 50
+        self.nb_parents = 20
+        self.nb_random_ind = 10
 
         self.mutation_rate = 1
-        self.nb_parents = 15
-        self.nb_random_ind = 10
-        
-        self.nb_parents_in_next_gen = 6
+        self.nb_parents_in_next_gen = 3
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15

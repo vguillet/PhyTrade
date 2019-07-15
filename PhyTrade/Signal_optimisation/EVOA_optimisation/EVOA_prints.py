@@ -31,10 +31,16 @@ class EVOA_prints:
     def monkey_patch_pass(*args, **kwargs):
         return
 
-    def evoa_run_initialisation_recap(self):
+    def evoa_run_initialisation_recap(self, run_mode):
         # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("EVOA_v"+str(self.evoa_version), "\n")
+
+        if run_mode == 1:
+            print("RUN Mode: Signal tuner")
+
+        elif run_mode == 2:
+            print("RUN Mode: Optimiser")
 
         print("Evaluated ticker:", self.ticker)
         print("Start time:", time.strftime('%X %x %Z'), "\n")
