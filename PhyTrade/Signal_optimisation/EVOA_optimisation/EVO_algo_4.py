@@ -225,7 +225,9 @@ class EVOA_optimiser:
                                                                       nb_parents=1)[0]
 
         self.results.individual = self.best_individual
-        self.results.gen_parameters_json()
+
+        if optimiser_setting == 1:
+            self.results.gen_parameters_json()
 
         # # ------------------ Final results benchmarking
         # # -- Initialise benchmark data slice

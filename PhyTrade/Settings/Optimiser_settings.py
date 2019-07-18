@@ -9,7 +9,7 @@ class Optimiser_settings:
         self.config_name = "Run_6"
 
         # ---- Multiprocessing settings
-        self.multiprocessing = False
+        self.multiprocessing = True
         self.max_process_count = multiprocessing.cpu_count() - 1
 
         # ___________________________ Print/plot parameters ______________________
@@ -24,17 +24,17 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 2
+        self.nb_of_generations = 1
         self.data_slice_cycle_count = 5
         self.data_slice_shift_per_gen = 12
         self.data_looper = False
 
-        self.population_size = 50
-        self.nb_parents = 20
-        self.nb_random_ind = 10
+        self.population_size = 2
+        self.nb_parents = 2
+        self.nb_random_ind = 1
 
         self.mutation_rate = 1
-        self.nb_parents_in_next_gen = 3
+        self.nb_parents_in_next_gen = 1
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15

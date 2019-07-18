@@ -18,7 +18,7 @@ class Market_settings:
 
         self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, 6, "Short_term")
 
-        self.price_selection = "Close"
+        self.price_selection = "Open"
 
         # ---- Date settings
         # --> Training dates
@@ -27,9 +27,9 @@ class Market_settings:
 
         # --> Testing dates
         self.testing_start_date = "2019-01-02"
-        self.testing_end_date = "2019-03-04"
+        self.testing_end_date = "2019-06-04"
 
-        self.data_slice_size = 35
+        self.data_slice_size = 25
         # ---- Broker settings
         self.min_transaction_cost = 1
         self.transaction_cost_per_share = 0.005

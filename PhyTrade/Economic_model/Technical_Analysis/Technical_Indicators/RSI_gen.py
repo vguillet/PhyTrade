@@ -48,7 +48,7 @@ class RSI(ABSTRACT_indicator):
 
         self.rsi_values = np.array(rsi.values[self.timeframe:])
 
-    # -------------------------WEIGHTED BUFFER DEFINITION-----------------
+        # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         # Buffer settings:
         #       - 0: no buffer
         #       - 1: fixed value buffer
@@ -65,7 +65,8 @@ class RSI(ABSTRACT_indicator):
 
         else:
             rsi_buffer = 0
-    # -------------------------DYNAMIC BOUND DEFINITION-------------------
+            
+        # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # Define initial upper and lower bounds
         self.upper_bound = np.zeros(big_data.data_slice.slice_size)
         self.lower_bound = np.zeros(big_data.data_slice.slice_size)
