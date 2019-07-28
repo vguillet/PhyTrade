@@ -15,14 +15,15 @@ class Progress_bar:
 
         # --> Add label if provided
         if label is not None:
-            self.label = label+" | "
+            extra_str = 6 - len(label)
+            self.label = label + " "*extra_str + " | "
         else:
             self.label = ""
 
         # --> Initiated loading circle if overwrite setting is true and select style
         if overwrite_setting is True:
             self.circle_pos_lst = ["-", "\\", "|", "/"]
-            # self.circle_pos_lst = [".  ", ".. ", "..."]
+            # self.circle_pos_lst = ["   ", ".  ", ".. ", "..."]
 
             self.current_circle_pos = 0
 
@@ -44,13 +45,43 @@ class Progress_bar:
         # --> Reset start time for next iteration
         self.start_time = time.time()
 
+    def update_activity_indicator(self):
+        if len(self.run_time_lst) == 0:
+            printed_bar = self.__activity_bar
+        else:
+            printed_bar = self.__progress_bar
+
+        if self.overwrite_setting:
+            print("\r"+printed_bar, end="")
+        else:
+            print(printed_bar)
+
     # ===============================================================================
     # -------------------------- Loading bar properties -----------------------------
     # ===============================================================================
     @property
     def __progress_bar(self):
-        # --> Construct bar
-        return self.__loading_circle + self.label + self.__process_count + self.__bar + self.__run_time + self.__eta + self.__process_completed_msg
+        return self.__loading_circle \
+               + self.label \
+               + self.__process_count \
+               + self.__bar \
+               + self.__progress_percent \
+               + "  " \
+               + self.__run_time \
+               + self.__eta \
+               + self.__process_completed_msg
+
+    @property
+    def __activity_bar(self):
+        return self.__loading_circle \
+               + self.label \
+               + self.__process_count \
+               + self.__bar \
+               + self.__progress_percent
+
+    @property
+    def __progress_percent(self):
+        return " - " + self.__aligned_number(round((self.current/self.max_step)*100), 2) + "%"
 
     @property
     def __process_count(self):
@@ -101,7 +132,7 @@ class Progress_bar:
 
     @property
     def __loading_circle(self):
-        if self.overwrite_setting is True:
+        if self.overwrite_setting is True and self.current != self.max_step:
             self.current_circle_pos += 1
             if self.current_circle_pos > len(self.circle_pos_lst)-1:
                 self.current_circle_pos = 0
@@ -109,30 +140,51 @@ class Progress_bar:
         else:
             return ""
 
-    # --> String formatting functions
+    # ===============================================================================
+    # ----------------------- String formatting functions ---------------------------
+    # ===============================================================================
     def __formatted_time(self, formatted_time):
 
         formatted_time = [0, formatted_time]
         
         time_dict_keys = ["seconds", "minutes", "hours", "days", "years"]
         time_dict = {"seconds": {"max": 60,
-                                 "current": 0},
-                     "minutes": {"max": 60,
-                                 "current": 0},
-                     "hours": {"max": 24,
-                               "current": 0},
-                     "days": {"max": 365,
-                              "current": 0},
-                     "months": {"max": 12,
-                                "current": 0},
-                     "years": {"max": 10,
-                               "current": 0},
-                     "decades": {"max": 10,
-                                 "current": 0},
-                     "centuries": {"max": 999999999999,
-                                   "current": 0}
-                     }
+                                 "current": 0,
+                                 "str_count": 5},
 
+                     "minutes": {"max": 60,
+                                 "current": 0,
+                                 "str_count": 2},
+
+                     "hours": {"max": 24,
+                               "current": 0,
+                               "str_count": 2},
+
+                     "days": {"max": 365,
+                              "current": 0,
+                              "str_count": 1},
+
+                     "weeks": {"max": 365,
+                               "current": 0,
+                               "str_count": 1},
+
+                     "months": {"max": 12,
+                                "current": 0,
+                                "str_count": 2},
+
+                     "years": {"max": 10,
+                               "current": 0,
+                               "str_count": 1},
+
+                     "decades": {"max": 10,
+                                 "current": 0,
+                                 "str_count": 2},
+
+                     "centuries": {"max": 99999999999999999999999,
+                                   "current": 0,
+                                   "str_count": 5}}
+
+        # --> Fill eta dict
         current_time_key = 0
         while formatted_time[1] / time_dict[time_dict_keys[current_time_key]]["max"] > 1:
             formatted_time = list(modf(formatted_time[1] / time_dict[time_dict_keys[current_time_key]]["max"]))
@@ -148,25 +200,14 @@ class Progress_bar:
         else:
             time_dict[time_dict_keys[current_time_key]]["current"] = round(formatted_time[1] + formatted_time[0], 2)
 
+        # --> Create time string
         time_str = ""
         for key in time_dict_keys:
             if time_dict[key]["current"] != 0:
-                if key == "seconds":
-                    if time_dict[key]["current"] != 1:
-                        time_str = self.__aligned_number(time_dict[key]["current"], 5, align_side="right") + " " + key + ", " + time_str
-                    else:
-                        time_str = self.__aligned_number(time_dict[key]["current"], 5, align_side="right") + " " + key[:-1] + " , " + time_str
-
-                elif key in ["minutes", "hours"]:
-                    if time_dict[key]["current"] != 1:
-                        time_str = self.__aligned_number(time_dict[key]["current"], 2) + " " + key + ", " + time_str
-                    else:
-                        time_str = self.__aligned_number(time_dict[key]["current"], 2) + " " + key[:-1] + " , " + time_str
+                if time_dict[key]["current"] != 1:
+                    time_str = self.__aligned_number(time_dict[key]["current"], time_dict[key]["str_count"], align_side="right") + " " + key + ", " + time_str
                 else:
-                    if time_dict[key]["current"] != 1:
-                        time_str = str(time_dict[key]["current"]) + " " + key + ", " + time_str
-                    else:
-                        time_str = str(time_dict[key]["current"]) + " " + key[:-1] + " , " + time_str
+                    time_str = self.__aligned_number(time_dict[key]["current"], time_dict[key]["str_count"], align_side="right") + " " + key[:-1] + " , " + time_str
 
         return time_str[:-2]
     
@@ -183,10 +224,12 @@ class Progress_bar:
 
 
 if __name__ == "__main__":
-    maxi_step = 100
-    bar = Progress_bar(maxi_step, label="Demo bar", overwrite_setting=False)
+    maxi_step = 37400000
+    bar = Progress_bar(maxi_step, label="Demo bar", overwrite_setting=True)
 
     for i in range(maxi_step):
-        time.sleep(1)
+        for j in range(200):
+            bar.update_activity_indicator()
+            time.sleep(0.01)
         bar.update_progress_bar(i)
 

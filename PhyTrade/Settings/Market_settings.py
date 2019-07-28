@@ -13,8 +13,8 @@ class Market_settings:
         #     if x not in self.tickers:
         #         self.tickers.append(x)
 
-        # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
-        self.tickers = ["AAPL"]
+        self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
+        # self.tickers = ["AAPL"]
 
         self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, 6, "Short_term")
 
