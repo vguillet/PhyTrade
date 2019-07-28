@@ -19,13 +19,16 @@ class Progress_bar:
         else:
             self.label = ""
 
-        # --> Initiated loading circle if overwrite setting is true
+        # --> Initiated loading circle if overwrite setting is true and select style
         if overwrite_setting is True:
             self.circle_pos_lst = ["-", "\\", "|", "/"]
+            # self.circle_pos_lst = [".  ", ".. ", "..."]
+
             self.current_circle_pos = 0
 
         # --> Initiate time tracker
-        self.start_time = time.time()
+        self.initial_start_time = time.time()
+        self.start_time = self.initial_start_time
         self.run_time_lst = []
 
     def update_progress_bar(self, current):
@@ -47,18 +50,15 @@ class Progress_bar:
     @property
     def __progress_bar(self):
         # --> Construct bar
+        return self.__loading_circle + self.label + self.__process_count + self.__bar + self.__run_time + self.__eta + self.__process_completed_msg
 
-        if len(self.__eta) != 0:
-            return self.__loading_circle + self.label \
-                   + self.__aligned_number(self.current, len(str(self.max_step))) + "/" + str(self.max_step) \
-                   + " - " + self.__bar \
-                   + " - Run time: " + self.__aligned_number(self.run_time, 5, align_side="right") + "s, - ETA: " + self.__eta
-        else:
-            return self.label + self.__aligned_number(self.current, len(str(self.max_step))) + "/" + str(self.max_step) + " - " + self.__bar + " - Process Completed"
+    @property
+    def __process_count(self):
+        return self.__aligned_number(self.current, len(str(self.max_step))) + "/" + str(self.max_step)
 
     @property
     def __bar(self):
-        bar = "["
+        bar = " - ["
         nb_of_steps = int(self.current / self.step)
         for _ in range(nb_of_steps):
             bar = bar + "="
@@ -69,44 +69,33 @@ class Progress_bar:
         return bar
 
     @property
-    def __eta(self):
-        # --> Compute ETA
-        eta_keys = ["seconds", "minutes", "hours", "days", "years"]
-
-        eta = {"seconds": {"max": 60,
-                           "current": 0.},
-               "minutes": {"max": 60,
-                           "current": 0.},
-               "hours":  {"max": 24,
-                          "current": 0.},
-               "days":  {"max": 365,
-                         "current": 0},
-               "months": {"max": 12,
-                          "current": 0},
-               "years":  {"max": 99999999999,
-                          "current": 0.}}
-
-        modf_eta = [0, sum(self.run_time_lst)/len(self.run_time_lst) * (self.max_step-self.current)]
-
-        current_eta_key = 0
-        while modf_eta[1]/eta[eta_keys[current_eta_key]]["max"] > 1:
-            modf_eta = list(modf(modf_eta[1]/eta[eta_keys[current_eta_key]]["max"]))
-            eta[eta_keys[current_eta_key]]["current"] = round(modf_eta[0] * eta[eta_keys[current_eta_key]]["max"], 3)
-            current_eta_key += 1
-
-        if current_eta_key != 0:
-            eta[eta_keys[current_eta_key]]["current"] = round(modf_eta[1])
+    def __run_time(self):
+        if self.current == self.max_step:
+            total_run_time_str = self.__formatted_time(round(time.time() - self.initial_start_time, 3))
+            if len(total_run_time_str) > 0:
+                return " - Total run time: " + total_run_time_str
+            else:
+                return ""
         else:
-            # eta[eta_keys[current_eta_key]]["current"] = round(modf_eta[1], 3)
-            eta[eta_keys[current_eta_key]]["current"] = round(modf_eta[1] + modf_eta[0], 3)
+            run_time_str = self.__formatted_time(self.run_time)
+            if len(run_time_str) > 0:
+                return " - Run time: " + run_time_str
+            else:
+                return ""
 
-        eta_str = ""
-        for key in eta_keys:
-            if eta[key]["current"] != 0:
-                eta_str = str(eta[key]["current"]) + " " + key + ", " + eta_str
+    @property
+    def __eta(self):
+        eta_str = self.__formatted_time(sum(self.run_time_lst)/len(self.run_time_lst) * (self.max_step-self.current))
 
         if len(eta_str) > 0:
-            return eta_str[:-2]
+            return " - ETA: " + eta_str
+        else:
+            return ""
+
+    @property
+    def __process_completed_msg(self):
+        if self.current == self.max_step:
+            return " - Process Completed"
         else:
             return ""
 
@@ -116,11 +105,71 @@ class Progress_bar:
             self.current_circle_pos += 1
             if self.current_circle_pos > len(self.circle_pos_lst)-1:
                 self.current_circle_pos = 0
-            return self.circle_pos_lst[self.current_circle_pos] + " "
+            return "[" + self.circle_pos_lst[self.current_circle_pos] + "] "
         else:
             return ""
 
-    # --> Function to ensure number strings align
+    # --> String formatting functions
+    def __formatted_time(self, formatted_time):
+
+        formatted_time = [0, formatted_time]
+        
+        time_dict_keys = ["seconds", "minutes", "hours", "days", "years"]
+        time_dict = {"seconds": {"max": 60,
+                                 "current": 0},
+                     "minutes": {"max": 60,
+                                 "current": 0},
+                     "hours": {"max": 24,
+                               "current": 0},
+                     "days": {"max": 365,
+                              "current": 0},
+                     "months": {"max": 12,
+                                "current": 0},
+                     "years": {"max": 10,
+                               "current": 0},
+                     "decades": {"max": 10,
+                                 "current": 0},
+                     "centuries": {"max": 999999999999,
+                                   "current": 0}
+                     }
+
+        current_time_key = 0
+        while formatted_time[1] / time_dict[time_dict_keys[current_time_key]]["max"] > 1:
+            formatted_time = list(modf(formatted_time[1] / time_dict[time_dict_keys[current_time_key]]["max"]))
+            if current_time_key == 0:
+                time_dict[time_dict_keys[current_time_key]]["current"] = round(formatted_time[0] * time_dict[time_dict_keys[current_time_key]]["max"], 2)
+            else:
+                time_dict[time_dict_keys[current_time_key]]["current"] = round(formatted_time[0] * time_dict[time_dict_keys[current_time_key]]["max"])
+
+            current_time_key += 1
+
+        if current_time_key != 0:
+            time_dict[time_dict_keys[current_time_key]]["current"] = round(formatted_time[1])
+        else:
+            time_dict[time_dict_keys[current_time_key]]["current"] = round(formatted_time[1] + formatted_time[0], 2)
+
+        time_str = ""
+        for key in time_dict_keys:
+            if time_dict[key]["current"] != 0:
+                if key == "seconds":
+                    if time_dict[key]["current"] != 1:
+                        time_str = self.__aligned_number(time_dict[key]["current"], 5, align_side="right") + " " + key + ", " + time_str
+                    else:
+                        time_str = self.__aligned_number(time_dict[key]["current"], 5, align_side="right") + " " + key[:-1] + " , " + time_str
+
+                elif key in ["minutes", "hours"]:
+                    if time_dict[key]["current"] != 1:
+                        time_str = self.__aligned_number(time_dict[key]["current"], 2) + " " + key + ", " + time_str
+                    else:
+                        time_str = self.__aligned_number(time_dict[key]["current"], 2) + " " + key[:-1] + " , " + time_str
+                else:
+                    if time_dict[key]["current"] != 1:
+                        time_str = str(time_dict[key]["current"]) + " " + key + ", " + time_str
+                    else:
+                        time_str = str(time_dict[key]["current"]) + " " + key[:-1] + " , " + time_str
+
+        return time_str[:-2]
+    
     @staticmethod
     def __aligned_number(current, req_len, align_side="left"):
         current = str(current)
@@ -135,9 +184,9 @@ class Progress_bar:
 
 if __name__ == "__main__":
     maxi_step = 100
-    bar = Progress_bar(maxi_step, overwrite_setting=True)
+    bar = Progress_bar(maxi_step, label="Demo bar", overwrite_setting=False)
 
     for i in range(maxi_step):
-        time.sleep(0.205)
+        time.sleep(1)
         bar.update_progress_bar(i)
 
