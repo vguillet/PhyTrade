@@ -85,8 +85,8 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap(optimiser_setting)
-        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
         cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
+        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
 
         # ------------------ Initialise population
         if settings.signal_training_settings.starting_parameters is None:
