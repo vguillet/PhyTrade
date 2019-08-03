@@ -4,10 +4,8 @@ import time
 
 
 class EVOA_prints:
-    def __init__(self, ticker, evoa_version):
-        self.settings = SETTINGS()
-        self.settings.signal_training_settings.gen_evoa_settings()
-        self.settings.metalabeling_settings.gen_metalabels_settings()
+    def __init__(self, ticker, evoa_version, settings):
+        self.settings = settings
         self.settings.individual_settings.gen_individual_settings()
 
         self.ticker = ticker

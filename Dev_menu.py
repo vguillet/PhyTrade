@@ -65,7 +65,6 @@ while run is True:
         for ticker in settings.market_settings.tickers:
             gen_ticker_metalabels(settings, ticker)
 
-
     # ============================ ECONOMIC ANALYSIS ===============================
     elif selection == 3:
         run_model = RUN_model()

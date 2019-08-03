@@ -6,9 +6,11 @@ from math import ceil
 
 
 def gen_ticker_metalabels(settings, ticker):
-    print("\n==================================================================================")
-    print("=====================", ticker, "Metalabels generation initiated =======================")
-    print("==================================================================================\n")
+    settings.signal_training_settings.gen_evoa_metalabels_settings()
+    if settings.signal_training_settings.multiprocessing is False:
+        print("\n==================================================================================")
+        print("=====================", ticker, "Metalabels generation initiated =======================")
+        print("==================================================================================\n")
     ref_data_slice = data_slice(ticker,
                                 settings.market_settings.testing_start_date,
                                 settings.market_settings.data_slice_size, 0,
@@ -17,15 +19,18 @@ def gen_ticker_metalabels(settings, ticker):
     nb_slices = ceil((-ref_data_slice.default_start_index+ref_data_slice.default_end_index)/ref_data_slice.default_slice_size)
 
     # --> Print initial progress and status
-    print(ref_data_slice.default_start_date, ref_data_slice.default_end_date)
-    progress_bar = Progress_bar(max_step=nb_slices, bar_size=60, label="Metalabeling", overwrite_setting=False)
+    if settings.signal_training_settings.multiprocessing is False:
+        print(ref_data_slice.default_start_date, ref_data_slice.default_end_date)
+
+    progress_bar = Progress_bar(max_step=nb_slices, bar_size=60, label=ticker+" metalabeling", overwrite_setting=False)
 
     # --> Overwrite training dates with testing dates in settings
     settings.market_settings.training_start_date = ref_data_slice.start_date
     settings.market_settings.training_end_date = ref_data_slice.stop_date
 
     while not ref_data_slice.end_of_dataset:
-        print("\nDate slice processed:", ref_data_slice.start_date + " --> " + ref_data_slice.stop_date)
+        if settings.signal_training_settings.multiprocessing is False:
+            print("\nDate slice processed:", ref_data_slice.start_date + " --> " + ref_data_slice.stop_date)
 
         # --> Run optimiser on current slice
         evo_optimisation = EVOA_optimiser(settings, ticker, optimiser_setting=2)
@@ -39,4 +44,5 @@ def gen_ticker_metalabels(settings, ticker):
         # --> Print Progress and status
         progress_bar.update_progress()
 
-    print("\n==================", ticker, "Metalabels generated successfully ==================\n")
+    if settings.signal_training_settings.multiprocessing is False:
+        print("\n=====================", ticker, "Metalabels generated successfully =====================\n")

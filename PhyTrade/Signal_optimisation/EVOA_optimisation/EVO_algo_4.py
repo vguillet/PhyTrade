@@ -33,7 +33,7 @@ class EVOA_optimiser:
         settings.metalabeling_settings.gen_metalabels_settings()
 
         # --> Initiate prints
-        prints = EVOA_prints(ticker, 4)
+        prints = EVOA_prints(ticker, 4, settings)
 
         # ---- Update settings according to run case
         # --> Disable all prints/plots in case of multiprocessing
@@ -61,7 +61,9 @@ class EVOA_optimiser:
         if abs(self.data_slice.default_start_index-self.data_slice.default_end_index) < settings.market_settings.data_slice_size*settings.signal_training_settings.nb_of_generations:
             settings.signal_training_settings.nb_of_generations = \
                 math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
-            print("\n--> Generation count updated to", settings.signal_training_settings.nb_of_generations, "to match available data <--\n")
+
+            if settings.signal_training_settings.multiprocessing is False:
+                print("\n--> Generation count updated to", settings.signal_training_settings.nb_of_generations, "to match available data <--\n")
 
             # Re-adjust cycle count if evoa run as optimiser
             if optimiser_setting == 2:
@@ -85,8 +87,13 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap(optimiser_setting)
-        cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
-        progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
+        if optimiser_setting == 1 and not settings.signal_training_settings.multiprocessing:
+            cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
+        if optimiser_setting == 2:
+            if not settings.signal_training_settings.multiprocessing:
+                progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
+        else:
+            progress_bar = Progress_bar(settings.signal_training_settings.nb_of_generations, 50, label=ticker, overwrite_setting=False)
 
         # ------------------ Initialise population
         if settings.signal_training_settings.starting_parameters is None:
@@ -203,8 +210,14 @@ class EVOA_optimiser:
                 if gen != 0:
                     if settings.signal_training_settings.multiprocessing is False:
                         print("\nOptimisation progress:")
-                        cycle_progress_bar.update_progress(self.data_slice_cycle_count-1)
-                    progress_bar.update_progress()
+                        if optimiser_setting == 1 and not settings.signal_training_settings.multiprocessing:
+                            cycle_progress_bar.update_progress(self.data_slice_cycle_count-1)
+
+                    if optimiser_setting == 2:
+                        if not settings.signal_training_settings.multiprocessing:
+                            progress_bar.update_progress()
+                    else:
+                        progress_bar.update_progress()
 
                 if settings.signal_training_settings.plot_best_individual_eco_model_results is True:
                     self.population[self.fitness_evaluation.index(max(self.fitness_evaluation))].gen_economic_model(

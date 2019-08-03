@@ -63,6 +63,8 @@ class Optimiser_settings:
     def gen_evoa_metalabels_settings(self):
         import multiprocessing
         # ___________________________ Optimisation parameters ____________________
+        self.config_name = ""
+
         # ---- Multiprocessing settings
         self.multiprocessing = False
         self.max_process_count = multiprocessing.cpu_count() - 1
@@ -81,7 +83,7 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 1
+        self.nb_of_generations = 20
         self.population_size = 30
 
         self.nb_parents = 10
