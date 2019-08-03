@@ -26,4 +26,5 @@ def gen_ticker_metalabels(settings, ticker):
         ref_data_slice.get_next_data_slice()
         settings.market_settings.training_start_date = ref_data_slice.start_date
         settings.market_settings.training_end_date = ref_data_slice.stop_date
+        print(ref_data_slice.start_date, ref_data_slice.stop_date)
         progress_bar.update_progress()

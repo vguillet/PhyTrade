@@ -24,8 +24,10 @@ class EVOA_optimiser:
 
         # --> EVOA run as optimiser
         elif optimiser_setting == 2:
-            settings.signal_training_settings.gen_evoa_settings()
+            settings.signal_training_settings.gen_evoa_metalabels_settings()
+
             settings.signal_training_settings.data_slice_cycle_count = settings.signal_training_settings.nb_of_generations
+            settings.signal_training_settings.data_slice_shift_per_gen = 0
             settings.signal_training_settings.data_looper = False
 
         settings.metalabeling_settings.gen_metalabels_settings()

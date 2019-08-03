@@ -1,6 +1,5 @@
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 import pandas as pd
-import json
 import os.path
 
 
