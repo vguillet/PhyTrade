@@ -193,9 +193,12 @@ class EVOA_optimiser:
                 generation_end_time = time.time()
 
                 # ------------------ Print generation info
-                prints.generation_info(gen, generation_start_time, generation_end_time,
-                                       self.results, self.net_worth, self.fitness_evaluation,
-                                       self.population)
+                if settings.signal_training_settings.print_generation_info:
+                    prints.generation_info(gen, generation_start_time, generation_end_time,
+                                           self.results, self.net_worth, self.fitness_evaluation,
+                                           self.population)
+                elif settings.signal_training_settings.multiprocessing is False:
+                    print("")
 
                 if gen != 0:
                     if settings.signal_training_settings.multiprocessing is False:

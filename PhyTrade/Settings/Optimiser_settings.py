@@ -15,6 +15,8 @@ class Optimiser_settings:
         # ___________________________ Print/plot parameters ______________________
         self.print_evoa_parameters_per_gen = True
         self.print_evaluation_status = False
+        self.print_generation_info = True
+        self.print_trade_process = False
 
         self.plot_best_individual_eco_model_results = False
         self.plot_eco_model_results = False
@@ -66,8 +68,10 @@ class Optimiser_settings:
         self.max_process_count = multiprocessing.cpu_count() - 1
 
         # ___________________________ Print/plot parameters ______________________
-        self.print_evoa_parameters_per_gen = True
+        self.print_evoa_parameters_per_gen = False
         self.print_evaluation_status = False
+        self.print_generation_info = False
+        self.print_trade_process = False
 
         self.plot_best_individual_eco_model_results = False
         self.plot_eco_model_results = False
