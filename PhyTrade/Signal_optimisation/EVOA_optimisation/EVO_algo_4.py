@@ -202,6 +202,7 @@ class EVOA_optimiser:
 
                 if gen != 0:
                     if settings.signal_training_settings.multiprocessing is False:
+                        print("\nOptimisation progress:")
                         cycle_progress_bar.update_progress(self.data_slice_cycle_count-1)
                     progress_bar.update_progress()
 
