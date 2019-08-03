@@ -75,7 +75,7 @@ class EVOA_prints:
             print("                  -> CCI: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["cci"]) + cf["reset"])
             print("                  -> EVM: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["eom"]) + cf["reset"])
             print("                  -> OC gradient: " + cf["green"] + str(1) + cf["reset"])
-        print(cf["green"] + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + cf["reset"])
+        print(cf["green"] + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + cf["reset"])
 
     def generation_info(self, gen, generation_start_time, generation_end_time,
                         results, net_worth, fitness_evaluation,
@@ -109,13 +109,13 @@ class EVOA_prints:
 
     @staticmethod
     def end_of_optimisation_msg(total_data_points_processed):
-        print(cf["green"] + "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(cf["green"] + "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("All data processed")
         print("Number of data points processed:", total_data_points_processed)
         print("Parameter optimisation completed")
 
         print("\nEnd time:", time.strftime('%X %x %Z'), "\n")
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + cf["reset"])
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + cf["reset"])
 
     @staticmethod
     def init_pop_success_msg():
