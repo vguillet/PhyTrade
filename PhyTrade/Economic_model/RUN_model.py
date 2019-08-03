@@ -87,7 +87,7 @@ class RUN_model:
             self.results.metalabels += list(self.data_slice.metalabels)
 
             # --> Generate next dataslice
-            progress_bar.update_progress_bar(data_slice_count)
+            progress_bar.update_progress(data_slice_count)
             self.data_slice.get_next_data_slice()
 
         # ---- Generate evaluation summary

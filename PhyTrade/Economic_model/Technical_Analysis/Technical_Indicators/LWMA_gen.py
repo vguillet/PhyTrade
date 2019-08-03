@@ -40,7 +40,7 @@ class LWMA(ABSTRACT_indicator):
 
             for j in range(self.timeperiod):
                 weights[j] = max_weight-(max_weight/self.timeperiod)*j
-            # print(weights)
+
             weights = weights[::-1]
 
             # ---> Compute weighted daily values

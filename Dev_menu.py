@@ -3,6 +3,8 @@ The Dev_menu script is used to initiate all economic analysis, trading simulatio
 and economic model parameters evaluations and optimisations.
 """
 from PhyTrade.Settings.SETTINGS import SETTINGS
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
+from PhyTrade.Tools.Colours_and_Fonts import cf
 
 from PhyTrade.Signal_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
 from PhyTrade.Economic_model.RUN_model import RUN_model
@@ -10,19 +12,29 @@ from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
 from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim
 from PhyTrade.Backtesting.Metalabeling.EVOA_METALABELS_gen import gen_ticker_metalabels
 
-print("-- Welcome to the PhyTrade Economic analyser and modeling tool --")
-print("Select the wanted run process:")
-print("1 - RUN EVOA Optimiser")
-print("2 - GEN EVOA Metalabels")
-print("3 - RUN Model")
-print("4 - RUN Single ticker trading simulation")
-print("5 - RUN Multi ticker trading simulation (in development)")
-print("")
-print("0 - Exit")
+print(cf["bold"] + cf["cyan"] + "\n-- Welcome to the PhyTrade Economic analyser and modeling tool --" + cf["reset"])
+print("\nSelect the wanted run process:")
+print(cf["bold"] + "\n> == Model training and optimisation == <" + cf["reset"])
+print(cf["green"] + "1 - RUN EVOA Optimiser" + cf["reset"])
+print(cf["green"] + "2 - GEN EVOA Metalabels" + cf["reset"])
+
+print(cf["bold"] + "\n> == Model and parameter evaluation == <" + cf["reset"])
+print(cf["green"] + "3 - RUN Model" + cf["reset"])
+
+print(cf["bold"] + "\n> == Trading simulations == <" + cf["reset"])
+
+print(cf["green"] + "4 - RUN Single ticker trading simulation" + cf["reset"])
+print(cf["green"] + "5 - RUN Multi ticker trading simulation" + cf["reset"])
+
+print("\n-------------------------------------------------------------------------")
+print("Parameter sets available:")
+fetch_parameter_set_labels_df()
+
+print("\n" + cf["red"] + "0 - Exit" + cf["reset"])
 
 run = True
 while run is True:
-    selection = int(input("Enter selection:\n"))
+    selection = int(input("\nSelection:\n"))
     # selection = 1
     settings = SETTINGS()
     print("\n")

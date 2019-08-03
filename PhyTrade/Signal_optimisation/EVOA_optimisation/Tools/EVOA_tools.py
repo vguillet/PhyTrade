@@ -84,7 +84,7 @@ class EVOA_tools:
             transaction_count.append(population_lst[i].tradebot.buy_count + population_lst[i].tradebot.sell_count)
 
             if multiprocessing is False:
-                progress_bar.update_progress_bar(i)
+                progress_bar.update_progress()
 
         # -- Multi-thread evaluation
         # TODO: Add multithreading

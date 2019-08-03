@@ -2,8 +2,6 @@
 This script contains the EVOA_optimiser class, which is a refactored and optimised version of EVO_algo3 tailored for multiprocessing
 """
 
-from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
-
 from PhyTrade.Signal_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
 
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
@@ -199,8 +197,8 @@ class EVOA_optimiser:
 
                 if gen != 0:
                     if settings.signal_training_settings.multiprocessing is False:
-                        cycle_progress_bar.update_progress_bar(self.data_slice_cycle_count-1)
-                    progress_bar.update_progress_bar(gen-1)
+                        cycle_progress_bar.update_progress(self.data_slice_cycle_count-1)
+                    progress_bar.update_progress()
 
                 if settings.signal_training_settings.plot_best_individual_eco_model_results is True:
                     self.population[self.fitness_evaluation.index(max(self.fitness_evaluation))].gen_economic_model(

@@ -11,7 +11,7 @@ def fetch_parameter_set(ticker, run_count, term="Short_term"):
     if os.path.exists(path):
         return json.load(open(path))
     else:
-        # print("Run_"+ticker+"_"+str(run_count), "parameter set does not exist")
+        print("Run_"+str(run_count)+"_"+ticker, "parameter set does not exist")
         return None
 
 

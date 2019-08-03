@@ -189,7 +189,7 @@ class RUN_single_trade_sim:
             print("Buy count:", self.individual.tradebot.buy_count,
                   "; Sell count:", self.individual.tradebot.sell_count,
                   "; Stop loss count:", self.individual.tradebot.stop_loss_count, "\n")
-            progress_bar.update_progress_bar(data_slice_count-1)
+            progress_bar.update_progress()
             print("\n--------------------------------------------------")
 
             # ---- Calc next data slice parameters and stop simulation if end date reached

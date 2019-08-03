@@ -6,7 +6,7 @@ class Optimiser_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_6"
+        self.config_name = "Run_06"
 
         # ---- Multiprocessing settings
         self.multiprocessing = False
