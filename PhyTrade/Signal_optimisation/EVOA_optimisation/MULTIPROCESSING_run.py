@@ -1,7 +1,21 @@
+
+################################################################################################################
+"""
+Used for running optimiser on multiple cores
+"""
+
+# Built-in/Generic Imports
+from multiprocessing import Pool
+
+# Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Signal_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
 
-from multiprocessing import Pool
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 def optimise(ticker, *args):

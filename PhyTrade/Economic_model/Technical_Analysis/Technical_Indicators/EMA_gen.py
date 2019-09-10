@@ -1,14 +1,23 @@
+
+##################################################################################################################
 """
-This script enables computing the EMA indicator. An exponential moving average (EMA) is a type of moving average (MA) that places a greater
+Used for computing the EMA indicator. An exponential moving average (EMA) is a type of moving average (MA) that places a greater
 weight and significance on the most recent data points. The exponential moving average is also referred to as the exponentially weighted
 moving average. An exponentially weighted moving average reacts more significantly to recent price changes than
 a simple moving average (SMA), which applies an equal weight to all observations in the period.
-
-Victor Guillet
-11/28/2018
 """
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+# Libs
 import numpy as np
+
+# Own modules
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/28/2018'
+
+##################################################################################################################
 
 
 class EMA(ABSTRACT_indicator):

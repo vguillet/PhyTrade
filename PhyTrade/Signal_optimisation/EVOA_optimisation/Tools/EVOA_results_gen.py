@@ -1,10 +1,21 @@
+
+##################################################################################################################
 """
 This class contains the results_gen class, used to generate results form the various runs
 """
 
-from PhyTrade.Settings.SETTINGS import SETTINGS
+# Built-in/Generic Imports
 import time
+
+# Own modules
+from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.MATH_tools import MATH_tools
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class EVOA_results_gen:

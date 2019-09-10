@@ -1,5 +1,17 @@
-from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
+
+##################################################################################################################
+"""
+Contains settings for running the optimiser
+"""
+
+# Built-in/Generic Imports
 import multiprocessing
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class Optimiser_settings:
@@ -7,6 +19,7 @@ class Optimiser_settings:
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
         self.config_name = "Run_06"
+        self.optimiser_setting = 1
 
         # ---- Multiprocessing settings
         self.multiprocessing = False
@@ -18,7 +31,7 @@ class Optimiser_settings:
         self.print_generation_info = True
         self.print_trade_process = False
 
-        self.plot_best_individual_eco_model_results = False
+        self.plot_best_individual_eco_model_results = True
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
@@ -26,8 +39,8 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 20
-        self.population_size = 50
+        self.nb_of_generations = 50
+        self.population_size = 80
 
         self.nb_parents = 25
         self.nb_random_ind = 10
@@ -64,6 +77,7 @@ class Optimiser_settings:
         import multiprocessing
         # ___________________________ Optimisation parameters ____________________
         self.config_name = ""
+        self.optimiser_setting = 2
 
         # ---- Multiprocessing settings
         self.multiprocessing = False

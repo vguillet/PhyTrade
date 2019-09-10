@@ -1,6 +1,25 @@
-from PhyTrade.Data_Collection_preparation.Data_sources.Yahoo import pull_yahoo_data
-import pandas
+
+##################################################################################################################
+"""
+Used to fetch or download technical data of a specific ticker
+
+# TODO: Add self-updating data fetcher
+"""
+
+# Built-in/Generic Imports
 import os
+
+# Libs
+import pandas
+
+# Own modules
+from PhyTrade.Data_Collection_preparation.Data_sources.Yahoo import pull_yahoo_data
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 def fetch_technical_data(ticker):

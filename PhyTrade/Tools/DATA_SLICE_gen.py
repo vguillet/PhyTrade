@@ -1,11 +1,22 @@
+
+################################################################################################################
 """
 This script contains the data_slice class used by the EVOA Optimisation. The slice itself contains
 information about the slice analysed, including the starting and stopping index, along with the metalabels generated
 """
+
+# Libs
+import numpy as np
+
+# Own modules
 from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 from PhyTrade.Backtesting.Metalabeling.METALABELS_gen import MetaLabels_gen
 
-import numpy as np
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class data_slice:
@@ -17,11 +28,16 @@ class data_slice:
         self.selection = data_selection
 
         # ---- Data slice properties
-        # --> Find corresponding starting data index from start date
-        try:
-            self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == start_date)[0]
-        except:
-            print("!!!!! Start Date selected not present in data !!!!!")
+        # --> Find corresponding starting data index from start date and shift to next day if not available
+        found = False
+        while found != True:
+            if start_date in list(self.data["Date"]):
+                found = True
+            else:
+                print("!!!!! Start Date selected not present in data !!!!!")
+                start_date = start_date[:-1] + str(int(start_date[-1]) + 1)
+
+        self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == start_date)[0]
 
         # --> Adjust slice size according to data available if necessary
         self.slice_size = slice_size
@@ -100,8 +116,8 @@ class data_slice:
 
     def get_next_data_slice(self):
         # --> Determine new start/stop indexes
-        self.start_index += self.slice_size
-        self.stop_index += self.slice_size
+        self.start_index += self.slice_size + 1
+        self.stop_index += self.slice_size + 1
 
         # --> Check for end of data
         self.check_end_data()

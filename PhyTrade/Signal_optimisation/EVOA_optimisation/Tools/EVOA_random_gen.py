@@ -1,5 +1,20 @@
+
+##################################################################################################################
+"""
+Used to generate random values for specific cases
+"""
+
+# Built-in/Generic Imports
 import random
+
+# Own modules
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class EVOA_random_gen:

@@ -1,10 +1,17 @@
+
+##################################################################################################################
 """
 This script contains the Volume class for all calculations relating to Volume
-
-Victor Guillet
-29/11/2018
 """
+
+# Libs
 import numpy as np
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '29/11/2018'
+
+##################################################################################################################
 
 
 class VOLUME:

@@ -1,5 +1,20 @@
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+##################################################################################################################
+"""
+Used to compute the open close average gradient indicator.
+"""
+
+# Libs
 import numpy as np
+
+# Own modules
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class OC_AVG_GRADIENT(ABSTRACT_indicator):

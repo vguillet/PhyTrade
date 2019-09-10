@@ -1,3 +1,5 @@
+
+##################################################################################################################
 """
 This script contains the Prototype_5 class
 This prototype is based entirely on technical analysis, and include new indicators, including:
@@ -9,10 +11,12 @@ The following parameter_dictionary still require manual input:
     - include trigger in signals (Technical_Indicators output generation)
     - buffer and buffer settings (Threshold determination)
 
-Victor Guillet
-12/14/2018
 """
 
+# Libs
+import numpy as np
+
+# Own modules
 from PhyTrade.Economic_model.Big_Data import BIGDATA
 # ---> Import model settings
 from PhyTrade.Settings.Model_settings import Model_settings
@@ -32,11 +36,15 @@ from PhyTrade.Economic_model.Technical_Analysis.Amplification_signals.Volatility
 
 # ---> import general tools
 from PhyTrade.Economic_model.MAJOR_SPLINE_gen import MAJOR_SPLINE
-from PhyTrade.Tools.MATH_tools import MATH_tools
 from PhyTrade.Economic_model.Technical_Analysis.Tools.OC_tools import OC
+from PhyTrade.Tools.MATH_tools import MATH_tools
 from PhyTrade.Tools.SPLINE_tools import SPLINE
 
-import numpy as np
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '12/14/2018'
+
+##################################################################################################################
 
 
 class Prototype_5:

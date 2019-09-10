@@ -1,13 +1,23 @@
+
+##################################################################################################################
 """
 This script contains the Volatility class for all calculations relating to Volatility
-
-Victor Guillet
-11/12/2018
 """
 
-from PhyTrade.Tools.MATH_tools import MATH_tools
+# Built-in/Generic Imports
 import statistics as st
+
+# Libs
 import numpy as np
+
+# Own modules
+from PhyTrade.Tools.MATH_tools import MATH_tools
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/12/2018'
+
+##################################################################################################################
 
 
 class VOLATILITY:

@@ -1,5 +1,20 @@
-import pandas as pd
+
+##################################################################################################################
+"""
+Used for benchmarking model generated labels versus metalabels
+"""
+
+# Built-in/Generic Imports
 from math import *
+
+# Libs
+import pandas as pd
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class Confusion_matrix_analysis:

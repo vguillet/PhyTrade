@@ -1,8 +1,21 @@
-from PhyTrade.Settings.SETTINGS import SETTINGS
 
+################################################################################################################
+"""
+Used to generate individuals. Individuals contain a parameter set (either provided or generated)
+and can generate economic model, and perform trade runs
+"""
+
+# Own modules
+from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_random_gen import EVOA_random_gen
 from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 from PhyTrade.Tools.GENERAL_tools import GENERAL_tools
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class Individual:

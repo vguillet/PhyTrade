@@ -1,3 +1,5 @@
+
+################################################################################################################
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 
@@ -6,11 +8,18 @@ Input that still require manual input:
     - Investment settings
     - Stop-loss settings
 """
-from PhyTrade.Settings.SETTINGS import SETTINGS
 
+# Own modules
+from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class RUN_multi_trade_sim:

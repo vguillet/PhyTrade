@@ -1,4 +1,17 @@
+
+##################################################################################################################
+"""
+Use to generate major splines, containing eco model's output
+"""
+
+# Own modules
 from PhyTrade.Tools.SPLINE_tools import SPLINE
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/28/2018'
+
+##################################################################################################################
 
 
 class MAJOR_SPLINE:

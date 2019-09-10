@@ -1,7 +1,21 @@
-import pandas as pd
-from toolz import interleave
 
+##################################################################################################################
+"""
+Used to fetch a formatted list of the parameter sets available per ticker
+"""
+
+# Built-in/Generic Imports
+from toolz import interleave
 import os
+
+# Libs
+import pandas as pd
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 def fetch_parameter_set_labels_df():

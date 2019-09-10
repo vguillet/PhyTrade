@@ -1,6 +1,21 @@
-from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Tools.Colours_and_Fonts import cf
+
+################################################################################################################
+"""
+Contains all the prints function used by the EVOA optimiser algorithm.
+Also contains a monkey patch for removing prints in case of multiprocessing
+"""
+
+# Libs
 import time
+
+# Own modules
+from PhyTrade.Tools.Colours_and_Fonts import cf
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class EVOA_prints:

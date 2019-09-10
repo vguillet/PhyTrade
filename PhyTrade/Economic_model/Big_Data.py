@@ -1,10 +1,14 @@
 
+##################################################################################################################
 """
 This script contains the BIGDATA class, necessary to collect and move around data in the model generation prototypes
-
-Victor Guillet
-11/28/2018
 """
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/28/2018'
+
+##################################################################################################################
 
 
 class BIGDATA:

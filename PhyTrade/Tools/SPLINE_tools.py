@@ -1,10 +1,17 @@
+
+################################################################################################################
 """
 This script contains tools for smoothing out and adding up signals, using interpolation and splines
-
-Victor Guillet
-11/28/2018
 """
+
+# Libs
 import numpy as np
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/28/2018'
+
+################################################################################################################
 
 
 class SPLINE:

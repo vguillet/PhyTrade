@@ -1,3 +1,5 @@
+
+##################################################################################################################
 """
 This script contains the EVOA_tool class, used by the EVO_algo classes to perform EVOA optimisations
 The class contains:
@@ -8,7 +10,15 @@ The class contains:
     - throttle()
     - determine_evolving_gen_parameters()
 """
+
+# Built-in/Generic Imports
 import sys
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class EVOA_tools:

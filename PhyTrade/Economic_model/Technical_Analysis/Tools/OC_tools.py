@@ -1,9 +1,19 @@
-"""
-This scripts enable plotting the opening and close value of stocks of a data slice
 
-Victor Guillet
-11/28/2018
+##################################################################################################################
 """
+Used for plotting the opening and close value of stocks of a data slice
+"""
+
+# Libs
+import matplotlib.pyplot as plt
+
+# Own modules
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/28/2018'
+
+##################################################################################################################
 
 
 class OC:
@@ -37,8 +47,6 @@ class OC:
         :param plot_open_values:  Plot open values
         """
 
-        import matplotlib.pyplot as plt
-
         if plot_close_values:
             plt.plot(big_data.data_slice_dates, big_data.data_slice_close_values, linewidth=1, label="Close values")   # Plot closing value
 
@@ -60,8 +68,6 @@ class OC:
         :param big_data: BIGDATA class instance
         """
 
-        import matplotlib.pyplot as plt
-
         plt.plot(big_data.data_slice_dates, big_data.values_fluctuation, linewidth=1, label="Values fluctuation")
 
         plt.gcf().autofmt_xdate()
@@ -80,8 +86,6 @@ class OC:
         :param sell_dates: Sell dates triggers
         :param buy_dates: Buy dates triggers
         """
-
-        import matplotlib.pyplot as plt
 
         sell_values, buy_values = OC().calc_trigger_values(big_data, sell_dates, buy_dates)
 

@@ -1,6 +1,19 @@
+
+################################################################################################################
+"""
+Used for generating time series plots
+"""
+
+# Libs
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import pandas as pd
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
+
 
 class PLOT_tools:
     @staticmethod

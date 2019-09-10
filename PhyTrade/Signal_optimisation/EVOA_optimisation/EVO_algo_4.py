@@ -1,17 +1,26 @@
+
+################################################################################################################
 """
 This script contains the EVOA_optimiser class, which is a refactored and optimised version of EVO_algo3 tailored for multiprocessing
 """
 
-from PhyTrade.Signal_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
+# Built-in/Generic Imports
+import time
+import math
 
+# Own modules
+from PhyTrade.Signal_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_results_gen import EVOA_results_gen
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
-import time
-import math
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class EVOA_optimiser:
@@ -46,11 +55,11 @@ class EVOA_optimiser:
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
         self.data_slice = data_slice(ticker,
-                                     settings.market_settings.training_start_date,
+                                     settings.start_date,
                                      settings.market_settings.data_slice_size,
                                      settings.signal_training_settings.data_slice_shift_per_gen,
                                      data_selection=settings.market_settings.price_selection,
-                                     end_date=settings.market_settings.training_end_date,
+                                     end_date=settings.end_date,
                                      data_looper=settings.signal_training_settings.data_looper)
 
         self.data_slice.gen_slice_metalabels(settings.metalabeling_settings.upper_barrier, settings.metalabeling_settings.lower_barrier,

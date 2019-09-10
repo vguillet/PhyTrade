@@ -1,6 +1,23 @@
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-import pandas as pd
+
+##################################################################################################################
+"""
+Used to record spline generated - Format: ["Date", "trade_spline", "trade_signal"]
+"""
+
+# Built-in/Generic Imports
 import os.path
+
+# Libs
+import pandas as pd
+
+# Own modules
+from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 def record_splines(parameter_set, data_slice, ticker, spline_type=None):
@@ -28,7 +45,7 @@ def record_splines(parameter_set, data_slice, ticker, spline_type=None):
     if spline_type is None:
         path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\Splines".replace('\\', '/')
     else:
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\Metalabeling_results\**".\
+        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\**".\
             replace('\\', '/').replace('**', spline_type)
 
     full_file_name = path + '/' + ticker + "_splines"

@@ -1,10 +1,26 @@
+
+################################################################################################################
+"""
+
+"""
+
+# Built-in/Generic Imports
 from __future__ import print_function
+
+# Libs
 import numpy as np
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation
 from keras.optimizers import SGD, RMSprop, Adam
 from keras.utils import np_utils
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
+
 
 # --> Set random seed for reproducibility
 np.random.seed(1671)

@@ -1,7 +1,11 @@
+
+##################################################################################################################
 """
 The Dev_menu script is used to initiate all economic analysis, trading simulations,
 and economic model parameters evaluations and optimisations.
 """
+
+# Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
 from PhyTrade.Tools.Colours_and_Fonts import cf
@@ -11,6 +15,12 @@ from PhyTrade.Economic_model.RUN_model import RUN_model
 from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
 from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim
 from PhyTrade.Backtesting.Metalabeling.EVOA_METALABELS_gen import gen_ticker_metalabels
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 print(cf["bold"] + cf["cyan"] + "\n-- Welcome to the PhyTrade Economic analyser and modeling tool --" + cf["reset"])
 print("\nSelect the wanted run process:")
@@ -46,7 +56,7 @@ while run is True:
 
         def optimise(settings, ticker):
             try:
-                # settings.data_slice_start_index = -len(fetch_technical_data(ticker)) + settings.data_slice_size
+                settings.fetch_dates(1)
                 EVOA_optimiser(settings, ticker, optimiser_setting=1)
             except:
                 print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
@@ -54,6 +64,7 @@ while run is True:
         # for ticker in settings.market_settings.tickers:
         #     optimise(settings, ticker)
 
+        settings.fetch_dates(1)
         EVOA_optimiser(settings, settings.market_settings.tickers[0], optimiser_setting=1)
 
     # ============================ EVOLUTION-METALABELING ==========================

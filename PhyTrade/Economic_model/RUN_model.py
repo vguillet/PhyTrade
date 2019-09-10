@@ -1,6 +1,13 @@
+
+##################################################################################################################
 """
 Contains the EVAL_parameter_set class, to be used for direct evaluation of a set of parameters over a specific data slice
 """
+
+# Built-in/Generic Imports
+import math
+
+# Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
@@ -8,7 +15,11 @@ from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
-import math
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class RUN_model:

@@ -1,3 +1,5 @@
+
+################################################################################################################
 """
 This Trade bot is optimised for the GA parameter optimisation, RUN_model, and RUN_single_trade_sim
 
@@ -5,8 +7,16 @@ Input that still require manual input:
     - Simple investment settings
     - Investment settings
 """
+
+# Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.S_ACCOUNT_gen import ACCOUNT
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class Tradebot_v4:

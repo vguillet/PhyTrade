@@ -1,7 +1,20 @@
-from PhyTrade.Settings.SETTINGS import SETTINGS
 
+"""
+Used to generate metalabels using
+"""
+
+# Built-in/Generic Imports
+
+# Libs
+
+# Own modules
+from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
 
 
 class Metalabeling_gen:

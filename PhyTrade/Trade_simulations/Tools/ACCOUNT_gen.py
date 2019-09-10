@@ -1,8 +1,18 @@
+
+################################################################################################################
 """
 Contains information about a Tradebot's account, along with it's transaction history etc...
 """
+
+# Own modules
 from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
 from PhyTrade.Tools.MARKET_tools import MARKET_tools
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class ACCOUNT:

@@ -1,7 +1,21 @@
 
+################################################################################################################
+"""
+Used to running a task in parallel on multiple cores
+"""
+
+# Built-in/Generic Imports
+from multiprocessing import Pool
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
+
+
 def multi_process_pool(population_lst, data_slice,  max_worker_processes=6):
     # -- Multi-process evaluation
-    from multiprocessing import Pool
 
     def process_ind(individual):
         print("\n ----------------------------------------------")

@@ -1,7 +1,14 @@
+
+##################################################################################################################
 """
-This script contains the MetaLabeling class, used for generating the metalabels for each day
-to be used by the EVOA Optimisation
+Used to generate metalabels based on the peak-dip/simple/hybrid methods
 """
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class MetaLabels_gen:

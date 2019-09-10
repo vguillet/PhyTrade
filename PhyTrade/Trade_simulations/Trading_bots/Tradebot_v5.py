@@ -1,3 +1,5 @@
+
+################################################################################################################
 """
 This Trade bot is optimised for the RUN_multi_trade_sim
 
@@ -5,8 +7,16 @@ Input that still require manual input:
     - Simple investment settings
     - Investment settings
 """
+
+# Own modules
 from PhyTrade.Settings.Tradebot_settings import Tradebot_settings
 from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class Tradebot_v5:

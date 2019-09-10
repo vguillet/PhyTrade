@@ -1,7 +1,23 @@
-"https://blog.quantinsti.com/build-technical-indicators-in-python/#cci"
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+##################################################################################################################
+"""
+Used to generate the CCI indicator
+
+https://blog.quantinsti.com/build-technical-indicators-in-python/#cci
+"""
+
+# Libs
 import pandas as pd
 import numpy as np
+
+# Own modules
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class CCI(ABSTRACT_indicator):

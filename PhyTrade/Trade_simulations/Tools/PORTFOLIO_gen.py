@@ -1,6 +1,19 @@
+
+################################################################################################################
+"""
+Used for generating portfolio and storing portfolio information
+"""
+
+# Own modules
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v5 import Tradebot_v5
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+################################################################################################################
 
 
 class PORTFOLIO_gen:

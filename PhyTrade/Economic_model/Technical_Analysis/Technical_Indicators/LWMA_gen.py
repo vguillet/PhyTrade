@@ -1,14 +1,23 @@
+
+##################################################################################################################
 """
-This script enables computing the LWMA indicator. A linearly weighted moving average (LWMA) is a moving average calculation that more
+Used to compute the LWMA indicator. A linearly weighted moving average (LWMA) is a moving average calculation that more
 heavily weights recent price data. The most recent price has the highest weighting, and each prior price has progressively less weight.
 The weights drop in a linear fashion. LWMAs are quicker to react to price changes than simple moving averages (SMA) and exponential
 moving averages (EMA).
-
-Victor Guillet
-11/28/2018
 """
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+# Libs
 import numpy as np
+
+# Own modules
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '11/28/2018'
+
+##################################################################################################################
 
 
 class LWMA(ABSTRACT_indicator):

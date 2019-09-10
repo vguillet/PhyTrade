@@ -1,6 +1,21 @@
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
-import pandas as pd
+
+##################################################################################################################
+"""
+Used for computing the EOM indicator. The Ease of Movement indicator is a technical study that attempts
+to quantify a mix of momentum and volume information into one value.
+"""
+
+# Libs
 import numpy as np
+
+# Own modules
+from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+
+__version__ = '1.1.1'
+__author__ = 'Victor Guillet'
+__date__ = '10/09/2019'
+
+##################################################################################################################
 
 
 class EOM(ABSTRACT_indicator):
