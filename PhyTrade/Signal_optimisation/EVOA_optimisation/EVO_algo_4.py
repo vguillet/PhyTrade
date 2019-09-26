@@ -15,6 +15,7 @@ from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_results_gen impor
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.DATA_SLICE_gen import data_slice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
+from PhyTrade.Data_Collection_preparation.Record_parameter_set import gen_parameters_json
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -253,7 +254,7 @@ class EVOA_optimiser:
         self.results.individual = self.best_individual
 
         if optimiser_setting == 1:
-            self.results.gen_parameters_json()
+            gen_parameters_json()
 
         # # ------------------ Final results benchmarking
         # # -- Initialise benchmark data slice

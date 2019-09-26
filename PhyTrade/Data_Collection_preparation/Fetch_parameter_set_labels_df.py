@@ -19,10 +19,8 @@ __date__ = '10/09/2019'
 
 
 def fetch_parameter_set_labels_df():
-    path_short_term = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\EVOA_results\Parameter_sets\Short_term"
-    path_long_term = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\EVOA_results\Parameter_sets\Long_term"
-
-    paths = {"(Short term)": path_short_term, "(Long term)": path_long_term}
+    paths = {"(Short term)": r"Data/EVOA_results/Parameter_sets/Short_term",
+             "(Long term)": r"Data/EVOA_results/Parameter_sets/Long_term"}
     ps_df_path = ["--> Short term:", "--> Long term:"]
     ps_df = []
 

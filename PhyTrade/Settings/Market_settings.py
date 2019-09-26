@@ -25,9 +25,8 @@ class Market_settings:
 
         # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
         self.tickers = ["AAPL"]
-        # self.tickers = ["XBT"]
 
-        self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
+        # self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
 
         self.price_selection = "Open"
 

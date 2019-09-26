@@ -74,16 +74,6 @@ class EVOA_results_gen:
         self.gradient_bestfit_best_nw = b_best_nw
         self.yfit_best_nw = [a_best_nw + b_best_nw * xi for xi in range(len(self.best_individual_net_worth_per_gen))]
 
-    def gen_parameters_json(self):
-        import json
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\EVOA_results\Parameter_sets".replace('\\', '/')
-        file_name = path + '/' + self.run_label + "_" + self.ticker + ".json"
-
-        with open(file_name, 'w') as fout:
-            json.dump(self.individual.parameter_dictionary, fout)
-        print("Parameters recorded to ", file_name, " successfully\n")
-        return
-
     def gen_result_recap_file(self):
         # -- Create results file
         if self.settings.market_settings.data_slice_size >= 253:

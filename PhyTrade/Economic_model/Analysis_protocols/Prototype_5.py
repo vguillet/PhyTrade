@@ -10,7 +10,6 @@ The following parameter_dictionary still require manual input:
     - spline interpolation coef
     - include trigger in signals (Technical_Indicators output generation)
     - buffer and buffer settings (Threshold determination)
-
 """
 
 # Libs
