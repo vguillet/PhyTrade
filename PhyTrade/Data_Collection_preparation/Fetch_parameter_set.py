@@ -17,7 +17,7 @@ __date__ = '10/09/2019'
 
 def fetch_parameter_set(ticker, run_count, term="Short_term"):
 
-    path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\EVOA_results\Parameter_sets\%%\Run_##_**.json"
+    path = r"Data\EVOA_results\Parameter_sets\%%\Run_##_**.json"
     path = path.replace('\\', '/').replace('##', str(run_count)).replace('**', ticker).replace('%%', term)
 
     # ---> Check if generated path data exists in database

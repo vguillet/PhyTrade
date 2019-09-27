@@ -17,7 +17,7 @@ __date__ = '10/09/2019'
 class Market_settings:
     def gen_market_settings(self):
         # ---- Market settings
-        # --> Multi-ticker
+        # --> Fetch tickers
         # self.tickers = fetch_company_tickers(0, 30)
         # for x in ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]:
         #     if x not in self.tickers:
@@ -26,8 +26,8 @@ class Market_settings:
         # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
         self.tickers = ["AAPL"]
 
-        # self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
-
+        # --> Fetch parameter sets
+        self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
         self.price_selection = "Open"
 
         # ---- Date settings

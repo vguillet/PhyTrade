@@ -156,11 +156,13 @@ class Prototype_5:
 
         # ~~~~~~~~~~~~~~~~~~ BB signals processing
         # --> Generating amplification signals
-        self.big_data.spline_volume = self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
-                                                                              smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volume_0"])
+        self.big_data.spline_volume = \
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volume.amp_coef,
+                                                    smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volume_0"])
 
-        self.big_data.spline_volatility = self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
-                                                                                  smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"])
+        self.big_data.spline_volatility = \
+            self.spline_tools.calc_signal_to_spline(self.big_data, self.big_data.volatility.amp_coef,
+                                                    smoothing_factor=parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"])
 
         # --> Tuning separate signals
         for indicator_type in parameter_dictionary["indicators_count"]:

@@ -4,29 +4,29 @@
 Ticker: AAPL
 
 -----------> Metalabeling settings:
-upper_barrier = 20lower_barrier = <PhyTrade.Settings.Metalabeling_settings.Metalabeling_settings object at 0x0000017099C530B8>look_ahead = 20
+upper_barrier = 20lower_barrier = <PhyTrade.Settings.Metalabeling_settings.Metalabeling_settings object at 0x00000199AB717160>look_ahead = 20
 
 -----------> Benchmarking data slice settings:
-benchmark_data_slice_start = 2019-01-02
+benchmark_data_slice_start = 2019-01-03
 benchmark_data_slice_stop = 2019-06-04
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Number of data points processed: 105
+Number of data points processed: 104
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------> Validation benchmark results: 
 ---> Net worth: 
-Net worth achieved: 999.0000000000001
+Net worth achieved: 1000.7732929996828
 
 ---> Fitness: 
-Fitness achieved: 44.761904761904766
+Fitness achieved: 46.0
 
 Confusion Matrix: 
       Sell  Hold  Buy
-Sell     0     4    2
-Hold    23    45   21
-Buy      0     8    2
+Sell     1     4    2
+Hold    22    45   21
+Buy      0     5    0
 
 -----------> Benchmark Confusion tables: 
 
@@ -39,62 +39,62 @@ Predicted Condition Negative     False Negative      True negative
 
 Sell Confusion Table: 
           Sell  Non-Sell
-Sell         0         6
-Non-Sell    23        76
+Sell         1         6
+Non-Sell    22        71
 
-TPR = 0.0
-TNR = 0.927
-PPV = 0.0
-NPV = 0.768
-FNR = 1.0
-FPR = 0.073
-FDR = 1.0
-FOR = 0.232
-ACC = 0.724
-F1 = 0.0
-MCC = -0.13
-BM = -0.073
-MK = -0.232
+TPR = 0.043
+TNR = 0.922
+PPV = 0.143
+NPV = 0.763
+FNR = 0.957
+FPR = 0.078
+FDR = 0.857
+FOR = 0.237
+ACC = 0.72
+F1 = 0.067
+MCC = -0.057
+BM = -0.034
+MK = -0.094
 
 -----------> Buy classification results: 
 
 Buy Confusion Table: 
          Buy  Non-Buy
-Buy        2        8
+Buy        0        5
 Non-Buy   23       72
 
-TPR = 0.08
-TNR = 0.9
-PPV = 0.2
+TPR = 0.0
+TNR = 0.935
+PPV = 0.0
 NPV = 0.758
-FNR = 0.92
-FPR = 0.1
-FDR = 0.8
+FNR = 1.0
+FPR = 0.065
+FDR = 1.0
 FOR = 0.242
-ACC = 0.705
-F1 = 0.114
-MCC = -0.029
-BM = -0.02
-MK = -0.042
+ACC = 0.72
+F1 = 0.0
+MCC = -0.125
+BM = -0.065
+MK = -0.242
 
 -----------> Hold classification results: 
 
 Hold Confusion Table: 
           Hold  Non-Hold
-Hold        45        44
-Non-Hold    12         4
+Hold        45        43
+Non-Hold     9         3
 
-TPR = 0.789
-TNR = 0.083
-PPV = 0.506
+TPR = 0.833
+TNR = 0.065
+PPV = 0.511
 NPV = 0.25
-FNR = 0.211
-FPR = 0.917
-FDR = 0.494
+FNR = 0.167
+FPR = 0.935
+FDR = 0.489
 FOR = 0.75
-ACC = 0.467
-F1 = 0.616
-MCC = -0.176
-BM = -0.127
-MK = -0.244
+ACC = 0.48
+F1 = 0.634
+MCC = -0.156
+BM = -0.101
+MK = -0.239
 

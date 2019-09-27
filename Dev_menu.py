@@ -9,12 +9,7 @@ and economic model parameters evaluations and optimisations.
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
 from PhyTrade.Tools.Colours_and_Fonts import cf
-
-from PhyTrade.Signal_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
-from PhyTrade.Economic_model.RUN_model import RUN_model
-from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
-from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim
-from PhyTrade.Backtesting.Metalabeling.EVOA_METALABELS_gen import gen_ticker_metalabels
+from PhyTrade.Tools.RUN_protocols import RUN_protocols
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -36,6 +31,9 @@ print(cf["bold"] + "\n> == Trading simulations == <" + cf["reset"])
 print(cf["green"] + "4 - RUN Single ticker trading simulation" + cf["reset"])
 print(cf["green"] + "5 - RUN Multi ticker trading simulation" + cf["reset"])
 
+print(cf["bold"] + "\n> == Run protocols == <" + cf["reset"])
+print(cf["green"] + "6 - RUN/define Protocol" + cf["red"] + "(In development)" + cf["reset"])
+
 print("\n-------------------------------------------------------------------------")
 print("Parameter sets available:")
 fetch_parameter_set_labels_df()
@@ -44,48 +42,80 @@ print("\n" + cf["red"] + "0 - Exit" + cf["reset"])
 
 run = True
 while run is True:
-    selection = int(input("\nSelection:\n"))
+    selection = int(input("\nSelection: "))
     # selection = 1
     settings = SETTINGS()
     print("\n")
 
-    # ============================ EVOLUTION-OPTIMISER =============================
-    if selection == 1:
-        # --> Generate market settings
-        settings.market_settings.gen_market_settings()
+    # --> Run a protocol
+    # --> Run a single process
+    if type(selection) == int and selection != 6:
+        RUN_protocols([selection])
 
-        def optimise(settings, ticker):
-            try:
-                settings.fetch_dates(1)
-                EVOA_optimiser(settings, ticker, optimiser_setting=1)
-            except:
-                print("\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n")
+    elif selection == 6:
+        available_tasks = ["--> EVOA Optimiser",
+                           "--> EVOA Metalabeling",
+                           "--> Economic analysis",
+                           "--> Single ticker trade simulation",
+                           "--> Multi ticker trade simulation"]
 
-        # for ticker in settings.market_settings.tickers:
-        #     optimise(settings, ticker)
+        predefined_protocols = [[1, 2, 4], [1, 2, 5], [1, 3]]
 
-        settings.fetch_dates(1)
-        EVOA_optimiser(settings, settings.market_settings.tickers[0], optimiser_setting=1)
+        print("----------------------------------------")
+        print(cf["bold"] + "Available processes: 6" + cf["reset"])
+        print("EVOA Optimiser                        (1)")
+        print("EVOA Metalabeling                     (2)")
+        print("Economic analysis                     (3)")
+        print("Single ticker trade simulation        (4)")
+        print("Multi ticker trade simulation         (5)")
 
-    # ============================ EVOLUTION-METALABELING ==========================
+        print(cf["bold"] + "\nGenerate new protocol    - 1")
+        print("Predefined protocol      - 2" + cf["reset"])
 
-    if selection == 2:
-        # --> Generate market settings
-        settings.market_settings.gen_market_settings()
+        protocol_selection = int(input("\nSelection: "))
 
-        for ticker in settings.market_settings.tickers:
-            gen_ticker_metalabels(settings, ticker)
+        print("\n----------------------------------------")
+        if protocol_selection == 1:
+            print(cf["bold"] + "\nEnter each task individually and validate with enter. Enter 0 once Protocol is finished." + cf["reset"])
+            task_sequence = []
+            task = None
 
-    # ============================ ECONOMIC ANALYSIS ===============================
-    elif selection == 3:
-        run_model = RUN_model()
+            while task != 0:
+                task = int(input("\nEnter task: "))
+                while task > len(available_tasks):
+                    print(cf["red"] + "Incorrect task key, (max key:" + str(len(available_tasks)) + ")" + cf["reset"])
+                    task = int(input("\nEnter task: "))
 
-    # ============================ TRADING SIMULATIONS ==============================
-    elif selection == 4:
-        run_trade_sim = RUN_single_trade_sim()
+                task_sequence.append(task)
 
-    elif selection == 5:
-        run_trade_sim = RUN_multi_trade_sim()
+                # --> Print current protocol sequence defined
+                print(cf["bold"] + "\n---- Current Protocol process sequence: ----" + cf["reset"])
+                for i in task_sequence:
+                    print(available_tasks[i-1])
+
+            # --> Print final protocol
+            print("\n------------------------")
+            print(cf["bold"] + "RUN Protocol:\n" + cf["reset"])
+            for i in task_sequence:
+                print(available_tasks[i - 1])
+            print("End of RUN")
+            print("\n------------------------ ")
+
+            confirmation = str(input("\nEnter 'True' to confirm run and initiate protocol or 'False' to redefine: "))
+
+            if confirmation == "True":
+                RUN_protocols(task_sequence)
+            else:
+                print(cf["bold"] + cf["red"] + "Protocol initiation Aborted" + cf["reset"])
+
+        else:
+            for i, protocol in enumerate(predefined_protocols):
+                print("\nProtocol " + str(i) + ":")
+                for task in protocol:
+                    print(available_tasks[task - 1])
+
+            protocol_reference = int(input("\nEnter pre-defined Protocol reference: "))
+            RUN_protocols(predefined_protocols[protocol_reference])
 
     elif selection == 0:
         import sys
@@ -93,3 +123,5 @@ while run is True:
 
     else:
         print("Invalid selection")
+
+
