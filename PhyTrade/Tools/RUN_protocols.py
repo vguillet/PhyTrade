@@ -37,19 +37,18 @@ class RUN_protocols:
                            "--> Single ticker trade simulation",
                            "--> Multi ticker trade simulation"]
 
+        print("\nInitiating protocol...\n\n\n\n\n\n\n\n")
+        self.task_tracker = -1
         for task in self.task_sequence:
+            self.task_tracker += 1
             print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Protocol Sequence ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-            highlight = False
-            for i in self.task_sequence:
-                if i == task and highlight is False:
-                    print(cf["bold"] + cf["green"] + available_tasks[i - 1] + cf["reset"])
-                    highlight = True
-
+            for i, task_nb in enumerate(self.task_sequence):
+                if i == self.task_tracker:
+                    print(cf["bold"] + cf["green"] + available_tasks[task_nb - 1] + cf["reset"])
                 else:
-                    print(available_tasks[i - 1])
-
+                    print(available_tasks[task_nb - 1])
             print("\n")
 
             if task == 1:

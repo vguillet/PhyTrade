@@ -86,6 +86,8 @@ while run is True:
                     print(cf["red"] + "Incorrect task key, (max key:" + str(len(available_tasks)) + ")" + cf["reset"])
                     task = int(input("\nEnter task: "))
 
+                if task == 0:
+                    break
                 task_sequence.append(task)
 
                 # --> Print current protocol sequence defined
@@ -98,8 +100,6 @@ while run is True:
             print(cf["bold"] + "RUN Protocol:\n" + cf["reset"])
             for i in task_sequence:
                 print(available_tasks[i - 1])
-            print("End of RUN")
-            print("\n------------------------ ")
 
             confirmation = str(input("\nEnter 'True' to confirm run and initiate protocol or 'False' to redefine: "))
 
@@ -110,12 +110,12 @@ while run is True:
 
         else:
             for i, protocol in enumerate(predefined_protocols):
-                print("\nProtocol " + str(i) + ":")
+                print("\nProtocol " + str(i+1) + ":")
                 for task in protocol:
                     print(available_tasks[task - 1])
 
             protocol_reference = int(input("\nEnter pre-defined Protocol reference: "))
-            RUN_protocols(predefined_protocols[protocol_reference])
+            RUN_protocols(predefined_protocols[protocol_reference-1])
 
     elif selection == 0:
         import sys
