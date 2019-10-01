@@ -18,6 +18,8 @@ class Tradebot_settings:
         self.s_initial_investment = 1000
 
         # --> Investment settings
+        self.initial_investment = 1000
+
         self.fixed_investment = 100
         self.investment_percentage = 0.3
 

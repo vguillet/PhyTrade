@@ -18,7 +18,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_main_settings(ui):
+def get_market_settings(ui, location="Current_settings"):
     # ---- Market settings
     market_settings = {}
 
@@ -36,13 +36,22 @@ def get_main_settings(ui):
     market_settings["testing_start_date"] = ui.testing_start_date.date().toPyDate().strftime('%Y-%m-%d')
     market_settings["testing_stop_date"] = ui.testing_stop_date.date().toPyDate().strftime('%Y-%m-%d')
 
-    market_settings["s_initial_investment"] = ui.s_initial_investment.value()
-    market_settings["fixed_investment"] = ui.fixed_investment.value()
-    market_settings["investment_percentage"] = ui.investment_percentage.value()
-    market_settings["asset_liquidation_percentage"] = ui.asset_liquidation_percentage.value()
-
     # ---- Broker settings
     market_settings["min_transaction_cost"] = ui.min_transaction_cost.value()
     market_settings["transaction_cost_per_share"] = ui.transaction_cost_per_share.value()
 
-    record_settings(market_settings, "Current_settings", name="Main_settings")
+    record_settings(market_settings, location, name="Main_settings")
+
+
+def get_tradebot_settings(ui, location="Current_settings"):
+    tradebot_settings = {}
+
+    # --> Simple investment settings
+    tradebot_settings["s_initial_investment"] = ui.s_initial_investment.value()
+
+    # --> Investment settings
+    tradebot_settings["fixed_investment"] = ui.fixed_investment.value()
+    tradebot_settings["investment_percentage"] = ui.investment_percentage.value()
+    tradebot_settings["asset_liquidation_percentage"] = ui.asset_liquidation_percentage.value()
+
+    record_settings(tradebot_settings, location, name="tradebot_settings")

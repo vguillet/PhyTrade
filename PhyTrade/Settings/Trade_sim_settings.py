@@ -24,7 +24,7 @@ class Trade_sim_settings:
     investment_settings = 3
     cash_in_settings = 2
 
-    initial_investment = 1000
+    # initial_investment = 1000
 
     # Max --> Min
     max_investment_per_trade_percent = 0.30

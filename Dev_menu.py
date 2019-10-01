@@ -49,7 +49,7 @@ while run is True:
 
     # --> Run a protocol
     # --> Run a single process
-    if type(selection) == int and selection != 6:
+    if type(selection) == int and selection != 6 and selection != 0:
         RUN_protocols([selection])
 
     elif selection == 6:

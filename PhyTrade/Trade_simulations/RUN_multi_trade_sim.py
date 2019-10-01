@@ -30,6 +30,8 @@ class RUN_multi_trade_sim:
 
         # ---- Fetch market settings
         settings.market_settings.gen_market_settings()
+        settings.tradebot_settings.gen_tradebot_settings()
+
 
         tickers = settings.market_settings.tickers
         parameter_sets = settings.market_settings.parameter_sets
@@ -63,7 +65,7 @@ class RUN_multi_trade_sim:
         self.investment_settings = settings.trade_sim_settings.investment_settings
         self.cash_in_settings = settings.trade_sim_settings.cash_in_settings
 
-        self.initial_investment = settings.trade_sim_settings.initial_investment
+        self.initial_investment = settings.tradebot_settings.initial_investment
 
         # Max --> Min
         max_investment_per_trade_percent = settings.trade_sim_settings.max_investment_per_trade_percent

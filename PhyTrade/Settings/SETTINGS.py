@@ -10,7 +10,7 @@ from PhyTrade.Settings.Individual_settings import Individual_settings
 from PhyTrade.Settings.Market_settings import Market_settings
 from PhyTrade.Settings.Metalabeling_settings import Metalabeling_settings
 from PhyTrade.Settings.Model_settings import Model_settings
-from PhyTrade.Settings.Optimiser_settings import Optimiser_settings
+from PhyTrade.Settings.EVOA_optimiser_settings import Optimiser_settings
 from PhyTrade.Settings.Trade_sim_settings import Trade_sim_settings
 from PhyTrade.Settings.Tradebot_settings import Tradebot_settings
 

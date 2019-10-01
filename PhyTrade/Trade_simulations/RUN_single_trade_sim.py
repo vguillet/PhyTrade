@@ -43,6 +43,7 @@ class RUN_single_trade_sim:
 
         # --> Simulation parameters
         settings.trade_sim_settings.gen_single_trade_sim()
+        settings.tradebot_settings.gen_tradebot_settings()
         
         eval_name = settings.trade_sim_settings.simulation_name
         nb_data_slices = settings.trade_sim_settings.nb_data_slices
@@ -93,7 +94,7 @@ class RUN_single_trade_sim:
 
         # ---- Current param setup
         # Finance
-        self.current_funds = settings.trade_sim_settings.initial_investment
+        self.current_funds = settings.tradebot_settings.initial_investment
         self.current_net_worth = self.current_funds
         self.current_assets = 0
         self.current_simple_investment_assets = None
@@ -102,7 +103,7 @@ class RUN_single_trade_sim:
 
         # Metalabel finance:
         if run_metalabels:
-            self.m_current_funds = settings.trade_sim_settings.initial_investment
+            self.m_current_funds = settings.tradebot_settings.initial_investment
             self.m_current_net_worth = self.current_funds
             self.m_current_assets = 0
 
