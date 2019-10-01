@@ -22,7 +22,7 @@ def gen_parameters_json(run_label, ticker, parameter_dictionary):
     :param ticker: Ticker of parameter set
     :param parameter_dictionary: Parameter set dictionary
     """
-    path = r"Data/EVOA_results/Parameter_sets".replace('\\', '/')
+    path = r"Data/EVOA_results/Parameter_sets"
     file_name = path + '/' + run_label + "_" + ticker + ".json"
 
     with open(file_name, 'w') as fout:

@@ -40,6 +40,7 @@ class Market_settings:
         self.testing_end_date = "2019-06-04"
 
         self.data_slice_size = 25
+
         # ---- Broker settings
         self.min_transaction_cost = 1
         self.transaction_cost_per_share = 0.005

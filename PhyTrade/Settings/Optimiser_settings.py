@@ -19,7 +19,7 @@ class Optimiser_settings:
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
         self.config_name = "Run_06"
-        self.optimiser_setting = 1
+        self.optimiser_setting = 1  # Optimiser run mode
 
         # ---- Multiprocessing settings
         self.multiprocessing = False
@@ -45,7 +45,7 @@ class Optimiser_settings:
         self.nb_parents = 25
         self.nb_random_ind = 10
 
-        self.mutation_rate = 1
+        self.mutation_rate = 0.5
         self.nb_parents_in_next_gen = 1
 
         self.data_slice_cycle_count = 5

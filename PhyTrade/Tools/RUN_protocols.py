@@ -70,7 +70,7 @@ class RUN_protocols:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Protocol Completed ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-        # ============================ EVOLUTION-OPTIMISER =============================
+    # ============================ EVOLUTION-OPTIMISER =============================
     def run_evoa_optimiser(self):
         # --> Generate market settings
         self.settings.market_settings.gen_market_settings()
@@ -88,8 +88,7 @@ class RUN_protocols:
         self.settings.fetch_dates(1)
         EVOA_optimiser(self.settings, self.settings.market_settings.tickers[0], optimiser_setting=1)
 
-        # ============================ EVOLUTION-METALABELING ==========================
-
+    # ============================ EVOLUTION-METALABELING ==========================
     def run_evoa_metalabeling(self):
         # --> Generate market self.settings
         self.settings.market_settings.gen_market_settings()
@@ -97,12 +96,12 @@ class RUN_protocols:
         for ticker in self.settings.market_settings.tickers:
             gen_ticker_metalabels(self.settings, ticker)
 
-        # ============================ ECONOMIC ANALYSIS ===============================
+    # ============================ ECONOMIC ANALYSIS ===============================
     @staticmethod
     def run_economic_analysis():
         RUN_model()
 
-        # ============================ TRADING SIMULATIONS ==============================
+    # ============================ TRADING SIMULATIONS ==============================
     @staticmethod
     def run_single_trade_simulation():
         RUN_single_trade_sim()
