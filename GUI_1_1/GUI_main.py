@@ -4,6 +4,8 @@
 pyuic5 -x file.ui -o file.py
 """
 
+# TODO: Add Individual settings gen
+
 # Built-in/Generic Imports
 import sys
 

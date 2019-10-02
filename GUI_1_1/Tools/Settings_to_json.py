@@ -20,11 +20,13 @@ __date__ = ''
 
 
 def record_settings(dictionary, setting_category, name):
-    # path = r"Data\Settings".replace('\\', '/')
     path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Data\Settings".replace('\\', '/')
 
     print("----------------> Record settings", setting_category)
-    if name[-1] != "_":
+    if setting_category == "Current_settings":
+        file_name = path + '/' + setting_category + '/' + name + ".json"
+
+    elif name[-1] != "_":
         file_name = path + '/' + setting_category + '/' + name + '_' + datetime.date.today().strftime("%Y-%m-%d").replace(" ", "_") + ".json"
 
     else:
