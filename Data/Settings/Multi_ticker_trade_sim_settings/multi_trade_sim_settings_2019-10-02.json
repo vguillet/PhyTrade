@@ -1,0 +1,14 @@
+{
+    "max_account_prev_stop_loss": 0.0,
+    "min_account_prev_stop_loss": 0.0,
+    "account_prev_stop_loss_decay_function": "Linear",
+    "max_account_max_stop_loss": 0.0,
+    "min_account_max_stop_loss": 0.0,
+    "account_max_stop_loss_decay_function": "Linear",
+    "max_ticker_prev_stop_loss": 0.0,
+    "min_ticker_prev_stop_loss": 0.0,
+    "ticker_prev_stop_loss_decay_function": "Linear",
+    "max_ticker_max_stop_loss": 0.0,
+    "min_ticker_max_stop_loss": 0.0,
+    "ticker_max_stop_loss_decay_function": "Linear"
+}

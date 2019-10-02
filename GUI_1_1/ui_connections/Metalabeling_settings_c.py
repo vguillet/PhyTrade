@@ -5,6 +5,7 @@
 """
 
 # Built-in/Generic Imports
+import datetime
 
 # Libs
 
@@ -18,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_simple_metalabels_settings(ui, location="Current_settings"):
+def get_simple_metalabels_settings(ui, location="Current_settings", name=""):
     simple_metalabels_settings = {}
 
     # -- Metalabeling settings:
@@ -28,4 +29,5 @@ def get_simple_metalabels_settings(ui, location="Current_settings"):
     simple_metalabels_settings["lower_barrier"] = ui.lower_barrier.value()
     simple_metalabels_settings["look_ahead"] = ui.look_ahead.value()
 
-    record_settings(simple_metalabels_settings, location, name="simple_metalabels_settings")
+    record_settings(simple_metalabels_settings, location, name="simple_metalabels_settings"+"_"+name)
+

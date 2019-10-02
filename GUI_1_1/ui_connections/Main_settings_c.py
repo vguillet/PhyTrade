@@ -5,6 +5,7 @@
 """
 
 # Built-in/Generic Imports
+import datetime
 
 # Libs
 
@@ -18,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_market_settings(ui, location="Current_settings"):
+def get_market_settings(ui, location="Current_settings", name=""):
     # ---- Market settings
     market_settings = {}
 
@@ -40,18 +41,20 @@ def get_market_settings(ui, location="Current_settings"):
     market_settings["min_transaction_cost"] = ui.min_transaction_cost.value()
     market_settings["transaction_cost_per_share"] = ui.transaction_cost_per_share.value()
 
-    record_settings(market_settings, location, name="Main_settings")
+    record_settings(market_settings, location, name="Market_settings"+"_"+name)
 
 
-def get_tradebot_settings(ui, location="Current_settings"):
+def get_tradebot_settings(ui, location="Current_settings", name=""):
     tradebot_settings = {}
 
     # --> Simple investment settings
     tradebot_settings["s_initial_investment"] = ui.s_initial_investment.value()
 
     # --> Investment settings
+    tradebot_settings["initial_investment"] = ui.initial_investment.value()
+
     tradebot_settings["fixed_investment"] = ui.fixed_investment.value()
     tradebot_settings["investment_percentage"] = ui.investment_percentage.value()
     tradebot_settings["asset_liquidation_percentage"] = ui.asset_liquidation_percentage.value()
 
-    record_settings(tradebot_settings, location, name="tradebot_settings")
+    record_settings(tradebot_settings, location, name="Tradebot_settings"+"_"+name)

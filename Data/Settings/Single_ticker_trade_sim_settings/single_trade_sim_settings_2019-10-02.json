@@ -1,0 +1,11 @@
+{
+    "run_metalabels": false,
+    "m_investment_settings": "Fixed investment percentage",
+    "m_cash_in_settings": "Fixed investment value",
+    "max_prev_stop_loss": 0.0,
+    "min_prev_stop_loss": 0.0,
+    "prev_stop_loss_decay_function": "Linear",
+    "max_max_stop_loss": 0.0,
+    "min_max_stop_loss": 0.0,
+    "max_stop_loss_decay_function": "Linear"
+}

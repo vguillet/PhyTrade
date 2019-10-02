@@ -19,14 +19,16 @@ __date__ = ''
 ##################################################################################################################
 
 
-def record_settings(dictionary, setting_category, name=None):
-    path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Data\Settings"
+def record_settings(dictionary, setting_category, name):
+    # path = r"Data\Settings".replace('\\', '/')
+    path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Data\Settings".replace('\\', '/')
 
-    if name is not None:
-        file_name = path + '/' + setting_category + '/' + name + str(datetime.datetime.now().date()) + ".json"
+    print("----------------> Record settings", setting_category)
+    if name[-1] != "_":
+        file_name = path + '/' + setting_category + '/' + name + '_' + datetime.date.today().strftime("%Y-%m-%d").replace(" ", "_") + ".json"
 
     else:
-        file_name = path + '/' + setting_category + '/' + str(datetime.datetime.now().date()) + ".json"
+        file_name = path + '/' + setting_category + '/' + name  + datetime.date.today().strftime("%Y-%m-%d") + ".json"
 
     with open(file_name, 'w') as fout:
         json.dump(dictionary, fout, indent=4)

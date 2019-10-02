@@ -5,6 +5,7 @@
 """
 
 # Built-in/Generic Imports
+import datetime
 
 # Libs
 
@@ -18,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_EVOA_metalabels_settings(ui, location="Current_settings"):
+def get_EVOA_metalabels_settings(ui, location="Current_settings", name=""):
     EVOA_metalabels_settings = {}
 
     # ___________________________ Optimisation parameters ____________________
@@ -66,4 +67,4 @@ def get_EVOA_metalabels_settings(ui, location="Current_settings"):
     # -- Starting parameters
     EVOA_metalabels_settings["starting_parameters"] = ui.starting_parameters_2.text()
 
-    record_settings(EVOA_metalabels_settings, location, name="EVOA_metalabels_settings")
+    record_settings(EVOA_metalabels_settings, location, name="EVOA_metalabels_settings"+"_"+name)

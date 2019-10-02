@@ -5,6 +5,7 @@
 """
 
 # Built-in/Generic Imports
+import datetime
 
 # Libs
 
@@ -18,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_EVOA_optimiser_settings(ui, location="Current_settings"):
+def get_EVOA_optimiser_settings(ui, location="Current_settings", name=""):
     EVOA_optimiser_settings = {}
 
     # ___________________________ Optimisation parameters ____________________
@@ -70,4 +71,5 @@ def get_EVOA_optimiser_settings(ui, location="Current_settings"):
     # -- Starting parameters
     EVOA_optimiser_settings["starting_parameters"] = ui.starting_parameters_1.text()
 
-    record_settings(EVOA_optimiser_settings, location, name="EVOA_optimiser_settings")
+    record_settings(EVOA_optimiser_settings, location, name="EVOA_optimiser_settings"+"_"+name)
+

@@ -1,0 +1,15 @@
+{
+    "tickers": [
+        "AAPL"
+    ],
+    "reference_label": "01",
+    "reference_term": "Short term",
+    "price_selection": "Open",
+    "data_slice_size": 25,
+    "training_start_date": "2000-01-01",
+    "training_stop_date": "2000-01-01",
+    "testing_start_date": "2000-01-01",
+    "testing_stop_date": "2000-01-01",
+    "min_transaction_cost": 1.0,
+    "transaction_cost_per_share": 0.005
+}
