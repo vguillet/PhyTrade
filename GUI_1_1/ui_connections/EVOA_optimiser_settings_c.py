@@ -19,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_EVOA_optimiser_settings(ui, location="Current_settings", name=""):
+def save_EVOA_optimiser_settings(ui, location="Current_settings", name=""):
     EVOA_optimiser_settings = {}
 
     # ___________________________ Optimisation parameters ____________________

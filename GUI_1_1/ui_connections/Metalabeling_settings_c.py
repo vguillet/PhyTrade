@@ -19,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_simple_metalabels_settings(ui, location="Current_settings", name=""):
+def save_simple_metalabels_settings(ui, location="Current_settings", name=""):
     simple_metalabels_settings = {}
 
     # -- Metalabeling settings:

@@ -19,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_market_settings(ui, location="Current_settings", name=""):
+def save_market_settings(ui, location="Current_settings", name=""):
     # ---- Market settings
     market_settings = {}
 
@@ -44,7 +44,7 @@ def get_market_settings(ui, location="Current_settings", name=""):
     record_settings(market_settings, location, name="Market_settings"+"_"+name)
 
 
-def get_tradebot_settings(ui, location="Current_settings", name=""):
+def save_tradebot_settings(ui, location="Current_settings", name=""):
     tradebot_settings = {}
 
     # --> Simple investment settings

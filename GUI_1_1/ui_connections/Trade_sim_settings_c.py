@@ -19,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_general_trade_sim_settings(ui, location="Current_settings", name=""):
+def save_general_trade_sim_settings(ui, location="Current_settings", name=""):
     trade_sim_general_settings = {}
 
     # ___________________________ Simulation parameters ______________________
@@ -43,7 +43,7 @@ def get_general_trade_sim_settings(ui, location="Current_settings", name=""):
     record_settings(trade_sim_general_settings, location, name="trade_sim_general_settings"+"_"+name)
 
 
-def get_single_ticker_trade_sim_settings(ui, location="Current_settings", name=""):
+def save_single_ticker_trade_sim_settings(ui, location="Current_settings", name=""):
     single_trade_sim_settings = {}
 
     # ___________________________ Metalabels parameters ______________________
@@ -68,7 +68,7 @@ def get_single_ticker_trade_sim_settings(ui, location="Current_settings", name="
     record_settings(single_trade_sim_settings, location, name="single_trade_sim_settings"+"_"+name)
 
 
-def get_multi_ticker_trade_sim_settings(ui, location="Current_settings", name=""):
+def save_multi_ticker_trade_sim_settings(ui, location="Current_settings", name=""):
     multi_trade_sim_settings = {}
     # ___________________________ Stop-loss settings  ________________________
     # Account

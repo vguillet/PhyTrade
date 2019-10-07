@@ -5,6 +5,9 @@ The Dev_menu script is used to initiate all economic analysis, trading simulatio
 and economic model parameters evaluations and optimisations.
 """
 
+# Built-in/Generic Imports
+import json
+
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
@@ -16,6 +19,11 @@ __author__ = 'Victor Guillet'
 __date__ = '10/09/2019'
 
 ##################################################################################################################
+
+# --> Set settings mode to 0 to use class based settings
+with open(r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Settings\settings_mode.json",
+          'w') as fout:
+    json.dump(0, fout, indent=4)
 
 print(cf["bold"] + cf["cyan"] + "\n-- Welcome to the PhyTrade Economic analyser and modeling tool --" + cf["reset"])
 print("\nSelect the wanted run process:")

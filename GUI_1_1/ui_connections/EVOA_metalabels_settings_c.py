@@ -19,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_EVOA_metalabels_settings(ui, location="Current_settings", name=""):
+def save_EVOA_metalabels_settings(ui, location="Current_settings", name=""):
     EVOA_metalabels_settings = {}
 
     # ___________________________ Optimisation parameters ____________________

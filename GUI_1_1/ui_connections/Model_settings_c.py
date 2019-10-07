@@ -19,7 +19,7 @@ __date__ = ''
 ##################################################################################################################
 
 
-def get_model_settings(ui, location="Current_settings", name=""):
+def save_model_settings(ui, location="Current_settings", name=""):
     model_settings = {}
 
     # ___________________________ Print/plot parameters ______________________

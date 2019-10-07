@@ -1,17 +1,3 @@
-"""
-
-"""
-
-# Built-in/Generic Imports
-
-# Libs
-
-# Own modules
-
-__version__ = '1.1.1'
-__author__ = 'Victor Guillet'
-__date__ = ''
-
 import sys
 from PyQt5 import QtGui, QtCore
 import jtextfsm as textfsm
@@ -196,3 +182,10 @@ class Window(QtGui.QMainWindow):
             QtGui.QMessageBox.question(self, 'Warning', "ERROR:Please check you're '.txt' file and TextFSM File.")
 
 
+def run():
+    app = QtGui.QApplication(sys.argv)
+    GUI = Window()
+    sys.exit(app.exec_())
+
+
+run()

@@ -428,9 +428,9 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-354</y>
                    <width>457</width>
-                   <height>994</height>
+                   <height>991</height>
                   </rect>
                  </property>
                  <layout class="QFormLayout" name="formLayout">
@@ -785,20 +785,6 @@ p, li { white-space: pre-wrap; }
                     </property>
                    </widget>
                   </item>
-                  <item row="31" column="1">
-                   <widget class="QComboBox" name="data_looper_1">
-                    <item>
-                     <property name="text">
-                      <string>False</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>True</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
                   <item row="33" column="0">
                    <widget class="QLabel" name="label_29">
                     <property name="text">
@@ -1115,6 +1101,13 @@ p, li { white-space: pre-wrap; }
                     </property>
                     <property name="value">
                      <double>0.500000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="31" column="1">
+                   <widget class="QCheckBox" name="data_looper_2">
+                    <property name="text">
+                     <string>CheckBox</string>
                     </property>
                    </widget>
                   </item>
@@ -2925,7 +2918,7 @@ p, li { white-space: pre-wrap; }
                 <item row="12" column="1">
                  <widget class="QComboBox" name="investment_settings">
                   <property name="currentIndex">
-                   <number>3</number>
+                   <number>0</number>
                   </property>
                   <item>
                    <property name="text">
@@ -2939,12 +2932,12 @@ p, li { white-space: pre-wrap; }
                   </item>
                   <item>
                    <property name="text">
-                    <string>Investement value pegged to trade signal</string>
+                    <string>Investment value pegged to trade signal</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>Investement percentage pegged to trade signal</string>
+                    <string>Investment percentage pegged to trade signal</string>
                    </property>
                   </item>
                  </widget>
@@ -3211,7 +3204,7 @@ p, li { white-space: pre-wrap; }
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-195</y>
                    <width>534</width>
                    <height>391</height>
                   </rect>
@@ -3669,7 +3662,7 @@ p, li { white-space: pre-wrap; }
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>300</width>
+                   <width>534</width>
                    <height>493</height>
                   </rect>
                  </property>
@@ -4156,7 +4149,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-48</y>
+         <y>0</y>
          <width>282</width>
          <height>985</height>
         </rect>
