@@ -69,15 +69,9 @@ class EVOA_optimiser:
                                              settings.metalabeling_settings.metalabeling_setting)
 
         # --> Update generation count if end_date results in lower slice count
-        if optimiser_setting == 1 and \
-                abs(self.data_slice.default_start_index-self.data_slice.default_end_index) < \
-                settings.market_settings.data_slice_size*(settings.signal_training_settings.nb_of_generations/settings.signal_training_settings.data_slice_cycle_count):
-
+        if optimiser_setting == 1:
             settings.signal_training_settings.nb_of_generations = \
                 math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
-
-            prints.evoa_settings_auto_adjust(math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size),
-                                                 settings.signal_training_settings.nb_of_generations)
 
         settings.signal_training_settings.exploitation_phase_len = \
             round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
@@ -96,7 +90,11 @@ class EVOA_optimiser:
         self.results.run_start_time = time.time()
 
         # ========================= EVO OPTIMISATION PROCESS =============================
-        prints.evoa_run_initialisation_recap(optimiser_setting)
+        prints.evoa_run_initialisation_recap(optimiser_setting,
+                                             math.ceil(abs(
+                                                 self.data_slice.default_start_index - self.data_slice.default_end_index) / settings.market_settings.data_slice_size),
+                                             settings.signal_training_settings.nb_of_generations)
+
         if optimiser_setting == 1 and not settings.signal_training_settings.multiprocessing:
             cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
         if optimiser_setting == 2:

@@ -46,21 +46,19 @@ class EVOA_prints:
     def monkey_patch_pass(*args, **kwargs):
         return
 
-    @staticmethod
-    def evoa_settings_auto_adjust(slice_count, generation_count):
-        print("\nNumber of data slices to be processed:", slice_count)
-        print("--> Generation count updated to", generation_count, "to match available data <--\n")
-
-    def evoa_run_initialisation_recap(self, run_mode):
+    def evoa_run_initialisation_recap(self, run_mode, slice_count, generation_count):
         # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
         print(cf["green"] + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + cf["reset"])
         print(cf["bold"] + "EVOA_v"+str(self.evoa_version) + cf["reset"], "\n")
 
         if run_mode == 1:
             print("RUN Mode: " + cf["green"] + "Signal tuner" + cf["reset"])
+            print("\nNumber of data slices to be processed:", slice_count)
+            print("--> Generation count updated to", generation_count, "to match available data <--\n")
 
         elif run_mode == 2:
             print("RUN Mode: " + cf["green"] + "Optimiser" + cf["reset"])
+            print("\nGeneration count:", generation_count, "\n")
 
         print("Evaluated ticker: " + cf["green"] + self.ticker + cf["reset"])
         print("Start time: " + cf["green"] + str(time.strftime('%X %x %Z')) + cf["reset"], "\n")
@@ -117,14 +115,17 @@ class EVOA_prints:
         print("\nBest Individual fitness:", round(max(fitness_evaluation), 3))
         print("Average fitness:", round((sum(fitness_evaluation) / len(fitness_evaluation)), 3), "\n")
 
-    @staticmethod
-    def new_slice_info(data_slice, gen, max_gen, cycle_count):
+    def new_slice_info(self, data_slice, gen, max_gen, cycle_count):
         print(cf["bold"] + cf["cyan"] + "\n================================= " + cf["reset"] +
               "Generation " + str(gen) + cf["bold"] + cf["cyan"] + "/" + cf["reset"] + str(max_gen) +
               cf["bold"] + cf["cyan"] + " =================================" + cf["reset"])
         print("Data slice analysed:", data_slice.start_date, "-->", data_slice.stop_date)
         print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index)
-        print("Data slice analysis cycle:", cycle_count, "\n")
+
+        if self.settings.signal_training_settings.optimiser_setting == 1:
+            print("Data slice analysis cycle:", cycle_count, "\n")
+        else:
+            print("\n")
 
     @staticmethod
     def end_of_optimisation_msg(total_data_points_processed):

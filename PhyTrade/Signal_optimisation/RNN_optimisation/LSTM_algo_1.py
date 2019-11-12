@@ -29,7 +29,7 @@ loading_bar_data_preparation = Progress_bar(max_step=len(settings.market_setting
                                             overwrite_setting=False)
 
 # --> Fetch Metalabel spline to be used as Target
-main_ticker = "AAPL"
+main_ticker = "TM"
 path = r"Data\Splines\**_splines.csv".replace('\\', '/').replace('**', main_ticker)
 
 target_data = pd.read_csv(path, index_col=0)["trade_spline"].values

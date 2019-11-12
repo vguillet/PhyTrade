@@ -39,7 +39,6 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 1500
         self.population_size = 80
 
         self.nb_parents = 25
@@ -54,7 +53,6 @@ class Optimiser_settings:
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15
-        self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.evaluation_methods = ["Net Worth", "MetaLabels", "MetaLabels bs", "MetaLabels avg", "Buy count", "Sell count", "Transaction count"]
         self.evaluation_method = 0
@@ -97,7 +95,7 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 20
+        self.nb_of_generations = 2
         self.population_size = 30
 
         self.nb_parents = 10
@@ -108,7 +106,6 @@ class Optimiser_settings:
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15
-        self.exploitation_phase_len = round(self.nb_of_generations*self.exploitation_phase_len_percent)
 
         self.evaluation_methods = ["Profit", "MetaLabels", "MetaLabels bs", "MetaLabels avg", "Buy count", "Sell count",
                                    "Transaction count"]

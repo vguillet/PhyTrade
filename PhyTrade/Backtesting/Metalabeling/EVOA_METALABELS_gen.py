@@ -54,6 +54,8 @@ def gen_ticker_metalabels(settings, ticker):
 
         # --> Run optimiser on current slice
         evo_optimisation = EVOA_optimiser(settings, ticker, optimiser_setting=settings.signal_training_settings.optimiser_setting)
+
+        # --> Record results
         record_splines(evo_optimisation.best_individual.parameter_set, evo_optimisation.data_slice, ticker)
 
         # --> Get next data slice and update settings

@@ -77,7 +77,8 @@ class gen_data_slice:
 
     @property
     def stop_date(self):
-        return self.data.iloc[self.stop_index]['Date']
+        # Stop date is the date of index before stop index as stop index is not included in dataslice
+        return self.data.iloc[self.stop_index-1]['Date']
 
     @property
     def sliced_data(self):
@@ -116,8 +117,8 @@ class gen_data_slice:
 
     def get_next_data_slice(self):
         # --> Determine new start/stop indexes
-        self.start_index += self.slice_size + 1
-        self.stop_index += self.slice_size + 1
+        self.start_index += self.slice_size
+        self.stop_index += self.slice_size
 
         # --> Check for end of data
         self.check_end_data()
