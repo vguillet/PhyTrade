@@ -26,13 +26,14 @@ settings = SETTINGS()
 settings.market_settings.gen_market_settings()
 loading_bar_data_preparation = Progress_bar(max_step=len(settings.market_settings.tickers)+1,
                                             label="Data Preparation",
-                                            overwrite_setting=False)
+                                            overwrite_setting=True)
 
 # --> Fetch Metalabel spline to be used as Target
-main_ticker = "TM"
+main_ticker = "AAPL"
 path = r"Data\Splines\**_splines.csv".replace('\\', '/').replace('**', main_ticker)
 
 target_data = pd.read_csv(path, index_col=0)["trade_spline"].values
+target_data.shape = (len(target_data), 1)
 
 loading_bar_data_preparation.update_progress()
 
@@ -51,16 +52,16 @@ for i, ticker in enumerate(settings.market_settings.tickers):
                                 end_date=settings.market_settings.testing_end_date)
 
     while data_slice.end_of_dataset is False:
-        print(data_slice.start_date)
-        print(data_slice.stop_date)
         individual.gen_economic_model(data_slice)
         ticker_model_results += list(individual.trade_spline)
         data_slice.get_next_data_slice()
-        # loading_bar_data_preparation.update_activity()
+        loading_bar_data_preparation.update_activity()
 
     training_data[i, :] = ticker_model_results
 
     loading_bar_data_preparation.update_progress()
+
+training_data = training_data.T
 
 print("Target_data", target_data)
 print("Training_data", training_data)

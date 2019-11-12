@@ -24,9 +24,9 @@ class Market_settings:
         #         self.tickers.append(x)
 
         # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
-        # self.tickers = ["AAPL", "GOOGL", "MSFT"]
+        self.tickers = ["AAPL", "GOOGL", "MSFT"]
         # self.tickers = ["AAPL"]
-        self.tickers = ["TM"]
+        # self.tickers = ["TM"]
 
         # --> Fetch parameter sets
         # self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
@@ -34,9 +34,6 @@ class Market_settings:
 
         # ---- Date settings
         # --> Training dates
-        # self.training_start_date = "2016-01-04"
-        # self.training_end_date = "2019-01-02"
-
         self.training_start_date = "2019-01-04"
         self.training_end_date = "2019-06-03"
 

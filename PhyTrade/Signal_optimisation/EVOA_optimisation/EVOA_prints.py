@@ -120,7 +120,7 @@ class EVOA_prints:
               "Generation " + str(gen) + cf["bold"] + cf["cyan"] + "/" + cf["reset"] + str(max_gen) +
               cf["bold"] + cf["cyan"] + " =================================" + cf["reset"])
         print("Data slice analysed:", data_slice.start_date, "-->", data_slice.stop_date)
-        print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index)
+        print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index-1)
 
         if self.settings.signal_training_settings.optimiser_setting == 1:
             print("Data slice analysis cycle:", cycle_count, "\n")
