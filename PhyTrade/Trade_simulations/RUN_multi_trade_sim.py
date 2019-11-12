@@ -13,7 +13,7 @@ Input that still require manual input:
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -121,7 +121,7 @@ class RUN_multi_trade_sim:
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ---- Initiate data slice
-        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
+        self.ref_data_slice = gen_data_slice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

@@ -20,7 +20,7 @@ __date__ = ''
 
 
 def record_settings(dictionary, setting_category, name):
-    path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Data\Settings".replace('\\', '/')
+    path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Settings".replace('\\', '/')
 
     print("----------------> Record settings", setting_category)
     if setting_category == "Current_settings":

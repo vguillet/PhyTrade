@@ -19,7 +19,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class data_slice:
+class gen_data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
                  data_selection="Open", end_date=None, data_looper=False):
 

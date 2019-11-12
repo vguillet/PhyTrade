@@ -11,9 +11,9 @@ import math
 # Own modules
 from PhyTrade.Signal_optimisation.EVOA_optimisation.EVOA_prints import EVOA_prints
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_results_gen import EVOA_results_gen
+from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.gen_EVOA_results import gen_EVOA_results
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 from PhyTrade.Data_Collection_preparation.Record_parameter_set import gen_parameters_json
 
@@ -55,29 +55,29 @@ class EVOA_optimiser:
             settings.signal_training_settings.plot_eco_model_results = False
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
-        self.data_slice = data_slice(ticker,
-                                     settings.start_date,
-                                     settings.market_settings.data_slice_size,
-                                     settings.signal_training_settings.data_slice_shift_per_gen,
-                                     data_selection=settings.market_settings.price_selection,
-                                     end_date=settings.end_date,
-                                     data_looper=settings.signal_training_settings.data_looper)
+        # --> Initiate data slices
+        self.data_slice = gen_data_slice(ticker,
+                                         settings.start_date,
+                                         settings.market_settings.data_slice_size,
+                                         settings.signal_training_settings.data_slice_shift_per_gen,
+                                         data_selection=settings.market_settings.price_selection,
+                                         end_date=settings.end_date,
+                                         data_looper=settings.signal_training_settings.data_looper)
 
         self.data_slice.gen_slice_metalabels(settings.metalabeling_settings.upper_barrier, settings.metalabeling_settings.lower_barrier,
                                              settings.metalabeling_settings.look_ahead,
                                              settings.metalabeling_settings.metalabeling_setting)
 
         # --> Update generation count if end_date results in lower slice count
-        if abs(self.data_slice.default_start_index-self.data_slice.default_end_index) < settings.market_settings.data_slice_size*settings.signal_training_settings.nb_of_generations:
+        if optimiser_setting == 1 and \
+                abs(self.data_slice.default_start_index-self.data_slice.default_end_index) < \
+                settings.market_settings.data_slice_size*(settings.signal_training_settings.nb_of_generations/settings.signal_training_settings.data_slice_cycle_count):
+
             settings.signal_training_settings.nb_of_generations = \
                 math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
 
-            if settings.signal_training_settings.multiprocessing is False:
-                print("\n--> Generation count updated to", settings.signal_training_settings.nb_of_generations, "to match available data <--\n")
-
-            # Re-adjust cycle count if evoa run as optimiser
-            if optimiser_setting == 2:
-                settings.signal_training_settings.data_slice_cycle_count = settings.signal_training_settings.nb_of_generations
+            prints.evoa_settings_auto_adjust(math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size),
+                                                 settings.signal_training_settings.nb_of_generations)
 
         settings.signal_training_settings.exploitation_phase_len = \
             round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
@@ -90,7 +90,7 @@ class EVOA_optimiser:
         self.nb_random_ind = None
 
         # --> Initialise records
-        self.results = EVOA_results_gen(ticker)
+        self.results = gen_EVOA_results(ticker)
         self.results.data_slice_start_index = self.data_slice.start_index
 
         self.results.run_start_time = time.time()
@@ -254,7 +254,7 @@ class EVOA_optimiser:
         self.results.individual = self.best_individual
 
         if optimiser_setting == 1:
-            gen_parameters_json()
+            gen_parameters_json(settings.signal_training_settings.config_name, ticker, self.best_individual.parameter_set)
 
         # # ------------------ Final results benchmarking
         # # -- Initialise benchmark data slice

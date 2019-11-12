@@ -10,7 +10,7 @@ from math import ceil
 # Own modules
 from PhyTrade.Signal_optimisation.EVOA_optimisation.EVO_algo_4 import EVOA_optimiser
 from PhyTrade.Data_Collection_preparation.Record_splines import record_splines
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 
@@ -20,6 +20,7 @@ __date__ = '10/09/2019'
 
 ##################################################################################################################
 
+
 def gen_ticker_metalabels(settings, ticker):
     settings.signal_training_settings.gen_evoa_metalabels_settings()
     settings.fetch_dates(settings.signal_training_settings.optimiser_setting)
@@ -28,10 +29,12 @@ def gen_ticker_metalabels(settings, ticker):
         print("\n==================================================================================")
         print("=====================", ticker, "Metalabels generation initiated =======================")
         print("==================================================================================\n")
-    ref_data_slice = data_slice(ticker,
-                                settings.start_date,
-                                settings.market_settings.data_slice_size, 0,
-                                end_date=settings.end_date)
+
+    # --> Generate reference data slice
+    ref_data_slice = gen_data_slice(ticker,
+                                    settings.start_date,
+                                    settings.market_settings.data_slice_size, 0,
+                                    end_date=settings.end_date)
 
     nb_slices = ceil((-ref_data_slice.default_start_index+ref_data_slice.default_end_index)/ref_data_slice.default_slice_size)
 
@@ -51,7 +54,7 @@ def gen_ticker_metalabels(settings, ticker):
 
         # --> Run optimiser on current slice
         evo_optimisation = EVOA_optimiser(settings, ticker, optimiser_setting=settings.signal_training_settings.optimiser_setting)
-        record_splines(evo_optimisation.best_individual.parameter_dictionary, evo_optimisation.data_slice, ticker)
+        record_splines(evo_optimisation.best_individual.parameter_set, evo_optimisation.data_slice, ticker)
 
         # --> Get next data slice and update settings
         ref_data_slice.get_next_data_slice()

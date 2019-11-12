@@ -7,7 +7,7 @@ Used for generating portfolio and storing portfolio information
 # Own modules
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v5 import Tradebot_v5
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -34,7 +34,7 @@ class PORTFOLIO_gen:
 
         # ---- Generate initial data slices
         for ticker in self.content.keys():
-            self.content[ticker]["Data_slice"] = data_slice(ticker, start_date, data_slice_size, 0, end_date=end_date)
+            self.content[ticker]["Data_slice"] = gen_data_slice(ticker, start_date, data_slice_size, 0, end_date=end_date)
 
         # ---- Generate initial economic models
         print("-- Generating initial economic models --")

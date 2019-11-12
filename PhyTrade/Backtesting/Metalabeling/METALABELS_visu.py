@@ -10,7 +10,7 @@ from pylab import *
 # Own modules
 from PhyTrade.Backtesting.Metalabeling.METALABELS_gen import MetaLabels_gen
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
 __version__ = '1.1.1'
@@ -22,7 +22,7 @@ __date__ = '10/09/2019'
 N = 40
 ticker = "AAPL"
 
-data_slice = data_slice(ticker, "2000-01-03", 2000, 0, data_selection="Close")
+data_slice = gen_data_slice(ticker, "2000-01-03", 2000, 0, data_selection="Close")
 # upper_barrier = np.linspace(1, 100, N)
 # lower_barrier = np.linspace(1, 100, N)
 # look_ahead = np.linspace(1, 200, N)

@@ -1,0 +1,11 @@
+{
+    "simulation_name": "",
+    "nb_data_slices": 5,
+    "print_trade_process": false,
+    "plot_eco_model_results_sim": false,
+    "investment_settings": "investment percentage pegged to trade signal",
+    "cash_in_settings": "Liquidation percentage pegged to trade signal",
+    "max_investment_per_trade_percent": 0.3,
+    "min_investment_per_trade_percent": 0.05,
+    "investment_per_trade_decay_function": "Linear"
+}

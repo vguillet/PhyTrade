@@ -18,7 +18,7 @@ __date__ = '10/09/2019'
 
 class SETTINGS:
     def __init__(self):
-        path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Data\Settings\settings_mode.json".replace('\\', '/')
+        path = r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Settings\settings_mode.json".replace('\\', '/')
         settings_mode = json.load(open(path))
 
         if settings_mode == 0:

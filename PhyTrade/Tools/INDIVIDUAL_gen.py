@@ -46,20 +46,20 @@ class Individual:
                                    eom_include_triggers_in_bb_signal=settings.individual_settings.eom_include_triggers_in_bb_signal,
                                    oc_include_triggers_in_bb_signal=settings.individual_settings.oc_gradient_include_triggers_in_bb_signal)
         else:
-            self.parameter_dictionary = parameter_set
+            self.parameter_set = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(self.parameter_dictionary, settings.signal_training_settings.parameter_blacklist)
+        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(self.parameter_set, settings.signal_training_settings.parameter_blacklist)
 
-        for i in self.parameter_dictionary:
-            for j in range(len(self.parameter_dictionary[i])):
+        for i in self.parameter_set:
+            for j in range(len(self.parameter_set[i])):
                 self.nb_of_parameters += 1
 
     def gen_economic_model(self, data_slice, plot_eco_model_results=False):
         from PhyTrade.Economic_model.Analysis_protocols.Prototype_5 import Prototype_5
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
-        self.analysis = Prototype_5(self.parameter_dictionary, data_slice)
+        self.analysis = Prototype_5(self.parameter_set, data_slice)
 
         self.spline = self.analysis.big_data.Major_spline.spline
         self.trade_spline = self.analysis.big_data.Major_spline.trade_spline
@@ -111,7 +111,7 @@ class Individual:
                           oc_include_triggers_in_bb_signal=False):
 
         ga_random = EVOA_random_gen()
-        self.parameter_dictionary = {"indicators_count": {},
+        self.parameter_set = {"indicators_count": {},
                                      "spline_property": {"weights": {},
                                                          "smoothing_factors": {},
                                                          "amplification_factor": {},
@@ -123,116 +123,116 @@ class Individual:
                                                           "include_triggers_in_bb_signal":{}}}
 
         # ========================================================== RSI parameters:
-        self.parameter_dictionary["indicators_count"]["rsi"] = rsi_count
+        self.parameter_set["indicators_count"]["rsi"] = rsi_count
 
         if rsi_count != 0:
-            self.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"] = {}
-            self.parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"] = {}
+            self.parameter_set["indicator_properties"]["rsi_standard_upper_thresholds"] = {}
+            self.parameter_set["indicator_properties"]["rsi_standard_lower_thresholds"] = {}
 
             for i in range(rsi_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["rsi_"+str(i)] = ga_random.timeframe_random_gen()
-                self.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"]["rsi_" + str(i)] = ga_random.rsi_upper_threshold_random_gen()
-                self.parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"]["rsi_" + str(i)] = ga_random.rsi_lower_threshold_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["rsi_" + str(i)] = ga_random.timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["rsi_standard_upper_thresholds"]["rsi_" + str(i)] = ga_random.rsi_upper_threshold_random_gen()
+                self.parameter_set["indicator_properties"]["rsi_standard_lower_thresholds"]["rsi_" + str(i)] = ga_random.rsi_lower_threshold_random_gen()
 
-                self.parameter_dictionary["spline_property"]["smoothing_factors"]["rsi_" + str(i)] = ga_random.smoothing_factor_random_gen()
-                self.parameter_dictionary["spline_property"]["weights"]["rsi_" + str(i)] = ga_random.weight_random_gen()
-                self.parameter_dictionary["spline_property"]["flip"]["rsi_" + str(i)] = ga_random.flip_random_gen()
+                self.parameter_set["spline_property"]["smoothing_factors"]["rsi_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_set["spline_property"]["weights"]["rsi_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_set["spline_property"]["flip"]["rsi_" + str(i)] = ga_random.flip_random_gen()
 
-            self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["rsi"] = rsi_include_triggers_in_bb_signal
-            self.parameter_dictionary["general_settings"]["rsi_buffer_setting"] = rsi_buffer_setting
+            self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["rsi"] = rsi_include_triggers_in_bb_signal
+            self.parameter_set["general_settings"]["rsi_buffer_setting"] = rsi_buffer_setting
 
         # ========================================================== SMA parameters:
-        self.parameter_dictionary["indicators_count"]["sma"] = sma_count
+        self.parameter_set["indicators_count"]["sma"] = sma_count
 
         if sma_count != 0:
             for i in range(sma_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_1"] = ga_random.small_timeframe_random_gen()
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["sma_"+str(i)+"_2"] = ga_random.large_timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["sma_" + str(i) + "_1"] = ga_random.small_timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["sma_" + str(i) + "_2"] = ga_random.large_timeframe_random_gen()
 
-                self.parameter_dictionary["spline_property"]["smoothing_factors"]["sma_" + str(i)] = ga_random.smoothing_factor_random_gen()
-                self.parameter_dictionary["spline_property"]["weights"]["sma_" + str(i)] = ga_random.weight_random_gen()
-                self.parameter_dictionary["spline_property"]["flip"]["sma_" + str(i)] = ga_random.flip_random_gen()
+                self.parameter_set["spline_property"]["smoothing_factors"]["sma_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_set["spline_property"]["weights"]["sma_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_set["spline_property"]["flip"]["sma_" + str(i)] = ga_random.flip_random_gen()
 
-            self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["sma"] = sma_include_triggers_in_bb_signal
+            self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["sma"] = sma_include_triggers_in_bb_signal
 
         # ========================================================== EMA parameters:
-        self.parameter_dictionary["indicators_count"]["ema"] = ema_count
+        self.parameter_set["indicators_count"]["ema"] = ema_count
 
         if ema_count != 0:
             for i in range(ema_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["ema_"+str(i)+"_1"] = ga_random.small_timeframe_random_gen()
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["ema_"+str(i)+"_2"] = ga_random.large_timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["ema_" + str(i) + "_1"] = ga_random.small_timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["ema_" + str(i) + "_2"] = ga_random.large_timeframe_random_gen()
 
-                self.parameter_dictionary["spline_property"]["smoothing_factors"]["ema_" + str(i)] = ga_random.smoothing_factor_random_gen()
-                self.parameter_dictionary["spline_property"]["weights"]["ema_" + str(i)] = ga_random.weight_random_gen()
-                self.parameter_dictionary["spline_property"]["flip"]["ema_" + str(i)] = ga_random.flip_random_gen()
+                self.parameter_set["spline_property"]["smoothing_factors"]["ema_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_set["spline_property"]["weights"]["ema_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_set["spline_property"]["flip"]["ema_" + str(i)] = ga_random.flip_random_gen()
 
-            self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["ema"] = ema_include_triggers_in_bb_signal
+            self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["ema"] = ema_include_triggers_in_bb_signal
 
         # ========================================================== LWMA parameters:
-        self.parameter_dictionary["indicators_count"]["lwma"] = lwma_count
+        self.parameter_set["indicators_count"]["lwma"] = lwma_count
 
         if lwma_count != 0:
-            self.parameter_dictionary["indicator_properties"]["lwma_max_weights"] = {}
+            self.parameter_set["indicator_properties"]["lwma_max_weights"] = {}
 
             for i in range(lwma_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["lwma_"+str(i)] = ga_random.timeframe_random_gen()
-                self.parameter_dictionary["indicator_properties"]["lwma_max_weights"]["lwma_"+str(i)] = ga_random.lwma_max_weight_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["lwma_" + str(i)] = ga_random.timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["lwma_max_weights"]["lwma_" + str(i)] = ga_random.lwma_max_weight_random_gen()
 
-                self.parameter_dictionary["spline_property"]["smoothing_factors"]["lwma_" + str(i)] = ga_random.smoothing_factor_random_gen()
-                self.parameter_dictionary["spline_property"]["weights"]["lwma_" + str(i)] = ga_random.weight_random_gen()
-                self.parameter_dictionary["spline_property"]["flip"]["lwma_" + str(i)] = ga_random.flip_random_gen()
+                self.parameter_set["spline_property"]["smoothing_factors"]["lwma_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_set["spline_property"]["weights"]["lwma_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_set["spline_property"]["flip"]["lwma_" + str(i)] = ga_random.flip_random_gen()
 
-            self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["lwma"] = lwma_include_triggers_in_bb_signal
+            self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["lwma"] = lwma_include_triggers_in_bb_signal
 
         # ========================================================== CCI parameters:
-        self.parameter_dictionary["indicators_count"]["cci"] = cci_count
+        self.parameter_set["indicators_count"]["cci"] = cci_count
 
         if cci_count != 0:
             for i in range(cci_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["cci_"+str(i)] = ga_random.timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["cci_" + str(i)] = ga_random.timeframe_random_gen()
 
-                self.parameter_dictionary["spline_property"]["smoothing_factors"]["cci_" + str(i)] = ga_random.smoothing_factor_random_gen()
-                self.parameter_dictionary["spline_property"]["weights"]["cci_" + str(i)] = ga_random.weight_random_gen()
-                self.parameter_dictionary["spline_property"]["flip"]["cci_" + str(i)] = ga_random.flip_random_gen()
+                self.parameter_set["spline_property"]["smoothing_factors"]["cci_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_set["spline_property"]["weights"]["cci_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_set["spline_property"]["flip"]["cci_" + str(i)] = ga_random.flip_random_gen()
 
-            self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["cci"] = cci_include_triggers_in_bb_signal
+            self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["cci"] = cci_include_triggers_in_bb_signal
 
         # ========================================================== EOM parameters:
-        self.parameter_dictionary["indicators_count"]["eom"] = eom_count
+        self.parameter_set["indicators_count"]["eom"] = eom_count
 
         if eom_count != 0:
             for i in range(eom_count):
-                self.parameter_dictionary["indicator_properties"]["timeframes"]["eom_"+str(i)] = ga_random.timeframe_random_gen()
+                self.parameter_set["indicator_properties"]["timeframes"]["eom_" + str(i)] = ga_random.timeframe_random_gen()
 
-                self.parameter_dictionary["spline_property"]["smoothing_factors"]["eom_" + str(i)] = ga_random.smoothing_factor_random_gen()
-                self.parameter_dictionary["spline_property"]["weights"]["eom_" + str(i)] = ga_random.weight_random_gen()
-                self.parameter_dictionary["spline_property"]["flip"]["eom_" + str(i)] = ga_random.flip_random_gen()
+                self.parameter_set["spline_property"]["smoothing_factors"]["eom_" + str(i)] = ga_random.smoothing_factor_random_gen()
+                self.parameter_set["spline_property"]["weights"]["eom_" + str(i)] = ga_random.weight_random_gen()
+                self.parameter_set["spline_property"]["flip"]["eom_" + str(i)] = ga_random.flip_random_gen()
 
-            self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["eom"] = eom_include_triggers_in_bb_signal
+            self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["eom"] = eom_include_triggers_in_bb_signal
 
         # ========================================================== OC parameters:
-        self.parameter_dictionary["indicators_count"]["oc_gradient"] = 1
+        self.parameter_set["indicators_count"]["oc_gradient"] = 1
 
-        self.parameter_dictionary["spline_property"]["smoothing_factors"]["oc_gradient_0"] = ga_random.smoothing_factor_random_gen()
-        self.parameter_dictionary["spline_property"]["weights"]["oc_gradient_0"] = ga_random.weight_random_gen()
-        self.parameter_dictionary["spline_property"]["flip"]["oc_gradient_0"] = ga_random.flip_random_gen()
+        self.parameter_set["spline_property"]["smoothing_factors"]["oc_gradient_0"] = ga_random.smoothing_factor_random_gen()
+        self.parameter_set["spline_property"]["weights"]["oc_gradient_0"] = ga_random.weight_random_gen()
+        self.parameter_set["spline_property"]["flip"]["oc_gradient_0"] = ga_random.flip_random_gen()
 
-        self.parameter_dictionary["general_settings"]["include_triggers_in_bb_signal"]["oc_gradient"] = oc_include_triggers_in_bb_signal
+        self.parameter_set["general_settings"]["include_triggers_in_bb_signal"]["oc_gradient"] = oc_include_triggers_in_bb_signal
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Volume parameters:
-        self.parameter_dictionary["spline_property"]["amplification_factor"]["volume_0"] = ga_random.amplification_factor_random_gen()
-        self.parameter_dictionary["spline_property"]["smoothing_factors"]["volume_0"] = ga_random.smoothing_factor_random_gen()
-        self.parameter_dictionary["spline_property"]["flip"]["volume_0"] = ga_random.flip_random_gen()
+        self.parameter_set["spline_property"]["amplification_factor"]["volume_0"] = ga_random.amplification_factor_random_gen()
+        self.parameter_set["spline_property"]["smoothing_factors"]["volume_0"] = ga_random.smoothing_factor_random_gen()
+        self.parameter_set["spline_property"]["flip"]["volume_0"] = ga_random.flip_random_gen()
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Volatility parameters:
-        self.parameter_dictionary["indicator_properties"]["timeframes"]["volatility_0"] = ga_random.timeframe_random_gen()
+        self.parameter_set["indicator_properties"]["timeframes"]["volatility_0"] = ga_random.timeframe_random_gen()
 
-        self.parameter_dictionary["spline_property"]["amplification_factor"]["volatility_0"] = ga_random.amplification_factor_random_gen()
-        self.parameter_dictionary["spline_property"]["smoothing_factors"]["volatility_0"] = ga_random.smoothing_factor_random_gen()
-        self.parameter_dictionary["spline_property"]["flip"]["volatility_0"] = ga_random.flip_random_gen()
+        self.parameter_set["spline_property"]["amplification_factor"]["volatility_0"] = ga_random.amplification_factor_random_gen()
+        self.parameter_set["spline_property"]["smoothing_factors"]["volatility_0"] = ga_random.smoothing_factor_random_gen()
+        self.parameter_set["spline_property"]["flip"]["volatility_0"] = ga_random.flip_random_gen()
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dynamic threshold parameters:
-        self.parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"] = ga_random.major_spline_upper_threshold_random_gen()
-        self.parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"] = ga_random.major_spline_lower_threshold_random_gen()
-        self.parameter_dictionary["indicator_properties"]["timeframes"]["threshold_timeframe"] = 20
+        self.parameter_set["spline_property"]["major_spline_standard_upper_thresholds"] = ga_random.major_spline_upper_threshold_random_gen()
+        self.parameter_set["spline_property"]["major_spline_standard_lower_thresholds"] = ga_random.major_spline_lower_threshold_random_gen()
+        self.parameter_set["indicator_properties"]["timeframes"]["threshold_timeframe"] = 20

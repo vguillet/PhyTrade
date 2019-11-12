@@ -200,14 +200,14 @@ class EVOA_tools:
             # --> Mutate offspring
             for _ in range(nb_of_parameters_to_mutate):
                 # --> Select parameter class to modify
-                parameter_class_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
+                parameter_class_to_modify = random.choice(list(offspring.parameter_set.keys()))
                 while parameter_class_to_modify in parameter_blacklist:
-                    parameter_class_to_modify = random.choice(list(offspring.parameter_dictionary.keys()))
+                    parameter_class_to_modify = random.choice(list(offspring.parameter_set.keys()))
 
                 # --> Select parameter type to modify
-                parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary[parameter_class_to_modify].keys()))
+                parameter_type_to_modify = random.choice(list(offspring.parameter_set[parameter_class_to_modify].keys()))
                 while parameter_type_to_modify in parameter_blacklist:
-                    parameter_type_to_modify = random.choice(list(offspring.parameter_dictionary[parameter_class_to_modify].keys()))
+                    parameter_type_to_modify = random.choice(list(offspring.parameter_set[parameter_class_to_modify].keys()))
 
                 offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify,
                                                            current_generation, nb_of_generations,

@@ -11,7 +11,7 @@ import math
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
@@ -58,7 +58,7 @@ class RUN_model:
         self.results = EVAL_parameter_set_results_gen(self.ticker, eval_name)
 
         # ---- Generate data slice
-        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0, end_date=end_date)
+        self.data_slice = gen_data_slice(self.ticker, start_date, data_slice_size, 0, end_date=end_date)
 
         # ---- Generate Individual
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
@@ -211,7 +211,7 @@ class EVAL_parameter_set_results_gen:
 
     def plot_results(self):
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
-        print_data_slice = data_slice(self.ticker, self.benchmark_data_slice_start, self.total_data_points_processed, 0)
+        print_data_slice = gen_data_slice(self.ticker, self.benchmark_data_slice_start, self.total_data_points_processed, 0)
         PLOT_tools().plot_trade_process(print_data_slice,
                                         self.spline,
                                         self.upper_threshold_spline,

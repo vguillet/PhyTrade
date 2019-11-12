@@ -28,6 +28,7 @@ class EVOA_prints:
 
         # --> Perform Monkey Patching update of print methods if multiprocessing
         if self.settings.signal_training_settings.multiprocessing:
+            self.evoa_settings_auto_adjust = self.monkey_patch_pass
             self.evoa_run_initialisation_recap = self.monkey_patch_pass
             self.new_slice_info = self.monkey_patch_pass
             self.generation_info = self.monkey_patch_pass
@@ -44,6 +45,11 @@ class EVOA_prints:
     @staticmethod
     def monkey_patch_pass(*args, **kwargs):
         return
+
+    @staticmethod
+    def evoa_settings_auto_adjust(slice_count, generation_count):
+        print("\nNumber of data slices to be processed:", slice_count)
+        print("--> Generation count updated to", generation_count, "to match available data <--\n")
 
     def evoa_run_initialisation_recap(self, run_mode):
         # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]

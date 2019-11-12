@@ -3,6 +3,8 @@
 """
 The Dev_menu script is used to initiate all economic analysis, trading simulations,
 and economic model parameters evaluations and optimisations.
+
+Dev menu-based runs used the class based setting system, settings can be adjusted in the PhyTrade settings/class based settings folder
 """
 
 # Built-in/Generic Imports

@@ -15,7 +15,7 @@ import math
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
 
@@ -115,8 +115,8 @@ class RUN_single_trade_sim:
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ---- Initiate data slice
-        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
-                                     end_date=end_date, data_looper=False)
+        self.data_slice = gen_data_slice(self.ticker, start_date, data_slice_size, 0,
+                                         end_date=end_date, data_looper=False)
         self.data_slice.gen_slice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
 
         self.nb_data_slices = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/data_slice_size)
@@ -355,7 +355,7 @@ class Trade_simulation_results_gen:
         plt.show()
 
         # --> Plot model results
-        print_data_slice = data_slice(self.ticker, self.data_slice_start_date, self.total_data_points_processed, 0)
+        print_data_slice = gen_data_slice(self.ticker, self.data_slice_start_date, self.total_data_points_processed, 0)
         PLOT_tools().plot_trade_process(print_data_slice,
                                         self.spline,
                                         self.upper_threshold_spline,

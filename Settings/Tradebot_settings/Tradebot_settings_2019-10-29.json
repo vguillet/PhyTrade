@@ -1,0 +1,7 @@
+{
+    "s_initial_investment": 1000,
+    "initial_investment": 1000,
+    "fixed_investment": 100,
+    "investment_percentage": 0.3,
+    "asset_liquidation_percentage": 0.5
+}

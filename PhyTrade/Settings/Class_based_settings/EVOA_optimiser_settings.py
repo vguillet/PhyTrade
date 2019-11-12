@@ -39,7 +39,7 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 50
+        self.nb_of_generations = 1500
         self.population_size = 80
 
         self.nb_parents = 25

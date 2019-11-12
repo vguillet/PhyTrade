@@ -18,7 +18,7 @@ __date__ = '10/09/2019'
 ##################################################################################################################
 
 
-class EVOA_results_gen:
+class gen_EVOA_results:
     def __init__(self, ticker):
         
         # ---- Fetch EVOA settings

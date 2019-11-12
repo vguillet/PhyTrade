@@ -6,7 +6,7 @@ This prototype is based entirely on technical analysis, and include new indicato
     - EMA
     - LWMA
 
-The following parameter_dictionary still require manual input:
+The following parameter_set still require manual input:
     - spline interpolation coef
     - include trigger in signals (Technical_Indicators output generation)
     - buffer and buffer settings (Threshold determination)

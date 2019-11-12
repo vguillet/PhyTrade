@@ -10,7 +10,7 @@ Used to generate metalabels using
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -26,9 +26,9 @@ class Metalabeling_gen:
         self.settings.metalabeling_settings.end_date = None
         self.settings.metalabeling_settings.data_slice_size = slice_size
         self.settings.metalabeling_settings.config_name = "Metalabels"
-        self.data_slice = data_slice(ticker,
-                                     self.settings.metalabeling_settings.start_date, self.settings.metalabeling_settings.data_slice_size,
-                                     0, )
+        self.data_slice = gen_data_slice(ticker,
+                                         self.settings.metalabeling_settings.start_date, self.settings.metalabeling_settings.data_slice_size,
+                                         0, )
 
         if metalabeling_method == 0:
             self.settings.metalabeling_settings.gen_metalabels_settings()

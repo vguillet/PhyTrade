@@ -25,72 +25,72 @@ class EVOA_random_gen:
                      decay_function):
 
         if parameter_type_to_modify == "timeframes":
-            parameter = random.choice(list(offspring.parameter_dictionary["indicator_properties"]["timeframes"]))
+            parameter = random.choice(list(offspring.parameter_set["indicator_properties"]["timeframes"]))
 
-            offspring.parameter_dictionary["indicator_properties"]["timeframes"][parameter] = \
-                self.timeframe_gen(offspring.parameter_dictionary["indicator_properties"]["timeframes"][parameter],
+            offspring.parameter_set["indicator_properties"]["timeframes"][parameter] = \
+                self.timeframe_gen(offspring.parameter_set["indicator_properties"]["timeframes"][parameter],
                                    current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "rsi_standard_upper_thresholds":
-            parameter = random.choice(list(offspring.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"]))
+            parameter = random.choice(list(offspring.parameter_set["indicator_properties"]["rsi_standard_upper_thresholds"]))
 
-            offspring.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"][parameter] = \
+            offspring.parameter_set["indicator_properties"]["rsi_standard_upper_thresholds"][parameter] = \
                 self.rsi_upper_threshold_gen(
-                    offspring.parameter_dictionary["indicator_properties"]["rsi_standard_upper_thresholds"][parameter],
+                    offspring.parameter_set["indicator_properties"]["rsi_standard_upper_thresholds"][parameter],
                     current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "rsi_standard_lower_thresholds":
-            parameter = random.choice(list(offspring.parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"]))
+            parameter = random.choice(list(offspring.parameter_set["indicator_properties"]["rsi_standard_lower_thresholds"]))
 
-            offspring.parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"][parameter] = \
+            offspring.parameter_set["indicator_properties"]["rsi_standard_lower_thresholds"][parameter] = \
                 self.rsi_lower_threshold_gen(
-                    offspring.parameter_dictionary["indicator_properties"]["rsi_standard_lower_thresholds"][parameter],
+                    offspring.parameter_set["indicator_properties"]["rsi_standard_lower_thresholds"][parameter],
                     current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "lwma_max_weights":
-            parameter = random.choice(list(offspring.parameter_dictionary["indicator_properties"]["lwma_max_weights"]))
+            parameter = random.choice(list(offspring.parameter_set["indicator_properties"]["lwma_max_weights"]))
 
-            offspring.parameter_dictionary["indicator_properties"]["lwma_max_weights"][parameter] = \
-                self.lwma_max_weight_gen(offspring.parameter_dictionary["indicator_properties"]["lwma_max_weights"][parameter],
+            offspring.parameter_set["indicator_properties"]["lwma_max_weights"][parameter] = \
+                self.lwma_max_weight_gen(offspring.parameter_set["indicator_properties"]["lwma_max_weights"][parameter],
                                          current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "smoothing_factors":
-            parameter = random.choice(list(offspring.parameter_dictionary["spline_property"]["smoothing_factors"]))
+            parameter = random.choice(list(offspring.parameter_set["spline_property"]["smoothing_factors"]))
 
-            offspring.parameter_dictionary["spline_property"]["smoothing_factors"][parameter] = \
-                self.smoothing_factor_gen(offspring.parameter_dictionary["spline_property"]["smoothing_factors"][parameter],
+            offspring.parameter_set["spline_property"]["smoothing_factors"][parameter] = \
+                self.smoothing_factor_gen(offspring.parameter_set["spline_property"]["smoothing_factors"][parameter],
                                           current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "amplification_factors":
-            parameter = random.choice(list(offspring.parameter_dictionary["spline_property"]["amplification_factors"]))
+            parameter = random.choice(list(offspring.parameter_set["spline_property"]["amplification_factors"]))
 
-            offspring.parameter_dictionary["spline_property"]["amplification_factors"][parameter] = \
+            offspring.parameter_set["spline_property"]["amplification_factors"][parameter] = \
                 self.amplification_factor_gen(
-                    offspring.parameter_dictionary["spline_property"]["amplification_factors"][parameter],
+                    offspring.parameter_set["spline_property"]["amplification_factors"][parameter],
                     current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "weights":
-            parameter = random.choice(list(offspring.parameter_dictionary["spline_property"]["weights"]))
+            parameter = random.choice(list(offspring.parameter_set["spline_property"]["weights"]))
 
-            offspring.parameter_dictionary["spline_property"]["weights"][parameter] = \
-                self.weight_gen(offspring.parameter_dictionary["spline_property"]["weights"][parameter],
+            offspring.parameter_set["spline_property"]["weights"][parameter] = \
+                self.weight_gen(offspring.parameter_set["spline_property"]["weights"][parameter],
                                 current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "major_spline_standard_upper_thresholds":
-            offspring.parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"] = \
+            offspring.parameter_set["spline_property"]["major_spline_standard_upper_thresholds"] = \
                 self.major_spline_upper_threshold_gen(
-                    offspring.parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"],
+                    offspring.parameter_set["spline_property"]["major_spline_standard_upper_thresholds"],
                     current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "major_spline_standard_lower_thresholds":
-            offspring.parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"] = \
+            offspring.parameter_set["spline_property"]["major_spline_standard_lower_thresholds"] = \
                 self.major_spline_lower_threshold_gen(
-                    offspring.parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"],
+                    offspring.parameter_set["spline_property"]["major_spline_standard_lower_thresholds"],
                     current_generation, nb_of_generations, current_slice_cycle, nb_of_slice_cycles, decay_function)
 
         elif parameter_type_to_modify == "flip":
-            parameter = random.choice(list(offspring.parameter_dictionary["spline_property"]["flip"]))
-            offspring.parameter_dictionary["spline_property"]["flip"][parameter] = self.flip_gen()
+            parameter = random.choice(list(offspring.parameter_set["spline_property"]["flip"]))
+            offspring.parameter_set["spline_property"]["flip"][parameter] = self.flip_gen()
 
         return offspring
 
