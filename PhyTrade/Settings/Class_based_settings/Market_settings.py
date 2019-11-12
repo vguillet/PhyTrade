@@ -44,7 +44,7 @@ class Market_settings:
         self.testing_start_date = "2019-06-03"
         self.testing_end_date = "2019-07-08"
 
-        self.data_slice_size = 25
+        self.data_slice_size = 26
 
         # ---- Broker settings
         self.min_transaction_cost = 1

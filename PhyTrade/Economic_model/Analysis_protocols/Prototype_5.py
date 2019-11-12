@@ -148,7 +148,6 @@ class Prototype_5:
             if parameter_dictionary["indicators_count"][indicator_type] != 0:
                 self.big_data.content["splines"][indicator_type] = []
                 for i in range(len(self.big_data.content["indicators"][indicator_type])):
-                    print(indicator_type, self.big_data.content["indicators"][indicator_type][i].bb_signal)
                     self.big_data.content["splines"][indicator_type].append(
                         self.spline_tools.calc_signal_to_spline(self.big_data,
                                                                 self.big_data.content["indicators"][indicator_type][i].bb_signal,

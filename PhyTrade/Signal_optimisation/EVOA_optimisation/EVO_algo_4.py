@@ -25,7 +25,7 @@ __date__ = '10/09/2019'
 
 
 class EVOA_optimiser:
-    def __init__(self, settings, ticker="AAPL", optimiser_setting="1"):
+    def __init__(self, settings, ticker="AAPL", optimiser_setting="1", data_slice=None):
         # ======================== GA OPTIMISATION INITIALISATION =======================
         # ------------------ Tools and GA parameters initialisation
         # --> EVOA run as signal tuner
@@ -36,6 +36,7 @@ class EVOA_optimiser:
         elif optimiser_setting == 2:
             settings.signal_training_settings.gen_evoa_metalabels_settings()
 
+            # Adjust settings for the optimiser mode
             settings.signal_training_settings.data_slice_cycle_count = settings.signal_training_settings.nb_of_generations
             settings.signal_training_settings.data_slice_shift_per_gen = 0
             settings.signal_training_settings.data_looper = False
@@ -45,7 +46,7 @@ class EVOA_optimiser:
         # --> Initiate prints
         prints = EVOA_prints(ticker, 4, settings)
 
-        # ---- Update settings according to run case
+        # ---- Update settings according to run case and inputs
         # --> Disable all prints/plots in case of multiprocessing
         if settings.signal_training_settings.multiprocessing:
             settings.signal_training_settings.print_evoa_parameters_per_gen = False
@@ -55,15 +56,20 @@ class EVOA_optimiser:
             settings.signal_training_settings.plot_eco_model_results = False
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
-        # --> Initiate data slices
-        self.data_slice = gen_data_slice(ticker,
-                                         settings.start_date,
-                                         settings.market_settings.data_slice_size,
-                                         settings.signal_training_settings.data_slice_shift_per_gen,
-                                         data_selection=settings.market_settings.price_selection,
-                                         end_date=settings.end_date,
-                                         data_looper=settings.signal_training_settings.data_looper)
+        # --> Initiate data slices if not provided
+        if data_slice is None:
+            self.data_slice = gen_data_slice(ticker,
+                                             settings.start_date,
+                                             settings.market_settings.data_slice_size,
+                                             settings.signal_training_settings.data_slice_shift_per_gen,
+                                             data_selection=settings.market_settings.price_selection,
+                                             end_date=settings.end_date,
+                                             data_looper=settings.signal_training_settings.data_looper)
 
+        else:
+            self.data_slice = data_slice
+
+        # --> Compute initial slice metalabels
         self.data_slice.gen_slice_metalabels(settings.metalabeling_settings.upper_barrier, settings.metalabeling_settings.lower_barrier,
                                              settings.metalabeling_settings.look_ahead,
                                              settings.metalabeling_settings.metalabeling_setting)

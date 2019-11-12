@@ -96,9 +96,9 @@ class Optimiser_settings:
 
         # ---- Population parameters
         self.nb_of_generations = 2
-        self.population_size = 30
+        self.population_size = 1
 
-        self.nb_parents = 10
+        self.nb_parents = 1
         self.nb_random_ind = 3
 
         self.mutation_rate = 0.5

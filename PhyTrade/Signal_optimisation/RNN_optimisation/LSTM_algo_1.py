@@ -58,7 +58,6 @@ for i, ticker in enumerate(settings.market_settings.tickers):
         data_slice.get_next_data_slice()
         # loading_bar_data_preparation.update_activity()
 
-    print(ticker_model_results)
     training_data[i, :] = ticker_model_results
 
     loading_bar_data_preparation.update_progress()
