@@ -40,13 +40,13 @@ def gen_ticker_metalabels(settings, ticker):
 
     # --> Print initial progress and status
     if settings.signal_training_settings.multiprocessing is False:
-        print(ref_data_slice.default_start_date, ref_data_slice.default_end_date)
+        print("Total date interval processed:", ref_data_slice.default_start_date, ref_data_slice.default_end_date)
 
     progress_bar = Progress_bar(max_step=nb_slices, bar_size=60, label=ticker+" metalabeling", overwrite_setting=False)
 
     while not ref_data_slice.end_of_dataset:
         if settings.signal_training_settings.multiprocessing is False:
-            print("\nDate slice processed:", ref_data_slice.start_date + " --> " + ref_data_slice.stop_date)
+            print("\n------------------------------------------------------------------> Date slice processed:", ref_data_slice.start_date + " --> " + ref_data_slice.stop_date)
 
         # --> Run optimiser on ref data slice
         evo_optimisation = EVOA_optimiser(settings,

@@ -30,7 +30,7 @@ class gen_data_slice:
         # ---- Data slice properties
         # --> Find corresponding starting data index from start date and shift to next day if not available
         found = False
-        while found != True:
+        while found is not True:
             if start_date in list(self.data["Date"]):
                 found = True
             else:
@@ -45,6 +45,10 @@ class gen_data_slice:
         if len(self.data[self.start_index:]) < self.slice_size:
             self.slice_size = -len(self.data[self.start_index:])
             print("Data slice size adjusted to:", self.slice_size)
+
+        # TODO: Fix case of slice size bigger than start-end date interval
+        # if len(self.data[self.start_index:-len(self.data)+np.flatnonzero(self.data['Date'] == end_date)[0]]) < self.slice_size:
+        #     self.slice_size = -self.start_index + -len(self.data)+np.flatnonzero(self.data['Date'] == end_date)[0]
 
         # --> Find corresponding stop data index
         self.stop_index = self.start_index + self.slice_size
@@ -115,21 +119,21 @@ class gen_data_slice:
                                          metalabel_setting=metalabeling_setting).metalabels
         return
 
-    def get_next_data_slice(self):
+    def get_next_data_slice(self, prints=True):
         # --> Determine new start/stop indexes
         self.start_index += self.slice_size
         self.stop_index += self.slice_size
 
         # --> Check for end of data
-        self.check_end_data()
+        self.check_end_data(prints)
 
-    def get_shifted_data_slice(self):
+    def get_shifted_data_slice(self, prints=True):
         # --> Determine new start/stop indexes
         self.start_index = self.start_index + self.data_slice_shift_per_gen
         self.stop_index = self.stop_index + self.data_slice_shift_per_gen
 
         # --> Check for end of data
-        self.check_end_data()
+        self.check_end_data(prints)
 
     def perform_trade_run(self,
                           investment_settings=1, cash_in_settings=0,
@@ -158,7 +162,7 @@ class gen_data_slice:
         return
 
     # ========================================= Data slice tools =========================================
-    def check_end_data(self):
+    def check_end_data(self, prints):
         if self.default_end_date is None:
             if self.stop_index >= -1:
                 if self.start_index < -1:
@@ -175,7 +179,8 @@ class gen_data_slice:
                     else:
                         # --> Trigger End of dataset
                         self.end_of_dataset = True
-                        print("\nEnd of dataset reached\n")
+                        if prints:
+                            print("\nEnd of dataset reached\n")
                         return
             else:
                 return
@@ -195,7 +200,8 @@ class gen_data_slice:
                     else:
                         # --> Trigger End of dataset
                         self.end_of_dataset = True
-                        print("\nEnd of dataset reached\n")
+                        if prints:
+                            print("\nEnd of dataset reached\n")
                         return
             else:
                 return

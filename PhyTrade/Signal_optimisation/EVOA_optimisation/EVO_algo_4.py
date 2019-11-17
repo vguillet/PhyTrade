@@ -74,10 +74,24 @@ class EVOA_optimiser:
                                              settings.metalabeling_settings.look_ahead,
                                              settings.metalabeling_settings.metalabeling_setting)
 
-        # --> Update generation count if end_date results in lower slice count
+        # --> Update generation count and slice count according to selected settings and available data,
+        # making sure that number of generation spans at least the date interval to be analysed
         if optimiser_setting == 1:
-            settings.signal_training_settings.nb_of_generations = \
-                math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
+            min_nb_generations = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
+
+            if settings.signal_training_settings.data_looper is False:  # If looper is false, set generation count
+                # Update generation count if end_date results in lower slice count
+                settings.signal_training_settings.nb_of_generations = min_nb_generations
+                slice_count = math.ceil(abs(self.data_slice.default_start_index - self.data_slice.default_end_index) / settings.market_settings.data_slice_size)
+            else:
+                if settings.signal_training_settings.nb_of_generations < min_nb_generations:
+                    settings.signal_training_settings.nb_of_generations = min_nb_generations
+                    slice_count = math.ceil(abs(self.data_slice.default_start_index - self.data_slice.default_end_index) / settings.market_settings.data_slice_size)
+
+                else:
+                    slice_count = math.floor(settings.signal_training_settings.nb_of_generations/settings.signal_training_settings.data_slice_cycle_count)
+        else:
+            slice_count = None
 
         settings.signal_training_settings.exploitation_phase_len = \
             round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
@@ -97,8 +111,7 @@ class EVOA_optimiser:
 
         # ========================= EVO OPTIMISATION PROCESS =============================
         prints.evoa_run_initialisation_recap(optimiser_setting,
-                                             math.ceil(abs(
-                                                 self.data_slice.default_start_index - self.data_slice.default_end_index) / settings.market_settings.data_slice_size),
+                                             slice_count,
                                              settings.signal_training_settings.nb_of_generations)
 
         if optimiser_setting == 1 and not settings.signal_training_settings.multiprocessing:

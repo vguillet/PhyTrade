@@ -29,19 +29,20 @@ class Market_settings:
         # self.tickers = ["TM"]
 
         # --> Fetch parameter sets
-        # self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
+        self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "06", "Short_term")
         self.price_selection = "Open"
 
         # ---- Date settings
+        # DATES provided must have an interval at least equal to slice size!
         # --> Training dates
-        self.training_start_date = "2019-01-04"
+        self.training_start_date = "2018-01-04"
         self.training_end_date = "2019-06-03"
 
         # --> Testing dates
         self.testing_start_date = "2019-06-03"
-        self.testing_end_date = "2019-07-08"
+        self.testing_end_date = "2019-07-10"
 
-        self.data_slice_size = 26
+        self.data_slice_size = 25
 
         # ---- Broker settings
         self.min_transaction_cost = 1

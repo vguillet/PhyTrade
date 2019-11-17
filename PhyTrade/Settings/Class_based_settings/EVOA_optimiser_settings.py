@@ -49,7 +49,10 @@ class Optimiser_settings:
 
         self.data_slice_cycle_count = 5
         self.data_slice_shift_per_gen = 12
+
         self.data_looper = False
+        # --> If data looper is True
+        self.nb_of_generations = 30     # Selected data
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15
@@ -95,14 +98,14 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings"]
 
         # ---- Population parameters
-        self.nb_of_generations = 1
-        self.population_size = 1
+        self.nb_of_generations = 30
+        self.population_size = 45
 
-        self.nb_parents = 1
-        self.nb_random_ind = 0
+        self.nb_parents = 10
+        self.nb_random_ind = 5
 
         self.mutation_rate = 0.5
-        self.nb_parents_in_next_gen = 1
+        self.nb_parents_in_next_gen = 5
 
         # -- Generations settings
         self.exploitation_phase_len_percent = 0.15

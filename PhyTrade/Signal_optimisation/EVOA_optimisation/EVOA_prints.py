@@ -48,22 +48,31 @@ class EVOA_prints:
 
     def evoa_run_initialisation_recap(self, run_mode, slice_count, generation_count):
         # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
-        print(cf["green"] + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" + cf["reset"])
-        print(cf["bold"] + "EVOA_v"+str(self.evoa_version) + cf["reset"], "\n")
+        print(cf["bold"] + "\n                             EVOA_v"+str(self.evoa_version) + cf["reset"])
+        print(cf["green"] + "__________________________________________________________________" + cf["reset"])
 
         if run_mode == 1:
             print("RUN Mode: " + cf["green"] + "Signal tuner" + cf["reset"])
-            print("\nNumber of data slices to be processed:", slice_count)
-            print("--> Generation count updated to", generation_count, "to match available data <--\n")
+            print(cf["green"] + "==================================================================" + cf["reset"])
+
+            print("Number of data slices to be processed:", slice_count)
+            if self.settings.signal_training_settings.data_looper is False:
+                print("-> Generation count set to", generation_count, "to match specified date interval <-\n")
+            else:
+                print("Generation count:", generation_count, cf["green"] +
+                      "(Adjusted if necessary to span specified date interval)\n" + cf["reset"])
 
         elif run_mode == 2:
             print("RUN Mode: " + cf["green"] + "Optimiser" + cf["reset"])
-            print("\nGeneration count:", generation_count, "\n")
+            print(cf["green"] + "==================================================================" + cf["reset"])
+
+            print("Generation count:", generation_count, "\n")
 
         print("Evaluated ticker: " + cf["green"] + self.ticker + cf["reset"])
-        print("Start time: " + cf["green"] + str(time.strftime('%X %x %Z')) + cf["reset"], "\n")
+        print("Start time: " + cf["green"] + str(time.strftime('%X %x %Z')) + cf["reset"])
 
-        print("-- Settings selected --")
+        print(cf["green"] + "__________________________________________________________________" + cf["reset"])
+        print("                     -- Settings selected --\n")
         print("Selected evaluation method: " + cf["green"] + self.settings.signal_training_settings.evaluation_methods[self.settings.signal_training_settings.evaluation_method] + cf["reset"])
         print("Labeling method: " + cf["green"] + self.settings.metalabeling_settings.metalabeling_settings[self.settings.metalabeling_settings.metalabeling_setting] + cf["reset"])
         print("")
@@ -92,7 +101,7 @@ class EVOA_prints:
             print("                  -> CCI: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["cci"]) + cf["reset"])
             print("                  -> EVM: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["eom"]) + cf["reset"])
             print("                  -> OC gradient: " + cf["green"] + str(1) + cf["reset"])
-        print(cf["green"] + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + cf["reset"])
+        print(cf["green"] + "__________________________________________________________________\n" + cf["reset"])
 
     def generation_info(self, gen, generation_start_time, generation_end_time,
                         results, net_worth, fitness_evaluation,

@@ -6,6 +6,7 @@
 
 # Built-in/Generic Imports
 from __future__ import print_function
+import sys
 
 # Libs
 import numpy as np
@@ -84,7 +85,6 @@ model.add(Dense(nb_hidden_neurons))
 model.add(Activation("relu"))
 # --> Dropout
 model.add(Dropout(dropout))
-
 
 # --> Densely connected layer final
 model.add(Dense(nb_classes))

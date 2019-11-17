@@ -11,6 +11,7 @@ Input that still require manual input:
 
 # Built-in/Generic Imports
 import math
+import pprint
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
@@ -132,7 +133,8 @@ class RUN_single_trade_sim:
         print("\nStart date:", start_date)
         print("Data slice size:", data_slice_size)
         print("Number of data slices processed:", nb_data_slices)
-        print("\nStarting parameters:", parameter_set)
+        print("\nStarting parameters:")
+        pprint.pprint(parameter_set)
 
         print("\nInvestment_settings =", investment_settings)
         print("Cash-in settings =", cash_in_settings)
