@@ -1,11 +1,14 @@
 
 ################################################################################################################
 """
-
+LSTM cross ticker deep learning optimiser, ment to correct a trading signal based on the activity of others
+The x values are generated for all the involved tickers using the EVOA optimiser,
+and the y by the metalabeling toolbox for the target ticker.
 """
 
 # Built-in/Generic Imports
 import sys
+import math
 
 # Libs
 import pandas as pd
@@ -15,8 +18,8 @@ import numpy as np
 from keras.optimizers import SGD
 from keras.utils import np_utils
 
-from keras.preprocessing.sequence import TimeseriesGenerator
-from sklearn.preprocessing import OneHotEncoder
+from keras.models import Sequential
+from keras.layers import LSTM, Dense
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
@@ -24,13 +27,16 @@ from PhyTrade.Tools.DATA_SLICE_gen import gen_data_slice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
-from PhyTrade.Signal_optimisation.RNN_optimisation.Models.Simple_LSTM import Simple_LSTM
+
+from PhyTrade.Signal_optimisation.RNN_optimisation.Models.Keras_model_shell import Model_shell
+from PhyTrade.Signal_optimisation.RNN_optimisation.Tools.ML_data_preparation_tools import ML_data_preparation_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
 __date__ = '10/09/2019'
 
 ################################################################################################################
+ml_tools = ML_data_preparation_tools()
 
 # --> Fetch settings
 settings = SETTINGS()
@@ -41,16 +47,18 @@ loading_bar_data_preparation = Progress_bar(max_step=len(settings.market_setting
 
 # ================================= LSTM network settings ===========================================
 nb_epoch = 200
-batch_size = 128
-verbose = 1                 # Print settings
+
+timesteps = settings.market_settings.data_slice_size   # Number of timestep included in each batch
 nb_classes = 20             # Nb of possible outputs
-nb_hidden_neurons = 128
+
+verbose = 1                 # Print settings
 
 train_test_split = 0.1      # How much data is used for training and testing
 validation_split = 0.2      # How much data is reserved for validation (percent)
 dropout = 0.3               # Dropout probability
 
 optimiser = SGD(lr=0.01)
+metrics = ['accuracy']
 loss_function = 'categorical_crossentropy'
 
 
@@ -88,7 +96,7 @@ for i, ticker in enumerate(settings.market_settings.tickers):
 
     loading_bar_data_preparation.update_progress()
 
-# --> Reshape data
+# --> Initial reshape data
 y_data.shape = (len(y_data), 1)
 x_data = x_data.T
 
@@ -104,23 +112,56 @@ x_data = x_data.astype("float32")
 # target_data_encoded = OneHotEncoder(sparse=False).fit_transform(y_data)
 # training_data_encoded = OneHotEncoder(sparse=False).fit_transform(x_data)
 
-# print("Target_data", y_data)
-# print("Training_data", x_data)
-
+# --> Reshape y data to categorical
 y_data = np_utils.to_categorical(y_data, nb_classes)
 
-# ================================= Model definition and compilation ================================
-input_shape = (x_data.shape[0], x_data.shape[1])
-batch_input_shape = (x_data.shape[0]//batch_size, x_data.shape[0], x_data.shape[1])
+# --> Trim data
+x_data, y_data = ml_tools.get_trimmed_data(x_data, y_data, timesteps)
 
-# --> Generate model
-model = Simple_LSTM(x_data, y_data, input_shape, batch_input_shape, nb_classes, optimiser, test_train_split=train_test_split)
+# --> Reshape data
+x_data, y_data = ml_tools.get_reshaped_data(x_data, y_data, timesteps)
+
+# --> Split data to test and train
+x_train, y_train, x_test, y_test = ml_tools.get_train_test_split(x_data, y_data, train_test_split, timesteps, x_data.shape[0])
+
+# ================================= Model definition and compilation ================================
+batch_input_shape = x_train.shape
+input_shape = (timesteps, x_data.shape[2])                     # (timesteps, data_dim)
+
+# ========================== Build model
+# --> Initiate model
+model = Sequential()
+
+# --> Add model layers
+# LSTM layer 1
+# model.add(LSTM(64, stateful=True, return_sequences=True, input_shape=input_shape))
+model.add(LSTM(batch_input_shape[0], stateful=True, return_sequences=True, batch_input_shape=batch_input_shape))       # returns a sequence of vectors of dimension 32
+
+# LSTM layer 2
+model.add(LSTM(batch_input_shape[0], stateful=True, return_sequences=True))       # returns a sequence of vectors of dimension 32
+
+# LSTM layer 3
+model.add(LSTM(batch_input_shape[0], stateful=True))     # return a single vector of dimension 32
+
+# Densely connected layer (final)
+model.add(Dense(nb_classes, activation='softmax'))
+
+
+# ==========================  Generate model
+model = Model_shell(model,
+                    x_train, y_train, x_test, y_test,
+                    nb_classes,
+                    optimiser, metrics,
+                    batch_input_shape=batch_input_shape,
+                    train_test_split=train_test_split)
 
 # --> Fit model
-model.fit_model(nb_epoch, batch_size, validation_split)
+model.fit_model(nb_epoch, validation_split)
+
+# --> Plot training progress
+model.plot_training_progress()
 
 # --> Evaluate model
-score = model.evaluate_model()
+# model.evaluate_model()
 
-print("Test score:", score[0])
-print("Test accuracy:", score[1])
+
