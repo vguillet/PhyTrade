@@ -4,6 +4,9 @@
 LSTM cross ticker deep learning optimiser, ment to correct a trading signal based on the activity of others
 The x values are generated for all the involved tickers using the EVOA optimiser,
 and the y by the metalabeling toolbox for the target ticker.
+
+TODO: Make data stationary?
+TODO: Standardise series data?
 """
 
 # Built-in/Generic Imports
@@ -42,18 +45,21 @@ ml_tools = ML_data_preparation_tools()
 settings = SETTINGS()
 settings.market_settings.gen_market_settings()
 
+print("\n")
 loading_bar_data_preparation = Progress_bar(max_step=len(settings.market_settings.tickers)+1,
                                             label="Data Preparation")
 
 # ================================= LSTM network settings ===========================================
-nb_epoch = 200
+nb_epoch = 1000
 
-timesteps = settings.market_settings.data_slice_size   # Number of timestep included in each batch
+# timesteps = settings.market_settings.data_slice_size   # Number of timestep included in each batch
+timesteps = 1   # Number of timestep included in each batch
+
 nb_classes = 20             # Nb of possible outputs
 
 verbose = 1                 # Print settings
 
-train_test_split = 0.1      # How much data is used for training and testing
+train_test_split_value = 0.1      # How much data is used for training and testing
 validation_split = 0.2      # How much data is reserved for validation (percent)
 dropout = 0.3               # Dropout probability
 
@@ -63,8 +69,7 @@ loss_function = 'categorical_crossentropy'
 
 
 # ================================= Data collection and preparation ==================================
-# x_data --> y_data
-
+# ========================== Fetch data
 # --> Fetch Metalabel spline to be used as y part of training data (target)
 main_ticker = "AAPL"
 path = r"Data\Splines\**_splines.csv".replace('\\', '/').replace('**', main_ticker)
@@ -96,6 +101,7 @@ for i, ticker in enumerate(settings.market_settings.tickers):
 
     loading_bar_data_preparation.update_progress()
 
+# ========================== Format data
 # --> Initial reshape data
 y_data.shape = (len(y_data), 1)
 x_data = x_data.T
@@ -112,39 +118,42 @@ x_data = x_data.astype("float32")
 # target_data_encoded = OneHotEncoder(sparse=False).fit_transform(y_data)
 # training_data_encoded = OneHotEncoder(sparse=False).fit_transform(x_data)
 
-# --> Reshape y data to categorical
+# --> Convert y data to categorical
 y_data = np_utils.to_categorical(y_data, nb_classes)
 
-# --> Trim data
-x_data, y_data = ml_tools.get_trimmed_data(x_data, y_data, timesteps)
+# --> Run auto_shape_data (trim/reshape/split)
+x_train, y_train, x_test, y_test, batch_input_shape, input_shape = \
+    ml_tools.auto_shape_data(x_data, y_data, timesteps, train_test_split_value, return_sequences=False)
 
-# --> Reshape data
-x_data, y_data = ml_tools.get_reshaped_data(x_data, y_data, timesteps)
-
-# --> Split data to test and train
-x_train, y_train, x_test, y_test = ml_tools.get_train_test_split(x_data, y_data, train_test_split, timesteps, x_data.shape[0])
 
 # ================================= Model definition and compilation ================================
-batch_input_shape = x_train.shape
-input_shape = (timesteps, x_data.shape[2])                     # (timesteps, data_dim)
-
-# ========================== Build model
 # --> Initiate model
 model = Sequential()
 
-# --> Add model layers
-# LSTM layer 1
-# model.add(LSTM(64, stateful=True, return_sequences=True, input_shape=input_shape))
-model.add(LSTM(batch_input_shape[0], stateful=True, return_sequences=True, batch_input_shape=batch_input_shape))       # returns a sequence of vectors of dimension 32
+if timesteps != 1:
+    # ==========================> Vanilla model
+    # LSTM layer 1
+    model.add(LSTM(32, return_sequences=True, stateful=True, batch_input_shape=batch_input_shape))
 
-# LSTM layer 2
-model.add(LSTM(batch_input_shape[0], stateful=True, return_sequences=True))       # returns a sequence of vectors of dimension 32
+    # LSTM layer 2
+    model.add(LSTM(32, return_sequences=True, stateful=True))
 
-# LSTM layer 3
-model.add(LSTM(batch_input_shape[0], stateful=True))     # return a single vector of dimension 32
+    # LSTM layer 3
+    model.add(LSTM(32, return_sequences=True, stateful=True))   # Return sequence dictates whether y shape (2d/3d), needs to be specified in auto_shape
+
+else:
+    # ==========================> Batch_model
+    # LSTM layer 1
+    model.add(LSTM(32, return_sequences=True, input_shape=input_shape))
+
+    # LSTM layer 2
+    model.add(LSTM(32, return_sequences=True))
+
+    # LSTM layer 3
+    model.add(LSTM(32))                          # Return sequence dictates whether y shape (2d/3d)
 
 # Densely connected layer (final)
-model.add(Dense(nb_classes, activation='softmax'))
+model.add(Dense(nb_classes, activation='softmax'))          # Activation defines the format that the prediction will take
 
 
 # ==========================  Generate model
@@ -152,8 +161,9 @@ model = Model_shell(model,
                     x_train, y_train, x_test, y_test,
                     nb_classes,
                     optimiser, metrics,
+                    input_shape=input_shape,
                     batch_input_shape=batch_input_shape,
-                    train_test_split=train_test_split)
+                    train_test_split=train_test_split_value)
 
 # --> Fit model
 model.fit_model(nb_epoch, validation_split)
@@ -162,6 +172,6 @@ model.fit_model(nb_epoch, validation_split)
 model.plot_training_progress()
 
 # --> Evaluate model
-# model.evaluate_model()
+model.evaluate_model()
 
 

@@ -64,13 +64,11 @@ class Model_shell:
         self.train_test_split = train_test_split
 
         print("\n\n_______________________________________________")
-        print(batch_input_shape)
         print("-->", self.x_train.shape, "training samples x")
         print("-->", self.y_train.shape, "training samples y\n")
 
         print("-->", self.x_test.shape, "testing samples x")
         print("-->", self.y_test.shape, "testing samples y")
-        assert (self.x_train.shape == batch_input_shape)
         print("_______________________________________________")
 
         # --> LSTM network compilation
@@ -81,6 +79,7 @@ class Model_shell:
 
         # --> Compile model
         self.model.compile(loss=loss_function, optimizer=optimiser, metrics=metrics)
+        print("-- Model compiled successfully --")
 
     def fit_model(self, nb_epoch, validation_split=0.2, verbose=1):
         """
@@ -97,6 +96,8 @@ class Model_shell:
                                       validation_split=validation_split,
                                       verbose=verbose)
         self.nb_epoch = nb_epoch
+
+        print("-- Model fitted successfully --")
         return
 
     # def fit_generator_model(self, nb_epoch, batch_size, verbose=1):
@@ -148,8 +149,8 @@ class Model_shell:
 
             epochs = range(1, self.nb_epoch + 1)
 
-            plt.plot(epochs, loss_values, "bo", label="Training loss")
-            plt.plot(epochs, val_loss_values, "b", label="Validation loss")
+            plt.plot(epochs, loss_values, label="Training loss")
+            plt.plot(epochs, val_loss_values, label="Validation loss")
             plt.title("Training and validation loss")
             plt.xlabel("Epochs")
             plt.ylabel("Loss")
