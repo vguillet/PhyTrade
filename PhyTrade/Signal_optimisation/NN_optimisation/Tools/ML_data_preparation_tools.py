@@ -10,6 +10,7 @@ import sys
 
 # Libs
 import numpy as np
+from sklearn.model_selection import train_test_split
 
 # Own modules
 
@@ -22,9 +23,33 @@ __date__ = ''
 
 class ML_data_preparation_tools:
     @staticmethod
-    def auto_shape_data(x_data, y_data, timesteps, train_test_split_value, return_sequences=False):
+    def auto_shape_classification_data(x_data, y_data, train_test_split_value, shuffle=False):
         """
-        Auto-format data
+        Auto-format data for simple networks
+
+        :param x_data: x data
+        :param y_data: y data
+        :param train_test_split_value: train-test split value
+        :param shuffle: whether or not to shuffle the data before splitting
+
+        :return: x_formatted, y_formatted, input_shape, batch_input_shape=None
+        """
+        # --> Split data to test and train
+        x_train, x_test, y_train, y_test = \
+            train_test_split(x_data, y_data, test_size=train_test_split_value, shuffle=shuffle)
+
+        # --> Determine batch_input_shape and input_shape
+        input_shape = x_train.shape
+        batch_input_shape = None
+
+        print("_______________________________________________")
+        print("--> Reshape data: success")
+        return x_train, y_train, x_test, y_test, input_shape, batch_input_shape
+
+    @staticmethod
+    def auto_shape_lstm_data(x_data, y_data, timesteps, train_test_split_value, return_sequences=False):
+        """
+        Auto-format data for lstm networks
 
         :param x_data: x data
         :param y_data: y data
@@ -32,7 +57,7 @@ class ML_data_preparation_tools:
         :param train_test_split_value: train-test split value
         :param return_sequences: return sequence boolean (has to match second to last layer)
 
-        :return: x_formatted, y_formatted, batch_input shape, input_shape
+        :return: x_formatted, y_formatted, batch_input_shape, input_shape
         """
         ml_tools = ML_data_preparation_tools()
 
@@ -41,11 +66,11 @@ class ML_data_preparation_tools:
             x_data, y_data = ml_tools.get_trimmed_data(x_data, y_data, timesteps)
 
         # --> Reshape x data to batch_input_shape format
+        x_data = ml_tools.get_reshaped_data(x_data, timesteps)
+
+        # --> Reshape y data to batch_input_shape format if required
         if return_sequences:
-            x_data = ml_tools.get_reshaped_data(x_data, timesteps)
             y_data = ml_tools.get_reshaped_data(y_data, timesteps)
-        else:
-            x_data = ml_tools.get_reshaped_data(x_data, timesteps)
 
         # --> Split data to test and train
         x_train, y_train, x_test, y_test = \
@@ -55,7 +80,10 @@ class ML_data_preparation_tools:
         batch_input_shape = x_train.shape
         input_shape = (batch_input_shape[1], batch_input_shape[2])  # (timesteps, data_dim)
 
-        return x_train, y_train, x_test, y_test, batch_input_shape, input_shape
+        print("_______________________________________________")
+        print("--> Reshape data: success")
+
+        return x_train, y_train, x_test, y_test, input_shape, batch_input_shape
 
     @staticmethod
     def get_trimmed_data(x, y, timesteps):
@@ -89,7 +117,6 @@ class ML_data_preparation_tools:
         """
         Split data to train and test according to split
         """
-        print("======================>", total_nb_batches)
         length_train_data = math.ceil(total_nb_batches*(1-split)) + 1
 
         x_train = x[:length_train_data]

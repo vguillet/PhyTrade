@@ -35,7 +35,11 @@ class gen_data_slice:
                 found = True
             else:
                 print("!!!!! Start Date selected not present in data !!!!!")
-                start_date = start_date[:-1] + str(int(start_date[-1]) + 1)
+                if int(start_date[-1]) == 9:
+                    start_date = start_date[:-2] + str(int(start_date[-2]) + 1) + str(0)
+                else:
+                    start_date = start_date[:-1] + str(int(start_date[-1]) + 1)
+                print("-- New start date selected:", start_date, "--\n\n")
 
         self.start_index = -len(self.data)+np.flatnonzero(self.data['Date'] == start_date)[0]
 

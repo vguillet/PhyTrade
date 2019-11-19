@@ -25,11 +25,8 @@ class Model_shell:
                  model,
                  x_train, y_train,
                  x_test, y_test,
-                 nb_classes,
                  optimiser,
                  metrics,
-                 input_shape=None,
-                 batch_input_shape=None,
                  train_test_split=0.1,
                  loss_function='categorical_crossentropy'):
         """
@@ -41,9 +38,6 @@ class Model_shell:
         :param x_test: x testing data
         :param y_test: y testing data (target)
 
-        :param input_shape: The shape of a sample (time_steps, data_dim)
-        :param batch_input_shape: Size of the batch (batch_size, timesteps, data_dim)
-        :param nb_classes: Number of different classes present
         :param optimiser: Optimiser to be used
         :param train_test_split: Data split to be used for training and testing
         """
@@ -58,18 +52,16 @@ class Model_shell:
         self.x_test = x_test
         self.y_test = y_test
 
-        self.nb_classes = nb_classes
-        self.input_shape = input_shape
-        self.batch_input_shape = batch_input_shape
         self.train_test_split = train_test_split
 
-        print("\n\n_______________________________________________")
-        print("-->", self.x_train.shape, "training samples x")
-        print("-->", self.y_train.shape, "training samples y\n")
-
-        print("-->", self.x_test.shape, "testing samples x")
-        print("-->", self.y_test.shape, "testing samples y")
         print("_______________________________________________")
+        print("--> Data loaded in shell:")
+        print(">", self.x_train.shape, "training samples x")
+        print(">", self.y_train.shape, "training samples y\n")
+
+        print(">", self.x_test.shape, "testing samples x")
+        print(">", self.y_test.shape, "testing samples y")
+        print("_______________________________________________\n")
 
         # --> LSTM network compilation
         self.model = model
@@ -79,44 +71,42 @@ class Model_shell:
 
         # --> Compile model
         self.model.compile(loss=loss_function, optimizer=optimiser, metrics=metrics)
-        print("-- Model compiled successfully --")
 
-    def fit_model(self, nb_epoch, validation_split=0.2, verbose=1):
+        print("--> Compile Model: success")
+        print("> Loss function:", loss_function)
+        print("> Optimiser:", optimiser)
+        print("> Metric:", metrics)
+
+    def fit_model(self, nb_epoch, batch_size=None, validation_split=0.2, verbose=1):
         """
         Fit the model
 
         :param nb_epoch: Number of epoch
+        :param batch_size: Number of samples, set automatically for lstm/rnn etc...
         :param verbose: Specifies verbosity mode(0 = silent, 1= progress bar, 2 = one line per epoch)
         :param validation_split: How much data is reserved for validation
         """
+
+        print("_______________________________________________")
+        print("--> Training model:\n\n")
+
+        if len(self.x_train.shape) == 3:
+            if self.x_train.shape[1] == 1:
+                batch_size = self.x_train.shape[1]
+            else:
+                batch_size = self.x_train.shape[0]
+
         self.history = self.model.fit(self.x_train, self.y_train,
-                                      batch_size=self.batch_input_shape[0],
+                                      batch_size=batch_size,
                                       epochs=nb_epoch,
                                       shuffle=False,
                                       validation_split=validation_split,
                                       verbose=verbose)
+
         self.nb_epoch = nb_epoch
 
         print("-- Model fitted successfully --")
         return
-
-    # def fit_generator_model(self, nb_epoch, batch_size, verbose=1):
-    #     """
-    #     Fit the model using fit generator
-    #
-    #     :param nb_epoch: Number of epoch
-    #     :param batch_size: Size of batches per epoch
-    #     :param verbose: Specifies verbosity mode(0 = silent, 1= progress bar, 2 = one line per epoch)
-    #     """
-    #     # TODO: Fix fit_generator
-    #     self.history = self.model.fit_generator(self.__data_generator(self.x_train, self.y_train),
-    #                                             validation_data=self.__data_generator(self.x_test, self.y_test),
-    #                                             validation_steps=self.x_test.shape[0] // batch_size,
-    #                                             epochs=nb_epoch,
-    #                                             steps_per_epoch=self.x_train.shape[0] // batch_size,
-    #                                             verbose=verbose)
-    #     self.nb_epoch = nb_epoch
-    #     return
 
     def evaluate_model(self, verbose=1):
         """
@@ -143,19 +133,28 @@ class Model_shell:
         Generate plot of training progress (Training loss, validation loss)
         """
         if self.history is not None:
-            history_dic = self.history.history
-            loss_values = history_dic["loss"]
-            val_loss_values = history_dic["val_loss"]
 
+            history_dic = self.history.history
             epochs = range(1, self.nb_epoch + 1)
 
-            plt.plot(epochs, loss_values, label="Training loss")
-            plt.plot(epochs, val_loss_values, label="Validation loss")
+            plt.plot(epochs, history_dic["loss"], label="Training loss")
+            plt.plot(epochs, history_dic["val_loss"], label="Validation loss")
+
             plt.title("Training and validation loss")
             plt.xlabel("Epochs")
             plt.ylabel("Loss")
             plt.legend()
             plt.show()
+
+            plt.plot(epochs, history_dic["val_accuracy"], label="Validation accuracy")
+            plt.plot(epochs, history_dic["accuracy"], label="Training accuracy")
+
+            plt.title("Training and validation accuracy")
+            plt.xlabel("Epochs")
+            plt.ylabel("Accuracy")
+            plt.legend()
+            plt.show()
+
         else:
             print(cf["red"]+"\n!!!!!Model needs to be fitted first to obtain training progress!!!!!")
             sys.exit()

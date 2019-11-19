@@ -274,26 +274,26 @@ class EVOA_optimiser:
             gen_parameters_json(settings.signal_training_settings.config_name, ticker, self.best_individual.parameter_set)
 
         # # ------------------ Final results benchmarking
-        # # -- Initialise benchmark data slice
-        # self.benchmark_data_slice = data_slice(ticker,
-        #                                        settings.benchmark_data_slice_start_date,
-        #                                        settings.benchmark_data_slice_size,
-        #                                        0)
-        #
-        # self.benchmark_data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-        #                                                settings.metalabeling_setting)
-        #
-        # _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
-        #                                                                                 self.benchmark_data_slice,
-        #                                                                                 evaluation_setting=settings.evaluation_method,
-        #                                                                                 calculate_stats=True,
-        #                                                                                 print_evaluation_status=False,
-        #                                                                                 plot_eco_model_results=True)
-        #
-        # # --> Generate run results summary
-        # self.results.benchmark_confusion_matrix_analysis = benchmark_confusion_matrix_analysis[0]
-        # self.results.gen_stats()
-        # self.results.gen_result_recap_file()
-        # self.results.plot_results()
+        # -- Initialise benchmark data slice
+        self.benchmark_data_slice = data_slice(ticker,
+                                               settings.benchmark_data_slice_start_date,
+                                               settings.benchmark_data_slice_size,
+                                               0)
+
+        self.benchmark_data_slice.gen_slice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
+                                                       settings.metalabeling_setting)
+
+        _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
+                                                                                        self.benchmark_data_slice,
+                                                                                        evaluation_setting=settings.evaluation_method,
+                                                                                        calculate_stats=True,
+                                                                                        print_evaluation_status=False,
+                                                                                        plot_eco_model_results=True)
+
+        # --> Generate run results summary
+        self.results.benchmark_confusion_matrix_analysis = benchmark_confusion_matrix_analysis[0]
+        self.results.gen_stats()
+        self.results.gen_result_recap_file()
+        self.results.plot_results()
 
         # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")

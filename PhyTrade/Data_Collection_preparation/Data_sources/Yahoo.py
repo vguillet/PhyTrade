@@ -2,6 +2,9 @@
 from datetime import datetime
 import yfinance as yf
 
+"""
+Format: index,Date,Open,High,Low,Close,Adj Close,Volume
+"""
 
 # TODO: Automate start date_time of wanted data
 def pull_yahoo_data(ticker):

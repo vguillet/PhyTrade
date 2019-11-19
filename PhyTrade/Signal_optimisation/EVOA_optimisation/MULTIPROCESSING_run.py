@@ -27,11 +27,11 @@ def optimise(ticker, *args):
 if __name__ == "__main__":
     settings = SETTINGS()
     settings.market_settings.gen_market_settings()
-    procs = 5   # Number of processes to create
+    proccesses = 5   # Number of processes to create
 
     print(settings.market_settings.tickers)
 
-    pool = Pool(procs)
+    pool = Pool(proccesses)
     pool.map(optimise, settings.market_settings.tickers)
 
     print("List processing complete.")

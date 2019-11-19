@@ -27,7 +27,7 @@ __date__ = '10/09/2019'
 np.random.seed(1671)
 
 # -------------------- Network and Training parameters --------------------
-nb_epoch = 200
+nb_epoch = 20
 batch_size = 128
 verbose = 1                 # Print settings
 nb_classes = 10             # Nb of possible outputs

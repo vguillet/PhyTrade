@@ -18,7 +18,7 @@ class Optimiser_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
-        self.config_name = "Run_06"
+        self.config_name = "Run_10"
         self.optimiser_setting = 1  # Optimiser run mode
 
         # ---- Multiprocessing settings
@@ -31,12 +31,12 @@ class Optimiser_settings:
         self.print_generation_info = True
         self.print_trade_process = False
 
-        self.plot_best_individual_eco_model_results = True
+        self.plot_best_individual_eco_model_results = False
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
         # ---- Data slice parameters
-        self.parameter_blacklist = ["general_settings"]
+        self.parameter_blacklist = ["general_settings", "weights"]
 
         # ---- Population parameters
         self.population_size = 80
@@ -48,7 +48,7 @@ class Optimiser_settings:
         self.nb_parents_in_next_gen = 1
 
         self.data_slice_cycle_count = 5
-        self.data_slice_shift_per_gen = 12
+        self.data_slice_shift_per_gen = 10
 
         self.data_looper = False
         # --> If data looper is True
