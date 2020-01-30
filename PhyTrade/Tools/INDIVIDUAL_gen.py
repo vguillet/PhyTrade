@@ -64,12 +64,14 @@ class Individual:
         self.spline = self.analysis.big_data.Major_spline.spline
         self.trade_spline = self.analysis.big_data.Major_spline.trade_spline
         self.trade_signal = self.analysis.big_data.Major_spline.trade_signal
+        self.trade_upper_threshold = self.analysis.big_data.Major_spline.trade_upper_threshold
+        self.trade_lower_threshold = self.analysis.big_data.Major_spline.trade_lower_threshold
 
-        # analysis.plot(plot_1=False, plot_2=False, plot_3=plot_3)
         if plot_eco_model_results:
-            PLOT_tools().plot_trade_process(data_slice, self.spline,
-                                            self.analysis.big_data.Major_spline.upper_threshold,
-                                            self.analysis.big_data.Major_spline.lower_threshold,
+            PLOT_tools().plot_trade_process(data_slice,
+                                            self.trade_spline,
+                                            self.trade_upper_threshold,
+                                            self.trade_lower_threshold,
                                             self.trade_signal)
 
     def perform_trade_run(self,

@@ -23,7 +23,7 @@ __date__ = '10/09/2019'
 ##################################################################################################################
 
 # --> Set settings mode to 0 to use class based settings
-with open(r"C:\Users\Victor Guillet\Google Drive\Computer science\2-Programing\Repos\Python\Steffegium\Settings\settings_mode.json",
+with open(r"Settings\settings_mode.json",
           'w') as fout:
     json.dump(0, fout, indent=4)
 

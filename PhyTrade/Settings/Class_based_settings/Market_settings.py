@@ -7,6 +7,7 @@ Contains settings related to market, including tickers and dates
 # Own modules
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_sets
 from Data.Company_data.Fetch_company_tickers import fetch_company_tickers
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -19,21 +20,20 @@ class Market_settings:
     def gen_market_settings(self):
         # ---- Market settings
         # --> Fetch tickers
-        self.tickers = fetch_company_tickers(0, 100)
-        for x in self.tickers:
-            if x in ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]:
-                self.tickers.remove(x)
+        current_tickers_df = fetch_parameter_set_labels_df(prints=False)
 
-        # for x in ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]:
-        #     if x not in self.tickers:
-        #         self.tickers.append(x)
+        # self.tickers = fetch_company_tickers(0, 60)
+        # self.tickers = [x for x in self.tickers if x not in list(current_tickers_df[0].index)]
 
+        # self.tickers = list(current_tickers_df[0].index)
         # self.tickers = ["AAPL", "INTC", "NVDA", "AMZN", "GOOGL", "MSFT", "FB", "CSCO", "ATVI", "ADSK"]
         # self.tickers = ["AAPL", "GOOGL", "MSFT"]
-        # self.tickers = ["AAPL"]
+        self.tickers = ["AAPL"]
 
         # --> Fetch parameter sets
-        # self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, "10", "Short_term")
+        self.run_reference = 10
+        self.term = "Short_term"
+        self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, str(self.run_reference), self.term)
         self.price_selection = "Open"
 
         # ---- Date settings

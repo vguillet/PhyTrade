@@ -31,7 +31,7 @@ class Optimiser_settings:
         self.print_generation_info = True
         self.print_trade_process = False
 
-        self.plot_best_individual_eco_model_results = False
+        self.plot_best_individual_eco_model_results = True
         self.plot_eco_model_results = False
 
         # ___________________________ EVO_algo main parameters ___________________
@@ -39,10 +39,10 @@ class Optimiser_settings:
         self.parameter_blacklist = ["general_settings", "weights"]
 
         # ---- Population parameters
-        self.population_size = 80
+        self.population_size = 30
 
-        self.nb_parents = 25
-        self.nb_random_ind = 10
+        self.nb_parents = 4
+        self.nb_random_ind = 3
 
         self.mutation_rate = 0.5
         self.nb_parents_in_next_gen = 1
@@ -75,7 +75,6 @@ class Optimiser_settings:
 
     # =============================== EVOA METALABELS SETTINGS ====================
     def gen_evoa_metalabels_settings(self):
-        import multiprocessing
         # ___________________________ Optimisation parameters ____________________
         self.config_name = ""
         self.optimiser_setting = 2

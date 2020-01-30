@@ -33,7 +33,9 @@ class Fetch_NN_data:
         # --> Fetch settings
         settings = SETTINGS()
         settings.market_settings.gen_market_settings()
-        loading_bar_data_preparation = Progress_bar(max_step=len(settings.market_settings.tickers) + 1, label="Data Preparation")
+        loading_bar_data_preparation = Progress_bar(max_step=len(settings.market_settings.tickers) + 1,
+                                                    label="Data Preparation",
+                                                    overwrite_setting=True)
 
         if y_type == "spline":
             nb_classes = 20     # spline: -1.0, -0.9, [...], 0.9, 1.0
@@ -48,11 +50,13 @@ class Fetch_NN_data:
         loading_bar_data_preparation.update_progress()
 
         # --> Generate x data (trading signal for each ticker and append to respective row)
-        x_data = np.empty((len(settings.market_settings.tickers), pd.read_csv(path, index_col=0).shape[0]))
+        x_data = np.empty((len(settings.market_settings.tickers), y_data.shape[0]))
 
         for i, ticker in enumerate(settings.market_settings.tickers):
             ticker_model_results = []
-            individual = Individual(ticker, parameter_set=fetch_parameter_set(ticker, "06", "Short_term"))
+            individual = Individual(ticker, parameter_set=fetch_parameter_set(ticker,
+                                                                              settings.market_settings.run_reference,
+                                                                              settings.market_settings.term))
             data_slice = gen_data_slice(ticker,
                                         settings.market_settings.training_start_date,
                                         settings.market_settings.data_slice_size,
@@ -64,11 +68,16 @@ class Fetch_NN_data:
                 individual.gen_economic_model(data_slice)
                 ticker_model_results += list(getattr(individual, "trade_"+x_type))
                 data_slice.get_next_data_slice(prints=False)
-                loading_bar_data_preparation.update_activity()
+                # loading_bar_data_preparation.update_activity()
+
+            if len(ticker_model_results) > y_data.shape[0]:
+                ticker_model_results = ticker_model_results[:y_data.shape[0]]
 
             x_data[i, :] = ticker_model_results
 
             loading_bar_data_preparation.update_progress()
+
+        # x_data = np.empty((1))
 
         # ========================== Format data
         # --> Initial reshape data
@@ -78,9 +87,6 @@ class Fetch_NN_data:
         # --> Round data
         y_data = np.round(y_data, 1)
         x_data = np.round(x_data, 1)
-
-        # # TODO: Remove
-        # y_data = x_data[:, 0]
 
         # --> Convert to float32 to enable GPU use
         y_data = y_data.astype("float32")

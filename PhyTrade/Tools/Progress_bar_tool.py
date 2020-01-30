@@ -285,7 +285,7 @@ class Progress_bar:
     @property
     def __average_run_time(self):
         if len(self.run_time_lst) > 0:
-            return " - " + self.colours["bold"] + "Avg run time: " + str(self.__formatted_time(round(sum(self.run_time_lst)/len(self.run_time_lst), 4)))
+            return " - " + self.colours["bold"] + "iter/s: " + str(self.__formatted_time(round(sum(self.run_time_lst)/len(self.run_time_lst), 4)))
         else:
             return ""
 
@@ -316,42 +316,51 @@ class Progress_bar:
 
         formatted_time = [0, formatted_time]
 
-        time_dict_keys = ["seconds", "minutes", "hours", "days", "years"]
+        time_dict_keys = ["seconds", "minutes", "hours", "days", "weeks", "months", "years", "decades", "centuries"]
         time_dict = {"seconds": {"max": 60,
                                  "current": 0,
-                                 "str_count": 5},
+                                 "str_count": 5,
+                                 "str": ":"},
 
                      "minutes": {"max": 60,
                                  "current": 0,
-                                 "str_count": 2},
+                                 "str_count": 2,
+                                 "str": ":"},
 
                      "hours": {"max": 24,
                                "current": 0,
-                               "str_count": 2},
+                               "str_count": 2,
+                               "str": ":"},
 
                      "days": {"max": 365,
                               "current": 0,
-                              "str_count": 1},
+                              "str_count": 1,
+                              "str": " days, "},
 
                      "weeks": {"max": 365,
                                "current": 0,
-                               "str_count": 1},
+                               "str_count": 1,
+                               "str": " weeks, "},
 
                      "months": {"max": 12,
                                 "current": 0,
-                                "str_count": 2},
+                                "str_count": 2,
+                                "str": " months, "},
 
                      "years": {"max": 10,
                                "current": 0,
-                               "str_count": 1},
+                               "str_count": 1,
+                               "str": " years, "},
 
                      "decades": {"max": 10,
                                  "current": 0,
-                                 "str_count": 2},
+                                 "str_count": 2,
+                                 "str": " decades, "},
 
                      "centuries": {"max": 99999999999999999999999,
                                    "current": 0,
-                                   "str_count": 5}}
+                                   "str_count": 5,
+                                   "str": " centuries, "}}
 
         # --> Fill time dict
         current_time_key = 0
@@ -375,11 +384,13 @@ class Progress_bar:
         for key in time_dict_keys:
             if time_dict[key]["current"] != 0:
                 if time_dict[key]["current"] != 1:
-                    time_str = self.__aligned_number(time_dict[key]["current"], time_dict[key]["str_count"], align_side="left") + " " + key + ", " + time_str
-                else:
-                    time_str = self.__aligned_number(time_dict[key]["current"], time_dict[key]["str_count"], align_side="left") + " " + key[:-1] + " , " + time_str
+                    time_str = self.__aligned_number(time_dict[key]["current"], time_dict[key]["str_count"], align_side="left") + time_dict[key]["str"] + time_str
 
-        return time_str[:-2]
+        # --> Add s unit if time is only seconds
+        if len(time_str) < 8:
+            return time_str[:-2] + "s"
+        else:
+            return time_str[:-2]
     
     @staticmethod
     def __aligned_number(current, req_len, align_side="left"):
@@ -395,7 +406,7 @@ class Progress_bar:
 
 if __name__ == "__main__":
     import random
-    maxi_step = 100
+    maxi_step = 1000
     "Bar type options: Equal, Solid, Circle, Square"
     "Activity indicator type options: Bar spinner, Dots, Column, Pie spinner, Moon spinner, Stack, Pie stack"
 
@@ -414,5 +425,5 @@ if __name__ == "__main__":
     for i in range(maxi_step):
         for j in range(4):
             # bar.update_activity()
-            time.sleep(0.05)
+            time.sleep(0.02)
         bar.update_progress()

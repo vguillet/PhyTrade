@@ -1,0 +1,118 @@
+{
+    "indicators_count": {
+        "rsi": 2,
+        "sma": 2,
+        "ema": 4,
+        "lwma": 0,
+        "cci": 3,
+        "eom": 2,
+        "oc_gradient": 1
+    },
+    "spline_property": {
+        "weights": {
+            "rsi_0": 0.4380043661569777,
+            "rsi_1": 4.858950281701201,
+            "sma_0": 7.454962531102048,
+            "sma_1": 2.7324285977021456,
+            "ema_0": 3.3039452895799193,
+            "ema_1": 1.042266949970554,
+            "ema_2": 1.3411186834834044,
+            "ema_3": 3.4257355256385438,
+            "cci_0": 2.9660197341246075,
+            "cci_1": 1.5120642839317222,
+            "cci_2": 4.496413169113106,
+            "eom_0": 3.3895634052925616,
+            "eom_1": 9.11455886881858,
+            "oc_gradient_0": 5.625862376644818
+        },
+        "smoothing_factors": {
+            "rsi_0": 1.173906456048397,
+            "rsi_1": 0.8829772214735098,
+            "sma_0": 0.8634197613812007,
+            "sma_1": 0,
+            "ema_0": 0.5910070601417732,
+            "ema_1": 0.17413853299509396,
+            "ema_2": 1.2727963752681424,
+            "ema_3": 1.3875161965462297,
+            "cci_0": 0,
+            "cci_1": 1.934939079466539,
+            "cci_2": 1.3047341107557007,
+            "eom_0": 0.49385842387014955,
+            "eom_1": 1.182262927672879,
+            "oc_gradient_0": 0.8676168975483705,
+            "volume_0": 0.250589512666908,
+            "volatility_0": 1.8510384813249552
+        },
+        "amplification_factor": {
+            "volume_0": 2.1181418037820516,
+            "volatility_0": 1.840181422969235
+        },
+        "flip": {
+            "rsi_0": false,
+            "rsi_1": false,
+            "sma_0": true,
+            "sma_1": true,
+            "ema_0": false,
+            "ema_1": false,
+            "ema_2": false,
+            "ema_3": false,
+            "cci_0": false,
+            "cci_1": true,
+            "cci_2": false,
+            "eom_0": false,
+            "eom_1": false,
+            "oc_gradient_0": false,
+            "volume_0": false,
+            "volatility_0": true
+        },
+        "major_spline_standard_upper_thresholds": 0.3551696226451126,
+        "major_spline_standard_lower_thresholds": -0.6
+    },
+    "indicator_properties": {
+        "timeframes": {
+            "rsi_0": 220,
+            "rsi_1": 234,
+            "sma_0_1": 51,
+            "sma_0_2": 218,
+            "sma_1_1": 98,
+            "sma_1_2": 159,
+            "ema_0_1": 94,
+            "ema_0_2": 205,
+            "ema_1_1": 86,
+            "ema_1_2": 228,
+            "ema_2_1": 12,
+            "ema_2_2": 210,
+            "ema_3_1": 82,
+            "ema_3_2": 240,
+            "cci_0": 61,
+            "cci_1": 117,
+            "cci_2": 233,
+            "eom_0": 55,
+            "eom_1": 100,
+            "volatility_0": 51,
+            "threshold_timeframe": 20
+        },
+        "rsi_standard_upper_thresholds": {
+            "rsi_0": 83,
+            "rsi_1": 88
+        },
+        "rsi_standard_lower_thresholds": {
+            "rsi_0": 21,
+            "rsi_1": 42
+        }
+    },
+    "general_settings": {
+        "spline_interpolation_factor": 4,
+        "threshold_setting": 2,
+        "buffer_setting": 1,
+        "include_triggers_in_bb_signal": {
+            "rsi": true,
+            "sma": false,
+            "ema": false,
+            "cci": false,
+            "eom": false,
+            "oc_gradient": false
+        },
+        "rsi_buffer_setting": 0
+    }
+}

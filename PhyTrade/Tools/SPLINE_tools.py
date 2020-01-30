@@ -358,7 +358,7 @@ class SPLINE:
         if sell_trigger == 1:
             trade_signal[-1] = 1
 
-        return trade_signal, trade_spline
+        return trade_signal, trade_spline, trade_upper_threshold, trade_lower_threshold
 
     @staticmethod
     def plot_spline_trigger(big_data,  spline, sell_dates, buy_dates):

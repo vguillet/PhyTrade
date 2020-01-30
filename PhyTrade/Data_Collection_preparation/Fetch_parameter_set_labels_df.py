@@ -18,7 +18,7 @@ __date__ = '10/09/2019'
 ##################################################################################################################
 
 
-def fetch_parameter_set_labels_df():
+def fetch_parameter_set_labels_df(prints=True):
     paths = {"(Short term)": r"Data/EVOA_results/Parameter_sets/Short_term",
              "(Long term)": r"Data/EVOA_results/Parameter_sets/Long_term"}
     ps_df_path = ["--> Short term:", "--> Long term:"]
@@ -48,6 +48,9 @@ def fetch_parameter_set_labels_df():
     # ps_df = pd.concat(ps_df, axis=1)
     # print(ps_df, "\n")
 
-    print("\n")
-    for df in range(len(ps_df)):
-        print(ps_df_path[df] + "\n", ps_df[df], "\n\n")
+    if prints:
+        print("\n")
+        for df in range(len(ps_df)):
+            print(ps_df_path[df] + "\n", ps_df[df], "\n\n")
+
+    return ps_df

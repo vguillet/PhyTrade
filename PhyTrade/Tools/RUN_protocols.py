@@ -80,7 +80,7 @@ class RUN_protocols:
                 settings.fetch_dates(1)
                 EVOA_optimiser(settings, ticker, optimiser_setting=1)
             except:
-                print(cf["red"] + "\n!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!\n" + cf["reset"])
+                print(cf["red"] + "\n!!!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!!!\n" + cf["reset"])
 
         for ticker in self.settings.market_settings.tickers:
             optimise(self.settings, ticker)

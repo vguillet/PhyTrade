@@ -1,122 +1,111 @@
 
 ################################################################################################################
 """
+LSTM cross ticker deep learning optimiser, ment to correct a trading signal based on the activity of others
+The x values are generated for all the involved tickers using the EVOA optimiser,
+and the y by the metalabeling toolbox for the target ticker.
 
+TODO: Make data stationary?
+TODO: Standardise series data?
+TODO: stattools
 """
 
 # Built-in/Generic Imports
-from __future__ import print_function
-import sys
 
 # Libs
+import sys
 import numpy as np
-from keras.datasets import mnist
+
+from keras.optimizers import RMSprop
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation
-from keras.optimizers import SGD, RMSprop, Adam
-from keras.utils import np_utils
+from keras.layers import Dense, Dropout
+
+# Own modules
+from PhyTrade.Signal_optimisation.NN_optimisation.Tools.Fetch_NN_data import Fetch_NN_data
+from PhyTrade.Signal_optimisation.NN_optimisation.Tools.ML_data_preparation_tools import ML_data_preparation_tools
+from PhyTrade.Signal_optimisation.NN_optimisation.Tools.Keras_model_shell import Model_shell
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
 __date__ = '10/09/2019'
 
 ################################################################################################################
-
+# --> Initiate tools
+ml_tools = ML_data_preparation_tools()
 
 # --> Set random seed for reproducibility
 np.random.seed(1671)
+print("\n")
 
-# -------------------- Network and Training parameters --------------------
-nb_epoch = 20
-batch_size = 128
-verbose = 1                 # Print settings
-nb_classes = 10             # Nb of possible outputs
-nb_hidden_neurons = 128
-validation_split = 0.2      # How much data is reserved for validation
-optimiser = RMSprop()
-dropout = 0.3               # Dropout probability
+# ================================= LSTM network settings ===========================================
+main_ticker = "AAPL"
 
-# -------------------- Data collection and preparation --------------------
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-# x_train is 60000 rows of 28x28 values (60000 images of 28x28 pixels)
-# --> Reshape data to 60000x784
-reshaped = 784
+# --> Print settings
+verbose = 1                     # Print settings
 
-x_train = x_train.reshape(60000, reshaped)
-x_test = x_test.reshape(10000, reshaped)
+# --> Model settings
+nb_epoch = 10000
+nb_classes = 6                  # Nb of possible outputs
+nb_hidden_neurons = 51
 
-# --> Convert to float32 enable GPU use
-x_train = x_train.astype("float32")
-x_test = x_test.astype("float32")
+validation_split = 0.2          # How much data is reserved for validation (percent)
+train_test_split_value = 0.1    # How much data is used for testing
 
-# --> Normalise between [0,1], the maximum intensity value being 255
-x_train /= 255
-x_test /= 255
+# optimiser = SGD()
+optimiser = RMSprop(lr=0.0001, decay=0.0001/nb_epoch)
+metrics = ['accuracy']
+loss_function = 'categorical_crossentropy'
 
-print(x_train.shape, "train samples")
-print(x_test.shape, "test samples")
+dropout = 0.3                   # Dropout probability
+batch_size = 25
 
-# --> Convert class vectors to binary class matrices, with a class for each possible output
-y_train = np_utils.to_categorical(y_train, nb_classes)
-y_test = np_utils.to_categorical(y_test, nb_classes)
+# ================================= Data collection and preparation ==================================
+# ========================== Initialise tools and trackers
+x_data, y_data = Fetch_NN_data().fetch_x_y(main_ticker, x_type="spline", y_type="signal")
 
-# -------------------- Model definition and compilation -------------------
-# --> Create empty sequential model
+# ================================= Model definition and compilation ================================
+# --> Initiate model
 model = Sequential()
 
-# ----> Add model layers
+# ========================== Simple model
+# --> Auto-shape data to compatible input
+x_train, y_train, x_test, y_test, input_shape, batch_input_shape = \
+    ml_tools.auto_shape_classification_data(x_data, y_data, train_test_split_value, shuffle=False)
+
 # --> Densely connected layer 1
-model.add(Dense(nb_hidden_neurons, input_shape=(reshaped,)))
-# --> Activation function relu
-model.add(Activation("relu"))
-# --> Dropout
+model.add(Dense(nb_hidden_neurons, activation="relu", input_shape=(x_train.shape[1],)))
+# # --> Dropout
 model.add(Dropout(dropout))
-
-# --> Densely connected layer 2
-model.add(Dense(nb_hidden_neurons))
-# --> Activation function relu
-model.add(Activation("relu"))
-# --> Dropout
+#
+# # --> Densely connected layer 2
+model.add(Dense(nb_hidden_neurons, activation="relu"))
+# # --> Dropout
 model.add(Dropout(dropout))
-
-# --> Densely connected layer 3
-model.add(Dense(nb_hidden_neurons))
-# --> Activation function relu
-model.add(Activation("relu"))
-# --> Dropout
+#
+# # --> Densely connected layer 3
+model.add(Dense(nb_hidden_neurons, activation="relu"))
+# # --> Dropout
 model.add(Dropout(dropout))
 
 # --> Densely connected layer final
-model.add(Dense(nb_classes))
+model.add(Dense(nb_classes, activation="softmax"))
 # --> Single neuron layer with activation function softmax (generalization of the sigmoid function)
-model.add(Activation("softmax"))    # Final stage is softmax
-model.summary()
 
-# ---> Model compilation
-model.compile(loss="categorical_crossentropy", optimizer=optimiser, metrics=["accuracy"])
 
-# -------------------- Model fitting --------------------------------------
-history = model.fit(x_train, y_train, batch_size=batch_size, epochs=nb_epoch, verbose=verbose, validation_split=validation_split)
+# ================================= Model definition and compilation ================================
+# -->  Generate model
+model = Model_shell(model,
+                    x_train, y_train, x_test, y_test,
+                    optimiser, metrics,
+                    train_test_split=train_test_split_value)
 
-# -------------------- Model evaluation -----------------------------------
-score = model.evaluate(x_test, y_test, verbose=verbose)
+# --> Fit model
+model.fit_model(nb_epoch, batch_size=batch_size, validation_split=validation_split, verbose=verbose)
 
-print("Test score:", score[0])
-print("Test accuracy:", score[1])
+# --> Plot training progress
+model.plot_training_progress()
 
-# ---> Plot training progress
-# import matplotlib.pyplot as plt
-#
-# history_dic = history.history
-# loss_values = history_dic["loss"]
-# val_loss_values = history_dic["val_loss"]
-#
-# epochs = range(1, nb_epoch + 1)
-#
-# plt.plot(epochs, loss_values, "bo", label="Training loss")
-# plt.plot(epochs, val_loss_values, "b", label="Validation loss")
-# plt.title("Traininig and validation loss")
-# plt.xlabel("Epochs")
-# plt.ylabel("Loss")
-# plt.legend()
-# plt.show()
+# --> Evaluate model
+model.evaluate_model(verbose=verbose)
+
+

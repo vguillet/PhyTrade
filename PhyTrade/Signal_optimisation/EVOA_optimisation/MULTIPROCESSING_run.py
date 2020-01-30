@@ -2,9 +2,12 @@
 ################################################################################################################
 """
 Used for running optimiser on multiple cores
+
+!!! run script, not if __name__ == "__main__" !!!
 """
 
 # Built-in/Generic Imports
+import sys
 from multiprocessing import Pool
 
 # Own modules
@@ -19,9 +22,13 @@ __date__ = '10/09/2019'
 
 
 def optimise(ticker, *args):
-    settings = SETTINGS()
-    settings.market_settings.gen_market_settings()
-    EVOA_optimiser(settings, ticker)
+    try:
+        settings = SETTINGS()
+        settings.market_settings.gen_market_settings()
+        settings.fetch_dates(1)
+        EVOA_optimiser(settings, ticker, optimiser_setting=1)
+    except:
+        pass
 
 
 if __name__ == "__main__":
@@ -35,3 +42,4 @@ if __name__ == "__main__":
     pool.map(optimise, settings.market_settings.tickers)
 
     print("List processing complete.")
+    sys.exit()

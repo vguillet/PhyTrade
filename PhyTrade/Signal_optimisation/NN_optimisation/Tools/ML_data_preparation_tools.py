@@ -62,8 +62,8 @@ class ML_data_preparation_tools:
         ml_tools = ML_data_preparation_tools()
 
         # --> Trim data to fit in even batches
-        if timesteps > 1:
-            x_data, y_data = ml_tools.get_trimmed_data(x_data, y_data, timesteps)
+        # if timesteps > 1:
+        #     x_data, y_data = ml_tools.get_trimmed_data(x_data, y_data, timesteps)
 
         # --> Reshape x data to batch_input_shape format
         x_data = ml_tools.get_reshaped_data(x_data, timesteps)
@@ -103,7 +103,7 @@ class ML_data_preparation_tools:
         # --> Split x into samples
         x_sample_lst = []
 
-        for i in range(0, len(x), timesteps):
+        for i in range(0, len(x)-timesteps):
             x_sample = x[i:i + timesteps]
             x_sample_lst.append(x_sample)
 
