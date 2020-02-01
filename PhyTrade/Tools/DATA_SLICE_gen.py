@@ -21,7 +21,7 @@ __date__ = '10/09/2019'
 
 class gen_data_slice:
     def __init__(self, ticker, start_date, slice_size, data_slice_shift_per_gen,
-                 data_selection="Open", end_date=None, data_looper=False):
+                 data_selection="Close", end_date=None, data_looper=False):
 
         self.ticker = ticker
         self.data = fetch_technical_data(ticker)
@@ -60,6 +60,19 @@ class gen_data_slice:
 
         # --> Find corresponding stop data index
         self.stop_index = self.start_index + self.slice_size
+
+        # --> Calculate boilinger bands
+        window = 20
+
+        self.data["close_MA"] = self.data["Close"].rolling(window=window).mean()
+        self.data["close_SD"] = self.data["Close"].rolling(window=window).std()
+        self.data["close_upper_band"] = self.data["close_MA"] + 2 * self.data["close_SD"]
+        self.data["close_lower_band"] = self.data["close_MA"] - 2 * self.data["close_SD"]
+
+        self.data["open_MA"] = self.data["Open"].rolling(window=window).mean()
+        self.data["open_SD"] = self.data["Open"].rolling(window=window).std()
+        self.data["open_upper_band"] = self.data["open_MA"] + 2 * self.data["open_SD"]
+        self.data["open_lower_band"] = self.data["open_MA"] - 2 * self.data["open_SD"]
 
         # ---- Default properties
         self.default_start_date = self.start_date

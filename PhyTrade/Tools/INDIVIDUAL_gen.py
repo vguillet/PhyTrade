@@ -23,33 +23,33 @@ class Individual:
         # ========================= DATA COLLECTION INITIALISATION =======================
         self.ticker = ticker
         self.data = fetch_technical_data(self.ticker)
-        settings = SETTINGS()
-        settings.signal_training_settings.gen_evoa_settings()
+        self.settings = SETTINGS()
+        self.settings.signal_training_settings.gen_evoa_settings()
 
         if parameter_set is None:
-            settings.individual_settings.gen_individual_settings()
-            self.gen_parameter_set(threshold_setting=settings.individual_settings.threshold_setting,
-                                   buffer_setting=settings.individual_settings.buffer_setting,
-                                   spline_interpolation_factor=settings.individual_settings.spline_interpolation_factor,
-                                   rsi_count=settings.individual_settings.rsi_count,
-                                   rsi_include_triggers_in_bb_signal=settings.individual_settings.rsi_include_triggers_in_bb_signal,
-                                   rsi_buffer_setting=settings.individual_settings.rsi_buffer_setting,
-                                   sma_count=settings.individual_settings.sma_count,
-                                   sma_include_triggers_in_bb_signal=settings.individual_settings.sma_include_triggers_in_bb_signal,
-                                   ema_count=settings.individual_settings.ema_count,
-                                   ema_include_triggers_in_bb_signal=settings.individual_settings.ema_include_triggers_in_bb_signal,
-                                   lwma_count=settings.individual_settings.lwma_count,
-                                   lwma_include_triggers_in_bb_signal=settings.individual_settings.lwma_include_triggers_in_bb_signal,
-                                   cci_count=settings.individual_settings.cci_count,
-                                   cci_include_triggers_in_bb_signal=settings.individual_settings.cci_include_triggers_in_bb_signal,
-                                   eom_count=settings.individual_settings.eom_count,
-                                   eom_include_triggers_in_bb_signal=settings.individual_settings.eom_include_triggers_in_bb_signal,
-                                   oc_include_triggers_in_bb_signal=settings.individual_settings.oc_gradient_include_triggers_in_bb_signal)
+            self.settings.individual_settings.gen_individual_settings()
+            self.gen_parameter_set(threshold_setting=self.settings.individual_settings.threshold_setting,
+                                   buffer_setting=self.settings.individual_settings.buffer_setting,
+                                   spline_interpolation_factor=self.settings.individual_settings.spline_interpolation_factor,
+                                   rsi_count=self.settings.individual_settings.rsi_count,
+                                   rsi_include_triggers_in_bb_signal=self.settings.individual_settings.rsi_include_triggers_in_bb_signal,
+                                   rsi_buffer_setting=self.settings.individual_settings.rsi_buffer_setting,
+                                   sma_count=self.settings.individual_settings.sma_count,
+                                   sma_include_triggers_in_bb_signal=self.settings.individual_settings.sma_include_triggers_in_bb_signal,
+                                   ema_count=self.settings.individual_settings.ema_count,
+                                   ema_include_triggers_in_bb_signal=self.settings.individual_settings.ema_include_triggers_in_bb_signal,
+                                   lwma_count=self.settings.individual_settings.lwma_count,
+                                   lwma_include_triggers_in_bb_signal=self.settings.individual_settings.lwma_include_triggers_in_bb_signal,
+                                   cci_count=self.settings.individual_settings.cci_count,
+                                   cci_include_triggers_in_bb_signal=self.settings.individual_settings.cci_include_triggers_in_bb_signal,
+                                   eom_count=self.settings.individual_settings.eom_count,
+                                   eom_include_triggers_in_bb_signal=self.settings.individual_settings.eom_include_triggers_in_bb_signal,
+                                   oc_include_triggers_in_bb_signal=self.settings.individual_settings.oc_gradient_include_triggers_in_bb_signal)
         else:
             self.parameter_set = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(self.parameter_set, settings.signal_training_settings.parameter_blacklist)
+        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(self.parameter_set, self.settings.signal_training_settings.parameter_blacklist)
 
         for i in self.parameter_set:
             for j in range(len(self.parameter_set[i])):
@@ -68,11 +68,21 @@ class Individual:
         self.trade_lower_threshold = self.analysis.big_data.Major_spline.trade_lower_threshold
 
         if plot_eco_model_results:
+            print_indicators = {"rsi": self.settings.individual_settings.print_rsi,
+                                "sma": self.settings.individual_settings.print_sma,
+                                "ema": self.settings.individual_settings.print_ema,
+                                "lwma": self.settings.individual_settings.print_lwma,
+                                "cci": self.settings.individual_settings.print_cci,
+                                "eom": self.settings.individual_settings.print_eom,
+                                "oc_gradient": self.settings.individual_settings.print_oc_gradient}
+
             PLOT_tools().plot_trade_process(data_slice,
                                             self.trade_spline,
                                             self.trade_upper_threshold,
                                             self.trade_lower_threshold,
-                                            self.trade_signal)
+                                            self.trade_signal,
+                                            self.analysis.big_data.content["trading_indicator_splines"],
+                                            print_indicators)
 
     def perform_trade_run(self,
                           data_slice,

@@ -75,18 +75,18 @@ class RUN_protocols:
         # --> Generate market settings
         self.settings.market_settings.gen_market_settings()
 
-        def optimise(settings, ticker):
-            try:
-                settings.fetch_dates(1)
-                EVOA_optimiser(settings, ticker, optimiser_setting=1)
-            except:
-                print(cf["red"] + "\n!!!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!!!\n" + cf["reset"])
+        # def optimise(settings, ticker):
+        #     try:
+        #         settings.fetch_dates(1)
+        #         EVOA_optimiser(settings, ticker, optimiser_setting=1)
+        #     except:
+        #         print(cf["red"] + "\n!!!!! Ticker ->", ticker, " <- invalid, moving to the next in the list !!!!!\n" + cf["reset"])
+        #
+        # for ticker in self.settings.market_settings.tickers:
+        #     optimise(self.settings, ticker)
 
-        for ticker in self.settings.market_settings.tickers:
-            optimise(self.settings, ticker)
-
-        # self.settings.fetch_dates(1)
-        # EVOA_optimiser(self.settings, self.settings.market_settings.tickers[0], optimiser_setting=1)
+        self.settings.fetch_dates(1)
+        EVOA_optimiser(self.settings, self.settings.market_settings.tickers[0], optimiser_setting=1)
 
     # ============================ EVOLUTION-METALABELING ==========================
     def run_evoa_metalabeling(self):

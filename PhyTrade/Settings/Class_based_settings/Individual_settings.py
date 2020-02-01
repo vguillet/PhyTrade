@@ -16,6 +16,15 @@ class Individual_settings:
     def gen_individual_settings(self):
         self.spline_interpolation_factor = 4
 
+        # ___________________________ Indicators print settings __________________
+        self.print_rsi = False
+        self.print_sma = False
+        self.print_ema = False
+        self.print_lwma = False
+        self.print_cci = False
+        self.print_eom = False
+        self.print_oc_gradient = False
+
         # ___________________________ Indicators count ___________________________
         self.rsi_count = 2
         self.sma_count = 2
