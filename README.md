@@ -10,6 +10,6 @@ ________________________________________________________________________________
 
 This library is currently being built up, come back to this file to stay up to date with the latest developments
 
-Code structure overview:
+Code structure overview (very outdated):
 
 https://www.lucidchart.com/documents/view/0639282f-1d76-47cd-98a0-34f8f4f7cb13
