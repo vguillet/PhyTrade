@@ -7,7 +7,7 @@ Used for generating portfolio and storing portfolio information
 # Own modules
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v5 import Tradebot_v5
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -34,7 +34,7 @@ class PORTFOLIO_gen:
 
         # ---- Generate initial data slices
         for ticker in self.content.keys():
-            self.content[ticker]["Data_slice"] = data_slice(ticker, start_date, data_slice_size, 0, end_date=end_date)
+            self.content[ticker]["Data_slice"] = Trading_dataslice(ticker, start_date, data_slice_size, 0, end_date=end_date)
 
         # ---- Generate initial economic models
         print("-- Generating initial economic models --")
@@ -51,7 +51,7 @@ class PORTFOLIO_gen:
         print("-- Generating next data slices and economic models")
         for ticker in self.content.keys():
             # --> Get next data slice
-            self.content[ticker]["Data_slice"].get_next_data_slice()
+            self.content[ticker]["Data_slice"].get_next_subslice()
 
             # --> Gen next economic model
             self.content[ticker]["Individual"].gen_economic_model(self.content[ticker]["Data_slice"],
@@ -82,12 +82,12 @@ class PORTFOLIO_gen:
         # --> For every day in current data slice
         for i in range(self.data_slice_length):
             # date = self.content[self.tickers[0]]["Data_slice"].data["index"][-self.content[self.tickers[0]]["Data_slice"].start_index + i + len(self.tickers[0]["Data_slice"].data["index"])]
-            date = self.content[self.tickers[0]]["Data_slice"].sliced_data.iloc[i]['Date']
+            date = self.content[self.tickers[0]]["Data_slice"].subslice_data.iloc[i]['Date']
 
             # ---- Update account
             # --> Update current values
             for ticker in self.content.keys():
-                self.current_values[ticker] = self.content[ticker]["Data_slice"].sliced_data_selection[i]
+                self.current_values[ticker] = self.content[ticker]["Data_slice"].subslice_data_selection[i]
 
             # --> Update tradebot account
             self.tradebot.account.update_account(date, self.current_values)

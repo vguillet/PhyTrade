@@ -79,7 +79,7 @@ class LWMA(ABSTRACT_indicator):
         self.bb_signal = np.zeros(big_data.data_slice.slice_size)
 
         for i in range(big_data.data_slice.slice_size):
-            self.bb_signal[i] = (self.lwma[i] - big_data.data_slice.sliced_data_selection[i]) / 2
+            self.bb_signal[i] = (self.lwma[i] - big_data.data_slice.subslice_data_selection[i]) / 2
 
         # Normalising lwma bb signal values between -1 and 1
         # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
@@ -90,17 +90,17 @@ class LWMA(ABSTRACT_indicator):
         if include_triggers_in_bb_signal:
             # ----------------- Trigger points determination
             # lwma config can take two values, 0 for when lwma is higher than the close value, and 1 for the other way around
-            if self.lwma[0] > big_data.data_slice.sliced_data_selection[0]:
+            if self.lwma[0] > big_data.data_slice.subslice_data_selection[0]:
                 lwma_config = 0
             else:
                 lwma_config = 1
 
             for i in range(big_data.data_slice.slice_size):
                 if lwma_config == 0:
-                    if big_data.data_slice.sliced_data_selection[i] > self.lwma[i]:
+                    if big_data.data_slice.subslice_data_selection[i] > self.lwma[i]:
                         self.bb_signal[i] = 1
                         lwma_config = 1
                 else:
-                    if self.lwma[i] > big_data.data_slice.sliced_data_selection[i]:
+                    if self.lwma[i] > big_data.data_slice.subslice_data_selection[i]:
                         self.bb_signal[i] = -1
                         lwma_config = 0

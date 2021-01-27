@@ -11,13 +11,14 @@ Input that still require manual input:
 
 # Built-in/Generic Imports
 import math
+import pprint
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -43,6 +44,7 @@ class RUN_single_trade_sim:
 
         # --> Simulation parameters
         settings.trade_sim_settings.gen_single_trade_sim()
+        settings.tradebot_settings.gen_tradebot_settings()
         
         eval_name = settings.trade_sim_settings.simulation_name
         nb_data_slices = settings.trade_sim_settings.nb_data_slices
@@ -93,7 +95,7 @@ class RUN_single_trade_sim:
 
         # ---- Current param setup
         # Finance
-        self.current_funds = settings.trade_sim_settings.initial_investment
+        self.current_funds = settings.tradebot_settings.initial_investment
         self.current_net_worth = self.current_funds
         self.current_assets = 0
         self.current_simple_investment_assets = None
@@ -102,7 +104,7 @@ class RUN_single_trade_sim:
 
         # Metalabel finance:
         if run_metalabels:
-            self.m_current_funds = settings.trade_sim_settings.initial_investment
+            self.m_current_funds = settings.tradebot_settings.initial_investment
             self.m_current_net_worth = self.current_funds
             self.m_current_assets = 0
 
@@ -114,9 +116,9 @@ class RUN_single_trade_sim:
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ---- Initiate data slice
-        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0,
-                                     end_date=end_date, data_looper=False)
-        self.data_slice.gen_slice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
+        self.data_slice = Trading_dataslice(self.ticker, start_date, data_slice_size, 0,
+                                            end_date=end_date, data_looper=False)
+        self.data_slice.gen_subslice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
 
         self.nb_data_slices = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/data_slice_size)
         
@@ -131,7 +133,8 @@ class RUN_single_trade_sim:
         print("\nStart date:", start_date)
         print("Data slice size:", data_slice_size)
         print("Number of data slices processed:", nb_data_slices)
-        print("\nStarting parameters:", parameter_set)
+        print("\nStarting parameters:")
+        pprint.pprint(parameter_set)
 
         print("\nInvestment_settings =", investment_settings)
         print("Cash-in settings =", cash_in_settings)
@@ -149,13 +152,13 @@ class RUN_single_trade_sim:
 
             # --> Process slice metalabels
             if run_metalabels is True:
-                self.data_slice.gen_slice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
-                self.data_slice.perform_trade_run(investment_settings=m_investment_settings, cash_in_settings=m_cash_in_settings,
-                                                  initial_funds=self.m_current_funds,
-                                                  initial_assets=self.m_current_assets,
-                                                  prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
-                                                  max_investment_per_trade=self.max_investment_per_trade * self.m_current_net_worth,
-                                                  prev_simple_investment_assets=self.current_simple_investment_assets)
+                self.data_slice.gen_subslice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
+                self.data_slice.perform_metatrade_run(investment_settings=m_investment_settings, cash_in_settings=m_cash_in_settings,
+                                                      initial_funds=self.m_current_funds,
+                                                      initial_assets=self.m_current_assets,
+                                                      prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
+                                                      max_investment_per_trade=self.max_investment_per_trade * self.m_current_net_worth,
+                                                      prev_simple_investment_assets=self.current_simple_investment_assets)
                 self.results.metalabel_net_worth += self.data_slice.metalabels_account.net_worth_history
 
             # --> Process slice
@@ -242,7 +245,7 @@ class RUN_single_trade_sim:
 
         self.results.data_slice_start_date = self.data_slice.default_start_date
         self.results.data_slice_stop_date = self.data_slice.default_end_date
-        self.results.data_slice_size = self.data_slice.slice_size
+        self.results.data_slice_size = self.data_slice.subslice_size
         self.results.nb_data_slices = self.nb_data_slices
 
         self.results.total_data_points_processed = abs(self.data_slice.default_start_index-self.data_slice.default_end_index)
@@ -293,7 +296,7 @@ class Trade_simulation_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\RUN_trade_sim_results".replace('\\', '/')
+        path = r"Data\RUN_trade_sim_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")
@@ -354,7 +357,7 @@ class Trade_simulation_results_gen:
         plt.show()
 
         # --> Plot model results
-        print_data_slice = data_slice(self.ticker, self.data_slice_start_date, self.total_data_points_processed, 0)
+        print_data_slice = Trading_dataslice(self.ticker, self.data_slice_start_date, self.total_data_points_processed, 0)
         PLOT_tools().plot_trade_process(print_data_slice,
                                         self.spline,
                                         self.upper_threshold_spline,

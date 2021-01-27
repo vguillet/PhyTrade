@@ -11,9 +11,9 @@ import math
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -58,7 +58,7 @@ class RUN_model:
         self.results = EVAL_parameter_set_results_gen(self.ticker, eval_name)
 
         # ---- Generate data slice
-        self.data_slice = data_slice(self.ticker, start_date, data_slice_size, 0, end_date=end_date)
+        self.data_slice = Trading_dataslice(self.ticker, start_date, data_slice_size, 0, end_date=end_date)
 
         # ---- Generate Individual
         self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
@@ -86,9 +86,9 @@ class RUN_model:
             self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=False)
             self.individual.perform_trade_run(self.data_slice, print_trade_process=print_trade_process)
 
-            self.data_slice.gen_slice_metalabels(upper_barrier, lower_barrier, look_ahead,
-                                                 metalabeling_setting)
-            self.data_slice.perform_trade_run()
+            self.data_slice.gen_subslice_metalabels(upper_barrier, lower_barrier, look_ahead,
+                                                    metalabeling_setting)
+            self.data_slice.perform_metatrade_run()
 
             # --> Record results
             self.results.spline += list(self.individual.spline)
@@ -146,7 +146,7 @@ class EVAL_parameter_set_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\RUN_model_results".replace('\\', '/')
+        path = r"Data\RUN_model_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")
@@ -211,7 +211,7 @@ class EVAL_parameter_set_results_gen:
 
     def plot_results(self):
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
-        print_data_slice = data_slice(self.ticker, self.benchmark_data_slice_start, self.total_data_points_processed, 0)
+        print_data_slice = Trading_dataslice(self.ticker, self.benchmark_data_slice_start, self.total_data_points_processed, 0)
         PLOT_tools().plot_trade_process(print_data_slice,
                                         self.spline,
                                         self.upper_threshold_spline,

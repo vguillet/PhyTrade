@@ -23,11 +23,11 @@ class OC_AVG_GRADIENT(ABSTRACT_indicator):
         self.values_fluctuation = np.zeros(big_data.data_slice.slice_size)
 
         for i in range(big_data.data_slice.slice_size):
-            self.values_fluctuation[i] = big_data.data_slice.sliced_data.iloc[i, 5] - big_data.data_slice.sliced_data.iloc[i, 4]
+            self.values_fluctuation[i] = big_data.data_slice.subslice_data.iloc[i, 5] - big_data.data_slice.subslice_data.iloc[i, 4]
 
         # -------Calculate open/close values gradient:
-        self.close_values_gradient = np.gradient(big_data.data_slice.sliced_data["Close"])
-        self.open_values_gradient = np.gradient(big_data.data_slice.sliced_data["Open"])
+        self.close_values_gradient = np.gradient(big_data.data_slice.subslice_data["Close"])
+        self.open_values_gradient = np.gradient(big_data.data_slice.subslice_data["Open"])
 
     """
 

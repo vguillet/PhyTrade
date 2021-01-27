@@ -36,5 +36,6 @@ class BIGDATA:
         self.buy_trigger_dates = []
 
         self.content = {"indicators": {},
-                        "splines": {}}
+                        "indicator_splines": {},
+                        "trading_indicator_splines": {}}
 

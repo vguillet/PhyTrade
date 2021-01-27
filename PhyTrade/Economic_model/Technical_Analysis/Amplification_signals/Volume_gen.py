@@ -24,7 +24,7 @@ class VOLUME:
         """
         from PhyTrade.Tools.MATH_tools import MATH_tools
 
-        self.volume = np.array(big_data.data_slice.sliced_data["Volume"])
+        self.volume = np.array(big_data.data_slice.subslice_data["Volume"])
 
         # Normalising volume signal values between 0 and 1
         self.amp_coef = MATH_tools().normalise_zero_one(self.volume)

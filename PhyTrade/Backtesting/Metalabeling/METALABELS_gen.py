@@ -26,7 +26,7 @@ class MetaLabels_gen:
         # --------------------- Metalabel data
         # --> Peak-dip labels
         if metalabel_setting == 0:
-            self.metalabels = self.peak_dip_metalabel_data(self.data_slice.sliced_data_selection)
+            self.metalabels = self.peak_dip_metalabel_data(self.data_slice.subslice_data_selection)
 
         # --> Simple labels
         elif metalabel_setting == 1:
@@ -72,7 +72,7 @@ class MetaLabels_gen:
 
     def simple_metalabel_data(self, data_slice, upper_barrier, lower_barrier, look_ahead):
 
-        sliced_data = data_slice.sliced_data_selection
+        sliced_data = data_slice.subslice_data_selection
         data = data_slice.data_selection
         
         labels = []
@@ -101,9 +101,10 @@ class MetaLabels_gen:
         return labels
 
     def hybrid_metalabel_data(self, data_slice, upper_barrier, lower_barrier, look_ahead):
-        sliced_data = data_slice.sliced_data_selection
+        sliced_data = data_slice.subslice_data_selection
         data = data_slice.data_selection
 
+        # --> Determine initial metalabels using to peak_dip method
         labels = self.peak_dip_metalabel_data(sliced_data)
 
         # --> Filter labels by simple metalabel

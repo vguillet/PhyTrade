@@ -12,8 +12,8 @@ Input that still require manual input:
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
-from PhyTrade.Signal_optimisation.EVOA_optimisation.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
+from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -30,6 +30,8 @@ class RUN_multi_trade_sim:
 
         # ---- Fetch market settings
         settings.market_settings.gen_market_settings()
+        settings.tradebot_settings.gen_tradebot_settings()
+
 
         tickers = settings.market_settings.tickers
         parameter_sets = settings.market_settings.parameter_sets
@@ -63,7 +65,7 @@ class RUN_multi_trade_sim:
         self.investment_settings = settings.trade_sim_settings.investment_settings
         self.cash_in_settings = settings.trade_sim_settings.cash_in_settings
 
-        self.initial_investment = settings.trade_sim_settings.initial_investment
+        self.initial_investment = settings.tradebot_settings.initial_investment
 
         # Max --> Min
         max_investment_per_trade_percent = settings.trade_sim_settings.max_investment_per_trade_percent
@@ -119,7 +121,7 @@ class RUN_multi_trade_sim:
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ---- Initiate data slice
-        self.ref_data_slice = data_slice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
+        self.ref_data_slice = Trading_dataslice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -265,7 +267,7 @@ class Trade_simulation_results_gen:
 
     def gen_result_recap_file(self):
         # -- Create results file
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\RUN_trade_sim_results".replace('\\', '/')
+        path = r"Data\RUN_trade_sim_results".replace('\\', '/')
         full_file_name = path + '/' + self.run_label
 
         self.results_file = open(full_file_name + ".txt", "w+")

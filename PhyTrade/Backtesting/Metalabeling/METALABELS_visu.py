@@ -10,7 +10,7 @@ from pylab import *
 # Own modules
 from PhyTrade.Backtesting.Metalabeling.METALABELS_gen import MetaLabels_gen
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
 __version__ = '1.1.1'
@@ -22,7 +22,7 @@ __date__ = '10/09/2019'
 N = 40
 ticker = "AAPL"
 
-data_slice = data_slice(ticker, "2000-01-03", 2000, 0, data_selection="Close")
+data_slice = Trading_dataslice(ticker, "2000-01-03", 2000, 0, price_data_selection="Close")
 # upper_barrier = np.linspace(1, 100, N)
 # lower_barrier = np.linspace(1, 100, N)
 # look_ahead = np.linspace(1, 200, N)
@@ -35,7 +35,7 @@ metalabel_settings = 2
 
 # --> Peak-dip metalabel visualisation
 # print(MetaLabeling(20, -20, 10, data_slice, metalabel_setting=0).metalabels)
-print(Tradebot_v4(list(data_slice.sliced_data_selection),
+print(Tradebot_v4(list(data_slice.subslice_data_selection),
                   MetaLabels_gen(upper_barrier, lower_barrier, look_ahead, data_slice, metalabel_setting=metalabel_settings).metalabels,
                   cash_in_settings=0, print_trade_process=False).account.net_worth_history[-1])
 

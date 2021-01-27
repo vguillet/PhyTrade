@@ -148,7 +148,7 @@ class SPLINE:
         elif buffer_setting == 2:
 
             # ---- Obtaining timeframe to be used for fetching google trends data
-            start_date = big_data.data_slice.start_date
+            start_date = big_data.data_slice.subslice_start_date
             end_date = big_data.data_slice.stop_date_date
 
             timeframe = start_date + " " + end_date
@@ -358,31 +358,14 @@ class SPLINE:
         if sell_trigger == 1:
             trade_signal[-1] = 1
 
-        return trade_signal, trade_spline
+        return trade_signal, trade_spline, trade_upper_threshold, trade_lower_threshold
 
     @staticmethod
-    def plot_spline_trigger(big_data,  spline, sell_dates, buy_dates):
-        import matplotlib.pyplot as plt
-
+    def calc_trading_indicator(big_data, spline):
         # Listing out point of spline which are date points
-        dates_points = []
+        trade_spline = []
 
-        for i in range(len(big_data.spline_xs)):
-            if i % 5 == 0:
-                dates_points.append(i)
+        for i in range(0, len(spline), big_data.spline_multiplication_coef):
+            trade_spline.append(spline[i])
 
-        sell_spline_values = []
-        sell_spline_dates = []
-
-        for i in sell_dates:
-            sell_spline_values.append(spline[dates_points[big_data.data_slice_dates.index(i)]])
-            sell_spline_dates.append(dates_points[big_data.data_slice_dates.index(i)]/5)
-
-        buy_spline_values = []
-        buy_spline_dates = []
-        for i in buy_dates:
-            buy_spline_values.append(spline[dates_points[big_data.data_slice_dates.index(i)]])
-            buy_spline_dates.append(dates_points[big_data.data_slice_dates.index(i)]/5)
-
-        plt.scatter(sell_spline_dates,  sell_spline_values, label="Sell trigger")
-        plt.scatter(buy_spline_dates, buy_spline_values, label="Buy trigger")
+        return trade_spline

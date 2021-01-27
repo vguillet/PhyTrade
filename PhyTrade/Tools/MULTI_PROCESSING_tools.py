@@ -20,7 +20,7 @@ def multi_process_pool(population_lst, data_slice,  max_worker_processes=6):
     def process_ind(individual):
         print("\n ----------------------------------------------")
         individual.gen_economic_model(data_slice)
-        individual.perform_trade_run(data_slice)
+        individual.perform_metatrade_run(data_slice)
         return individual
 
     print("======================> Start multiprocess")

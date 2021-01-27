@@ -9,7 +9,7 @@ Input that still require manual input:
 """
 
 # Own modules
-from PhyTrade.Settings.Tradebot_settings import Tradebot_settings
+from PhyTrade.Settings.Class_based_settings.Tradebot_settings import Tradebot_settings
 from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
 
 __version__ = '1.1.1'

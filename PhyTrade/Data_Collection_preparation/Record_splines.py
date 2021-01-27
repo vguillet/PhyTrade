@@ -43,12 +43,12 @@ def record_splines(parameter_set, data_slice, ticker, spline_type=None):
 
     # ---> Save spline to csv file
     if spline_type is None:
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\Splines".replace('\\', '/')
+        path = r"Data\Splines".replace('\\', '/')
     else:
-        path = r"C:\Users\Victor Guillet\Google Drive\2-Programing\Repos\Python\Steffegium\Data\**".\
+        path = r"Data\**".\
             replace('\\', '/').replace('**', spline_type)
 
-    full_file_name = path + '/' + ticker + "_splines"
+    full_file_name = path + '/' + ticker + "_splines.csv"
 
     if os.path.isfile(full_file_name):
         new_df = pd.concat([pd.read_csv(full_file_name, index_col=0), spline_df])
