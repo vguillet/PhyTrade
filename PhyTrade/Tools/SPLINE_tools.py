@@ -127,7 +127,7 @@ class SPLINE:
                         threshold_setting=1, buffer_setting=0):
         # -------------------------WEIGHTED BUFFER DEFINITION-----------------
         from PhyTrade.Data_Collection_preparation.Data_sources.Google_trends import pull_google_trends_data
-        from PhyTrade.Tools.MATH_tools import MATH_tools
+        from PhyTrade.Tools.Math_tools import Math_tools
 
         """        
         Buffer settings:
@@ -192,11 +192,11 @@ class SPLINE:
             lower_band = np.array(mean_avg - (2 * standard_dev))[bband_timeframe:]
 
             # --> Normalise thresholds between -1 and 1
-            upper_band_normalised = MATH_tools().normalise_minus_one_one(upper_band)
-            lower_band_normalised = MATH_tools().normalise_minus_one_one(lower_band)
+            upper_band_normalised = Math_tools().normalise_minus_one_one(upper_band)
+            lower_band_normalised = Math_tools().normalise_minus_one_one(lower_band)
 
-            # upper_band_normalised = MATH_tools().alignator_minus_one_one(upper_band, signal_max=200, signal_min=100)
-            # lower_band_normalised = MATH_tools().alignator_minus_one_one(lower_band, signal_max=200, signal_min=100)
+            # upper_band_normalised = Math_tools().alignator_minus_one_one(upper_band, signal_max=200, signal_min=100)
+            # lower_band_normalised = Math_tools().alignator_minus_one_one(lower_band, signal_max=200, signal_min=100)
 
             upper_band_spline = SPLINE(big_data).calc_signal_to_spline(big_data, upper_band_normalised)
             lower_band_spline = SPLINE(big_data).calc_signal_to_spline(big_data, lower_band_normalised)
@@ -218,11 +218,11 @@ class SPLINE:
             lower_band_price_diff = (np.array(bbands_df[big_data.data_slice.selection])-lower_band)[bband_timeframe:]
 
             # --> Normalise thresholds between -1 and 1
-            upper_band_price_diff_normalised = MATH_tools().normalise_minus_one_one(upper_band_price_diff)
-            lower_band_price_diff_normalised = MATH_tools().normalise_minus_one_one(lower_band_price_diff)
+            upper_band_price_diff_normalised = Math_tools().normalise_minus_one_one(upper_band_price_diff)
+            lower_band_price_diff_normalised = Math_tools().normalise_minus_one_one(lower_band_price_diff)
 
-            # upper_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(upper_band_price_diff, signal_max=2.5, signal_min=-2.5)
-            # lower_band_price_diff_normalised = MATH_tools().alignator_minus_one_one(lower_band_price_diff, signal_max=2.5, signal_min=-2.5)
+            # upper_band_price_diff_normalised = Math_tools().alignator_minus_one_one(upper_band_price_diff, signal_max=2.5, signal_min=-2.5)
+            # lower_band_price_diff_normalised = Math_tools().alignator_minus_one_one(lower_band_price_diff, signal_max=2.5, signal_min=-2.5)
 
             upper_band_price_diff_spline = SPLINE(big_data).calc_signal_to_spline(big_data, upper_band_price_diff_normalised)
             lower_band_price_diff_spline = SPLINE(big_data).calc_signal_to_spline(big_data, lower_band_price_diff_normalised)

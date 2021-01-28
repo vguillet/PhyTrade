@@ -9,7 +9,7 @@ import time
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Tools.MATH_tools import MATH_tools
+from PhyTrade.Tools.Math_tools import Math_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -55,22 +55,22 @@ class gen_EVOA_results:
         # ------------ Generating further informations
         # -------- Determine best fit lines
         # --> For average fitness
-        a_avg_f, b_avg_f = MATH_tools().best_fit(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen)
+        a_avg_f, b_avg_f = Math_tools().best_fit(range(len(self.avg_fitness_per_gen)), self.avg_fitness_per_gen)
         self.gradient_bestfit_avg_f = b_avg_f
         self.yfit_avg_f = [a_avg_f + b_avg_f * xi for xi in range(len(self.avg_fitness_per_gen))]
 
         # --> For best fitness individual
-        a_best_f, b_best_f = MATH_tools().best_fit(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen)
+        a_best_f, b_best_f = Math_tools().best_fit(range(len(self.best_individual_fitness_per_gen)), self.best_individual_fitness_per_gen)
         self.gradient_bestfit_best_f = b_best_f
         self.yfit_best_f = [a_best_f + b_best_f * xi for xi in range(len(self.avg_fitness_per_gen))]
 
         # --> For average net worth
-        a_avg_nw, b_avg_nw = MATH_tools().best_fit(range(len(self.avg_net_worth_per_gen)), self.avg_net_worth_per_gen)
+        a_avg_nw, b_avg_nw = Math_tools().best_fit(range(len(self.avg_net_worth_per_gen)), self.avg_net_worth_per_gen)
         self.gradient_bestfit_avg_nw = b_avg_nw
         self.yfit_avg_nw = [a_avg_nw + b_avg_nw * xi for xi in range(len(self.avg_net_worth_per_gen))]
 
         # --> For best net worth individual
-        a_best_nw, b_best_nw = MATH_tools().best_fit(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen)
+        a_best_nw, b_best_nw = Math_tools().best_fit(range(len(self.best_individual_net_worth_per_gen)), self.best_individual_net_worth_per_gen)
         self.gradient_bestfit_best_nw = b_best_nw
         self.yfit_best_nw = [a_best_nw + b_best_nw * xi for xi in range(len(self.best_individual_net_worth_per_gen))]
 

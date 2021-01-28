@@ -11,7 +11,7 @@ a simple moving average (SMA), which applies an equal weight to all observations
 import numpy as np
 
 # Own modules
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.Indicator_abc import Indicator_abc
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -20,7 +20,7 @@ __date__ = '11/28/2018'
 ##################################################################################################################
 
 
-class EMA(ABSTRACT_indicator):
+class EMA(Indicator_abc):
     def __init__(self, big_data, timeperiod_1=12, timeperiod_2=26):
         """
         Generates an EMA indicator instance
@@ -35,11 +35,12 @@ class EMA(ABSTRACT_indicator):
 
         # -------------------------- EMA CALCULATION ---------------------------
         # --> Slice data to obtain Data falling in data slice + max timeframe
-        ewma_df = big_data.data_slice.data[big_data.data_slice.start_index-max(self.timeperiod_1, timeperiod_2):big_data.data_slice.stop_index]
+        ewma_df = big_data.data_slice.data[big_data.data_slice.subslice_start_index-max(self.timeperiod_1, timeperiod_2):
+                                           big_data.data_slice.subslice_stop_index]
 
         # TODO: Check whether adjust should be True or False
-        ema_1 = ewma_df[big_data.data_slice.selection].ewm(span=self.timeperiod_1, min_periods=0, adjust=True, ignore_na=False).mean()
-        ema_2 = ewma_df[big_data.data_slice.selection].ewm(span=self.timeperiod_2, min_periods=0, adjust=True, ignore_na=False).mean()
+        ema_1 = ewma_df[big_data.data_slice.price_data_selection].ewm(span=self.timeperiod_1, min_periods=0, adjust=True, ignore_na=False).mean()
+        ema_2 = ewma_df[big_data.data_slice.price_data_selection].ewm(span=self.timeperiod_2, min_periods=0, adjust=True, ignore_na=False).mean()
 
         self.ema_1 = np.array(ema_1.values[self.timeperiod_1:])
         self.ema_2 = np.array(ema_2.values[self.timeperiod_2:])
@@ -58,17 +59,19 @@ class EMA(ABSTRACT_indicator):
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when EMAs cross
         """
-        from PhyTrade.Tools.MATH_tools import MATH_tools
+        from PhyTrade.Tools.Math_tools import Math_tools
 
         # ----------------- Bear/Bullish continuous signal
-        self.bb_signal = np.zeros(big_data.data_slice.slice_size)
+        self.bb_signal = np.zeros(big_data.data_slice.subslice_size)
 
-        for i in range(big_data.data_slice.slice_size):
+        for i in range(big_data.data_slice.subslice_size):
             self.bb_signal[i] = (self.ema_1[i] - self.ema_2[i])/2
 
         # --> Normalising ema bb signal values between -1 and 1
-        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
-        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=15, signal_min=-15)
+        # self.bb_signal = Math_tools().normalise_minus_one_one(self.bb_signal)
+        self.bb_signal = Math_tools().alignator_minus_one_one(signal=self.bb_signal,
+                                                              signal_max=15,
+                                                              signal_min=-15)
 
         if include_triggers_in_bb_signal:
             # ----------------- Trigger points determination
@@ -78,7 +81,7 @@ class EMA(ABSTRACT_indicator):
             else:
                 ema_config = 1
 
-            for i in range(big_data.data_slice.slice_size):
+            for i in range(big_data.data_slice.subslice_size):
                 if ema_config == 0:
                     if self.ema_2[i] > self.ema_1[i]:
                         self.bb_signal[i] = 1

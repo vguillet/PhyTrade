@@ -56,7 +56,7 @@ class Individual:
                 self.nb_of_parameters += 1
 
     def gen_economic_model(self, data_slice, plot_eco_model_results=False):
-        from PhyTrade.Economic_model.Analysis_protocols.Prototype_5 import Prototype_5
+        from PhyTrade.Economic_model.Prototype_5 import Prototype_5
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
         self.analysis = Prototype_5(self.parameter_set, data_slice)
@@ -68,21 +68,13 @@ class Individual:
         self.trade_lower_threshold = self.analysis.big_data.Major_spline.trade_lower_threshold
 
         if plot_eco_model_results:
-            print_indicators = {"rsi": self.settings.individual_settings.print_rsi,
-                                "sma": self.settings.individual_settings.print_sma,
-                                "ema": self.settings.individual_settings.print_ema,
-                                "lwma": self.settings.individual_settings.print_lwma,
-                                "cci": self.settings.individual_settings.print_cci,
-                                "eom": self.settings.individual_settings.print_eom,
-                                "oc_gradient": self.settings.individual_settings.print_oc_gradient}
-
-            PLOT_tools().plot_trade_process(data_slice,
-                                            self.trade_spline,
-                                            self.trade_upper_threshold,
-                                            self.trade_lower_threshold,
-                                            self.trade_signal,
-                                            self.analysis.big_data.content["trading_indicator_splines"],
-                                            print_indicators)
+            PLOT_tools().plot_trade_process(settings=self.settings,
+                                            data_slice=data_slice,
+                                            trade_spline=self.trade_spline,
+                                            trade_upper_threshold=self.trade_upper_threshold,
+                                            trade_lower_threshold=self.trade_lower_threshold,
+                                            trade_signal=self.trade_signal,
+                                            trading_indicators=self.analysis.big_data.content["trading_indicator_splines"])
 
     def perform_trade_run(self,
                           data_slice,

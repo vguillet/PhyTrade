@@ -18,6 +18,8 @@ class Model_settings:
         # ___________________________ Print/plot parameters ______________________
         self.print_trade_process = False
 
+        self.plot_eco_model_results = True
+
         # ___________________________ Model parameters ___________________________
         self.evaluation_name = "1"
 

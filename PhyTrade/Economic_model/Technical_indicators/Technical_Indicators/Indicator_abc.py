@@ -14,7 +14,7 @@ __date__ = '11/28/2018'
 ##################################################################################################################
 
 
-class ABSTRACT_indicator(ABC):
+class Indicator_abc(ABC):
     @abstractmethod
     def get_output(self, big_data, include_triggers_in_bb_signal=False):
         pass

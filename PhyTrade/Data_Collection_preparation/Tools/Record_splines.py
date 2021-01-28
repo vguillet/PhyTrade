@@ -24,7 +24,7 @@ def record_splines(parameter_set, data_slice, ticker, spline_type=None):
     """
     Used to record a collection of spines
 
-    :param parameter_set: Parameter set dictionary to be used fro spline generation
+    :param parameter_set: Parameter set dictionary to be used for spline generation
     :param data_slice: Data_slice type object
     :param ticker: Ticker of company
     :param spline_type: String used to specify save folder (folder need to be already present)
@@ -37,7 +37,7 @@ def record_splines(parameter_set, data_slice, ticker, spline_type=None):
 
     spline_df = pd.DataFrame(columns=["Date", "trade_spline", "trade_signal"])
 
-    spline_df["Date"] = data_slice.data[data_slice.start_index:data_slice.stop_index]["Date"]
+    spline_df["Date"] = data_slice.data[data_slice.subslice_start_index:data_slice.subslice_stop_index]["Date"]
     spline_df["trade_spline"] = individual.trade_spline
     spline_df["trade_signal"] = individual.trade_signal
 

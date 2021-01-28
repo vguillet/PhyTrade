@@ -1,7 +1,7 @@
 
 ##################################################################################################################
 """
-Used for plotting the opening and close value of stocks of a data slice
+Used for working with the opening and close value of stocks of a data slice
 """
 
 # Libs
@@ -30,12 +30,10 @@ class OC:
         buy_values = []
 
         for i in range(len(sell_dates)):
-            sell_values.append(
-                big_data.data_slice_close_values[big_data.data_slice_dates.index(sell_dates[i])])
+            sell_values.append(big_data.data_slice_close_values[big_data.data_slice_dates.index(sell_dates[i])])
 
         for i in range(len(buy_dates)):
-            buy_values.append(
-                big_data.data_slice_close_values[big_data.data_slice_dates.index(buy_dates[i])])
+            buy_values.append(big_data.data_slice_close_values[big_data.data_slice_dates.index(buy_dates[i])])
 
         return sell_values, buy_values
 

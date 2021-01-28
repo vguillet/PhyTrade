@@ -251,7 +251,11 @@ class RUN_single_trade_sim:
         self.results.total_data_points_processed = abs(self.data_slice.default_start_index-self.data_slice.default_end_index)
 
         self.results.gen_result_recap_file()
-        self.results.plot_results(run_metalabels)
+
+        if settings.trade_sim_settings.plot_eco_model_results:
+            self.results.plot_results(settings=settings,
+                                      big_data=self.individual.analysis.big_data,
+                                      run_metalabels=run_metalabels)
 
         print("-- Trade simulation completed --")
         print("Number of data points processed:", self.results.total_data_points_processed)
@@ -338,7 +342,7 @@ class Trade_simulation_results_gen:
 
         self.results_file.close()
 
-    def plot_results(self, run_metalabels):
+    def plot_results(self, settings, big_data, run_metalabels):
         import matplotlib.pyplot as plt
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
@@ -357,11 +361,17 @@ class Trade_simulation_results_gen:
         plt.show()
 
         # --> Plot model results
-        print_data_slice = Trading_dataslice(self.ticker, self.data_slice_start_date, self.total_data_points_processed, 0)
-        PLOT_tools().plot_trade_process(print_data_slice,
-                                        self.spline,
-                                        self.upper_threshold_spline,
-                                        self.lower_threshold_spline,
-                                        self.trade_signal)
+        print_data_slice = Trading_dataslice(ticker=self.ticker,
+                                             start_date=self.data_slice_start_date,
+                                             subslice_size=self.total_data_points_processed,
+                                             subslice_shift_per_step=0)
+
+        PLOT_tools().plot_trade_process(settings=settings,
+                                        data_slice=print_data_slice,
+                                        trade_spline=self.spline,
+                                        trade_upper_threshold=self.upper_threshold_spline,
+                                        trade_lower_threshold=self.lower_threshold_spline,
+                                        trade_signal=self.trade_signal,
+                                        trading_indicators=big_data.content["trading_indicator_splines"])
         return
 

@@ -55,13 +55,19 @@ class RUN_model:
         self.ticker = ticker
         self.parameter_set = parameter_set
 
-        self.results = EVAL_parameter_set_results_gen(self.ticker, eval_name)
+        self.results = EVAL_parameter_set_results_gen(ticker=self.ticker,
+                                                      run_label=eval_name)
 
         # ---- Generate data slice
-        self.data_slice = Trading_dataslice(self.ticker, start_date, data_slice_size, 0, end_date=end_date)
+        self.data_slice = Trading_dataslice(ticker=self.ticker,
+                                            start_date=start_date,
+                                            subslice_size=data_slice_size,
+                                            subslice_shift_per_step=0,
+                                            end_date=end_date)
 
         # ---- Generate Individual
-        self.individual = Individual(ticker=ticker, parameter_set=parameter_set)
+        self.individual = Individual(ticker=ticker,
+                                     parameter_set=parameter_set)
 
         # ===============================================================================
         # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]
@@ -69,25 +75,30 @@ class RUN_model:
         print("Model generation\n")
 
         print("Evaluated ticker:", ticker)
-        print("\nStart date:", self.data_slice.start_date)
-        print("Stop date:", self.data_slice.stop_date)
+        print("\nStart date:", self.data_slice.subslice_start_date)
+        print("Stop date:", self.data_slice.subslice_stop_date)
         print("Data slice size:", data_slice_size)
 
         print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ ECONOMIC ANALYSIS ================================
         # ---- Generate economic model and perform trade run
-        progress_bar = Progress_bar(math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/data_slice_size)+1,
-                                    label="Model being generated")
+        progress_bar = Progress_bar(math.ceil(abs(self.data_slice.start_index-self.data_slice.end_index)/data_slice_size)+1, label="Model being generated")
         data_slice_count = 0
         while self.data_slice.end_of_dataset is not True:
             data_slice_count += 1
 
-            self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=False)
-            self.individual.perform_trade_run(self.data_slice, print_trade_process=print_trade_process)
+            self.individual.gen_economic_model(data_slice=self.data_slice,
+                                               plot_eco_model_results=False)
 
-            self.data_slice.gen_subslice_metalabels(upper_barrier, lower_barrier, look_ahead,
-                                                    metalabeling_setting)
+            self.individual.perform_trade_run(data_slice=self.data_slice,
+                                              print_trade_process=print_trade_process)
+
+            self.data_slice.gen_subslice_metalabels(upper_barrier=upper_barrier,
+                                                    lower_barrier=lower_barrier,
+                                                    look_ahead=look_ahead,
+                                                    metalabeling_setting=metalabeling_setting)
+
             self.data_slice.perform_metatrade_run()
 
             # --> Record results
@@ -99,12 +110,12 @@ class RUN_model:
 
             # --> Generate next dataslice
             progress_bar.update_progress(data_slice_count)
-            self.data_slice.get_next_data_slice()
+            self.data_slice.get_next_subslice()
 
         # ---- Generate evaluation summary
         self.results.individual = self.individual
-        self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(self.results.trade_signal,
-                                                                                     self.results.metalabels,
+        self.results.benchmark_confusion_matrix_analysis = Confusion_matrix_analysis(model_predictions=self.results.trade_signal,
+                                                                                     metalabels=self.results.metalabels,
                                                                                      calculate_stats=True,
                                                                                      print_benchmark_results=False)
 
@@ -112,15 +123,17 @@ class RUN_model:
         self.results.lower_barrier = lower_barrier
         self.results.look_ahead = look_ahead
 
-        self.results.total_data_points_processed = abs(self.data_slice.default_start_index-self.data_slice.default_end_index)
-        self.results.benchmark_data_slice_start = self.data_slice.default_start_date
-        self.results.benchmark_data_slice_stop = self.data_slice.default_end_date
+        self.results.total_data_points_processed = abs(self.data_slice.start_index-self.data_slice.end_index)
+        self.results.benchmark_data_slice_start = self.data_slice.start_date
+        self.results.benchmark_data_slice_stop = self.data_slice.end_date
 
         self.results.gen_result_recap_file()
 
         print("-- Parameter evaluation completed --")
-        self.results.plot_results()
 
+        if settings.model_settings.plot_eco_model_results:
+            self.results.plot_results(settings=settings,
+                                      big_data=self.individual.analysis.big_data)
 
 class EVAL_parameter_set_results_gen:
     def __init__(self, ticker, run_label):
@@ -209,11 +222,17 @@ class EVAL_parameter_set_results_gen:
         self.results_file.close()
         return
 
-    def plot_results(self):
+    def plot_results(self, settings, big_data):
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
-        print_data_slice = Trading_dataslice(self.ticker, self.benchmark_data_slice_start, self.total_data_points_processed, 0)
-        PLOT_tools().plot_trade_process(print_data_slice,
-                                        self.spline,
-                                        self.upper_threshold_spline,
-                                        self.lower_threshold_spline,
-                                        self.trade_signal)
+        print_data_slice = Trading_dataslice(ticker=self.ticker,
+                                             start_date=self.benchmark_data_slice_start,
+                                             subslice_size=self.total_data_points_processed,
+                                             subslice_shift_per_step=0)
+
+        PLOT_tools().plot_trade_process(settings=settings,
+                                        data_slice=print_data_slice,
+                                        trade_spline=self.spline,
+                                        trade_upper_threshold=self.upper_threshold_spline,
+                                        trade_lower_threshold=self.lower_threshold_spline,
+                                        trade_signal=self.trade_signal,
+                                        trading_indicators=big_data.content["trading_indicator_splines"])

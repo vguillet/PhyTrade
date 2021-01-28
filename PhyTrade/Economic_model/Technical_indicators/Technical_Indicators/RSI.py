@@ -8,7 +8,7 @@ Used for computing the RSI indicator
 import numpy as np
 
 # Own modules
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.Indicator_abc import Indicator_abc
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -17,7 +17,7 @@ __date__ = '11/28/2018'
 ##################################################################################################################
 
 
-class RSI(ABSTRACT_indicator):
+class RSI(Indicator_abc):
     def __init__(self, big_data, timeframe=14, standard_upper_threshold=70, standard_lower_threshold=30,
                  buffer_setting=0):
         """
@@ -38,10 +38,11 @@ class RSI(ABSTRACT_indicator):
         
         # -------------------------- RSI CALCULATION ---------------------------
         # --> Slice data to obtain Data falling in data slice + rsi timeframe
-        rsi_df = big_data.data_slice.data[big_data.data_slice.start_index-self.timeframe:big_data.data_slice.stop_index]
+        rsi_df = big_data.data_slice.data[big_data.data_slice.subslice_start_index-self.timeframe:
+                                          big_data.data_slice.subslice_stop_index]
 
         # --> Get the difference in price from previous step
-        delta = rsi_df[big_data.data_slice.selection].diff()
+        delta = rsi_df[big_data.data_slice.price_data_selection].diff()
 
         # --> Make the positive gains (up) and negative gains (down) Series
         up, down = delta.copy(), delta.copy()
@@ -77,8 +78,8 @@ class RSI(ABSTRACT_indicator):
             
         # -------------------------DYNAMIC BOUND DEFINITION-------------------
         # Define initial upper and lower bounds
-        self.upper_bound = np.zeros(big_data.data_slice.slice_size)
-        self.lower_bound = np.zeros(big_data.data_slice.slice_size)
+        self.upper_bound = np.zeros(big_data.data_slice.subslice_size)
+        self.lower_bound = np.zeros(big_data.data_slice.subslice_size)
 
         self.upper_bound[:] = self.standard_lower_threshold
         self.lower_bound[:] = self.standard_upper_threshold
@@ -86,7 +87,7 @@ class RSI(ABSTRACT_indicator):
         # Define upper dynamic bound method
         freeze_trade_upper = False
 
-        for i in range(big_data.data_slice.slice_size):
+        for i in range(big_data.data_slice.subslice_size):
             if self.rsi_values[i] < self.standard_upper_threshold:
                 freeze_trade_upper = False
 
@@ -133,14 +134,16 @@ class RSI(ABSTRACT_indicator):
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when RSI crosses upper/lower bound
         """
-        from PhyTrade.Tools.MATH_tools import MATH_tools
+        from PhyTrade.Tools.Math_tools import Math_tools
 
         # ----------------- Bear/Bullish continuous signal
         self.bb_signal = self.rsi_values
 
         # --> Normalising rsi bb signal values between -1 and 1
-        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
-        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=100, signal_min=-100)
+        # self.bb_signal = Math_tools().normalise_minus_one_one(self.bb_signal)
+        self.bb_signal = Math_tools().alignator_minus_one_one(signal=self.bb_signal,
+                                                              signal_max=100,
+                                                              signal_min=-100)
 
         if include_triggers_in_bb_signal:
             # ----------------- Trigger points determination
@@ -150,7 +153,7 @@ class RSI(ABSTRACT_indicator):
             buy_trigger = 0
 
             # Defining indicator trigger for...
-            for i in range(big_data.data_slice.slice_size):
+            for i in range(big_data.data_slice.subslice_size):
                 # ...upper bound
                 if self.rsi_values[i] >= self.standard_upper_threshold and sell_trigger == 0:  # Initiate sell trigger
                     sell_trigger = 1

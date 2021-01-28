@@ -6,12 +6,11 @@ information about the slice analysed, including the starting and stopping index,
 """
 
 # Libs
-import numpy as np
 
 # Own modules
-from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Tools.TS_dataslice import TS_dataslice
-from PhyTrade.Backtesting.Metalabeling.METALABELS_gen import MetaLabels_gen
+from PhyTrade.Data_Collection_preparation.Tools.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Data_Collection_preparation.TS_dataslice import TS_dataslice
+from PhyTrade.Backtesting.Metalabeling.Metalabels import MetaLabels
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -40,6 +39,7 @@ class Trading_dataslice(TS_dataslice):
         self.ticker = ticker
         self.price_data_selection = price_data_selection
         self.metalabels = None
+        self.metalabels_account = None
 
         # ---- Generating TS_dataslice
         super().__init__(data=fetch_technical_data(ticker),
@@ -88,10 +88,10 @@ class Trading_dataslice(TS_dataslice):
         mock_data_slice.subslice_start_index = self.subslice_start_index
         mock_data_slice.subslice_stop_index = self.subslice_stop_index
 
-        self.metalabels = MetaLabels_gen(upper_barrier, lower_barrier,
-                                         look_ahead,
-                                         mock_data_slice,
-                                         metalabel_setting=metalabeling_setting).metalabels
+        self.metalabels = MetaLabels(upper_barrier, lower_barrier,
+                                     look_ahead,
+                                     mock_data_slice,
+                                     metalabel_setting=metalabeling_setting).metalabels
         return
 
     def perform_metatrade_run(self,

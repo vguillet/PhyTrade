@@ -18,21 +18,31 @@ __date__ = '10/09/2019'
 
 class PLOT_tools:
     @staticmethod
-    def plot_trade_process(data_slice,
+    def plot_trade_process(settings,
+                           data_slice,
                            trade_spline, trade_upper_threshold, trade_lower_threshold, trade_signal,
-                           trading_indicators, print_indicators_settings):
+                           trading_indicators):
         """
         Generates a two part plot, with the opening/closing prices at the top,
         and the trading/indicator splines at the bottom
 
+        :param settings:
         :param data_slice:
         :param trade_spline:
         :param trade_upper_threshold:
         :param trade_lower_threshold:
         :param trade_signal:
         :param trading_indicators:
-        :param print_indicators_settings:
         """
+
+        # --> Gathering print settings
+        print_indicators_settings = {"rsi": settings.individual_settings.print_rsi,
+                                     "sma": settings.individual_settings.print_sma,
+                                     "ema": settings.individual_settings.print_ema,
+                                     "lwma": settings.individual_settings.print_lwma,
+                                     "cci": settings.individual_settings.print_cci,
+                                     "eom": settings.individual_settings.print_eom,
+                                     "oc_gradient": settings.individual_settings.print_oc_gradient}
 
         plot_tools = PLOT_tools()
         datelist = list(pd.to_datetime(date) for date in data_slice.subslice_data["Date"])

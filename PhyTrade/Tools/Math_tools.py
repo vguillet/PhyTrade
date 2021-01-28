@@ -14,7 +14,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class MATH_tools:
+class Math_tools:
     @staticmethod
     def alignator_minus_one_one(signal, signal_max=100, signal_min=-100):
         signal_normalised = np.zeros(len(signal))

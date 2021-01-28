@@ -11,7 +11,7 @@ moving averages (EMA).
 import numpy as np
 
 # Own modules
-from PhyTrade.Economic_model.Technical_Analysis.Technical_Indicators.ABSTRACT_indicator import ABSTRACT_indicator
+from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.Indicator_abc import Indicator_abc
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -20,7 +20,7 @@ __date__ = '11/28/2018'
 ##################################################################################################################
 
 
-class LWMA(ABSTRACT_indicator):
+class LWMA(Indicator_abc):
     def __init__(self, big_data, timeperiod=10, max_weight=1):
         """
         Generates an LWMA indicator instance
@@ -31,18 +31,18 @@ class LWMA(ABSTRACT_indicator):
         """
 
         self.timeperiod = timeperiod
-        self.lwma = np.zeros(big_data.data_slice.slice_size)
+        self.lwma = np.zeros(big_data.data_slice.subslice_size)
 
-        for i in range(big_data.data_slice.slice_size):
+        for i in range(big_data.data_slice.subslice_size):
 
             # --> Adjust timeframe if necessary
-            if len(big_data.data_slice.data[:big_data.data_slice.start_index]) < self.timeperiod:
-                self.timeperiod = len(big_data.data_slice.data[:big_data.data_slice.start_index])
+            if len(big_data.data_slice.data[:big_data.data_slice.subslice_start_index]) < self.timeperiod:
+                self.timeperiod = len(big_data.data_slice.data[:big_data.data_slice.subslice_start_index])
 
             # ------------------ Calculate values falling in timeperiod_1 and 2
-            timeperiod_values = np.array(big_data.data_slice.data_selection[
-                                              big_data.data_slice.start_index + i - self.timeperiod + 1:
-                                              big_data.data_slice.start_index + i + 1])[::-1]
+            timeperiod_values = np.array(big_data.data_slice.price_data_selection[
+                                              big_data.data_slice.subslice_start_index + i - self.timeperiod + 1:
+                                              big_data.data_slice.subslice_start_index + i + 1])[::-1]
 
             # ---> Compute weights for each days based on max weight param and lookback period
             weights = np.zeros(self.timeperiod)
@@ -53,7 +53,7 @@ class LWMA(ABSTRACT_indicator):
             weights = weights[::-1]
 
             # ---> Compute weighted daily values
-            weighted_values = np.zeros(big_data.data_slice.slice_size)
+            weighted_values = np.zeros(big_data.data_slice.subslice_size)
             for j in range(self.timeperiod):
                 weighted_values[j] = timeperiod_values[j]*weights[j]
 
@@ -73,19 +73,21 @@ class LWMA(ABSTRACT_indicator):
         :param big_data: BIGDATA class instance
         :param include_triggers_in_bb_signal: Maximise/minimise bb signal when LWMAs crosses daily value
         """
-        from PhyTrade.Tools.MATH_tools import MATH_tools
+        from PhyTrade.Tools.Math_tools import Math_tools
 
         # ----------------- Bear/Bullish continuous signal
-        self.bb_signal = np.zeros(big_data.data_slice.slice_size)
+        self.bb_signal = np.zeros(big_data.data_slice.subslice_size)
 
-        for i in range(big_data.data_slice.slice_size):
+        for i in range(big_data.data_slice.subslice_size):
             self.bb_signal[i] = (self.lwma[i] - big_data.data_slice.subslice_data_selection[i]) / 2
 
         # Normalising lwma bb signal values between -1 and 1
-        # self.bb_signal = MATH_tools().normalise_minus_one_one(self.bb_signal)
+        # self.bb_signal = Math_tools().normalise_minus_one_one(self.bb_signal)
         # TODO: Fix alignator boundaries
-        print(self.bb_signal)
-        self.bb_signal = MATH_tools().alignator_minus_one_one(self.bb_signal, signal_max=100, signal_min=-100)
+        # print(self.bb_signal)
+        self.bb_signal = Math_tools().alignator_minus_one_one(signal=self.bb_signal,
+                                                              signal_max=100,
+                                                              signal_min=-100)
 
         if include_triggers_in_bb_signal:
             # ----------------- Trigger points determination
@@ -95,7 +97,7 @@ class LWMA(ABSTRACT_indicator):
             else:
                 lwma_config = 1
 
-            for i in range(big_data.data_slice.slice_size):
+            for i in range(big_data.data_slice.subslice_size):
                 if lwma_config == 0:
                     if big_data.data_slice.subslice_data_selection[i] > self.lwma[i]:
                         self.bb_signal[i] = 1
