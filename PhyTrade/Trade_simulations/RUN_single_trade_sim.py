@@ -16,7 +16,7 @@ import pprint
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
-from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
+from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
 

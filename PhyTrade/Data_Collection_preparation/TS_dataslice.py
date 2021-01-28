@@ -8,8 +8,6 @@ information about the slice analysed, including the starting and stopping index,
 import numpy as np
 
 # Own modules
-from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Backtesting.Metalabeling.METALABELS_gen import MetaLabels_gen
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -83,6 +81,8 @@ class TS_dataslice:
         else:
             self.end_index = -1
             self.end_date = self.data.iloc[self.end_index]['Date']
+
+        # self.data = self.data[self.start_index:self.end_index]
 
         # ---- Data slice settings
         self.data_looper = data_looper      # Disable/enable data looping

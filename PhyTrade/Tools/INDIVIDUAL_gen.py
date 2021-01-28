@@ -8,7 +8,7 @@ and can generate economic model, and perform trade runs
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_random_gen import EVOA_random_gen
-from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Data_Collection_preparation.Tools.Fetch_technical_data import fetch_technical_data
 from PhyTrade.Tools.GENERAL_tools import GENERAL_tools
 
 __version__ = '1.1.1'

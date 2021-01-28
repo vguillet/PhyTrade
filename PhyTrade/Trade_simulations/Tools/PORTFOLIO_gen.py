@@ -7,7 +7,7 @@ Used for generating portfolio and storing portfolio information
 # Own modules
 from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v5 import Tradebot_v5
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
+from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

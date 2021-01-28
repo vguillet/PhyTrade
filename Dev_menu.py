@@ -12,7 +12,7 @@ import json
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
+from PhyTrade.Data_Collection_preparation.Tools.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
 from PhyTrade.Tools.Colours_and_Fonts import cf
 from PhyTrade.Tools.RUN_protocols import RUN_protocols
 

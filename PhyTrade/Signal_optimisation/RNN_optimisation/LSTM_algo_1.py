@@ -10,9 +10,9 @@ import numpy as np
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Tools.DATA_SLICE_gen import data_slice
+from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
+from PhyTrade.Data_Collection_preparation.Tools.Fetch_parameter_set import fetch_parameter_set
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -36,11 +36,12 @@ print(pd.read_csv(path, index_col=0).shape[0])
 for ticker in settings.market_settings.tickers:
     ticker_model_results = []
     individual = Individual(ticker, parameter_set=fetch_parameter_set(ticker, "06", "Short_term"))
-    data_slice = data_slice(ticker,
-                            settings.market_settings.training_start_date,
-                            settings.market_settings.data_slice_size,
-                            0, data_selection=settings.market_settings.price_selection,
-                            end_date=settings.market_settings.training_end_date)
+    data_slice = Trading_dataslice(ticker=ticker,
+                                   start_date=settings.market_settings.training_start_date,
+                                   subslice_size=settings.market_settings.data_slice_size,
+                                   subslice_shift_per_step=0,
+                                   price_data_selection=settings.market_settings.price_selection,
+                                   end_date=settings.market_settings.training_end_date)
 
     while data_slice.end_of_dataset is False:
         individual.gen_economic_model(data_slice)

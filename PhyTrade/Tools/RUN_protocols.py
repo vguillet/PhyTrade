@@ -16,7 +16,7 @@ from PhyTrade.Signal_optimisation.EVO_algorithm.EVO_algorithm import EVO_algorit
 from PhyTrade.Economic_model.RUN_model import RUN_model
 from PhyTrade.Trade_simulations.RUN_single_trade_sim import RUN_single_trade_sim
 from PhyTrade.Trade_simulations.RUN_multi_trade_sim import RUN_multi_trade_sim
-from PhyTrade.Backtesting.Metalabeling.EVOA_METALABELS_gen import gen_ticker_metalabels
+from PhyTrade.Backtesting.Metalabeling.Gen_evoa_metalabels import gen_ticker_metalabels
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

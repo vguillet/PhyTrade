@@ -13,7 +13,7 @@ Input that still require manual input:
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
+from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

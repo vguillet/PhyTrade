@@ -13,9 +13,9 @@ from PhyTrade.Signal_optimisation.EVO_algorithm.EVOA_prints import EVOA_prints
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.gen_EVOA_results import gen_EVOA_results
 from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Tools.Trading_dataslice import Trading_dataslice
+from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
-from PhyTrade.Data_Collection_preparation.Record_parameter_set import gen_parameters_json
+from PhyTrade.Data_Collection_preparation.Tools.Record_parameter_set import gen_parameters_json
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -44,7 +44,9 @@ class EVO_algorithm:
         settings.metalabeling_settings.gen_metalabels_settings()
 
         # --> Initiate prints
-        prints = EVOA_prints(ticker, 4, settings)
+        prints = EVOA_prints(ticker=ticker,
+                             evoa_version=4,
+                             settings=settings)
 
         # ---- Update settings according to run case and inputs
         # --> Disable all prints/plots in case of multiprocessing
@@ -56,12 +58,12 @@ class EVO_algorithm:
             settings.signal_training_settings.plot_eco_model_results = False
             settings.signal_training_settings.plot_best_individual_eco_model_results = False
 
-        # --> Initiate data slices if not provided
+        # --> Initiate data slice if not provided
         if data_slice is None:
-            self.data_slice = Trading_dataslice(ticker,
-                                                settings.subslice_start_date,
-                                                settings.market_settings.data_slice_size,
-                                                settings.signal_training_settings.data_slice_shift_per_gen,
+            self.data_slice = Trading_dataslice(ticker=ticker,
+                                                start_date=settings.subslice_start_date,
+                                                subslice_size=settings.market_settings.data_slice_size,
+                                                subslice_shift_per_step=settings.signal_training_settings.data_slice_shift_per_gen,
                                                 price_data_selection=settings.market_settings.price_selection,
                                                 end_date=settings.end_date,
                                                 data_looper=settings.signal_training_settings.data_looper)
@@ -69,29 +71,34 @@ class EVO_algorithm:
         else:
             self.data_slice = data_slice
 
-        # --> Compute initial slice metalabels
-        self.data_slice.gen_subslice_metalabels(settings.metalabeling_settings.upper_barrier, settings.metalabeling_settings.lower_barrier,
-                                                settings.metalabeling_settings.look_ahead,
-                                                settings.metalabeling_settings.metalabeling_setting)
+        # --> Compute initial subslice metalabels
+        self.data_slice.gen_subslice_metalabels(upper_barrier=settings.metalabeling_settings.upper_barrier,
+                                                lower_barrier=settings.metalabeling_settings.lower_barrier,
+                                                look_ahead=settings.metalabeling_settings.look_ahead,
+                                                metalabeling_setting=settings.metalabeling_settings.metalabeling_setting)
 
         # --> Update generation count and slice count according to selected settings and available data,
         # Making sure that number of generation spans at least the date interval to be analysed
         if optimiser_setting == 1:
-            min_nb_generations = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
+            min_nb_generations = math.ceil(abs(self.data_slice.start_index-self.data_slice.end_index) /
+                                           settings.market_settings.data_slice_size)*settings.signal_training_settings.data_slice_cycle_count
 
             if settings.signal_training_settings.data_looper is False:  # If looper is false, set generation count
                 # Update generation count if end_date results in lower slice count
                 settings.signal_training_settings.nb_of_generations = min_nb_generations
-                slice_count = math.ceil(abs(self.data_slice.default_start_index - self.data_slice.default_end_index) / settings.market_settings.data_slice_size)
+                subslice_count = math.ceil(abs(self.data_slice.start_index - self.data_slice.end_index) /
+                                           settings.market_settings.data_slice_size)
             else:
                 if settings.signal_training_settings.nb_of_generations < min_nb_generations:
                     settings.signal_training_settings.nb_of_generations = min_nb_generations
-                    slice_count = math.ceil(abs(self.data_slice.default_start_index - self.data_slice.default_end_index) / settings.market_settings.data_slice_size)
+                    subslice_count = math.ceil(abs(self.data_slice.start_index - self.data_slice.end_index) /
+                                               settings.market_settings.data_slice_size)
 
                 else:
-                    slice_count = math.floor(settings.signal_training_settings.nb_of_generations/settings.signal_training_settings.data_slice_cycle_count)
+                    subslice_count = math.floor(settings.signal_training_settings.nb_of_generations /
+                                                settings.signal_training_settings.data_slice_cycle_count)
         else:
-            slice_count = None
+            subslice_count = None
 
         settings.signal_training_settings.exploitation_phase_len = \
             round(settings.signal_training_settings.nb_of_generations*settings.signal_training_settings.exploitation_phase_len_percent)
@@ -105,14 +112,14 @@ class EVO_algorithm:
 
         # --> Initialise records
         self.results = gen_EVOA_results(ticker)
-        self.results.data_slice_start_index = self.data_slice.start_index
+        self.results.data_slice_start_index = self.data_slice.subslice_start_index
 
         self.results.run_start_time = time.time()
 
         # ======================== PROCESS ==============================================
 
         prints.evoa_run_initialisation_recap(optimiser_setting,
-                                             slice_count,
+                                             subslice_count,
                                              settings.signal_training_settings.nb_of_generations)
 
         if optimiser_setting == 1 and not settings.signal_training_settings.multiprocessing:
@@ -125,18 +132,19 @@ class EVO_algorithm:
 
         # ------------------ Initialise population
         if settings.signal_training_settings.starting_parameters is None:
-            self.population = self.evoa_tools.gen_initial_population(ticker, settings.signal_training_settings.population_size)
+            self.population = self.evoa_tools.gen_initial_population(ticker=ticker,
+                                                                     population_size=settings.signal_training_settings.population_size)
         else:
-            self.population = self.evoa_tools.generate_offsprings(ticker,
-                                                                  1,
-                                                                  1,
-                                                                  1,
-                                                                  1,
-                                                                  0,
-                                                                  settings.signal_training_settings.population_size,
-                                                                  [Individual(parameter_set=settings.signal_training_settings.starting_parameters)],
-                                                                  settings.signal_training_settings.nb_parents_in_next_gen,
-                                                                  1,
+            self.population = self.evoa_tools.generate_offsprings(ticker=ticker,
+                                                                  current_generation=1,
+                                                                  nb_of_generations=1,
+                                                                  current_slice_cycle=1,
+                                                                  nb_of_slice_cycles=1,
+                                                                  decay_function=0,
+                                                                  population_size=settings.signal_training_settings.population_size,
+                                                                  parents=[Individual(parameter_set=settings.signal_training_settings.starting_parameters)],
+                                                                  nb_parents_in_next_gen=settings.signal_training_settings.nb_parents_in_next_gen,
+                                                                  nb_random_ind=1,
                                                                   mutation_rate=settings.signal_training_settings.mutation_rate)
         prints.init_pop_success_msg()
 
@@ -152,10 +160,12 @@ class EVO_algorithm:
                 self.data_slice_cycle_count += 1
                 if self.data_slice_cycle_count > settings.signal_training_settings.data_slice_cycle_count:
                     self.data_slice.get_shifted_data_slice()
-                    self.data_slice.gen_subslice_metalabels(settings.metalabeling_settings.upper_barrier, settings.metalabeling_settings.lower_barrier,
-                                                            settings.metalabeling_settings.look_ahead,
-                                                            settings.metalabeling_settings.metalabeling_setting)
+                    self.data_slice.gen_subslice_metalabels(upper_barrier=settings.metalabeling_settings.upper_barrier,
+                                                            lower_barrier=settings.metalabeling_settings.lower_barrier,
+                                                            look_ahead=settings.metalabeling_settings.look_ahead,
+                                                            metalabeling_setting=settings.metalabeling_settings.metalabeling_setting)
                     self.data_slice_cycle_count = 1
+
                     if settings.signal_training_settings.multiprocessing is False:
                         cycle_progress_bar = Progress_bar(settings.signal_training_settings.data_slice_cycle_count, bar_size=40, label="Cycle", overwrite_setting=False)
 
@@ -167,27 +177,30 @@ class EVO_algorithm:
                 # ------------------ Determine new generation GA parameters
                 prints.det_new_generation_param_msg()
                 self.nb_parents, self.nb_parents_in_next_gen, self.nb_random_ind, self.mutation_rate = \
-                    self.evoa_tools.determine_evolving_gen_parameters(settings.signal_training_settings, gen, self.data_slice_cycle_count)
+                    self.evoa_tools.determine_evolving_gen_parameters(settings=settings.signal_training_settings,
+                                                                      current_generation=gen,
+                                                                      data_slice_cycle_count=self.data_slice_cycle_count)
 
                 if sum(self.fitness_evaluation) != 0:
                     # ------------------ Select individuals from previous generation
                     prints.select_ind_msg()
-                    self.parents = self.evoa_tools.select_from_population(self.fitness_evaluation,
-                                                                          self.population,
+                    self.parents = self.evoa_tools.select_from_population(fitness_evaluation=self.fitness_evaluation,
+                                                                          population=self.population,
                                                                           selection_method=settings.signal_training_settings.parents_selection_method,
                                                                           nb_parents=self.nb_parents)
 
                     # ------------------ Generate offsprings with mutations
                     prints.gen_offsprings_msg()
-                    self.new_population = self.evoa_tools.generate_offsprings(ticker,
-                                                                              gen,
-                                                                              settings.signal_training_settings.nb_of_generations,
-                                                                              self.data_slice_cycle_count,
-                                                                              settings.signal_training_settings.data_slice_cycle_count,
-                                                                              settings.signal_training_settings.mutation_decay_function,
-                                                                              settings.signal_training_settings.population_size,
-                                                                              self.parents, self.nb_parents_in_next_gen,
-                                                                              self.nb_random_ind,
+                    self.new_population = self.evoa_tools.generate_offsprings(ticker=ticker,
+                                                                              current_generation=gen,
+                                                                              nb_of_generations=settings.signal_training_settings.nb_of_generations,
+                                                                              current_slice_cycle=self.data_slice_cycle_count,
+                                                                              nb_of_slice_cycles=settings.signal_training_settings.data_slice_cycle_count,
+                                                                              decay_function=settings.signal_training_settings.mutation_decay_function,
+                                                                              population_size=settings.signal_training_settings.population_size,
+                                                                              parents=self.parents,
+                                                                              nb_parents_in_next_gen=self.nb_parents_in_next_gen,
+                                                                              nb_random_ind=self.nb_random_ind,
                                                                               parameter_blacklist=settings.signal_training_settings.parameter_blacklist,
                                                                               mutation_rate=self.mutation_rate)
                     # prints.darwin_in_charge_msg()
@@ -196,8 +209,8 @@ class EVO_algorithm:
             # ------------------ Evaluate population
             prints.eval_pop_msg()
             self.fitness_evaluation, _, self.net_worth = \
-                self.evoa_tools.evaluate_population(self.population,
-                                                    self.data_slice,
+                self.evoa_tools.evaluate_population(population_lst=self.population,
+                                                    data_slice=self.data_slice,
                                                     evaluation_setting=settings.signal_training_settings.evaluation_method,
                                                     max_worker_processes=settings.signal_training_settings.max_process_count,
                                                     multiprocessing=settings.signal_training_settings.multiprocessing,
@@ -252,7 +265,7 @@ class EVO_algorithm:
                         self.data_slice, plot_eco_model_results=True)
 
         # ===============================================================================
-        total_data_points_processed = -self.results.data_slice_start_index + self.data_slice.stop_index
+        total_data_points_processed = -self.results.data_slice_start_index + self.data_slice.subslice_stop_index
         prints.end_of_optimisation_msg(total_data_points_processed)
         self.results.total_data_points_processed = total_data_points_processed
 
@@ -264,28 +277,32 @@ class EVO_algorithm:
             print("!!!!!!!!!!!!!!!!!!!!!!!!! BEST INDIVIDUAL NOT SELECTED !!!!!!!!!!!!!!!!!!!!!!!!!")
             self.fitness_evaluation = [1]
 
-        self.best_individual = self.evoa_tools.select_from_population(self.fitness_evaluation,
-                                                                      self.population,
+        self.best_individual = self.evoa_tools.select_from_population(fitness_evaluation=self.fitness_evaluation,
+                                                                      population=self.population,
                                                                       selection_method=settings.signal_training_settings.parents_selection_method,
                                                                       nb_parents=1)[0]
 
         self.results.individual = self.best_individual
 
         if optimiser_setting == 1:
-            gen_parameters_json(settings.signal_training_settings.config_name, ticker, self.best_individual.parameter_set)
+            gen_parameters_json(run_label=settings.signal_training_settings.config_name,
+                                ticker=ticker,
+                                parameter_dictionary=self.best_individual.parameter_set)
 
         # # ------------------ Final results benchmarking
         # -- Initialise benchmark data slice
-        self.benchmark_data_slice = data_slice(ticker,
-                                               settings.benchmark_data_slice_start_date,
-                                               settings.benchmark_data_slice_size,
-                                               0)
+        self.benchmark_data_slice = Trading_dataslice(ticker=ticker,
+                                                      start_date=settings.benchmark_data_slice_start_date,
+                                                      subslice_size=settings.benchmark_data_slice_size,
+                                                      subslice_shift_per_step=0)
 
-        self.benchmark_data_slice.gen_subslice_metalabels(settings.upper_barrier, settings.lower_barrier, settings.look_ahead,
-                                                          settings.metalabeling_setting)
+        self.benchmark_data_slice.gen_subslice_metalabels(upper_barrier=settings.upper_barrier,
+                                                          lower_barrier=settings.lower_barrier,
+                                                          look_ahead=settings.look_ahead,
+                                                          metalabeling_setting=settings.metalabeling_setting)
 
-        _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population([self.best_individual],
-                                                                                        self.benchmark_data_slice,
+        _, benchmark_confusion_matrix_analysis, _ = self.evoa_tools.evaluate_population(population_lst=[self.best_individual],
+                                                                                        data_slice=self.benchmark_data_slice,
                                                                                         evaluation_setting=settings.evaluation_method,
                                                                                         calculate_stats=True,
                                                                                         print_evaluation_status=False,
