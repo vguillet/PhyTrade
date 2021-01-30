@@ -62,11 +62,9 @@ class Prototype_5:
         settings.gen_model_settings()
 
         # --> Initiate records
-        self.big_data = BIGDATA(data_slice)
+        self.big_data = BIGDATA(data_slice, parameter_dictionary)
 
         # ~~~~~~~~~~~~~~~~~~ Tools initialisation
-        self.big_data.spline_multiplication_coef = parameter_dictionary["general_settings"]["spline_interpolation_factor"]
-
         self.oc_tools = OC()
         self.spline_tools = SPLINE(self.big_data)
         self.math_tools = Math_tools()
@@ -200,28 +198,31 @@ class Prototype_5:
                 self.big_data.weights_array[counter] = parameter_dictionary["spline_property"]["weights"][indicator_type+"_"+str(i)]
                 counter += 1
 
-        self.big_data.combined_spline = \
-            self.spline_tools.combine_splines(spline_array=self.big_data.spline_array,
-                                              weights_array=self.big_data.weights_array)
+        self.big_data.major_spline = self.spline_tools.combine_splines(spline_array=self.big_data.spline_array,
+                                                                       weights_array=self.big_data.weights_array)
 
         # ---- Tuning combined signal
-        # self.big_data.combined_spline = \
-        #     self.spline_tools.modulate_amplitude_spline(
-        #         self.big_data.combined_spline, self.big_data.spline_volume, std_dev_max=settings.volume_std_dev_max)
+        # self.big_data.major_spline = \
+        #     self.spline_tools.modulate_amplitude_spline(self.big_data.major_spline,
+        #                                                 self.big_data.spline_volume,
+        #                                                 std_dev_max=settings.volume_std_dev_max)
         #
-        # self.big_data.combined_spline = \
-        #     self.spline_tools.modulate_amplitude_spline(
-        #         self.big_data.combined_spline, self.big_data.spline_volatility, std_dev_max=settings.volatility_std_dev_max)
+        # self.big_data.major_spline = \
+        #     self.spline_tools.modulate_amplitude_spline(self.big_data.major_spline,
+        #                                                 self.big_data.spline_volatility,
+        #                                                 std_dev_max=settings.volatility_std_dev_max)
 
-        # ---- Normalise combined_spline between -1 and 1
-        self.big_data.combined_spline = self.math_tools.normalise_minus_one_one(self.big_data.combined_spline)
-        # self.big_data.combined_spline = self.math_tools.alignator_minus_one_one(self.big_data.combined_spline, 25, -25)
+        # ---- Normalise major_spline between -1 and 1
+        self.big_data.major_spline = self.math_tools.normalise_minus_one_one(self.big_data.major_spline)
+        # self.big_data.major_spline = self.math_tools.alignator_minus_one_one(self.big_data.major_spline,
+        #                                                                      25,
+        #                                                                      -25)
 
         # ~~~~~~~~~~~~~~~~~~ Threshold determination
         # ---- Creating dynamic thresholds
         upper_threshold, lower_threshold = \
             self.spline_tools.calc_thresholds(big_data=self.big_data,
-                                              spline=self.big_data.combined_spline,
+                                              spline=self.big_data.major_spline,
                                               buffer=settings.buffer,
                                               standard_upper_threshold=parameter_dictionary["spline_property"]["major_spline_standard_upper_thresholds"],
                                               standard_lower_threshold=parameter_dictionary["spline_property"]["major_spline_standard_lower_thresholds"],
@@ -231,8 +232,7 @@ class Prototype_5:
 
         # ~~~~~~~~~~~~~~~~~~ Creating Major Spline/trigger values and trading indicators splines
         # --> Generating Major spline
-        self.big_data.gen_major_and_trade_results(big_data=self.big_data,
-                                                  upper_threshold=upper_threshold,
+        self.big_data.gen_major_and_trade_results(upper_threshold=upper_threshold,
                                                   lower_threshold=lower_threshold)
 
         # --> Generating trading indicators

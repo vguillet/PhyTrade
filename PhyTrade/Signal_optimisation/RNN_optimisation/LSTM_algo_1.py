@@ -35,7 +35,7 @@ print(pd.read_csv(path, index_col=0).shape[0])
 
 for ticker in settings.market_settings.tickers:
     ticker_model_results = []
-    individual = Individual(ticker, parameter_set=fetch_parameter_set(ticker, "06", "Short_term"))
+    individual = Individual(parameter_set=fetch_parameter_set(ticker, "06", "Short_term"))
     data_slice = Trading_dataslice(ticker=ticker,
                                    start_date=settings.market_settings.training_start_date,
                                    subslice_size=settings.market_settings.data_slice_size,
@@ -45,10 +45,10 @@ for ticker in settings.market_settings.tickers:
 
     while data_slice.end_of_dataset is False:
         individual.gen_economic_model(data_slice)
-        ticker_model_results += list(individual.trade_spline)
-        print(data_slice.start_date)
-        print(data_slice.stop_date, "\n")
-        data_slice.get_next_data_slice()
+        ticker_model_results += list(individual.analysis.trade_spline)
+        print(data_slice.subslice_start_date)
+        print(data_slice.subslice_stop_date, "\n")
+        data_slice.get_next_subslice()
 
     print(ticker_model_results)
     print(len(ticker_model_results))

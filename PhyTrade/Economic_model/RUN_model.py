@@ -66,8 +66,7 @@ class RUN_model:
                                             end_date=end_date)
 
         # ---- Generate Individual
-        self.individual = Individual(ticker=ticker,
-                                     parameter_set=parameter_set)
+        self.individual = Individual(parameter_set=parameter_set)
 
         # ===============================================================================
         # decay_functions = ["Fixed value", "Linear decay", "Exponential decay", "Logarithmic decay"]

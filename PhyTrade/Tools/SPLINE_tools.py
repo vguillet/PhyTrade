@@ -4,8 +4,16 @@
 This script contains tools for smoothing out and adding up signals, using interpolation and splines
 """
 
+# Built-in/Generic Imports
+import statistics
+
 # Libs
 import numpy as np
+from scipy.interpolate import UnivariateSpline
+import matplotlib.pyplot as plt
+
+# Own modules
+
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -18,15 +26,14 @@ class SPLINE:
     @staticmethod
     def __init__(big_data):
 
-        x = np.array(range(big_data.data_slice.slice_size))
-        xs = np.linspace(0, big_data.data_slice.slice_size, big_data.data_slice.slice_size * big_data.spline_multiplication_coef)
+        x = np.array(range(big_data.data_slice.subslice_size))
+        xs = np.linspace(0, big_data.data_slice.subslice_size, big_data.data_slice.subslice_size * big_data.spline_multiplication_coef)
 
         setattr(big_data, "spline_x", x)
         setattr(big_data, "spline_xs", xs)
 
     @staticmethod
     def calc_signal_to_spline(big_data, signal, smoothing_factor=0.7):
-        from scipy.interpolate import UnivariateSpline
 
         y = signal
         spline_x = UnivariateSpline(big_data.spline_x, y)
@@ -46,6 +53,7 @@ class SPLINE:
 
     @staticmethod
     def combine_splines(spline_array, weights_array):
+
         # --> Multiply each spline by its respective weight
         combined_splines = spline_array * weights_array
 
@@ -58,7 +66,6 @@ class SPLINE:
     def shift_spline(spline, index_shift):
 
         # --> Shifts a spline by index_shift
-
         shifted_spline = [0]*len(spline)
 
         if index_shift < 0:
@@ -72,7 +79,6 @@ class SPLINE:
 
     @staticmethod
     def modulate_amplitude_spline(spline, coef_spline, std_dev_max=5):
-        import statistics
 
         # --> Limiting the magnitude of the signal when it reaches values above a certain number of standard deviation
         coef_spline_standard_dev = statistics.stdev(coef_spline)
@@ -97,29 +103,13 @@ class SPLINE:
 
     @staticmethod
     def flip_spline(spline):
+
         flipped_spline = np.zeros(len(spline))
         for i in range(len(spline)):
             flipped_spline[i] = -spline[i]
 
         return flipped_spline
 
-    @staticmethod
-    def plot_spline(big_data, spline, label, color='g'):
-        import matplotlib.pyplot as plt
-
-        plt.plot(big_data.spline_xs, spline, 'g', linewidth=1, label=label, c=color)
-
-        plt.grid()
-        plt.title("Splines")
-        # plt.legend()
-        plt.xlabel("Trade date")
-        plt.ylabel("Buy <-- Signal Strength --> Sell")
-        """
-
-
-
-
-        """
     @staticmethod
     def calc_thresholds(big_data, spline, buffer=0.05,
                         standard_upper_threshold=0.5, standard_lower_threshold=-0.5,
@@ -148,8 +138,8 @@ class SPLINE:
         elif buffer_setting == 2:
 
             # ---- Obtaining timeframe to be used for fetching google trends data
-            start_date = big_data.data_slice.subslice_start_date
-            end_date = big_data.data_slice.stop_date_date
+            start_date = big_data.data_slice.start_date
+            end_date = big_data.data_slice.end_date
 
             timeframe = start_date + " " + end_date
 
@@ -184,9 +174,9 @@ class SPLINE:
             lower_threshold = [standard_lower_threshold] * len(big_data.spline_xs)
 
         elif threshold_setting == 1:
-            bbands_df = big_data.data_slice.data[big_data.data_slice.start_index - bband_timeframe:big_data.data_slice.stop_index]
-            mean_avg = bbands_df[big_data.data_slice.selection].rolling(window=bband_timeframe).mean()
-            standard_dev = bbands_df[big_data.data_slice.selection].rolling(window=bband_timeframe).std()
+            bbands_df = big_data.data_slice.data[big_data.data_slice.subslice_start_index - bband_timeframe:big_data.data_slice.subslice_stop_index]
+            mean_avg = bbands_df[big_data.data_slice.price_data_selection].rolling(window=bband_timeframe).mean()
+            standard_dev = bbands_df[big_data.data_slice.price_data_selection].rolling(window=bband_timeframe).std()
 
             upper_band = np.array(mean_avg + (2 * standard_dev))[bband_timeframe:]
             lower_band = np.array(mean_avg - (2 * standard_dev))[bband_timeframe:]
@@ -207,15 +197,15 @@ class SPLINE:
             lower_threshold = standard_lower_threshold - standard_upper_threshold*0.5*difference_band_spline
 
         elif threshold_setting == 2:
-            bbands_df = big_data.data_slice.data[big_data.data_slice.start_index - bband_timeframe:big_data.data_slice.stop_index]
-            mean_avg = bbands_df[big_data.data_slice.selection].rolling(window=bband_timeframe).mean()
-            standard_dev = bbands_df[big_data.data_slice.selection].rolling(window=bband_timeframe).std()
+            bbands_df = big_data.data_slice.data[big_data.data_slice.subslicestart_index - bband_timeframe:big_data.data_slice.subslicestop_index]
+            mean_avg = bbands_df[big_data.data_slice.price_data_selection].rolling(window=bband_timeframe).mean()
+            standard_dev = bbands_df[big_data.data_slice.price_data_selection].rolling(window=bband_timeframe).std()
 
             upper_band = np.array(mean_avg + (2 * standard_dev))
             lower_band = np.array(mean_avg - (2 * standard_dev))
 
-            upper_band_price_diff = (upper_band-np.array(bbands_df[big_data.data_slice.selection]))[bband_timeframe:]
-            lower_band_price_diff = (np.array(bbands_df[big_data.data_slice.selection])-lower_band)[bband_timeframe:]
+            upper_band_price_diff = (upper_band-np.array(bbands_df[big_data.data_slice.price_data_selection]))[bband_timeframe:]
+            lower_band_price_diff = (np.array(bbands_df[big_data.data_slice.price_data_selection])-lower_band)[bband_timeframe:]
 
             # --> Normalise thresholds between -1 and 1
             upper_band_price_diff_normalised = Math_tools().normalise_minus_one_one(upper_band_price_diff)
@@ -298,7 +288,7 @@ class SPLINE:
         back_range = 1
 
         # Defining indicator trigger for...
-        for i in range(big_data.data_slice.slice_size):
+        for i in range(big_data.data_slice.subslice_size):
             # print("Sell: ({0})  {1:.3f} | {2:.3f} | {3:.3f}  ({4}) :Buy".format(sell_trigger, round(trade_upper_threshold[i], 3), round(trade_spline[i], 3), round(trade_lower_threshold[i], 3), round(buy_trigger)))
 
             if sell_trigger == 1 or buy_trigger == 1:

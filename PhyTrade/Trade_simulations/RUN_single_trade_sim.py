@@ -123,7 +123,7 @@ class RUN_single_trade_sim:
         self.nb_data_slices = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/data_slice_size)
         
         # ---- Generate Individual
-        self.individual = Individual(ticker=self.ticker, parameter_set=parameter_set)
+        self.individual = Individual(parameter_set=parameter_set)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -188,8 +188,8 @@ class RUN_single_trade_sim:
             self.results.simple_investment += self.individual.account.simple_investment_net_worth
 
             # --> Record model
-            self.results.spline += list(self.individual.spline)
-            self.results.trade_signal += list(self.individual.trade_signal)
+            self.results.spline += list(self.individual.analysis.spline)
+            self.results.trade_signal += list(self.individual.analysis.trade_signal)
             self.results.upper_threshold_spline += list(self.individual.analysis.big_data.Major_spline.upper_threshold)
             self.results.lower_threshold_spline += list(self.individual.analysis.big_data.Major_spline.lower_threshold)
             self.results.metalabels += list(self.data_slice.metalabels)
@@ -204,7 +204,7 @@ class RUN_single_trade_sim:
             print("\n--------------------------------------------------")
 
             # ---- Calc next data slice parameters and stop simulation if end date reached
-            self.data_slice.get_next_data_slice()
+            self.data_slice.get_next_subslice()
             if self.data_slice.end_of_dataset:
                 break
 

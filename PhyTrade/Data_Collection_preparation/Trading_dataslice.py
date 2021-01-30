@@ -4,6 +4,8 @@
 This script contains the data_slice class used by the EVOA Optimisation. The slice itself contains
 information about the slice analysed, including the starting and stopping index, along with the metalabels generated
 """
+# Built-in/Generic Imports
+import sys
 
 # Libs
 
@@ -116,6 +118,9 @@ class Trading_dataslice(TS_dataslice):
         :param print_trade_process:
         :return:
         """
+
+        if self.metalabels is None:
+            sys.exit("Data slice metalabels inexistent, run gen_subslice_metalabels before perform_metatrade_run")
 
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 

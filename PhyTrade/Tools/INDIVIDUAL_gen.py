@@ -5,9 +5,12 @@ Used to generate individuals. Individuals contain a parameter set (either provid
 and can generate economic model, and perform trade runs
 """
 
+# Built-in/Generic Imports
+import sys
+
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_random_gen import EVOA_random_gen
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser import EVOA_parameter_randomiser
 from PhyTrade.Data_Collection_preparation.Tools.Fetch_technical_data import fetch_technical_data
 from PhyTrade.Tools.GENERAL_tools import GENERAL_tools
 
@@ -19,12 +22,14 @@ __date__ = '10/09/2019'
 
 
 class Individual:
-    def __init__(self, ticker="AAPL", parameter_set=None):
+    def __init__(self, parameter_set=None):
         # ========================= DATA COLLECTION INITIALISATION =======================
-        self.ticker = ticker
-        self.data = fetch_technical_data(self.ticker)
         self.settings = SETTINGS()
         self.settings.signal_training_settings.gen_evoa_settings()
+
+        # --> Setup properties placeholders
+        self.analysis = None
+        self.account = None
 
         if parameter_set is None:
             self.settings.individual_settings.gen_individual_settings()
@@ -49,7 +54,8 @@ class Individual:
             self.parameter_set = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(self.parameter_set, self.settings.signal_training_settings.parameter_blacklist)
+        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(dictionary=self.parameter_set,
+                                                                           blacklist=self.settings.signal_training_settings.parameter_blacklist)
 
         for i in self.parameter_set:
             for j in range(len(self.parameter_set[i])):
@@ -59,22 +65,23 @@ class Individual:
         from PhyTrade.Economic_model.Prototype_5 import Prototype_5
         from PhyTrade.Tools.PLOT_tools import PLOT_tools
 
-        self.analysis = Prototype_5(self.parameter_set, data_slice)
+        # --> Generate economic model
+        self.analysis = Prototype_5(self.parameter_set, data_slice).big_data
 
-        self.spline = self.analysis.big_data.Major_spline.spline
-        self.trade_spline = self.analysis.big_data.Major_spline.trade_spline
-        self.trade_signal = self.analysis.big_data.Major_spline.trade_signal
-        self.trade_upper_threshold = self.analysis.big_data.Major_spline.trade_upper_threshold
-        self.trade_lower_threshold = self.analysis.big_data.Major_spline.trade_lower_threshold
+        # self.spline = self.analysis.major_spline
+        # self.trade_spline = self.analysis.trade_spline
+        # self.trade_signal = self.analysis.trade_signal
+        # self.trade_upper_threshold = self.analysis.trade_upper_threshold
+        # self.trade_lower_threshold = self.analysis.trade_lower_threshold
 
         if plot_eco_model_results:
             PLOT_tools().plot_trade_process(settings=self.settings,
                                             data_slice=data_slice,
-                                            trade_spline=self.trade_spline,
-                                            trade_upper_threshold=self.trade_upper_threshold,
-                                            trade_lower_threshold=self.trade_lower_threshold,
-                                            trade_signal=self.trade_signal,
-                                            trading_indicators=self.analysis.big_data.content["trading_indicator_splines"])
+                                            trade_spline=self.analysis.trade_spline,
+                                            trade_upper_threshold=self.analysis.trade_upper_threshold,
+                                            trade_lower_threshold=self.analysis.trade_lower_threshold,
+                                            trade_signal=self.analysis.trade_signal,
+                                            trading_indicators=self.analysis.content["trading_indicator_splines"])
 
     def perform_trade_run(self,
                           data_slice,
@@ -86,21 +93,24 @@ class Individual:
                           prev_simple_investment_assets=None,
                           print_trade_process=False):
 
+        if self.analysis is None:
+            sys.exit("Individual economic model inexistent, run gen_economic_model before perform_trade_run")
+
         from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
 
-        self.tradebot = Tradebot_v4(data_slice.subslice_data_selection,
-                                    self.trade_signal,
-                                    self.trade_spline,
-                                    investment_settings=investment_settings, cash_in_settings=cash_in_settings,
-                                    initial_funds=initial_funds,
-                                    initial_assets=initial_assets,
-                                    prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
-                                    max_investment_per_trade=max_investment_per_trade,
-                                    prev_simple_investment_assets=prev_simple_investment_assets,
-                                    print_trade_process=print_trade_process)
+        tradebot = Tradebot_v4(daily_values=data_slice.subslice_data_selection,
+                               trade_signal=self.analysis.trade_signal,
+                               trade_spline=self.analysis.trade_spline,
+                               investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                               initial_funds=initial_funds,
+                               initial_assets=initial_assets,
+                               prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
+                               max_investment_per_trade=max_investment_per_trade,
+                               prev_simple_investment_assets=prev_simple_investment_assets,
+                               print_trade_process=print_trade_process)
 
-        self.account = self.tradebot.account
-        # self.big_data = tradebot.analysis.big_data
+        self.tradebot = tradebot        # TODO: Move tradebot properties (buy/sell count) into account
+        self.account = tradebot.account
 
     def gen_parameter_set(self,
                           threshold_setting=2,
@@ -114,17 +124,17 @@ class Individual:
                           eom_count=1, eom_include_triggers_in_bb_signal=False,
                           oc_include_triggers_in_bb_signal=False):
 
-        ga_random = EVOA_random_gen()
+        ga_random = EVOA_parameter_randomiser()
         self.parameter_set = {"indicators_count": {},
-                                     "spline_property": {"weights": {},
-                                                         "smoothing_factors": {},
-                                                         "amplification_factor": {},
-                                                         "flip": {}},
-                                     "indicator_properties": {"timeframes": {}},
-                                     "general_settings": {"spline_interpolation_factor": spline_interpolation_factor,
-                                                          "threshold_setting": threshold_setting,
-                                                          "buffer_setting": buffer_setting,
-                                                          "include_triggers_in_bb_signal":{}}}
+                              "spline_property": {"weights": {},
+                                                  "smoothing_factors": {},
+                                                  "amplification_factor": {},
+                                                  "flip": {}},
+                              "indicator_properties": {"timeframes": {}},
+                              "general_settings": {"spline_interpolation_factor": spline_interpolation_factor,
+                                                   "threshold_setting": threshold_setting,
+                                                   "buffer_setting": buffer_setting,
+                                                   "include_triggers_in_bb_signal": {}}}
 
         # ========================================================== RSI parameters:
         self.parameter_set["indicators_count"]["rsi"] = rsi_count

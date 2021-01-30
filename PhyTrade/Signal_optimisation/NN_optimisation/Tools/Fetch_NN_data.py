@@ -54,20 +54,20 @@ class Fetch_NN_data:
 
         for i, ticker in enumerate(settings.market_settings.tickers):
             ticker_model_results = []
-            individual = Individual(ticker, parameter_set=fetch_parameter_set(ticker,
-                                                                              settings.market_settings.run_reference,
-                                                                              settings.market_settings.term))
-            data_slice = Trading_dataslice(ticker,
-                                           settings.market_settings.training_start_date,
-                                           settings.market_settings.data_slice_size,
-                                           0,
+            individual = Individual(parameter_set=fetch_parameter_set(ticker=ticker,
+                                                                      run_count=settings.market_settings.run_reference,
+                                                                      term=settings.market_settings.term))
+            data_slice = Trading_dataslice(ticker=ticker,
+                                           start_date=settings.market_settings.training_start_date,
+                                           subslice_size=settings.market_settings.subslice_size,
+                                           subslice_shift_per_step=0,
                                            price_data_selection=settings.market_settings.price_selection,
                                            end_date=settings.market_settings.testing_end_date)
 
             while data_slice.end_of_dataset is False:
                 individual.gen_economic_model(data_slice)
                 ticker_model_results += list(getattr(individual, "trade_"+x_type))
-                data_slice.get_next_data_slice(prints=False)
+                data_slice.get_next_subslice(prints=False)
                 # loading_bar_data_preparation.update_activity()
 
             if len(ticker_model_results) > y_data.shape[0]:

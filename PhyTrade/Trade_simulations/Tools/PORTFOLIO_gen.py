@@ -71,11 +71,12 @@ class PORTFOLIO_gen:
                           max_investment_per_trade=50000,
                           print_trade_process=False):
 
-        self.tradebot = Tradebot_v5(self.tickers,
+        self.tradebot = Tradebot_v5(tickers=self.tickers,
                                     initial_funds=initial_funds,
                                     initial_account_content=initial_account_content,
                                     initial_account_simple_investment_content=initial_account_simple_investment_content,
-                                    account_prev_stop_loss=account_prev_stop_loss, account_max_stop_loss=account_max_stop_loss,
+                                    account_prev_stop_loss=account_prev_stop_loss,
+                                    account_max_stop_loss=account_max_stop_loss,
                                     ticker_prev_stop_loss=ticker_prev_stop_loss,
                                     print_trade_process=print_trade_process)
 
@@ -143,7 +144,7 @@ class PORTFOLIO_gen:
         """
         # --> Create content entry
         self.content[ticker] = {}
-        self.content[ticker]["Individual"] = Individual(ticker, parameter_set)
+        self.content[ticker]["Individual"] = Individual(parameter_set=parameter_set)
         self.content[ticker]["Data_slice"] = None
 
         # --> Create current_value entry

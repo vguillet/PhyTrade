@@ -32,14 +32,14 @@ def record_splines(parameter_set, data_slice, ticker, spline_type=None):
     :return: CSV of splines indexed by date
     """
 
-    individual = Individual(ticker=ticker, parameter_set=parameter_set)
+    individual = Individual(parameter_set=parameter_set)
     individual.gen_economic_model(data_slice)
 
     spline_df = pd.DataFrame(columns=["Date", "trade_spline", "trade_signal"])
 
     spline_df["Date"] = data_slice.data[data_slice.subslice_start_index:data_slice.subslice_stop_index]["Date"]
-    spline_df["trade_spline"] = individual.trade_spline
-    spline_df["trade_signal"] = individual.trade_signal
+    spline_df["trade_spline"] = individual.analysis.trade_spline
+    spline_df["trade_signal"] = individual.analysis.trade_signal
 
     # ---> Save spline to csv file
     if spline_type is None:

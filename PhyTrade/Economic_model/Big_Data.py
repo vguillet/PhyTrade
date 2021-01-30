@@ -15,7 +15,7 @@ __date__ = '11/28/2018'
 
 
 class BIGDATA:
-    def __init__(self, data_slice):
+    def __init__(self, data_slice, parameter_dictionary):
         """
         Contains all the information relating to a specific analysis,
         modules can be called, and their instance attribute should be saved in the big_data instance
@@ -24,9 +24,12 @@ class BIGDATA:
         The list of all options can be found in the PhyTrade Library file
 
         :param data_slice: DATA_SLICE class instance
+        :param parameter_dictionary: The parameter dictionary used for this model
         """
+
         self.buffer = 0
         self.data_slice = data_slice
+        self.spline_multiplication_coef = parameter_dictionary["general_settings"]["spline_interpolation_factor"]
 
         # --> Apply buffer to data slice
         self.data_slice.start_index -= self.buffer
@@ -42,40 +45,37 @@ class BIGDATA:
                         "indicator_splines": {},
                         "trading_indicator_splines": {}}
 
-    def gen_major_and_trade_results(self, big_data, upper_threshold, lower_threshold):
+    def gen_major_and_trade_results(self, upper_threshold, lower_threshold):
         """
         Used to stored all the data relevant to the final result of the model.
         It computes the buy and sell dates based on the inputted spline and upper/lower threshold
 
-        :param big_data:  BIGDATA class instance
         :param upper_threshold: Upper threshold for sell trigger points generation
         :param lower_threshold: Lower threshold for buy trigger points generation
         """
 
-        spline_tools = SPLINE(big_data=big_data)
-
-        self.major_spline = big_data.combined_spline
+        spline_tools = SPLINE(big_data=self)
 
         self.major_upper_threshold = upper_threshold
         self.major_lower_threshold = lower_threshold
 
         # -- Calculating buy/sell dates
         self.trade_signal, self.trade_spline, self.trade_upper_threshold, self.trade_lower_threshold = \
-            spline_tools.calc_trading_spline(big_data=big_data,
+            spline_tools.calc_trading_spline(big_data=self,
                                              spline=self.major_spline,
                                              upper_threshold=self.major_upper_threshold,
                                              lower_threshold=self.major_lower_threshold)
 
         # --> Remove buffer data from final output
-        self.major_spline = self.major_spline[big_data.buffer * big_data.spline_multiplication_coef:]
-        self.major_upper_threshold = self.major_upper_threshold[big_data.buffer * big_data.spline_multiplication_coef:]
-        self.major_lower_threshold = self.major_lower_threshold[big_data.buffer * big_data.spline_multiplication_coef:]
+        self.major_spline = self.major_spline[self.buffer * self.spline_multiplication_coef:]
+        self.major_upper_threshold = self.major_upper_threshold[self.buffer * self.spline_multiplication_coef:]
+        self.major_lower_threshold = self.major_lower_threshold[self.buffer * self.spline_multiplication_coef:]
 
-        self.trade_spline = self.trade_spline[big_data.buffer:]
-        self.trade_signal = self.trade_signal[big_data.buffer:]
-        self.trade_upper_threshold = self.trade_upper_threshold[big_data.buffer:]
-        self.trade_lower_threshold = self.trade_lower_threshold[big_data.buffer:]
+        self.trade_spline = self.trade_spline[self.buffer:]
+        self.trade_signal = self.trade_signal[self.buffer:]
+        self.trade_upper_threshold = self.trade_upper_threshold[self.buffer:]
+        self.trade_lower_threshold = self.trade_lower_threshold[self.buffer:]
 
-        big_data.data_slice.subslice_start_index += big_data.buffer
-        big_data.data_slice.subslice_slice_size -= big_data.buffer
+        self.data_slice.subslice_start_index += self.buffer
+        self.data_slice.subslice_slice_size -= self.buffer
 

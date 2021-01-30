@@ -132,14 +132,12 @@ class EVO_algorithm:
 
         # ------------------ Initialise population
         if settings.signal_training_settings.starting_parameters is None:
-            self.population = self.evoa_tools.gen_initial_population(ticker=ticker,
-                                                                     population_size=settings.signal_training_settings.population_size)
+            self.population = self.evoa_tools.gen_initial_population(population_size=settings.signal_training_settings.population_size)
         else:
-            self.population = self.evoa_tools.generate_offsprings(ticker=ticker,
-                                                                  current_generation=1,
+            self.population = self.evoa_tools.generate_offsprings(current_generation=1,
                                                                   nb_of_generations=1,
-                                                                  current_slice_cycle=1,
-                                                                  nb_of_slice_cycles=1,
+                                                                  current_subslice_cycle=1,
+                                                                  nb_of_subslice_cycles=1,
                                                                   decay_function=0,
                                                                   population_size=settings.signal_training_settings.population_size,
                                                                   parents=[Individual(parameter_set=settings.signal_training_settings.starting_parameters)],
@@ -179,7 +177,7 @@ class EVO_algorithm:
                 self.nb_parents, self.nb_parents_in_next_gen, self.nb_random_ind, self.mutation_rate = \
                     self.evoa_tools.determine_evolving_gen_parameters(settings=settings.signal_training_settings,
                                                                       current_generation=gen,
-                                                                      data_slice_cycle_count=self.data_slice_cycle_count)
+                                                                      subslice_cycle_count=self.data_slice_cycle_count)
 
                 if sum(self.fitness_evaluation) != 0:
                     # ------------------ Select individuals from previous generation
@@ -191,11 +189,10 @@ class EVO_algorithm:
 
                     # ------------------ Generate offsprings with mutations
                     prints.gen_offsprings_msg()
-                    self.new_population = self.evoa_tools.generate_offsprings(ticker=ticker,
-                                                                              current_generation=gen,
+                    self.new_population = self.evoa_tools.generate_offsprings(current_generation=gen,
                                                                               nb_of_generations=settings.signal_training_settings.nb_of_generations,
-                                                                              current_slice_cycle=self.data_slice_cycle_count,
-                                                                              nb_of_slice_cycles=settings.signal_training_settings.data_slice_cycle_count,
+                                                                              current_subslice_cycle=self.data_slice_cycle_count,
+                                                                              nb_of_subslice_cycles=settings.signal_training_settings.data_slice_cycle_count,
                                                                               decay_function=settings.signal_training_settings.mutation_decay_function,
                                                                               population_size=settings.signal_training_settings.population_size,
                                                                               parents=self.parents,
@@ -262,7 +259,8 @@ class EVO_algorithm:
 
                 if settings.signal_training_settings.plot_best_individual_eco_model_results is True:
                     self.population[self.fitness_evaluation.index(max(self.fitness_evaluation))].gen_economic_model(
-                        self.data_slice, plot_eco_model_results=True)
+                        data_slice=self.data_slice,
+                        plot_eco_model_results=True)
 
         # ===============================================================================
         total_data_points_processed = -self.results.data_slice_start_index + self.data_slice.subslice_stop_index

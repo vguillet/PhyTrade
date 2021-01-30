@@ -13,6 +13,15 @@ The class contains:
 
 # Built-in/Generic Imports
 import sys
+import random
+from copy import deepcopy
+from math import log10
+
+# Own modules
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser import EVOA_parameter_randomiser
+from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -23,12 +32,18 @@ __date__ = '10/09/2019'
 
 class EVOA_tools:
     @staticmethod
-    def gen_initial_population(ticker, population_size=10):
+    def gen_initial_population(population_size=10):
+        """
+        Used to generate an initial population of Individuals with random parameter sets of a given length
+
+        :param population_size: Size of desired population
+        :return: List of individuals of length population_size
+        """
         from PhyTrade.Tools.INDIVIDUAL_gen import Individual
 
         population_lst = []
         for i in range(population_size):
-            population_lst.append(Individual(ticker=ticker))
+            population_lst.append(Individual())
 
         return population_lst
 
@@ -38,9 +53,37 @@ class EVOA_tools:
                             evaluation_setting=0,
                             calculate_stats=False, multiprocessing=False,
                             print_evaluation_status=False, plot_eco_model_results=False):
-        from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
-        from PhyTrade.Tools.Progress_bar_tool import Progress_bar
+        """
+        Used to evaluate a population (the trading performance of every individuals over a given subslice).
+        Multiple evaluation methods are available, and evaluate the trading performance based on different metrics.
 
+        They can be selected using the following setting:
+            0 - Net worth
+            1 - Metalabel accuracies
+            2 - Metalabel buy/sell accuracy
+            3 - Average of net worth and metalabel accuracies (1:1)
+            4 - Number of buy signals generated
+            5 - Number of sell signals generated
+            6 - Number of transaction signals generated
+
+        Three things returned:
+            - List of the evaluation of each individual (according to provided evaluation setting)
+              in provided population list (in the same order)
+            - List of confusion_matrix_analysis objects (in the same order)
+            - List of net worth of each individual (in the same order)
+
+        :param population_lst: List of individuals to evaluate
+        :param data_slice: Data_slice object to use for evaluation
+        :param max_worker_processes: Number of worker processes to spawn (Not functional yet)
+        :param evaluation_setting: Evaluation method to use (1 - 6)
+        :param calculate_stats: Boolean
+        :param multiprocessing: Boolean
+        :param print_evaluation_status: Boolean
+        :param plot_eco_model_results: Boolean
+        :return: fitness_evaluation (list) (according to evaluation settting),
+                 confusion_matrix_analysis (list of confusion_matrix_analysis (obj)),
+                 net_worth (list)
+        """
         confusion_matrix_analysis = []
         metalabel_accuracies = []
         metalabel_accuracies_bs = []
@@ -63,8 +106,10 @@ class EVOA_tools:
                 print("\n--------------------------------------------------")
                 print("Parameter set", i + 1)
 
-            population_lst[i].gen_economic_model(data_slice, plot_eco_model_results=plot_eco_model_results)
-            population_lst[i].perform_metatrade_run(data_slice)
+            population_lst[i].gen_economic_model(data_slice=data_slice,
+                                                 plot_eco_model_results=plot_eco_model_results)
+
+            population_lst[i].perform_trade_run(data_slice=data_slice)
 
             if print_evaluation_status:
                 print("\nMetalabels net worth:", round(metalabel_net_worth), "$")
@@ -73,8 +118,8 @@ class EVOA_tools:
                 print("Buy count:", population_lst[i].tradebot.buy_count)
                 print("Sell count:", population_lst[i].tradebot.sell_count, "\n")
 
-            individual_confusion_matrix_analysis = Confusion_matrix_analysis(population_lst[i].trade_signal,
-                                                                             data_slice.metalabels,
+            individual_confusion_matrix_analysis = Confusion_matrix_analysis(model_predictions=population_lst[i].trade_signal,
+                                                                             metalabels=data_slice.metalabels,
                                                                              calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
 
@@ -115,19 +160,41 @@ class EVOA_tools:
         elif evaluation_setting == 3:
             fitness_evaluation = avg_metalabel_accuracies
 
+        # --> Perform evaluation based on the number of buy signals generated
         elif evaluation_setting == 4:
             fitness_evaluation = buy_count
 
+        # --> Perform evaluation based on the number of sell signals generated
         elif evaluation_setting == 5:
             fitness_evaluation = sell_count
 
+        # --> Perform evaluation based on the number of transactions signals generated
         elif evaluation_setting == 6:
             fitness_evaluation = transaction_count
 
+        else:
+            sys.exit("No fitness evaluation method selected")
+
+        # TODO: Rethink net worth?
         return fitness_evaluation, confusion_matrix_analysis, net_worth
 
     @staticmethod
     def select_from_population(fitness_evaluation, population, selection_method=0, nb_parents=3):
+        """
+        Used to select individuals from a generation to be used in the next one.
+        Multiple selection methods are available, including:
+            0 - Elitic selection
+            1 - To be added
+
+        A list of selected individual (obj) is returned.
+
+        :param fitness_evaluation: List
+        :param population: List of individuals obj
+        :param selection_method: Selection method setting (0-Elitic)
+        :param nb_parents: Nb of desired individuals obj to be selected
+        :return: List of selected individual (obj)
+        """
+
         if sum(fitness_evaluation) != 0:
             # --> Determine fitness ratio
             fitness_ratios = []
@@ -138,11 +205,6 @@ class EVOA_tools:
             parents = []
 
             # TODO: Implement alternative selection methods
-            # --> Exit program if incorrect settings used
-            if selection_method > 0:
-                print("Invalid parent selection method reference")
-                sys.exit()
-
             # Elitic selection
             if selection_method == 0:
                 sorted_fitness_ratios = fitness_ratios
@@ -160,6 +222,10 @@ class EVOA_tools:
                 for i in range(nb_parents):
                     parents.append(sorted_population[i])
 
+            # --> Exit program if incorrect settings used
+            else:
+                sys.exit("Invalid parent selection method reference")
+
         else:
             # --> Select individuals randomly
             # TODO: Implement random selection
@@ -170,22 +236,36 @@ class EVOA_tools:
         return parents
 
     @staticmethod
-    def generate_offsprings(ticker,
-                            current_generation, nb_of_generations,
-                            current_slice_cycle, nb_of_slice_cycles,
+    def generate_offsprings(current_generation, nb_of_generations,
+                            current_subslice_cycle, nb_of_subslice_cycles,
                             decay_function,
                             population_size, parents, nb_parents_in_next_gen, nb_random_ind,
                             parameter_blacklist=["general_settings"],
                             mutation_rate=0.2):
+        """
+        Used to generate offsprings from parents with parameter variations.
+        An offspring is generated form every parent sequentially until the required number of offsprings
+        has been generated. The amount of variation present in the offsprings can be adjusted to gradually evolve,
+        and be set according to the level of progress in an evolutionary process, and the decay function desired.
 
-        from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_random_gen import EVOA_random_gen
-        from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-        import random
-        from copy import deepcopy
+        :param current_generation: Current generation number
+        :param nb_of_generations: Total generations count
+        :param current_subslice_cycle: Current subslice cycle number
+        :param nb_of_subslice_cycles: Total subslice cycle count
+        :param decay_function: Desired decay function (0-Fixed value, 1-Linear decay, 2-Logarithmic decay (in development))
+        :param population_size: Total required size of new population
+        :param parents: List of individual obj
+        :param nb_parents_in_next_gen: Number of parents to include in new population
+        :param nb_random_ind: Number of random individuals to include in new population
+        :param parameter_blacklist: Parameters to not modify from parents
+        :param mutation_rate: Fraction of parameters to mutate
+        :return: List of individual obj (new population)
+        """
 
+        # TODO: Throttle number of parameters to mutate
         nb_of_parameters_to_mutate = round(Individual().nb_of_parameters * mutation_rate) or 1
 
-        # --> Save single best parent to new population
+        # --> Add required number of parents to new population (from best to worst)
         new_population = parents[:nb_parents_in_next_gen]
 
         # --> Generate offsprings from parents with mutations
@@ -198,6 +278,9 @@ class EVOA_tools:
             offspring = deepcopy(parents[cycling])
 
             # --> Mutate offspring
+
+            parameter_randomiser = EVOA_parameter_randomiser()  # Initiate parameter randomiser
+
             for _ in range(nb_of_parameters_to_mutate):
                 # --> Select parameter class to modify
                 parameter_class_to_modify = random.choice(list(offspring.parameter_set.keys()))
@@ -209,21 +292,24 @@ class EVOA_tools:
                 while parameter_type_to_modify in parameter_blacklist:
                     parameter_type_to_modify = random.choice(list(offspring.parameter_set[parameter_class_to_modify].keys()))
 
-                offspring = EVOA_random_gen().modify_param(offspring, parameter_type_to_modify,
-                                                           current_generation, nb_of_generations,
-                                                           current_slice_cycle, nb_of_slice_cycles,
-                                                           decay_function)
+                offspring = parameter_randomiser.modify_param(offspring=offspring,
+                                                              parameter_type_to_modify=parameter_type_to_modify,
+                                                              current_generation=current_generation,
+                                                              nb_of_generations=nb_of_generations,
+                                                              current_subslice_cycle=current_subslice_cycle,
+                                                              nb_of_subslice_cycles=nb_of_subslice_cycles,
+                                                              decay_function=decay_function)
 
             new_population.append(offspring)
 
         # --> Create random_ind number of random individuals and add to new population
         for _ in range(nb_random_ind):
-            new_population.append(Individual(ticker=ticker))
+            new_population.append(Individual())
 
         return new_population
 
     @staticmethod
-    def throttle(current_generation, nb_of_generations, max_value, min_value=1., decay_function=0):
+    def throttle(current_iteration, nb_of_iterations, max_value, min_value=1., decay_function=0):
         """
         Throttle a value according to the instance in the run time.
 
@@ -234,15 +320,15 @@ class EVOA_tools:
 
                 2 - Logarithmic decay (in development)
 
-        :param current_generation: Current generation
-        :param nb_of_generations: Total number of generation in the run
+        :param current_iteration: Current iteration
+        :param nb_of_iterations: Total number of iteration to consider
         :param max_value: Max allowed value
         :param min_value: Min allowed value
         :param decay_function: Decay function setting
         :return: Throttled value
         """
-        from math import log10
-        # -- Exit program if incorrect settings used
+
+        # --> Exit program if incorrect settings used
         if decay_function > 2:
             print("Invalid throttle decay function reference")
             sys.exit()
@@ -252,23 +338,23 @@ class EVOA_tools:
             inverse = True
 
         # TODO: add decay functions (log/exponential etc...)
-        if current_generation <= nb_of_generations:
+        if current_iteration <= nb_of_iterations:
             if decay_function == 0:       # Fixed value
                 return max_value
 
             elif decay_function == 1:     # Linear decay
                 if inverse:
-                    throttled_value = max_value + (min_value-max_value)/nb_of_generations*current_generation
+                    throttled_value = max_value + (min_value-max_value) / nb_of_iterations * current_iteration
                     if throttled_value <= min_value:
                         throttled_value = min_value
                 else:
-                    throttled_value = max_value - (max_value-min_value)/nb_of_generations*current_generation
+                    throttled_value = max_value - (max_value-min_value) / nb_of_iterations * current_iteration
                     if throttled_value <= min_value:
                         throttled_value = min_value
 
             # TODO: Complete log decay
             elif decay_function == 2:       # Logarithmic decay
-                throttled_value = max_value+log10(-(current_generation-nb_of_generations))
+                throttled_value = max_value+log10(-(current_iteration - nb_of_iterations))
 
         else:
             throttled_value = min_value
@@ -276,21 +362,35 @@ class EVOA_tools:
         return throttled_value
 
     @staticmethod
-    def determine_evolving_gen_parameters(settings, current_generation, data_slice_cycle_count):
-        from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+    def determine_evolving_gen_parameters(settings, current_generation, subslice_cycle_count):
+        """
+        Used to adjust generation parameters, including:
+            - Number of parents
+            - Number of parents included in next gen
+            - Number of random individual
+            - Mutation rate
 
+        The parameters are adjusted every time according to the generation progress and cycle progress separately,
+        the smallest value is retained
+        # TODO: Review whether to combine or use min of throttled parameters results
+
+        :param settings: Settings object
+        :param current_generation: Current generation number
+        :param subslice_cycle_count: Current cycle number
+        :return: nb_parents, nb_parents_in_next_gen, nb_random_ind, mutation_rate
+        """
         # ------------------ Throttle the individual count to be used by the generation
         # ---- Number of parents
         # --> Based on generation count
-        nb_parents_gen = round(EVOA_tools().throttle(current_generation,
-                                                     settings.nb_of_generations-settings.exploitation_phase_len,
-                                                     settings.nb_parents,
+        nb_parents_gen = round(EVOA_tools().throttle(current_iteration=current_generation,
+                                                     nb_of_iterations=settings.nb_of_generations - settings.exploitation_phase_len,
+                                                     max_value=settings.nb_parents,
                                                      min_value=1,
                                                      decay_function=settings.parents_decay_function))
         # --> Based on cycle count
-        nb_parents_cycle = round(EVOA_tools().throttle(data_slice_cycle_count,
-                                                       settings.data_slice_cycle_count,
-                                                       settings.nb_parents,
+        nb_parents_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
+                                                       nb_of_iterations=settings.data_slice_cycle_count,
+                                                       max_value=settings.nb_parents,
                                                        min_value=1,
                                                        decay_function=settings.parents_decay_function))
         # --> Select smallest one
@@ -298,15 +398,15 @@ class EVOA_tools:
 
         # ---- Number of parents included in next gen
         # --> Based on generation count
-        nb_parents_in_next_gen_gen = round(EVOA_tools().throttle(current_generation,
-                                                                 settings.nb_of_generations-settings.exploitation_phase_len,
-                                                                 settings.nb_parents_in_next_gen,
+        nb_parents_in_next_gen_gen = round(EVOA_tools().throttle(current_iteration=current_generation,
+                                                                 nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
+                                                                 max_value=settings.nb_parents_in_next_gen,
                                                                  min_value=1,
                                                                  decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
-        nb_parents_in_next_gen_cycle = round(EVOA_tools().throttle(data_slice_cycle_count,
-                                                                   settings.data_slice_cycle_count,
-                                                                   settings.nb_parents_in_next_gen,
+        nb_parents_in_next_gen_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
+                                                                   nb_of_iterations=settings.data_slice_cycle_count,
+                                                                   max_value=settings.nb_parents_in_next_gen,
                                                                    min_value=1,
                                                                    decay_function=settings.random_ind_decay_function))
         # --> Select smallest one
@@ -314,15 +414,15 @@ class EVOA_tools:
 
         # ---- Number of random individual
         # --> Based on generation count
-        nb_random_ind_gen = round(EVOA_tools().throttle(current_generation,
-                                                        settings.nb_of_generations-settings.exploitation_phase_len,
-                                                        settings.nb_random_ind,
+        nb_random_ind_gen = round(EVOA_tools().throttle(current_iteration=current_generation,
+                                                        nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
+                                                        max_value=settings.nb_random_ind,
                                                         min_value=0,
                                                         decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
-        nb_random_ind_cycle = round(EVOA_tools().throttle(data_slice_cycle_count,
-                                                          settings.data_slice_cycle_count,
-                                                          settings.nb_random_ind,
+        nb_random_ind_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
+                                                          nb_of_iterations=settings.data_slice_cycle_count,
+                                                          max_value=settings.nb_random_ind,
                                                           min_value=0,
                                                           decay_function=settings.random_ind_decay_function))
         # --> Select smallest one
@@ -330,15 +430,15 @@ class EVOA_tools:
 
         # ---- Mutation rate
         # --> Based on generation count
-        mutation_rate_gen = EVOA_tools().throttle(current_generation,
-                                                  settings.nb_of_generations-settings.exploitation_phase_len,
-                                                  settings.mutation_rate,
+        mutation_rate_gen = EVOA_tools().throttle(current_iteration=current_generation,
+                                                  nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
+                                                  max_value=settings.mutation_rate,
                                                   min_value=0.1,
                                                   decay_function=settings.random_ind_decay_function)
         # --> Based on cycle count
-        mutation_rate_cycle = EVOA_tools().throttle(data_slice_cycle_count,
-                                                    settings.data_slice_cycle_count,
-                                                    settings.mutation_rate,
+        mutation_rate_cycle = EVOA_tools().throttle(current_iteration=subslice_cycle_count,
+                                                    nb_of_iterations=settings.data_slice_cycle_count,
+                                                    max_value=settings.mutation_rate,
                                                     min_value=0.1,
                                                     decay_function=settings.random_ind_decay_function)
         # --> Select smallest one
@@ -349,6 +449,7 @@ class EVOA_tools:
             print("Number of parents included:", nb_parents_in_next_gen)
             print("Number of random individuals included:", nb_random_ind)
             print("Number of parameters mutated:",
-                  str(round(Individual().nb_of_parameters*mutation_rate) or 1)+"/"+str(Individual().nb_of_parameters), "\n")
+                  str(round(Individual().nb_of_parameters*mutation_rate) or 1)+"/"+str(Individual().nb_of_parameters),
+                  "\n")
 
         return nb_parents, nb_parents_in_next_gen, nb_random_ind, mutation_rate
