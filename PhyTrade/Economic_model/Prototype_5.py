@@ -18,27 +18,27 @@ TO DO: Auto max/min parameter indicator normalisation (in indicator script)?
 import numpy as np
 
 # Own modules
-from PhyTrade.Economic_model.Big_Data import BIGDATA
+from PhyTrade.Economic_model.Building_blocks.Big_Data import BIGDATA
 # ---> Import model settings
 from PhyTrade.Settings.Class_based_settings.Model_settings import Model_settings
 
 # ---> Import indicators
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.RSI import RSI
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.SMA import SMA
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.EMA import EMA
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.LWMA import LWMA
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.CCI import CCI
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.EOM import EOM
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.OC_avg_gradient import OC_avg_gradient
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.RSI import RSI
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.SMA import SMA
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.EMA import EMA
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.LWMA import LWMA
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.CCI import CCI
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.EOM import EOM
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.OC_avg_gradient import OC_avg_gradient
 
 # ---> Import amplification signals
-from PhyTrade.Economic_model.Technical_indicators.Amplification_signals.Volume import Volume
-from PhyTrade.Economic_model.Technical_indicators.Amplification_signals.Volatility import Volatility
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Amplification_signals.Volume import Volume
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Amplification_signals.Volatility import Volatility
 
 # ---> import general tools
-from PhyTrade.Economic_model.Technical_indicators.Tools.OC_tools import OC
+from PhyTrade.Economic_model.Tools.OC_tools import OC
 from PhyTrade.Tools.Math_tools import Math_tools
-from PhyTrade.Tools.SPLINE_tools import SPLINE
+from PhyTrade.Tools.SPLINE_tools import Spline_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -64,9 +64,9 @@ class Prototype_5:
         # --> Initiate records
         self.big_data = BIGDATA(data_slice, parameter_dictionary)
 
-        # ~~~~~~~~~~~~~~~~~~ Tools initialisation
+        # ~~~~~~~~~~~~~~~~~~ Building_blocks initialisation
         self.oc_tools = OC()
-        self.spline_tools = SPLINE(self.big_data)
+        self.spline_tools = Spline_tools(self.big_data)
         self.math_tools = Math_tools()
 
         # ~~~~~~~~~~~~~~~~~~ Technical_Indicators initialisation
@@ -230,7 +230,7 @@ class Prototype_5:
                                               threshold_setting=parameter_dictionary["general_settings"]["threshold_setting"],
                                               buffer_setting=parameter_dictionary["general_settings"]["buffer_setting"])
 
-        # ~~~~~~~~~~~~~~~~~~ Creating Major Spline/trigger values and trading indicators splines
+        # ~~~~~~~~~~~~~~~~~~ Creating Major Spline_tools/trigger values and trading indicators splines
         # --> Generating Major spline
         self.big_data.gen_major_and_trade_results(upper_threshold=upper_threshold,
                                                   lower_threshold=lower_threshold)

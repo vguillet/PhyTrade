@@ -14,7 +14,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class MARKET_tools:
+class Market_tools:
     def calc_transaction_cost(self, asset_count):
         settings = SETTINGS()
         settings.market_settings.gen_market_settings()

@@ -9,13 +9,13 @@ import time
 import math
 
 # Own modules
-from PhyTrade.Signal_optimisation.EVO_algorithm.EVOA_prints import EVOA_prints
+from PhyTrade.Signal_optimisation.EVO_algorithm.Building_blocks.EVOA_prints import EVOA_prints
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.gen_EVOA_results import gen_EVOA_results
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
+from PhyTrade.Signal_optimisation.EVO_algorithm.Building_blocks.EVOA_results import EVOA_results
+from PhyTrade.Core_elements.Individual import Individual
+from PhyTrade.Core_elements.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
-from PhyTrade.Data_Collection_preparation.Tools.Record_parameter_set import gen_parameters_json
+from PhyTrade.Data_Collection_preparation.Record_parameter_set import gen_parameters_json
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -27,7 +27,7 @@ __date__ = '10/09/2019'
 class EVO_algorithm:
     def __init__(self, settings, ticker="AAPL", optimiser_setting="1", data_slice=None):
         # ======================== INITIALISATION =======================================
-        # ------------------ Tools and EVOA parameters initialisation
+        # ------------------ Building_blocks and EVOA parameters initialisation
         # --> EVOA run as signal tuner
         if optimiser_setting == 1:
             settings.signal_training_settings.gen_evoa_settings()
@@ -111,7 +111,7 @@ class EVO_algorithm:
         self.nb_random_ind = None
 
         # --> Initialise records
-        self.results = gen_EVOA_results(ticker)
+        self.results = EVOA_results(ticker)
         self.results.data_slice_start_index = self.data_slice.subslice_start_index
 
         self.results.run_start_time = time.time()

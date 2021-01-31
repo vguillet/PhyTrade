@@ -11,7 +11,7 @@ import os.path
 import pandas as pd
 
 # Own modules
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.Core_elements.Individual import Individual
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

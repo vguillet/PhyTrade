@@ -11,9 +11,9 @@ Input that still require manual input:
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Trade_simulations.Tools.PORTFOLIO_gen import PORTFOLIO_gen
+from PhyTrade.Trade_simulations.Building_blocks.Portfolio import Portfolio
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
+from PhyTrade.Building_blocks.Trading_dataslice import Trading_dataslice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -32,13 +32,12 @@ class RUN_multi_trade_sim:
         settings.market_settings.gen_market_settings()
         settings.tradebot_settings.gen_tradebot_settings()
 
-
         tickers = settings.market_settings.tickers
         parameter_sets = settings.market_settings.parameter_sets
 
         start_date = settings.market_settings.testing_start_date
         end_date = settings.market_settings.testing_end_date
-        data_slice_size = settings.market_settings.data_slice_size
+        subslice_size = settings.market_settings.data_slice_size
 
         # ---- Fetch multi_trade_sim settings
         settings.trade_sim_settings.gen_multi_trade_sim()
@@ -96,9 +95,12 @@ class RUN_multi_trade_sim:
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Initiate run parameters
-        self.portfolio = PORTFOLIO_gen(tickers, parameter_sets,
-                                       start_date, end_date, data_slice_size,
-                                       plot_eco_model_results=plot_eco_model_results)
+        self.portfolio = Portfolio(tickers=tickers,
+                                   parameter_sets=parameter_sets,
+                                   start_date=start_date,
+                                   end_date=end_date,
+                                   subslice_size=subslice_size,
+                                   plot_eco_model_results=plot_eco_model_results)
 
         self.nb_data_slices = nb_data_slices
 
@@ -118,10 +120,15 @@ class RUN_multi_trade_sim:
         self.current_ticker_prev_stop_loss = max_ticker_prev_stop_loss
 
         # ---- Initiate records
-        self.results = Trade_simulation_results_gen(eval_name)
+        self.results = Trade_simulation_results_gen(run_label=eval_name)
 
         # ---- Initiate data slice
-        self.ref_data_slice = Trading_dataslice("AAPL", start_date, data_slice_size, 0, end_date=end_date, data_looper=False)
+        self.ref_data_slice = Trading_dataslice(ticker="AAPL",      # TODO: Set default dataslice ticker????
+                                                start_date=start_date,
+                                                subslice_size=subslice_size,
+                                                subslice_shift_per_step=0,
+                                                end_date=end_date,
+                                                data_looper=False)
 
         # ===============================================================================
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -130,7 +137,7 @@ class RUN_multi_trade_sim:
         print("Number of evaluated tickers:", len(tickers))
         print("Evaluated tickers:", tickers)
         print("\nStart date:", start_date)
-        print("Data slice size:", data_slice_size)
+        print("Data slice size:", subslice_size)
         print("Number of data slices processed:", nb_data_slices)
         print("\nStarting parameters:", parameter_sets)
 
@@ -144,9 +151,10 @@ class RUN_multi_trade_sim:
             data_slice_count += 1
 
             print("\n===================== Data slice", data_slice_count, "=====================\n")
-            print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.stop_date)
+            print(self.ref_data_slice.start_date, "-->", self.ref_data_slice.subslice_stop_date)
             # --> Perform trade run
-            self.portfolio.perform_trade_run(investment_settings=self.investment_settings, cash_in_settings=self.cash_in_settings,
+            self.portfolio.perform_trade_run(investment_settings=self.investment_settings,
+                                             cash_in_settings=self.cash_in_settings,
                                              initial_funds=self.current_funds,
                                              initial_account_content=self.current_account_content,
                                              initial_account_simple_investment_content=self.current_account_simple_investments_content,
@@ -169,8 +177,7 @@ class RUN_multi_trade_sim:
             self.results.funds += self.portfolio.tradebot.account.funds_history
             self.results.assets_worth += self.portfolio.tradebot.account.asset_worth_history
 
-            self.results.profit.append(
-                (self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
+            self.results.profit.append((self.portfolio.tradebot.account.net_worth_history[-1]-self.results.net_worth[-1])/self.results.net_worth[-1]*100)
 
             # --> Print Data slice results
             print("--------------------------------------------------")
@@ -182,7 +189,7 @@ class RUN_multi_trade_sim:
             print("--------------------------------------------------")
 
             # ---- Calc next data slice parameters and stop simulation if end date reached
-            self.ref_data_slice.get_next_data_slice()
+            self.ref_data_slice.get_next_subslice()
             if self.ref_data_slice.end_of_dataset:
                 break
 
@@ -193,23 +200,30 @@ class RUN_multi_trade_sim:
 
             # --> Throttle values
             # Account stop-losses
-            self.current_account_prev_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                                              max_account_prev_stop_loss, min_account_prev_stop_loss,
+            self.current_account_prev_stop_loss = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                                              nb_of_iterations=self.nb_data_slices,
+                                                                              max_value=max_account_prev_stop_loss,
+                                                                              min_value=min_account_prev_stop_loss,
                                                                               decay_function=account_prev_stop_loss_decay_function), 3)
 
-            self.current_account_max_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                                             max_account_max_stop_loss, min_account_max_stop_loss,
+            self.current_account_max_stop_loss = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                                             nb_of_iterations=self.nb_data_slices,
+                                                                             max_value=max_account_max_stop_loss,
+                                                                             min_value=min_account_max_stop_loss,
                                                                              decay_function=account_max_stop_loss_decay_function), 3)
 
             # Ticker stop-losses
-            self.current_ticker_prev_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                                             max_ticker_prev_stop_loss, min_ticker_prev_stop_loss,
+            self.current_ticker_prev_stop_loss = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                                             nb_of_iterations=self.nb_data_slices,
+                                                                             max_value=max_ticker_prev_stop_loss,
+                                                                             min_value=min_ticker_prev_stop_loss,
                                                                              decay_function=ticker_prev_stop_loss_decay_function), 3)
 
             # Max investment per trade
-            self.current_max_investment_per_trade = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                                                max_investment_per_trade_percent,
-                                                                                min_investment_per_trade_percent,
+            self.current_max_investment_per_trade = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                                                nb_of_iterations=self.nb_data_slices,
+                                                                                max_value=max_investment_per_trade_percent,
+                                                                                min_value=min_investment_per_trade_percent,
                                                                                 decay_function=investment_per_trade_decay_function), 3)
 
             # --> Print throttled values
@@ -229,10 +243,10 @@ class RUN_multi_trade_sim:
         self.parameter_sets = parameter_sets
 
         self.results.data_slice_start = start_date
-        self.results.data_slice_size = data_slice_size
+        self.results.data_slice_size = subslice_size
         self.results.nb_data_slices = nb_data_slices
 
-        self.results.total_data_points_processed = abs(self.ref_data_slice.default_start_index-self.ref_data_slice.default_end_index)
+        self.results.total_data_points_processed = abs(self.ref_data_slice.start_index-self.ref_data_slice.end_index)
         self.results.gen_result_recap_file()
         self.results.plot_results()
 

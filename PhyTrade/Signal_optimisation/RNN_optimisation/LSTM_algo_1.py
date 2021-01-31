@@ -10,9 +10,9 @@ import numpy as np
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
-from PhyTrade.Data_Collection_preparation.Tools.Fetch_parameter_set import fetch_parameter_set
+from PhyTrade.Core_elements.Trading_dataslice import Trading_dataslice
+from PhyTrade.Core_elements.Individual import Individual
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_set
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

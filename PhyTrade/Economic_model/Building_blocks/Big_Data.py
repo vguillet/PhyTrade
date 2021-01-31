@@ -5,7 +5,7 @@ This script contains the BIGDATA class, necessary to collect and move around dat
 """
 
 # Own modules
-from PhyTrade.Tools.SPLINE_tools import SPLINE
+from PhyTrade.Tools.SPLINE_tools import Spline_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -54,7 +54,7 @@ class BIGDATA:
         :param lower_threshold: Lower threshold for buy trigger points generation
         """
 
-        spline_tools = SPLINE(big_data=self)
+        spline_tools = Spline_tools(big_data=self)
 
         self.major_upper_threshold = upper_threshold
         self.major_lower_threshold = lower_threshold

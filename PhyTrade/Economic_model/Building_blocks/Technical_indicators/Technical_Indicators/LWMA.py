@@ -11,7 +11,7 @@ moving averages (EMA).
 import numpy as np
 
 # Own modules
-from PhyTrade.Economic_model.Technical_indicators.Technical_Indicators.Indicator_abc import Indicator_abc
+from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Technical_Indicators.Indicator_abc import Indicator_abc
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

@@ -8,7 +8,7 @@ Contains settings related to market, including tickers and dates
 import json
 
 # Own modules
-from PhyTrade.Data_Collection_preparation.Tools.Fetch_parameter_set import fetch_parameter_sets
+from PhyTrade.Data_Collection_preparation.Fetch_parameter_set import fetch_parameter_sets
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

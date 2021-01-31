@@ -9,9 +9,9 @@ from pylab import *
 
 # Own modules
 from PhyTrade.Backtesting.Metalabeling.Metalabels import MetaLabels
-from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
-from PhyTrade.Tools.PLOT_tools import PLOT_tools
+from PhyTrade.Trade_simulations.Trading_bots.Tradebot_single_ticker import Tradebot
+from PhyTrade.Core_elements.Trading_dataslice import Trading_dataslice
+from PhyTrade.Tools.Plot_tools import Plot_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -39,16 +39,16 @@ metalabel_settings = 2
 
 # --> Peak-dip metalabel visualisation
 # print(MetaLabeling(20, -20, 10, data_slice, metalabel_setting=0).metalabels)
-print(Tradebot_v4(daily_values=list(data_slice.subslice_data_selection),
-                  trade_signal=MetaLabels(upper_barrier=upper_barrier,
+print(Tradebot(daily_values=list(data_slice.subslice_data_selection),
+               trade_signal=MetaLabels(upper_barrier=upper_barrier,
                                           lower_barrier=lower_barrier,
                                           look_ahead=look_ahead,
                                           data_slice=data_slice,
                                           metalabel_setting=metalabel_settings).metalabels,
-                  cash_in_settings=0,
-                  print_trade_process=False).account.net_worth_history[-1])
+               cash_in_settings=0,
+               print_trade_process=False).account.net_worth_history[-1])
 
-plot_tools = PLOT_tools()
+plot_tools = Plot_tools()
 
 plot_tools.plot_oc_values(data_slice)
 plot_tools.plot_values_trigger(data_slice=data_slice,
@@ -76,7 +76,7 @@ plt.show()
 # for i in range(N):
 #     for j in range(N):
 #         for k in range(N):
-#             h = Tradebot_v4(list(data_slice.sliced_data_selection),
+#             h = Tradebot(list(data_slice.sliced_data_selection),
 #                             MetaLabeling(upper_barrier[i], lower_barrier[j], look_ahead[k], data_slice, metalabel_setting=1).metalabels,
 #                             cash_in_settings=1).account.net_worth_history[-1]
 #

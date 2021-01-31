@@ -9,8 +9,8 @@ Used to generate metalabels using
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Data_Collection_preparation.Tools.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
+from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Core_elements.Trading_dataslice import Trading_dataslice
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

@@ -19,8 +19,8 @@ from math import log10
 
 # Own modules
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
-from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser import EVOA_parameter_randomiser
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser_tool import EVOA_parameter_randomiser
+from PhyTrade.Core_elements.Individual import Individual
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 __version__ = '1.1.1'
@@ -39,7 +39,7 @@ class EVOA_tools:
         :param population_size: Size of desired population
         :return: List of individuals of length population_size
         """
-        from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+        from PhyTrade.Core_elements.Individual import Individual
 
         population_lst = []
         for i in range(population_size):

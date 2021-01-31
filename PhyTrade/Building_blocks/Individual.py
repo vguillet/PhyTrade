@@ -10,9 +10,8 @@ import sys
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser import EVOA_parameter_randomiser
-from PhyTrade.Data_Collection_preparation.Tools.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Tools.GENERAL_tools import GENERAL_tools
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser_tool import EVOA_parameter_randomiser
+from PhyTrade.Tools.General_tools import General_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -54,7 +53,7 @@ class Individual:
             self.parameter_set = parameter_set
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
-        self.nb_of_parameters = GENERAL_tools().calc_nested_dic_item_count(dictionary=self.parameter_set,
+        self.nb_of_parameters = General_tools().calc_nested_dic_item_count(dictionary=self.parameter_set,
                                                                            blacklist=self.settings.signal_training_settings.parameter_blacklist)
 
         for i in self.parameter_set:
@@ -63,9 +62,9 @@ class Individual:
 
     def gen_economic_model(self, data_slice, plot_eco_model_results=False):
         from PhyTrade.Economic_model.Prototype_5 import Prototype_5
-        from PhyTrade.Tools.PLOT_tools import PLOT_tools
+        from PhyTrade.Tools.Plot_tools import Plot_tools
 
-        # --> Generate economic model
+        # --> Generate economic model, and record big_data
         self.analysis = Prototype_5(self.parameter_set, data_slice).big_data
 
         # self.spline = self.analysis.major_spline
@@ -75,7 +74,7 @@ class Individual:
         # self.trade_lower_threshold = self.analysis.trade_lower_threshold
 
         if plot_eco_model_results:
-            PLOT_tools().plot_trade_process(settings=self.settings,
+            Plot_tools().plot_trade_process(settings=self.settings,
                                             data_slice=data_slice,
                                             trade_spline=self.analysis.trade_spline,
                                             trade_upper_threshold=self.analysis.trade_upper_threshold,
@@ -96,18 +95,18 @@ class Individual:
         if self.analysis is None:
             sys.exit("Individual economic model inexistent, run gen_economic_model before perform_trade_run")
 
-        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
+        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_single_ticker import Tradebot
 
-        tradebot = Tradebot_v4(daily_values=data_slice.subslice_data_selection,
-                               trade_signal=self.analysis.trade_signal,
-                               trade_spline=self.analysis.trade_spline,
-                               investment_settings=investment_settings, cash_in_settings=cash_in_settings,
-                               initial_funds=initial_funds,
-                               initial_assets=initial_assets,
-                               prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
-                               max_investment_per_trade=max_investment_per_trade,
-                               prev_simple_investment_assets=prev_simple_investment_assets,
-                               print_trade_process=print_trade_process)
+        tradebot = Tradebot(daily_values=data_slice.subslice_data_selection,
+                            trade_signal=self.analysis.trade_signal,
+                            trade_spline=self.analysis.trade_spline,
+                            investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                            initial_funds=initial_funds,
+                            initial_assets=initial_assets,
+                            prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
+                            max_investment_per_trade=max_investment_per_trade,
+                            prev_simple_investment_assets=prev_simple_investment_assets,
+                            print_trade_process=print_trade_process)
 
         self.tradebot = tradebot        # TODO: Move tradebot properties (buy/sell count) into account
         self.account = tradebot.account

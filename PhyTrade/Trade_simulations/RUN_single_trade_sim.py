@@ -16,8 +16,8 @@ import pprint
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.Building_blocks.Trading_dataslice import Trading_dataslice
+from PhyTrade.Building_blocks.Individual import Individual
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
 
 __version__ = '1.1.1'
@@ -40,7 +40,7 @@ class RUN_single_trade_sim:
 
         start_date = settings.market_settings.testing_start_date
         end_date = settings.market_settings.testing_end_date
-        data_slice_size = settings.market_settings.data_slice_size
+        subslice_size = settings.market_settings.data_slice_size
 
         # --> Simulation parameters
         settings.trade_sim_settings.gen_single_trade_sim()
@@ -116,11 +116,19 @@ class RUN_single_trade_sim:
         self.results = Trade_simulation_results_gen(eval_name)
 
         # ---- Initiate data slice
-        self.data_slice = Trading_dataslice(self.ticker, start_date, data_slice_size, 0,
-                                            end_date=end_date, data_looper=False)
-        self.data_slice.gen_subslice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
+        self.data_slice = Trading_dataslice(ticker=self.ticker,
+                                            start_date=start_date,
+                                            subslice_size=subslice_size,
+                                            subslice_shift_per_step=0,
+                                            end_date=end_date,
+                                            data_looper=False)
 
-        self.nb_data_slices = math.ceil(abs(self.data_slice.default_start_index-self.data_slice.default_end_index)/data_slice_size)
+        self.data_slice.gen_subslice_metalabels(upper_barrier=upper_barrier,
+                                                lower_barrier=lower_barrier,
+                                                look_ahead=look_ahead,
+                                                metalabeling_setting=metalabeling_setting)
+
+        self.nb_data_slices = math.ceil(abs(self.data_slice.start_index-self.data_slice.end_index)/subslice_size)
         
         # ---- Generate Individual
         self.individual = Individual(parameter_set=parameter_set)
@@ -131,7 +139,7 @@ class RUN_single_trade_sim:
 
         print("Evaluated ticker:", ticker)
         print("\nStart date:", start_date)
-        print("Data slice size:", data_slice_size)
+        print("Data slice size:", subslice_size)
         print("Number of data slices processed:", nb_data_slices)
         print("\nStarting parameters:")
         pprint.pprint(parameter_set)
@@ -148,26 +156,37 @@ class RUN_single_trade_sim:
             data_slice_count += 1
 
             print("================== Data slice", data_slice_count, "==================")
-            print(self.data_slice.start_date, "-->", self.data_slice.stop_date)
+            print(self.data_slice.start_date, "-->", self.data_slice.subslice_stop_date)
 
             # --> Process slice metalabels
             if run_metalabels is True:
-                self.data_slice.gen_subslice_metalabels(upper_barrier, lower_barrier, look_ahead, metalabeling_setting)
-                self.data_slice.perform_metatrade_run(investment_settings=m_investment_settings, cash_in_settings=m_cash_in_settings,
+                self.data_slice.gen_subslice_metalabels(upper_barrier=upper_barrier,
+                                                        lower_barrier=lower_barrier,
+                                                        look_ahead=look_ahead,
+                                                        metalabeling_setting=metalabeling_setting)
+
+                self.data_slice.perform_metatrade_run(investment_settings=m_investment_settings,
+                                                      cash_in_settings=m_cash_in_settings,
                                                       initial_funds=self.m_current_funds,
                                                       initial_assets=self.m_current_assets,
-                                                      prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
+                                                      prev_stop_loss=self.prev_stop_loss,
+                                                      max_stop_loss=self.max_stop_loss,
                                                       max_investment_per_trade=self.max_investment_per_trade * self.m_current_net_worth,
                                                       prev_simple_investment_assets=self.current_simple_investment_assets)
+
                 self.results.metalabel_net_worth += self.data_slice.metalabels_account.net_worth_history
 
             # --> Process slice
-            self.individual.gen_economic_model(self.data_slice, plot_eco_model_results=plot_eco_model_results)
-            self.individual.perform_trade_run(self.data_slice,
-                                              investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+            self.individual.gen_economic_model(data_slice=self.data_slice,
+                                               plot_eco_model_results=plot_eco_model_results)
+
+            self.individual.perform_trade_run(data_slice=self.data_slice,
+                                              investment_settings=investment_settings,
+                                              cash_in_settings=cash_in_settings,
                                               initial_funds=self.current_funds,
                                               initial_assets=self.current_assets,
-                                              prev_stop_loss=self.prev_stop_loss, max_stop_loss=self.max_stop_loss,
+                                              prev_stop_loss=self.prev_stop_loss,
+                                              max_stop_loss=self.max_stop_loss,
                                               max_investment_per_trade=self.max_investment_per_trade * self.current_net_worth,
                                               prev_simple_investment_assets=self.current_simple_investment_assets,
                                               print_trade_process=print_trade_process)
@@ -220,16 +239,22 @@ class RUN_single_trade_sim:
                 self.m_current_net_worth = self.data_slice.metalabels_account.assets_history[-1]
 
             # --> Throttle values
-            self.prev_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                              max_prev_stop_loss, min_prev_stop_loss,
+            self.prev_stop_loss = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                              nb_of_iterations=self.nb_data_slices,
+                                                              max_value=max_prev_stop_loss,
+                                                              min_value=min_prev_stop_loss,
                                                               decay_function=prev_stop_loss_decay_function), 3)
 
-            self.max_stop_loss = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                             max_max_stop_loss, min_max_stop_loss,
+            self.max_stop_loss = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                             nb_of_iterations=self.nb_data_slices,
+                                                             max_value=max_max_stop_loss,
+                                                             min_value=min_max_stop_loss,
                                                              decay_function=max_stop_loss_decay_function), 3)
 
-            self.max_investment_per_trade = round(EVOA_tools().throttle(data_slice_count, self.nb_data_slices,
-                                                                        max_investment_per_trade_percent, min_investment_per_trade_percent,
+            self.max_investment_per_trade = round(EVOA_tools().throttle(current_iteration=data_slice_count,
+                                                                        nb_of_iterations=self.nb_data_slices,
+                                                                        max_value=max_investment_per_trade_percent,
+                                                                        min_value=min_investment_per_trade_percent,
                                                                         decay_function=investment_per_trade_decay_function), 3)
 
             # --> Print throttled values
@@ -243,12 +268,12 @@ class RUN_single_trade_sim:
         self.results.individual = self.individual
         self.parameter_set = self.parameter_set
 
-        self.results.data_slice_start_date = self.data_slice.default_start_date
-        self.results.data_slice_stop_date = self.data_slice.default_end_date
+        self.results.data_slice_start_date = self.data_slice.start_date
+        self.results.data_slice_stop_date = self.data_slice.end_date
         self.results.data_slice_size = self.data_slice.subslice_size
         self.results.nb_data_slices = self.nb_data_slices
 
-        self.results.total_data_points_processed = abs(self.data_slice.default_start_index-self.data_slice.default_end_index)
+        self.results.total_data_points_processed = abs(self.data_slice.start_index-self.data_slice.end_index)
 
         self.results.gen_result_recap_file()
 
@@ -344,7 +369,7 @@ class Trade_simulation_results_gen:
 
     def plot_results(self, settings, big_data, run_metalabels):
         import matplotlib.pyplot as plt
-        from PhyTrade.Tools.PLOT_tools import PLOT_tools
+        from PhyTrade.Tools.Plot_tools import Plot_tools
 
         # --> Plot trade results
         plt.plot(self.net_worth, label="Net worth")
@@ -366,7 +391,7 @@ class Trade_simulation_results_gen:
                                              subslice_size=self.total_data_points_processed,
                                              subslice_shift_per_step=0)
 
-        PLOT_tools().plot_trade_process(settings=settings,
+        Plot_tools().plot_trade_process(settings=settings,
                                         data_slice=print_data_slice,
                                         trade_spline=self.spline,
                                         trade_upper_threshold=self.upper_threshold_spline,

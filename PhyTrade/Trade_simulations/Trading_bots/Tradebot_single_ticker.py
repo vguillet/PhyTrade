@@ -10,7 +10,7 @@ Input that still require manual input:
 
 # Own modules
 from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Trade_simulations.Tools.S_ACCOUNT_gen import ACCOUNT
+from PhyTrade.Trade_simulations.Building_blocks.Account_single_ticker import Account
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -19,7 +19,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class Tradebot_v4:
+class Tradebot:
     def __init__(self, daily_values,
                  trade_signal, trade_spline=None,
                  investment_settings=1, cash_in_settings=0,
@@ -79,7 +79,9 @@ class Tradebot_v4:
         self.print_trade_process = print_trade_process
 
         # -- Tradebot finance
-        self.account = ACCOUNT(initial_funds=initial_funds, initial_assets=initial_assets)
+        self.account = Account(initial_funds=initial_funds,
+                               initial_assets=initial_assets)
+
         self.prev_stop_loss = prev_stop_loss
         self.max_stop_loss = max_stop_loss
 
@@ -104,8 +106,9 @@ class Tradebot_v4:
         # ============================ TRADE PROTOCOL DEF ==============================
         # ~~~~~~~~~~~~~~~~~~ Initiate simple investment
         if prev_simple_investment_assets is None:
-            self.account.start_simple_investment(self.daily_values[0],
+            self.account.start_simple_investment(current_value=self.daily_values[0],
                                                  initial_investment=self.s_initial_investment)
+
         else:
             self.account.simple_investment_assets = prev_simple_investment_assets
 
@@ -113,7 +116,7 @@ class Tradebot_v4:
             if self.print_trade_process:
                 print("----------------- Day ", i)
             # ~~~~~~~~~~~~~~~~~~ Calculate simple investment value
-            self.account.calc_simple_investment_value(self.daily_values[i])
+            self.account.calc_simple_investment_value(current_value=self.daily_values[i])
 
             # ~~~~~~~~~~~~~~~~~~ Define the investment per trade
             # --> Fixed investment value per trade
@@ -170,12 +173,12 @@ class Tradebot_v4:
             # ----- Define stop-loss action
             # --> WRT max_net_worth and/or prev_net_worth
             if not len(self.account.net_worth_history) == 0 and \
-                    self.account.calc_net_worth(self.daily_values[i]) < \
+                    self.account.calc_net_worth(current_value=self.daily_values[i]) < \
                     max(self.account.net_worth_history) * self.max_stop_loss and \
                     not self.account.current_assets == 0 \
                     or\
                     not len(self.account.net_worth_history) == 0 and \
-                    self.account.calc_net_worth(self.daily_values[i]) < \
+                    self.account.calc_net_worth(current_value=self.daily_values[i]) < \
                     self.account.net_worth_history[-1] * self.prev_stop_loss and \
                     not self.account.current_assets == 0:
 
@@ -188,12 +191,12 @@ class Tradebot_v4:
                 if self.print_trade_process:
                     print("==========================================================")
                     print("Stop-loss triggered")
-                    self.account.print_account_status(self.daily_values[i])
+                    self.account.print_account_status(current_value=self.daily_values[i])
                     print("==========================================================")
 
             # ----- Define hold action
             elif self.trade_actions[i] == 0:
-                self.account.record_net_worth(self.daily_values[i])
+                self.account.record_net_worth(current_value=self.daily_values[i])
 
                 if self.print_trade_process:
                     print("->Hold")
@@ -201,34 +204,37 @@ class Tradebot_v4:
             # ----- Define buy action
             elif self.trade_actions[i] == -1:
                 if self.account.current_funds != 0:
-                    self.account.convert_funds_to_assets(
-                        self.daily_values[i], investment_per_trade)
+                    self.account.convert_funds_to_assets(current_value=self.daily_values[i],
+                                                         investment_per_trade=investment_per_trade)
                     self.buy_count += 1
 
                     if self.print_trade_process:
                         print("Trade action: Buy")
                         print("Investment =", investment_per_trade, "$")
-                        self.account.print_account_status(self.daily_values[i])
+                        self.account.print_account_status(current_value=self.daily_values[i])
 
                 else:
-                    self.account.record_net_worth(self.daily_values[i])
+                    self.account.record_net_worth(current_value=self.daily_values[i])
+
                     if self.print_trade_process:
                         print("Trade action 'Buy' canceled because insufficient funds")
 
             # ----- Define sell action
             elif self.trade_actions[i] == 1:
                 if self.account.current_assets != 0:
-                    self.account.convert_assets_to_funds(
-                        self.daily_values[i], assets_sold_per_trade)
+                    self.account.convert_assets_to_funds(current_value=self.daily_values[i],
+                                                         assets_sold_per_trade=assets_sold_per_trade)
+
                     self.sell_count += 1
 
                     if self.print_trade_process:
                         print("Trade action: Sell")
                         print("Investment =", investment_per_trade, "$")
-                        self.account.print_account_status(self.daily_values[i])
+                        self.account.print_account_status(current_value=self.daily_values[i])
 
                 else:
-                    self.account.record_net_worth(self.daily_values[i])
+                    self.account.record_net_worth(current_value=self.daily_values[i])
+
                     if self.print_trade_process:
                         print("Trade action 'Sell' canceled because nothing to sell")
 

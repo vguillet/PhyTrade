@@ -10,7 +10,7 @@ Input that still require manual input:
 
 # Own modules
 from PhyTrade.Settings.Class_based_settings.Tradebot_settings import Tradebot_settings
-from PhyTrade.Trade_simulations.Tools.ACCOUNT_gen import ACCOUNT
+from PhyTrade.Trade_simulations.Building_blocks.Account_multi_ticker import Account
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -19,7 +19,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class Tradebot_v5:
+class Tradebot:
     def __init__(self,
                  tickers,
                  initial_funds=1000,
@@ -77,7 +77,7 @@ class Tradebot_v5:
         self.initial_funds = initial_funds
 
         # ---- Tradebot finance
-        self.account = ACCOUNT(tickers,
+        self.account = Account(tickers=tickers,
                                initial_funds=initial_funds,
                                initial_content=initial_account_content,
                                initial_simple_investment_content=initial_account_simple_investment_content)
@@ -159,7 +159,7 @@ class Tradebot_v5:
     def account_stop_loss(self):
         # --> Close all content orders
         for ticker in self.account.content.keys():
-            self.account.close_all_ticker_order(ticker)
+            self.account.close_all_ticker_order(ticker=ticker)
 
         # --> Update counter
         self.account_stop_loss_count += 1
@@ -172,7 +172,7 @@ class Tradebot_v5:
 
     def ticker_stop_loss(self, ticker):
         # --> Close all ticker orders
-        self.account.close_all_ticker_order(ticker)
+        self.account.close_all_ticker_order(ticker=ticker)
 
         # --> Update counter
         self.ticker_stop_loss_count += 1
@@ -206,18 +206,21 @@ class Tradebot_v5:
                 and self.account.net_worth_history[-1] < max(self.account.net_worth_history) * self.account_max_stop_loss\
                 and self.account.current_order_count != 0:
             self.account_stop_loss()
+
             return
 
         if len(self.account.net_worth_history) > 1:
             if self.account.net_worth_history[-1] < self.account.net_worth_history[-2] * self.account_prev_stop_loss and self.account.current_order_count != 0:
                 self.account_stop_loss()
+
                 return
 
         # --> For ticker
         if len(self.account.net_worth_history) > 1:
             if self.account.content[ticker]["Net_worth"][-1] < self.account.content[ticker]["Net_worth"][-2] * self.ticker_prev_stop_loss \
                     and self.account.content[ticker]["Open_order_count"] != 0:
-                self.ticker_stop_loss(ticker)
+                self.ticker_stop_loss(ticker=ticker)
+
                 return
 
         # ----- Define hold action
@@ -237,7 +240,9 @@ class Tradebot_v5:
             asset_count = round(investment_per_trade/self.account.content[ticker]["Current_price"], 0)
 
             if not self.account.current_funds < self.account.content[ticker]["Current_price"]:
-                self.account.convert_funds_to_assets(ticker, asset_count)
+                self.account.convert_funds_to_assets(ticker=ticker,
+                                                     asset_count=asset_count)
+
                 self.buy_count += 1
 
                 if self.print_trade_process:
@@ -245,6 +250,7 @@ class Tradebot_v5:
                     print("Number of share brought:", asset_count)
                     print("Investment =", self.account.content[ticker]["Current_price"]*asset_count, "$\n")
                     self.account.print_account_status()
+
                 return
 
             else:
@@ -254,17 +260,20 @@ class Tradebot_v5:
 
         # ----- Define sell action
         elif trade_action == 1:
-            assets_sold_per_trade = self.calc_asset_sold_value(ticker,
+            assets_sold_per_trade = self.calc_asset_sold_value(ticker=ticker,
                                                                cash_in_settings=cash_in_settings,
                                                                signal_strength=signal_strength)
             if self.account.content[ticker]["Open_order_count"] != 0:
-                self.account.convert_assets_to_funds(ticker, assets_sold_per_trade)
+                self.account.convert_assets_to_funds(ticker=ticker,
+                                                     assets_sold_per_trade=assets_sold_per_trade)
+
                 self.sell_count += 1
 
                 if self.print_trade_process:
                     print("Trade action: Sell")
                     print("Asset worth sold =", assets_sold_per_trade, "$\n")
                     self.account.print_account_status()
+
                 return
 
             else:

@@ -5,8 +5,8 @@ Contains information about a Tradebot's account, along with it's transaction his
 """
 
 # Own modules
-from PhyTrade.Trade_simulations.Tools.ORDER_gen import ORDER_gen
-from PhyTrade.Tools.MARKET_tools import MARKET_tools
+from PhyTrade.Trade_simulations.Building_blocks.Order import Order
+from PhyTrade.Tools.Market_tools import Market_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -15,7 +15,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class ACCOUNT:
+class Account:
     def __init__(self, tickers, initial_funds=1000, initial_content={}, initial_simple_investment_content={}):
         """
         Stores the states of a trading account. Stores account history in:
@@ -29,6 +29,7 @@ class ACCOUNT:
         The update_account must be run for each new day to allow for a correct updating of the orders, including when an account
         instance is initiated
 
+        # TODO: Separate simple investment from account?
         s_investment_start investment still requires manual input
 
         :param tickers: Tickers traded
@@ -56,8 +57,10 @@ class ACCOUNT:
         # --> Compile add ticker to dictionary if missing and initiate simple investments
         for ticker in tickers:
             if ticker not in self.content.keys():
-                self.create_content_entry(ticker)
-                self.create_simple_investment_entry(ticker)
+                self.create_content_entry(ticker=ticker,
+                                          current_value=None)
+                self.create_simple_investment_entry(ticker=ticker,
+                                                    current_value=None)
 
     # =================================== Account management functions
     # ----------------------------------- Account management and update functions
@@ -69,6 +72,7 @@ class ACCOUNT:
         :param current_date: Current traded date as string
         :param current_prices: Dictionary of current prices with tickers as key
         """
+
         self.current_date = current_date
 
         # --> Check all req. date is present (if orders are currently open)
@@ -85,25 +89,31 @@ class ACCOUNT:
 
             # --> Else, create content entry and update current price
             else:
-                self.create_content_entry(ticker, current_prices[ticker])
-                self.create_simple_investment_entry(ticker, current_prices[ticker])
+                self.create_content_entry(ticker=ticker,
+                                          current_value=current_prices[ticker])
+
+                self.create_simple_investment_entry(ticker=ticker,
+                                                    current_value=current_prices[ticker])
 
             # ---- Update account content
             # --> Update content orders
             for order in self.content[ticker]["Open_orders"]:
-                order.update_order(current_date, current_prices[ticker])
+                order.update_order(current_date=current_date,
+                                   current_price=current_prices[ticker])
 
             # --> Update content tickers net worth
-            self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker))
+            self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker=ticker))
 
             # ---- Update account simple investment content
             # --> If None, start simple investment
             if self.simple_investment_content[ticker]["Order"] is None:
-                self.start_simple_investment(ticker, initial_investment=250)
+                self.start_simple_investment(ticker=ticker,
+                                             initial_investment=250)
 
             # --> Update simple investment content orders
             if self.simple_investment_content[ticker]["Order"] is not None:
-                self.simple_investment_content[ticker]["Order"].update_order(current_date, current_prices[ticker])
+                self.simple_investment_content[ticker]["Order"].update_order(current_date=current_date,
+                                                                             current_price=current_prices[ticker])
 
                 # --> Update net worth
                 self.simple_investment_content[ticker]["Net_worth"].append(self.simple_investment_content[ticker]["Order"].current_worth)
@@ -122,18 +132,21 @@ class ACCOUNT:
         :param current_price: Dictionary of current prices with tickers as key
         :return:
         """
+
         # --> Update current prices
         self.content[ticker]["Current_price"] = current_price[ticker]
 
         # --> Update net worth
-        self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker))
+        self.content[ticker]["Net_worth"].append(self.calc_ticker_net_worth(ticker=ticker))
 
         # --> Update orders
         for order in self.content[ticker]["Open_orders"]:
-            order.update_order(current_date, current_price[ticker])
+            order.update_order(current_date=current_date,
+                               current_price=current_price[ticker])
 
         if self.simple_investment_content[ticker]["Open_order"] is not None:
-            self.simple_investment_content[ticker]["Open_order"].update_order(current_date, current_price[ticker])
+            self.simple_investment_content[ticker]["Open_order"].update_order(current_date=current_date,
+                                                                              current_price=current_price[ticker])
 
     # ----------------------------------- Trading actions
     def convert_funds_to_assets(self, ticker, asset_count):
@@ -143,15 +156,21 @@ class ACCOUNT:
         :param ticker: Ticker traded
         :param asset_count: Amount of investment to be performed
         """
+
         # --> Calculate transaction cost
-        self.current_funds -= MARKET_tools().calc_transaction_cost(asset_count)
+        self.current_funds -= Market_tools().calc_transaction_cost(asset_count=asset_count)
 
         # --> Create order
-        new_order = ORDER_gen(ticker, self.current_date, asset_count, self.content[ticker]["Current_price"])
-        self.add_order_to_content(ticker, new_order)
+        new_order = Order(ticker=ticker,
+                          open_date=self.current_date,
+                          asset_count=asset_count,
+                          open_price=self.content[ticker]["Current_price"])
+
+        self.add_order_to_content(ticker=ticker,
+                                  order=new_order)
 
         # --> Update funds and ticker net worth
-        self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
+        self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker=ticker)
         self.current_funds -= self.content[ticker]["Open_orders"][-1].open_worth
 
     def convert_assets_to_funds(self, ticker, assets_sold_per_trade):
@@ -161,6 +180,7 @@ class ACCOUNT:
         :param ticker: Ticker traded
         :param assets_sold_per_trade: Amount of assets to be sold
         """
+
         # TODO: Develop order sell choice
         sell_worth = 0
         asset_count_sold = 0
@@ -203,11 +223,11 @@ class ACCOUNT:
                 break
 
         # --> Calculate transaction cost
-        self.current_funds -= MARKET_tools().calc_transaction_cost(asset_count_sold)
+        self.current_funds -= Market_tools().calc_transaction_cost(asset_count=asset_count_sold)
 
         # --> Update funds and ticker net worth
         self.current_funds += sell_worth
-        self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker)
+        self.content[ticker]["Net_worth"][-1] = self.calc_ticker_net_worth(ticker=ticker)
 
     def close_all_ticker_order(self, ticker):
         """
@@ -215,6 +235,7 @@ class ACCOUNT:
 
         :param ticker: Traded ticker
         """
+
         for order in self.content[ticker]["Open_orders"]:
             # --> Close order
             order.close_order()
@@ -227,7 +248,7 @@ class ACCOUNT:
             self.content[ticker]["Closed_orders_count"] += 1
 
             # --> Calculate transaction cost
-            self.current_funds -= MARKET_tools().calc_transaction_cost(order.asset_count)
+            self.current_funds -= Market_tools().calc_transaction_cost(asset_count=order.asset_count)
 
             # --> Update current parameters
             self.current_asset_worth -= order.close_worth
@@ -246,6 +267,7 @@ class ACCOUNT:
         :param ticker: Ticker traded
         :param current_value: Current price, can be left to none
         """
+
         self.content[ticker] = {}
         self.content[ticker]["Current_price"] = current_value
         self.content[ticker]["Open_order_count"] = 0
@@ -256,11 +278,12 @@ class ACCOUNT:
 
     def add_order_to_content(self, ticker, order):
         """
-        Used to add order to oontent
+        Used to add order to content
 
         :param ticker: Ticker of order
         :param order: Order class instance
         """
+
         # --> Add order to content
         self.content[ticker]["Open_orders"].append(order)
 
@@ -278,6 +301,7 @@ class ACCOUNT:
         :param ticker: Ticker to be evaluated
         :return: Ticker specific current worth
         """
+
         net_worth = 0
 
         for order in self.content[ticker]["Open_orders"]:
@@ -310,10 +334,12 @@ class ACCOUNT:
 
     def start_simple_investment(self, ticker, initial_investment=1000):
         # --> Create order
-        self.add_simple_investment_order(ticker, ORDER_gen(ticker,
-                                                           self.current_date,
-                                                           initial_investment/self.simple_investment_content[ticker]["Current_price"],
-                                                           self.simple_investment_content[ticker]["Current_price"]))
+        self.add_simple_investment_order(ticker=ticker,
+                                         order=Order(ticker=ticker,
+                                                     open_date=self.current_date,
+                                                     asset_count=initial_investment / self.simple_investment_content[ticker]["Current_price"],
+                                                     open_price=self.simple_investment_content[ticker]["Current_price"]))
+
         # --> Update ticker net worth
         self.content[ticker]["Net_worth"].append(self.simple_investment_content[ticker]["Order"].current_worth)
 
@@ -324,6 +350,7 @@ class ACCOUNT:
 
         :return: Net worth
         """
+
         net_worth = self.current_funds
 
         for ticker in self.content.keys():
@@ -345,6 +372,7 @@ class ACCOUNT:
 
         :return: Asset worth
         """
+
         asset_worth = 0
 
         for ticker in self.content.keys():
@@ -358,11 +386,12 @@ class ACCOUNT:
         """
         Used to record current asset worth to net_worth_history
         """
+
         self.asset_worth_history.append(self.calc_asset_worth())
 
     # ----------------------------------- Print/plot functions
     def print_account_status(self):
-        print("-> ACCOUNT status:")
+        print("-> Account status:")
         print("Current funds =", round(self.current_funds), "$")
         print("Open orders =")
         for ticker in self.content.keys():

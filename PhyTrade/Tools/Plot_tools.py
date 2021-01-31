@@ -16,7 +16,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class PLOT_tools:
+class Plot_tools:
     @staticmethod
     def plot_trade_process(settings,
                            data_slice,
@@ -44,7 +44,7 @@ class PLOT_tools:
                                      "eom": settings.individual_settings.print_eom,
                                      "oc_gradient": settings.individual_settings.print_oc_gradient}
 
-        plot_tools = PLOT_tools()
+        plot_tools = Plot_tools()
         datelist = list(pd.to_datetime(date) for date in data_slice.subslice_data["Date"])
 
         fig = plt.figure(figsize=(14, 10), dpi=150)

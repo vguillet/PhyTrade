@@ -11,8 +11,8 @@ import math
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
-from PhyTrade.Data_Collection_preparation.Trading_dataslice import Trading_dataslice
-from PhyTrade.Tools.INDIVIDUAL_gen import Individual
+from PhyTrade.Building_blocks.Trading_dataslice import Trading_dataslice
+from PhyTrade.Building_blocks.Individual import Individual
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 
 __version__ = '1.1.1'
@@ -101,8 +101,8 @@ class RUN_model:
             self.data_slice.perform_metatrade_run()
 
             # --> Record results
-            self.results.spline += list(self.individual.spline)
-            self.results.trade_signal += list(self.individual.trade_signal)
+            self.results.spline += list(self.individual.analysis.spline)
+            self.results.trade_signal += list(self.individual.analysis.trade_signal)
             self.results.upper_threshold_spline += list(self.individual.analysis.big_data.Major_spline.upper_threshold)
             self.results.lower_threshold_spline += list(self.individual.analysis.big_data.Major_spline.lower_threshold)
             self.results.metalabels += list(self.data_slice.metalabels)
@@ -222,13 +222,13 @@ class EVAL_parameter_set_results_gen:
         return
 
     def plot_results(self, settings, big_data):
-        from PhyTrade.Tools.PLOT_tools import PLOT_tools
+        from PhyTrade.Tools.Plot_tools import Plot_tools
         print_data_slice = Trading_dataslice(ticker=self.ticker,
                                              start_date=self.benchmark_data_slice_start,
                                              subslice_size=self.total_data_points_processed,
                                              subslice_shift_per_step=0)
 
-        PLOT_tools().plot_trade_process(settings=settings,
+        Plot_tools().plot_trade_process(settings=settings,
                                         data_slice=print_data_slice,
                                         trade_spline=self.spline,
                                         trade_upper_threshold=self.upper_threshold_spline,

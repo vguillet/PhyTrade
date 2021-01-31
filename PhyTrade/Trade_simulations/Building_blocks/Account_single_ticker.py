@@ -5,7 +5,7 @@ Contains information about a Tradebot's account, along with it's transaction his
 """
 
 # Own modules
-from PhyTrade.Tools.MARKET_tools import MARKET_tools
+from PhyTrade.Tools.Market_tools import Market_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -14,7 +14,7 @@ __date__ = '10/09/2019'
 ################################################################################################################
 
 
-class ACCOUNT:
+class Account:
     def __init__(self, initial_funds=1000, initial_assets=0):
         """
         Stores the states of a trading account. Stores account history in:
@@ -52,7 +52,7 @@ class ACCOUNT:
         """
 
         # --> Calculate transaction cost
-        self.current_funds -= MARKET_tools().calc_transaction_cost(investment_per_trade/current_value)
+        self.current_funds -= Market_tools().calc_transaction_cost(asset_count=investment_per_trade / current_value)
 
         # --> Create order
         self.current_funds -= investment_per_trade
@@ -72,7 +72,7 @@ class ACCOUNT:
 
         # --> Calculate transaction cost
         # --> Calculate transaction cost
-        self.current_funds -= MARKET_tools().calc_transaction_cost(assets_sold_per_trade/current_value)
+        self.current_funds -= Market_tools().calc_transaction_cost(asset_count=assets_sold_per_trade / current_value)
 
         self.current_funds += assets_sold_per_trade * current_value
         self.current_assets = self.current_assets - assets_sold_per_trade
