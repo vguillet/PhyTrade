@@ -5,7 +5,7 @@ This script contains the BIGDATA class, necessary to collect and move around dat
 """
 
 # Own modules
-from PhyTrade.Tools.SPLINE_tools import Spline_tools
+from PhyTrade.Tools.Spline_tools import Spline_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -33,7 +33,7 @@ class BIGDATA:
 
         # --> Apply buffer to data slice
         self.data_slice.start_index -= self.buffer
-        self.data_slice.slice_size += self.buffer
+        self.data_slice.subslice_size += self.buffer
 
         self.sell_trigger_values = []
         self.buy_trigger_values = []
@@ -77,5 +77,5 @@ class BIGDATA:
         self.trade_lower_threshold = self.trade_lower_threshold[self.buffer:]
 
         self.data_slice.subslice_start_index += self.buffer
-        self.data_slice.subslice_slice_size -= self.buffer
+        self.data_slice.subslice_size -= self.buffer
 

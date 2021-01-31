@@ -10,8 +10,8 @@ import sys
 # Libs
 
 # Own modules
-from PhyTrade.Data_Collection_preparation.Tools.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Data_Collection_preparation.TS_dataslice import TS_dataslice
+from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from PhyTrade.Building_blocks.TS_dataslice import TS_dataslice
 from PhyTrade.Backtesting.Metalabeling.Metalabels import MetaLabels
 
 __version__ = '1.1.1'
@@ -86,13 +86,14 @@ class Trading_dataslice(TS_dataslice):
         # --> Create mock data slice and add parameters and info to feed to metalabel generator
         mock_data_slice = address_sim()
         mock_data_slice.data_selection = self.data_selection
-        mock_data_slice.sliced_data_selection = self.subslice_data_selection
+        mock_data_slice.subslice_data_selection = self.subslice_data_selection
         mock_data_slice.subslice_start_index = self.subslice_start_index
         mock_data_slice.subslice_stop_index = self.subslice_stop_index
 
-        self.metalabels = MetaLabels(upper_barrier, lower_barrier,
-                                     look_ahead,
-                                     mock_data_slice,
+        self.metalabels = MetaLabels(upper_barrier=upper_barrier,
+                                     lower_barrier=lower_barrier,
+                                     look_ahead=look_ahead,
+                                     data_slice=mock_data_slice,
                                      metalabel_setting=metalabeling_setting).metalabels
         return
 
@@ -122,17 +123,17 @@ class Trading_dataslice(TS_dataslice):
         if self.metalabels is None:
             sys.exit("Data slice metalabels inexistent, run gen_subslice_metalabels before perform_metatrade_run")
 
-        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_v4 import Tradebot_v4
+        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_single_ticker import Tradebot
 
-        tradebot = Tradebot_v4(daily_values=self.subslice_data_selection,
-                               trade_signal=self.metalabels,
-                               investment_settings=investment_settings, cash_in_settings=cash_in_settings,
-                               initial_funds=initial_funds,
-                               initial_assets=initial_assets,
-                               prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
-                               max_investment_per_trade=max_investment_per_trade,
-                               prev_simple_investment_assets=prev_simple_investment_assets,
-                               print_trade_process=print_trade_process)
+        tradebot = Tradebot(daily_values=self.subslice_data_selection,
+                            trade_signal=self.metalabels,
+                            investment_settings=investment_settings, cash_in_settings=cash_in_settings,
+                            initial_funds=initial_funds,
+                            initial_assets=initial_assets,
+                            prev_stop_loss=prev_stop_loss, max_stop_loss=max_stop_loss,
+                            max_investment_per_trade=max_investment_per_trade,
+                            prev_simple_investment_assets=prev_simple_investment_assets,
+                            print_trade_process=print_trade_process)
 
         self.metalabels_account = tradebot.account
         return

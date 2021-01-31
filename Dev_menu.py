@@ -14,7 +14,7 @@ import json
 from PhyTrade.Settings.SETTINGS import SETTINGS
 from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
 from PhyTrade.Tools.Colours_and_Fonts import cf
-from PhyTrade.Tools.RUN_protocols import RUN_protocols
+from PhyTrade.RUN_protocols import RUN_protocols
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

@@ -20,7 +20,7 @@ from math import log10
 # Own modules
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser_tool import EVOA_parameter_randomiser
-from PhyTrade.Core_elements.Individual import Individual
+from PhyTrade.Building_blocks.Individual import Individual
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 __version__ = '1.1.1'
@@ -39,7 +39,6 @@ class EVOA_tools:
         :param population_size: Size of desired population
         :return: List of individuals of length population_size
         """
-        from PhyTrade.Core_elements.Individual import Individual
 
         population_lst = []
         for i in range(population_size):
@@ -118,7 +117,7 @@ class EVOA_tools:
                 print("Buy count:", population_lst[i].tradebot.buy_count)
                 print("Sell count:", population_lst[i].tradebot.sell_count, "\n")
 
-            individual_confusion_matrix_analysis = Confusion_matrix_analysis(model_predictions=population_lst[i].trade_signal,
+            individual_confusion_matrix_analysis = Confusion_matrix_analysis(model_predictions=population_lst[i].analysis.trade_signal,
                                                                              metalabels=data_slice.metalabels,
                                                                              calculate_stats=calculate_stats,
                                                                              print_benchmark_results=print_evaluation_status)
@@ -389,7 +388,7 @@ class EVOA_tools:
                                                      decay_function=settings.parents_decay_function))
         # --> Based on cycle count
         nb_parents_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                       nb_of_iterations=settings.data_slice_cycle_count,
+                                                       nb_of_iterations=settings.subslice_cycle_count,
                                                        max_value=settings.nb_parents,
                                                        min_value=1,
                                                        decay_function=settings.parents_decay_function))
@@ -405,7 +404,7 @@ class EVOA_tools:
                                                                  decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
         nb_parents_in_next_gen_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                                   nb_of_iterations=settings.data_slice_cycle_count,
+                                                                   nb_of_iterations=settings.subslice_cycle_count,
                                                                    max_value=settings.nb_parents_in_next_gen,
                                                                    min_value=1,
                                                                    decay_function=settings.random_ind_decay_function))
@@ -421,7 +420,7 @@ class EVOA_tools:
                                                         decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
         nb_random_ind_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                          nb_of_iterations=settings.data_slice_cycle_count,
+                                                          nb_of_iterations=settings.subslice_cycle_count,
                                                           max_value=settings.nb_random_ind,
                                                           min_value=0,
                                                           decay_function=settings.random_ind_decay_function))
@@ -437,7 +436,7 @@ class EVOA_tools:
                                                   decay_function=settings.random_ind_decay_function)
         # --> Based on cycle count
         mutation_rate_cycle = EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                    nb_of_iterations=settings.data_slice_cycle_count,
+                                                    nb_of_iterations=settings.subslice_cycle_count,
                                                     max_value=settings.mutation_rate,
                                                     min_value=0.1,
                                                     decay_function=settings.random_ind_decay_function)

@@ -197,7 +197,7 @@ class Spline_tools:
             lower_threshold = standard_lower_threshold - standard_upper_threshold*0.5*difference_band_spline
 
         elif threshold_setting == 2:
-            bbands_df = big_data.data_slice.data[big_data.data_slice.subslicestart_index - bband_timeframe:big_data.data_slice.subslicestop_index]
+            bbands_df = big_data.data_slice.data[big_data.data_slice.subslice_start_index - bband_timeframe:big_data.data_slice.subslice_stop_index]
             mean_avg = bbands_df[big_data.data_slice.price_data_selection].rolling(window=bband_timeframe).mean()
             standard_dev = bbands_df[big_data.data_slice.price_data_selection].rolling(window=bband_timeframe).std()
 

@@ -27,7 +27,7 @@ class EVOA_prints:
         self.evoa_version = evoa_version
 
         # --> Perform Monkey Patching update of print methods if multiprocessing
-        if self.settings.signal_training_settings.multiprocessing:
+        if self.settings.signal_tuning_settings.multiprocessing:
             self.evoa_settings_auto_adjust = self.__monkey_patch_pass
             self.evoa_run_initialisation_recap = self.__monkey_patch_pass
             self.new_slice_info = self.__monkey_patch_pass
@@ -56,7 +56,7 @@ class EVOA_prints:
             print(cf["green"] + "==================================================================" + cf["reset"])
 
             print("Number of data slices to be processed:", slice_count)
-            if self.settings.signal_training_settings.data_looper is False:
+            if self.settings.signal_tuning_settings.data_looper is False:
                 print("-> Generation count set to", generation_count, "to match specified date interval <-\n")
             else:
                 print("Generation count:", generation_count, cf["green"] +
@@ -73,18 +73,18 @@ class EVOA_prints:
 
         print(cf["green"] + "__________________________________________________________________" + cf["reset"])
         print("                     -- Settings selected --\n")
-        print("Selected evaluation method: " + cf["green"] + self.settings.signal_training_settings.evaluation_methods[self.settings.signal_training_settings.evaluation_method] + cf["reset"])
+        print("Selected evaluation method: " + cf["green"] + self.settings.signal_tuning_settings.evaluation_methods[self.settings.signal_tuning_settings.evaluation_method] + cf["reset"])
         print("Labeling method: " + cf["green"] + self.settings.metalabeling_settings.metalabeling_settings[self.settings.metalabeling_settings.metalabeling_setting] + cf["reset"])
         print("")
-        print("Selected parent function: " + cf["green"] + self.settings.signal_training_settings.decay_functions[self.settings.signal_training_settings.parents_decay_function] + cf["reset"])
-        print("Selected random individual function: " + cf["green"] + self.settings.signal_training_settings.decay_functions[self.settings.signal_training_settings.random_ind_decay_function] + cf["reset"])
-        print("Selected mutation range function: " + cf["green"] + self.settings.signal_training_settings.decay_functions[self.settings.signal_training_settings.mutation_decay_function] + cf["reset"])
+        print("Selected parent function: " + cf["green"] + self.settings.signal_tuning_settings.decay_functions[self.settings.signal_tuning_settings.parents_decay_function] + cf["reset"])
+        print("Selected random individual function: " + cf["green"] + self.settings.signal_tuning_settings.decay_functions[self.settings.signal_tuning_settings.random_ind_decay_function] + cf["reset"])
+        print("Selected mutation range function: " + cf["green"] + self.settings.signal_tuning_settings.decay_functions[self.settings.signal_tuning_settings.mutation_decay_function] + cf["reset"])
         print("")
-        print("Configuration sheet: " + cf["green"] + self.settings.signal_training_settings.config_name + cf["reset"])
-        print("Starting parameters: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters) + cf["reset"])
+        print("Configuration sheet: " + cf["green"] + self.settings.signal_tuning_settings.config_name + cf["reset"])
+        print("Starting parameters: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters) + cf["reset"])
         print("")
 
-        if self.settings.signal_training_settings.starting_parameters is None:
+        if self.settings.signal_tuning_settings.starting_parameters is None:
             print("Indicators tuned: -> RSI: " + cf["green"] + str(self.settings.individual_settings.rsi_count) + cf["reset"])
             print("                  -> SMA: " + cf["green"] + str(self.settings.individual_settings.sma_count) + cf["reset"])
             print("                  -> EMA: " + cf["green"] + str(self.settings.individual_settings.ema_count) + cf["reset"])
@@ -94,12 +94,12 @@ class EVOA_prints:
             print("                  -> OC gradient: " + cf["green"] + str(1) + cf["reset"])
 
         else:
-            print("Indicators tuned: -> RSI: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["rsi"]) + cf["reset"])
-            print("                  -> SMA: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["sma"]) + cf["reset"])
-            print("                  -> EMA: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["ema"]) + cf["reset"])
-            print("                  -> LWMA: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["lwma"]) + cf["reset"])
-            print("                  -> CCI: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["cci"]) + cf["reset"])
-            print("                  -> EVM: " + cf["green"] + str(self.settings.signal_training_settings.starting_parameters["indicators_count"]["eom"]) + cf["reset"])
+            print("Indicators tuned: -> RSI: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters["indicators_count"]["rsi"]) + cf["reset"])
+            print("                  -> SMA: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters["indicators_count"]["sma"]) + cf["reset"])
+            print("                  -> EMA: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters["indicators_count"]["ema"]) + cf["reset"])
+            print("                  -> LWMA: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters["indicators_count"]["lwma"]) + cf["reset"])
+            print("                  -> CCI: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters["indicators_count"]["cci"]) + cf["reset"])
+            print("                  -> EVM: " + cf["green"] + str(self.settings.signal_tuning_settings.starting_parameters["indicators_count"]["eom"]) + cf["reset"])
             print("                  -> OC gradient: " + cf["green"] + str(1) + cf["reset"])
         print(cf["green"] + "__________________________________________________________________\n" + cf["reset"])
 
@@ -129,9 +129,9 @@ class EVOA_prints:
               "Generation " + str(gen) + cf["bold"] + cf["cyan"] + "/" + cf["reset"] + str(max_gen) +
               cf["bold"] + cf["cyan"] + " =================================" + cf["reset"])
         print("Data slice analysed:", data_slice.subslice_start_date, "-->", data_slice.subslice_stop_date)
-        print("Data slice analysed:", data_slice.start_index, "-->", data_slice.stop_index-1)
+        print("Data slice analysed:", data_slice.subslice_start_index, "-->", data_slice.subslice_stop_index-1)
 
-        if self.settings.signal_training_settings.optimiser_setting == 1:
+        if self.settings.signal_tuning_settings.optimiser_setting == 1:
             print("Data slice analysis cycle:", cycle_count, "\n")
         else:
             print("\n")

@@ -32,7 +32,9 @@ class Market_settings:
         # --> Fetch parameter sets
         self.run_reference = 10
         self.term = "Short_term"
-        self.tickers, self.parameter_sets = fetch_parameter_sets(self.tickers, str(self.run_reference), self.term)
+        self.tickers, self.parameter_sets = fetch_parameter_sets(tickers=self.tickers,
+                                                                 run_count=str(self.run_reference),
+                                                                 term=self.term)
         self.price_selection = "Open"
 
         # ---- Date settings
@@ -45,7 +47,7 @@ class Market_settings:
         self.testing_start_date = "2019-06-03"
         self.testing_end_date = "2019-07-10"
 
-        self.data_slice_size = 26
+        self.subslice_size = 26
 
         # ---- Broker settings
         self.min_transaction_cost = 1

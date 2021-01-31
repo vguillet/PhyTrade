@@ -11,7 +11,7 @@ import sys
 import json
 
 # Libs
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets
 
 # Own modules
 from GUI_1_1.ui_layouts.Main_window_ui import Ui_mainWindow
@@ -23,7 +23,7 @@ from GUI_1_1.ui_connections.Metalabeling_settings_c import save_simple_metalabel
 from GUI_1_1.ui_connections.Model_settings_c import save_model_settings
 from GUI_1_1.ui_connections.Trade_sim_settings_c import save_general_trade_sim_settings, save_single_ticker_trade_sim_settings, save_multi_ticker_trade_sim_settings
 
-from PhyTrade.Tools.RUN_protocols import RUN_protocols
+from PhyTrade.RUN_protocols import RUN_protocols
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

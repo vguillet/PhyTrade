@@ -14,7 +14,7 @@ __date__ = '10/09/2019'
 ##################################################################################################################
 
 
-class Optimiser_settings:
+class EVOA_optimiser_settings:
     # =============================== EVOA SETTINGS ===============================
     def gen_evoa_settings(self):
         # ___________________________ Optimisation parameters ____________________
@@ -47,8 +47,8 @@ class Optimiser_settings:
         self.mutation_rate = 0.5
         self.nb_parents_in_next_gen = 1
 
-        self.data_slice_cycle_count = 5
-        self.data_slice_shift_per_gen = 10
+        self.subslice_cycle_count = 5
+        self.subslice_shift_per_gen = 10
 
         self.data_looper = False
         # --> If data looper is True

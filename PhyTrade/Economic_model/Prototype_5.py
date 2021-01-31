@@ -38,7 +38,7 @@ from PhyTrade.Economic_model.Building_blocks.Technical_indicators.Amplification_
 # ---> import general tools
 from PhyTrade.Economic_model.Tools.OC_tools import OC
 from PhyTrade.Tools.Math_tools import Math_tools
-from PhyTrade.Tools.SPLINE_tools import Spline_tools
+from PhyTrade.Tools.Spline_tools import Spline_tools
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'

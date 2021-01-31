@@ -24,7 +24,7 @@ class Individual:
     def __init__(self, parameter_set=None):
         # ========================= DATA COLLECTION INITIALISATION =======================
         self.settings = SETTINGS()
-        self.settings.signal_training_settings.gen_evoa_settings()
+        self.settings.signal_tuning_settings.gen_evoa_settings()
 
         # --> Setup properties placeholders
         self.analysis = None
@@ -54,7 +54,7 @@ class Individual:
 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Counting number of parameters
         self.nb_of_parameters = General_tools().calc_nested_dic_item_count(dictionary=self.parameter_set,
-                                                                           blacklist=self.settings.signal_training_settings.parameter_blacklist)
+                                                                           blacklist=self.settings.signal_tuning_settings.parameter_blacklist)
 
         for i in self.parameter_set:
             for j in range(len(self.parameter_set[i])):

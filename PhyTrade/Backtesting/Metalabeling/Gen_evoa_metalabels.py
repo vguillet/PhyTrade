@@ -10,7 +10,7 @@ from math import ceil
 # Own modules
 from PhyTrade.Signal_optimisation.EVO_algorithm.EVO_algorithm import EVO_algorithm
 from PhyTrade.Data_Collection_preparation.Record_splines import record_splines
-from PhyTrade.Core_elements.Trading_dataslice import Trading_dataslice
+from PhyTrade.Building_blocks.Trading_dataslice import Trading_dataslice
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
 

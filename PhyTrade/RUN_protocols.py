@@ -91,7 +91,9 @@ class RUN_protocols:
         #     optimise(self.settings, ticker)
 
         self.settings.fetch_dates(1)
-        EVO_algorithm(self.settings, self.settings.market_settings.tickers[0], optimiser_setting=1)
+        EVO_algorithm(settings=self.settings,
+                      ticker=self.settings.market_settings.tickers[0],
+                      optimiser_setting=1)
 
     # ============================ EVOLUTION-METALABELING ==========================
     def run_evoa_metalabeling(self):
@@ -99,7 +101,8 @@ class RUN_protocols:
         self.settings.market_settings.gen_market_settings()
 
         for ticker in self.settings.market_settings.tickers:
-            gen_ticker_metalabels(self.settings, ticker)
+            gen_ticker_metalabels(settings=self.settings,
+                                  ticker=ticker)
 
     # ============================ ECONOMIC ANALYSIS ===============================
     @staticmethod

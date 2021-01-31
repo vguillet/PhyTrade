@@ -37,7 +37,7 @@ class Market_settings:
         self.testing_start_date = market_settings["testing_start_date"]
         self.testing_end_date = market_settings["testing_stop_date"]
 
-        self.data_slice_size = market_settings["data_slice_size"]
+        self.subslice_size = market_settings["data_slice_size"]
 
         # ---- Broker settings
         self.min_transaction_cost = market_settings["min_transaction_cost"]

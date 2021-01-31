@@ -9,7 +9,7 @@ import random
 
 # Own modules
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
-
+1
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
 __date__ = '10/09/2019'

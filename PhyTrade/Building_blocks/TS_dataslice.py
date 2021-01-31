@@ -6,6 +6,7 @@ information about the slice analysed, including the starting and stopping index,
 
 # Libs
 import numpy as np
+import pandas as pd
 
 # Own modules
 
@@ -48,7 +49,7 @@ class TS_dataslice:
         :param data:
         :param subslice_size:
         :param subslice_shift_per_step:
-        :param start_date:
+        :param start_date: String (Year-Month-Date)
         :param end_date:
         :param data_looper:
         """
@@ -65,7 +66,7 @@ class TS_dataslice:
 
         self.subslice_shift_per_step = subslice_shift_per_step
 
-        self.__set_subslice_properties(start_date)
+        self.__set_subslice_properties(pd.Timestamp(start_date))
 
         # ---- Main slice properties
         self.start_index = self.subslice_start_index

@@ -51,8 +51,8 @@ class Optimiser_settings:
 
         self.mutation_rate = EVOA_optimiser_settings["mutation_rate"]
         self.nb_parents_in_next_gen = EVOA_optimiser_settings["nb_parents_in_next_gen"]
-        self.data_slice_cycle_count = EVOA_optimiser_settings["data_slice_cycle_count"]
-        self.data_slice_shift_per_gen = EVOA_optimiser_settings["data_slice_shift_per_gen"]
+        self.subslice_cycle_count = EVOA_optimiser_settings["data_slice_cycle_count"]
+        self.subslice_shift_per_gen = EVOA_optimiser_settings["data_slice_shift_per_gen"]
         self.data_looper = EVOA_optimiser_settings["data_looper"]
 
         # -- Generations settings
