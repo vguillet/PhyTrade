@@ -15,11 +15,11 @@ The class contains:
 import sys
 import random
 from copy import deepcopy
-from math import log10
 
 # Own modules
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_benchmark_tool import Confusion_matrix_analysis
 from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_parameter_randomiser_tool import EVOA_parameter_randomiser
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.Throttle_tool import throttle
 from PhyTrade.Building_blocks.Individual import Individual
 from PhyTrade.Tools.Progress_bar_tool import Progress_bar
 
@@ -308,59 +308,6 @@ class EVOA_tools:
         return new_population
 
     @staticmethod
-    def throttle(current_iteration, nb_of_iterations, max_value, min_value=1., decay_function=0):
-        """
-        Throttle a value according to the instance in the run time.
-
-        The following decay functions settings can be used:
-                0 - Fixed value (returns max value)
-
-                1 - Linear decay
-
-                2 - Logarithmic decay (in development)
-
-        :param current_iteration: Current iteration
-        :param nb_of_iterations: Total number of iteration to consider
-        :param max_value: Max allowed value
-        :param min_value: Min allowed value
-        :param decay_function: Decay function setting
-        :return: Throttled value
-        """
-
-        # --> Exit program if incorrect settings used
-        if decay_function > 2:
-            print("Invalid throttle decay function reference")
-            sys.exit()
-
-        inverse = False
-        if max_value < min_value:
-            inverse = True
-
-        # TODO: add decay functions (log/exponential etc...)
-        if current_iteration <= nb_of_iterations:
-            if decay_function == 0:       # Fixed value
-                return max_value
-
-            elif decay_function == 1:     # Linear decay
-                if inverse:
-                    throttled_value = max_value + (min_value-max_value) / nb_of_iterations * current_iteration
-                    if throttled_value <= min_value:
-                        throttled_value = min_value
-                else:
-                    throttled_value = max_value - (max_value-min_value) / nb_of_iterations * current_iteration
-                    if throttled_value <= min_value:
-                        throttled_value = min_value
-
-            # TODO: Complete log decay
-            elif decay_function == 2:       # Logarithmic decay
-                throttled_value = max_value+log10(-(current_iteration - nb_of_iterations))
-
-        else:
-            throttled_value = min_value
-
-        return throttled_value
-
-    @staticmethod
     def determine_evolving_gen_parameters(settings, current_generation, subslice_cycle_count):
         """
         Used to adjust generation parameters, including:
@@ -381,65 +328,65 @@ class EVOA_tools:
         # ------------------ Throttle the individual count to be used by the generation
         # ---- Number of parents
         # --> Based on generation count
-        nb_parents_gen = round(EVOA_tools().throttle(current_iteration=current_generation,
-                                                     nb_of_iterations=settings.nb_of_generations - settings.exploitation_phase_len,
-                                                     max_value=settings.nb_parents,
-                                                     min_value=1,
-                                                     decay_function=settings.parents_decay_function))
+        nb_parents_gen = round(throttle(current_iteration=current_generation,
+                                        nb_of_iterations=settings.nb_of_generations - settings.exploitation_phase_len,
+                                        max_value=settings.nb_parents,
+                                        min_value=1,
+                                        decay_function=settings.parents_decay_function))
         # --> Based on cycle count
-        nb_parents_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                       nb_of_iterations=settings.subslice_cycle_count,
-                                                       max_value=settings.nb_parents,
-                                                       min_value=1,
-                                                       decay_function=settings.parents_decay_function))
+        nb_parents_cycle = round(throttle(current_iteration=subslice_cycle_count,
+                                          nb_of_iterations=settings.subslice_cycle_count,
+                                          max_value=settings.nb_parents,
+                                          min_value=1,
+                                          decay_function=settings.parents_decay_function))
         # --> Select smallest one
         nb_parents = min(nb_parents_gen, nb_parents_cycle)
 
         # ---- Number of parents included in next gen
         # --> Based on generation count
-        nb_parents_in_next_gen_gen = round(EVOA_tools().throttle(current_iteration=current_generation,
-                                                                 nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
-                                                                 max_value=settings.nb_parents_in_next_gen,
-                                                                 min_value=1,
-                                                                 decay_function=settings.random_ind_decay_function))
+        nb_parents_in_next_gen_gen = round(throttle(current_iteration=current_generation,
+                                                    nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
+                                                    max_value=settings.nb_parents_in_next_gen,
+                                                    min_value=1,
+                                                    decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
-        nb_parents_in_next_gen_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                                   nb_of_iterations=settings.subslice_cycle_count,
-                                                                   max_value=settings.nb_parents_in_next_gen,
-                                                                   min_value=1,
-                                                                   decay_function=settings.random_ind_decay_function))
+        nb_parents_in_next_gen_cycle = round(throttle(current_iteration=subslice_cycle_count,
+                                                      nb_of_iterations=settings.subslice_cycle_count,
+                                                      max_value=settings.nb_parents_in_next_gen,
+                                                      min_value=1,
+                                                      decay_function=settings.random_ind_decay_function))
         # --> Select smallest one
         nb_parents_in_next_gen = min(nb_parents_in_next_gen_gen, nb_parents_in_next_gen_cycle)
 
         # ---- Number of random individual
         # --> Based on generation count
-        nb_random_ind_gen = round(EVOA_tools().throttle(current_iteration=current_generation,
-                                                        nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
-                                                        max_value=settings.nb_random_ind,
-                                                        min_value=0,
-                                                        decay_function=settings.random_ind_decay_function))
+        nb_random_ind_gen = round(throttle(current_iteration=current_generation,
+                                           nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
+                                           max_value=settings.nb_random_ind,
+                                           min_value=0,
+                                           decay_function=settings.random_ind_decay_function))
         # --> Based on cycle count
-        nb_random_ind_cycle = round(EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                          nb_of_iterations=settings.subslice_cycle_count,
-                                                          max_value=settings.nb_random_ind,
-                                                          min_value=0,
-                                                          decay_function=settings.random_ind_decay_function))
+        nb_random_ind_cycle = round(throttle(current_iteration=subslice_cycle_count,
+                                             nb_of_iterations=settings.subslice_cycle_count,
+                                             max_value=settings.nb_random_ind,
+                                             min_value=0,
+                                             decay_function=settings.random_ind_decay_function))
         # --> Select smallest one
         nb_random_ind = min(nb_random_ind_gen, nb_random_ind_cycle)
 
         # ---- Mutation rate
         # --> Based on generation count
-        mutation_rate_gen = EVOA_tools().throttle(current_iteration=current_generation,
-                                                  nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
-                                                  max_value=settings.mutation_rate,
-                                                  min_value=0.1,
-                                                  decay_function=settings.random_ind_decay_function)
+        mutation_rate_gen = throttle(current_iteration=current_generation,
+                                     nb_of_iterations=settings.nb_of_generations-settings.exploitation_phase_len,
+                                     max_value=settings.mutation_rate,
+                                     min_value=0.1,
+                                     decay_function=settings.random_ind_decay_function)
         # --> Based on cycle count
-        mutation_rate_cycle = EVOA_tools().throttle(current_iteration=subslice_cycle_count,
-                                                    nb_of_iterations=settings.subslice_cycle_count,
-                                                    max_value=settings.mutation_rate,
-                                                    min_value=0.1,
-                                                    decay_function=settings.random_ind_decay_function)
+        mutation_rate_cycle = throttle(current_iteration=subslice_cycle_count,
+                                       nb_of_iterations=settings.subslice_cycle_count,
+                                       max_value=settings.mutation_rate,
+                                       min_value=0.1,
+                                       decay_function=settings.random_ind_decay_function)
         # --> Select smallest one
         mutation_rate = min(mutation_rate_gen, mutation_rate_cycle)
 

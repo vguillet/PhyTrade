@@ -8,8 +8,8 @@ Used to randomise the values of specific parameters according to various criteri
 import random
 
 # Own modules
-from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.EVOA_tools import EVOA_tools
-1
+from PhyTrade.Signal_optimisation.EVO_algorithm.Tools.Throttle_tool import throttle
+
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
 __date__ = '10/09/2019'
@@ -151,11 +151,18 @@ class EVOA_parameter_randomiser:
                       decay_function):
         
         # Throttle variation parameters according to generation
-        throttled_param = round(EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                      30, 1, decay_function))
+        throttled_param = round(throttle(current_iteration=current_generation,
+                                         nb_of_iterations=nb_of_generations,
+                                         max_value=30,
+                                         min_value=1,
+                                         decay_function=decay_function))
+
         # Throttle variation parameters according to slice cycle
-        throttled_param = round(EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                      throttled_param, 1, decay_function))
+        throttled_param = round(throttle(current_iteration=current_subslice_cycle,
+                                         nb_of_iterations=nb_of_subslice_cycles,
+                                         max_value=throttled_param,
+                                         min_value=1,
+                                         decay_function=decay_function))
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.randint(-throttled_param, throttled_param)
@@ -176,11 +183,18 @@ class EVOA_parameter_randomiser:
                              decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                1, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_generation,
+                                   nb_of_iterations=nb_of_generations,
+                                   max_value=1,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
+
         # Throttle variation parameters according to slice cycle
-        throttled_param = EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                throttled_param, 1, decay_function)
+        throttled_param = throttle(current_iteration=current_subslice_cycle,
+                                   nb_of_iterations=nb_of_subslice_cycles,
+                                   max_value=throttled_param,
+                                   min_value=1,
+                                   decay_function=decay_function)
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
@@ -201,11 +215,18 @@ class EVOA_parameter_randomiser:
                                  decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                1.5, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_generation,
+                                   nb_of_iterations=nb_of_generations,
+                                   max_value=1.5,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
+
         # Throttle variation parameters according to slice cycle
-        throttled_param = EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                throttled_param, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_subslice_cycle,
+                                   nb_of_iterations=nb_of_subslice_cycles,
+                                   max_value=throttled_param,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
@@ -226,11 +247,19 @@ class EVOA_parameter_randomiser:
                    decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                4, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_generation,
+                                   nb_of_iterations=nb_of_generations,
+                                   max_value=4,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
+
         # Throttle variation parameters according to slice cycle
-        throttled_param = EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                throttled_param, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_subslice_cycle,
+                                   nb_of_iterations=nb_of_subslice_cycles,
+                                   max_value=throttled_param,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
+
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
 
@@ -250,11 +279,18 @@ class EVOA_parameter_randomiser:
                             decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                50, 1, decay_function)
+        throttled_param = throttle(current_iteration=current_generation,
+                                   nb_of_iterations=nb_of_generations,
+                                   max_value=50,
+                                   min_value=1,
+                                   decay_function=decay_function)
+
         # Throttle variation parameters according to slice cycle
-        throttled_param = EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                throttled_param, 1, decay_function)
+        throttled_param = throttle(current_iteration=current_subslice_cycle,
+                                   nb_of_iterations=nb_of_subslice_cycles,
+                                   max_value=throttled_param,
+                                   min_value=1,
+                                   decay_function=decay_function)
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
@@ -276,11 +312,18 @@ class EVOA_parameter_randomiser:
                                 decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = round(EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                      20, 1, decay_function))
+        throttled_param = round(throttle(current_iteration=current_generation,
+                                         nb_of_iterations=nb_of_generations,
+                                         max_value=20,
+                                         min_value=1,
+                                         decay_function=decay_function))
+
         # Throttle variation parameters according to generation
-        throttled_param = round(EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                      throttled_param, 1, decay_function))
+        throttled_param = round(throttle(current_iteration=current_subslice_cycle,
+                                         nb_of_iterations=nb_of_subslice_cycles,
+                                         max_value=throttled_param,
+                                         min_value=1,
+                                         decay_function=decay_function))
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.randint(-throttled_param, throttled_param)
@@ -304,11 +347,18 @@ class EVOA_parameter_randomiser:
                                 decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = round(EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                      20, 1, decay_function))
+        throttled_param = round(throttle(current_iteration=current_generation,
+                                         nb_of_iterations=nb_of_generations,
+                                         max_value=20,
+                                         min_value=1,
+                                         decay_function=decay_function))
+
         # Throttle variation parameters according to generation
-        throttled_param = round(EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                      throttled_param, 1, decay_function))
+        throttled_param = round(throttle(current_iteration=current_subslice_cycle,
+                                         nb_of_iterations=nb_of_subslice_cycles,
+                                         max_value=throttled_param,
+                                         min_value=1,
+                                         decay_function=decay_function))
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.randint(-throttled_param, throttled_param)
@@ -332,11 +382,17 @@ class EVOA_parameter_randomiser:
                                          decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                0.2, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_generation,
+                                   nb_of_iterations=nb_of_generations,
+                                   max_value=0.2,
+                                   min_value=0.01, decay_function=decay_function)
+
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                throttled_param, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_subslice_cycle,
+                                   nb_of_iterations=nb_of_subslice_cycles,
+                                   max_value=throttled_param,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
@@ -360,11 +416,18 @@ class EVOA_parameter_randomiser:
                                          decay_function):
 
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_generation, nb_of_generations,
-                                                0.2, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_generation,
+                                   nb_of_iterations=nb_of_generations,
+                                   max_value=0.2,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
+
         # Throttle variation parameters according to generation
-        throttled_param = EVOA_tools().throttle(current_subslice_cycle, nb_of_subslice_cycles,
-                                                throttled_param, 0.01, decay_function)
+        throttled_param = throttle(current_iteration=current_subslice_cycle,
+                                   nb_of_iterations=nb_of_subslice_cycles,
+                                   max_value=throttled_param,
+                                   min_value=0.01,
+                                   decay_function=decay_function)
 
         # Update parameter using throttled ranges
         new_parameter = current_parameter + random.uniform(-throttled_param, throttled_param)
