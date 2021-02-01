@@ -39,21 +39,14 @@ class UI_connector:
         self.ui.main_save_settings.clicked.connect(self.__save_main_settings)
 
         # --> Optimisers settings
-        self.ui.EVOA_optimisation_save_settings.clicked.connect(save_EVOA_optimiser_settings(ui=self.ui,
-                                                                                             location="EVOA_optimiser_settings",
-                                                                                             name=self.ui.EVOA_optimisation_config_name.text()))
+        self.ui.EVOA_optimisation_save_settings.clicked.connect(self.__save_EVOA_optimiser_settings)
         self.ui.EVOA_optimisation_run.clicked.connect(self.__run_EVOA_optimiser)
 
         # --> Metalabels settings
-        self.ui.EVOA_metalabeling_save_settings.clicked.connect(save_EVOA_metalabels_settings(ui=self.ui,
-                                                                                              location="EVOA_metalabels_settings",
-                                                                                              name=self.ui.EVOA_metalabeling_config_name.text()))
-        self.ui.EVOA_metalabels_run.clicked.connect(self.__run_EVOA_metalabels_gen)
+        self.ui.EVOA_metalabeling_save_settings.clicked.connect(self.__save_EVOA_metalabels_settings)
+        self.ui.EVOA_metalabeling_run.clicked.connect(self.__run_EVOA_metalabels_gen)
 
-        self.ui.simple_metalabeling_save_settings.clicked.connect(save_simple_metalabels_settings(ui=self.ui,
-                                                                                                  location="Simple_metalabels_settings",
-                                                                                                  name=self.ui.backtesting_config_name.text()))
-
+        self.ui.simple_metalabeling_save_settings.clicked.connect(self.__save_simple_metalabels_settings)
         # TODO: Uncomment when simple metalabel added
         # self.ui.simple_metalabels_run.clicked.connect(self.__run_simple_metalabels_gen)
 
@@ -61,41 +54,35 @@ class UI_connector:
         self.ui.economic_evaluation_run.clicked.connect(self.__run_economic_evaluation_gen)
 
         # --> Trade sim settings
-        self.ui.trade_sim_general_save_settings.clicked.connect(save_general_trade_sim_settings(ui=self.ui,
-                                                                                                location="General_trade_sim_settings",
-                                                                                                name=self.ui.simulation_name.text()))
+        self.ui.trade_sim_general_save_settings.clicked.connect(self.__save_general_trade_sim_settings)
 
-        self.ui.stts_save_settings.clicked.connect(save_single_ticker_trade_sim_settings(ui=self.ui,
-                                                                                         location="Single_ticker_trade_sim_settings",
-                                                                                         name=self.ui.simulation_name.text()))
+        self.ui.stts_save_settings.clicked.connect(self.__save_single_ticker_trade_sim_settings)
         self.ui.stts_run.clicked.connect(self.__stts_run)
 
-        self.ui.mtts_save_settings.clicked.connect(save_multi_ticker_trade_sim_settings(ui=self.ui,
-                                                                                        location="Multi_ticker_trade_sim_settings",
-                                                                                        name=self.ui.simulation_name.text()))
+        self.ui.mtts_save_settings.clicked.connect(self.__save_multi_ticker_trade_sim_settings)
         self.ui.mtts_run.clicked.connect(self.__mtts_run)
 
     # =======================================================================================================
     # ---------------- Current settings functions
     def __save_current_settings(self):
         # --> Main settings
-        save_market_settings(self.ui)
-        save_tradebot_settings(self.ui)
+        save_market_settings(ui=self.ui)
+        save_tradebot_settings(ui=self.ui)
 
         # --> Optimisers settings
-        save_EVOA_optimiser_settings(self.ui)
+        save_EVOA_optimiser_settings(ui=self.ui)
 
         # --> Metalabels settings
-        save_EVOA_metalabels_settings(self.ui)
-        save_simple_metalabels_settings(self.ui)
+        save_EVOA_metalabels_settings(ui=self.ui)
+        save_simple_metalabels_settings(ui=self.ui)
 
         # --> Economic evaluation
-        save_model_settings(self.ui)
+        save_model_settings(ui=self.ui)
 
         # --> Trade sim settings
-        save_general_trade_sim_settings(self.ui)
-        save_single_ticker_trade_sim_settings(self.ui)
-        save_multi_ticker_trade_sim_settings(self.ui)
+        save_general_trade_sim_settings(ui=self.ui)
+        save_single_ticker_trade_sim_settings(ui=self.ui)
+        save_multi_ticker_trade_sim_settings(ui=self.ui)
 
         print("Check")
 
@@ -144,29 +131,50 @@ class UI_connector:
                                name=self.ui.config_name_tradebot.text())
 
     # ---------------- Optimisers settings functions
+    def __save_EVOA_optimiser_settings(self):
+        save_EVOA_optimiser_settings(ui=self.ui,
+                                     location="EVOA_optimiser_settings",
+                                     name=self.ui.EVOA_optimisation_config_name.text())
+
     def __run_EVOA_optimiser(self):
         # --> Record settings
         self.__save_current_settings()
 
         # --> Initiate process in thread
-        worker = Worker(RUN_protocols(task_sequence=[1]))
-        # worker.signals.progress.connect(self.update_gui)
+        def task():
+            RUN_protocols(task_sequence=[1])
+            return
 
+        worker = Worker(task)
+        # worker.signals.progress.connect(self.update_gui)
         self.threadpool.start(worker)
 
     # ---------------- Metalabels settings functions
     # --> EVOA metalabels
+    def __save_EVOA_metalabels_settings(self):
+        save_EVOA_metalabels_settings(ui=self.ui,
+                                      location="EVOA_metalabels_settings",
+                                      name=self.ui.EVOA_metalabeling_config_name.text())
+
     def __run_EVOA_metalabels_gen(self):
         # --> Record settings
         self.__save_current_settings()
 
         # --> Initiate process in thread
-        worker = Worker(RUN_protocols(task_sequence=[2]))
-        # worker.signals.progress.connect(self.update_gui)
+        def task():
+            RUN_protocols(task_sequence=[2])
+            return
 
+        worker = Worker(task)
+        # worker.signals.progress.connect(self.update_gui)
         self.threadpool.start(worker)
 
     # --> Simple metalabels
+    def __save_simple_metalabels_settings(self):
+        save_simple_metalabels_settings(ui=self.ui,
+                                        location="Simple_metalabels_settings",
+                                        name=self.ui.backtesting_config_name.text())
+
     def __run_simple_metalabels_gen(self):
         # --> Record settings
         self.__save_current_settings()
@@ -179,30 +187,54 @@ class UI_connector:
         self.__save_current_settings()
 
         # --> Initiate process in thread
-        worker = Worker(RUN_protocols(task_sequence=[3]))
-        # worker.signals.progress.connect(self.update_gui)
+        def task():
+            RUN_protocols(task_sequence=[3])
+            return
 
+        worker = Worker(task)
+        # worker.signals.progress.connect(self.update_gui)
         self.threadpool.start(worker)
 
     # ---------------- Trade sim settings functions
+    def __save_general_trade_sim_settings(self):
+        save_general_trade_sim_settings(ui=self.ui,
+                                        location="General_trade_sim_settings",
+                                        name=self.ui.simulation_name.text())
+
     # --> Single ticker trade simulation
+    def __save_single_ticker_trade_sim_settings(self):
+        save_single_ticker_trade_sim_settings(ui=self.ui,
+                                              location="Single_ticker_trade_sim_settings",
+                                              name=self.ui.simulation_name.text())
+
     def __stts_run(self):
         # --> Record settings
         self.__save_current_settings()
 
         # --> Initiate process in thread
-        worker = Worker(RUN_protocols(task_sequence=[4]))
-        # worker.signals.progress.connect(self.update_gui)
+        def task():
+            RUN_protocols(task_sequence=[4])
+            return
 
+        worker = Worker(task)
+        # worker.signals.progress.connect(self.update_gui)
         self.threadpool.start(worker)
 
     # --> Multi-ticker trade simulation
+    def __save_multi_ticker_trade_sim_settings(self):
+        save_multi_ticker_trade_sim_settings(ui=self.ui,
+                                             location="Multi_ticker_trade_sim_settings",
+                                             name=self.ui.simulation_name.text())
+
     def __mtts_run(self):
         # --> Record settings
         self.__save_current_settings()
 
         # --> Initiate process in thread
-        worker = Worker(RUN_protocols(task_sequence=[5]))
-        # worker.signals.progress.connect(self.update_gui)
+        def task():
+            RUN_protocols(task_sequence=[5])
+            return
 
+        worker = Worker(task)
+        # worker.signals.progress.connect(self.update_gui)
         self.threadpool.start(worker)

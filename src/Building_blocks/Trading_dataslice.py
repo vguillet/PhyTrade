@@ -10,9 +10,9 @@ import sys
 # Libs
 
 # Own modules
-from PhyTrade.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
-from PhyTrade.Building_blocks.TS_dataslice import TS_dataslice
-from PhyTrade.Backtesting.Metalabeling.Metalabels import MetaLabels
+from src.Data_Collection_preparation.Fetch_technical_data import fetch_technical_data
+from src.Building_blocks.TS_dataslice import TS_dataslice
+from src.Backtesting.Metalabeling.Metalabels import MetaLabels
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -123,7 +123,7 @@ class Trading_dataslice(TS_dataslice):
         if self.metalabels is None:
             sys.exit("Data slice metalabels inexistent, run gen_subslice_metalabels before perform_metatrade_run")
 
-        from PhyTrade.Trade_simulations.Trading_bots.Tradebot_single_ticker import Tradebot
+        from src.Trade_simulations.Trading_bots.Tradebot_single_ticker import Tradebot
 
         tradebot = Tradebot(daily_values=self.subslice_data_selection,
                             trade_signal=self.metalabels,

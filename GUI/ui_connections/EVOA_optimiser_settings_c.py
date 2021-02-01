@@ -20,6 +20,7 @@ __date__ = ''
 
 
 def save_EVOA_optimiser_settings(ui, location="Current_settings", name=""):
+
     EVOA_optimiser_settings = {}
 
     # ___________________________ Optimisation parameters ____________________
@@ -71,4 +72,6 @@ def save_EVOA_optimiser_settings(ui, location="Current_settings", name=""):
     # -- Starting parameters
     EVOA_optimiser_settings["starting_parameters"] = ui.EVOA_optimisation_starting_parameters.text()
 
-    record_settings(EVOA_optimiser_settings, location, name="EVOA_optimiser_settings"+"_"+name)
+    record_settings(dictionary=EVOA_optimiser_settings,
+                    setting_category=location,
+                    name="EVOA_optimiser_settings"+"_"+name)

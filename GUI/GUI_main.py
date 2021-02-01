@@ -21,7 +21,7 @@ from PyQt5.QtGui import QIcon
 # from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 # Own modules
-from GUI.Tools.Worker_thread import WorkerSignals, Worker
+# from GUI.Tools.Worker_thread import WorkerSignals, Worker
 from GUI.ui_elements.Console_gui import Console_GUI
 from GUI.ui_connections.ui_connector import UI_connector
 
@@ -48,7 +48,7 @@ class Phytrade_GUI:
         # --> Setting up thread pool
         self.threadpool = QThreadPool()
         
-        # ============================== Initiate Gui elements
+        # ============================== Initiate UI elements
         # --> Load gui element
         self.console_gui = Console_GUI()
         
@@ -57,8 +57,8 @@ class Phytrade_GUI:
         self.console_gui.reset_log()
 
         # --> Initiate console observer
-        worker = Worker(self.update_console)
-        self.threadpool.start(worker)
+        # worker = Worker(self.update_console)
+        # self.threadpool.start(worker)
 
         # ============================== Initiate ui connections
         UI_connector(self.ui, self.threadpool)
@@ -66,7 +66,7 @@ class Phytrade_GUI:
         # ============================== Display GUI
         self.ui.show()
 
-        print("\n - RSAI Initialisation: Success \n")
+        print("\n - Phytrade Initialisation: Success \n")
 
         sys.exit(app.exec())
 
@@ -79,72 +79,72 @@ class Phytrade_GUI:
 
 
 # =======================================================================================================
-# class WorkerSignals(QObject):
-#     """"
-#     Defines the signals available from a running worker thread.
-#
-#     Supported signals are:
-#
-#     finished
-#         No data
-#
-#     error
-#         `tuple` (exctype, value, traceback.format_exc() )
-#
-#     result
-#         `object` data returned from processing, anything
-#
-#     progress
-#         `int` indicating % progress
-#
-#     """
-#
-#     finished = pyqtSignal()
-#     error = pyqtSignal(tuple)
-#     result = pyqtSignal(object)
-#     progress = pyqtSignal()
-#
-#
-# class Worker(QRunnable):
-#     """
-#     Worker thread
-#
-#     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
-#
-#     :param callback: The function callback to run on this worker thread. Supplied args and
-#                      kwargs will be passed through to the runner.
-#     :type callback: function
-#     :param args: Arguments to pass to the callback function
-#     :param kwargs: Keywords to pass to the callback function
-#
-#     """
-#
-#     def __init__(self, fn, *args, **kwargs):
-#         super(Worker, self).__init__()
-#
-#         # Store constructor arguments (re-used for processing)
-#         self.fn = fn
-#         self.args = args
-#         self.kwargs = kwargs
-#         self.signals = WorkerSignals()
-#
-#         # Add the callback to our kwargs
-#         self.kwargs['progress_callback'] = self.signals.progress
-#
-#     @pyqtSlot()
-#     def run(self):
-#         """
-#         Initialise the runner function with passed args, kwargs.
-#         """
-#
-#         # Retrieve args/kwargs here; and fire processing using them
-#         try:
-#             result = self.fn(*self.args, **self.kwargs)
-#         except:
-#             traceback.print_exc()
-#             exctype, value = sys.exc_info()[:2]
-#             self.signals.error.emit((exctype, value, traceback.format_exc()))
-#         else:
-#             self.signals.result.emit(result)  # Return the result of the processing
-#         finally:
-#             self.signals.finished.emit()  # Done
+class WorkerSignals(QObject):
+    """"
+    Defines the signals available from a running worker thread.
+
+    Supported signals are:
+
+    finished
+        No data
+
+    error
+        `tuple` (exctype, value, traceback.format_exc() )
+
+    result
+        `object` data returned from processing, anything
+
+    progress
+        `int` indicating % progress
+
+    """
+
+    finished = pyqtSignal()
+    error = pyqtSignal(tuple)
+    result = pyqtSignal(object)
+    progress = pyqtSignal()
+
+
+class Worker(QRunnable):
+    """
+    Worker thread
+
+    Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
+
+    :param callback: The function callback to run on this worker thread. Supplied args and
+                     kwargs will be passed through to the runner.
+    :type callback: function
+    :param args: Arguments to pass to the callback function
+    :param kwargs: Keywords to pass to the callback function
+
+    """
+
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+        # Add the callback to our kwargs
+        self.kwargs['progress_callback'] = self.signals.progress
+
+    @pyqtSlot()
+    def run(self):
+        """
+        Initialise the runner function with passed args, kwargs.
+        """
+
+        # Retrieve args/kwargs here; and fire processing using them
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)  # Return the result of the processing
+        finally:
+            self.signals.finished.emit()  # Done

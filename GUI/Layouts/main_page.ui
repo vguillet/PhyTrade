@@ -60,7 +60,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="main_tab">
        <attribute name="title">
@@ -2704,7 +2704,7 @@ p, li { white-space: pre-wrap; }
                   <item row="1" column="1">
                    <widget class="QLineEdit" name="EVOA_optimisation_config_name">
                     <property name="text">
-                     <string/>
+                     <string>Default</string>
                     </property>
                    </widget>
                   </item>
@@ -3943,7 +3943,11 @@ p, li { white-space: pre-wrap; }
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
-             <widget class="QTextEdit" name="console_output"/>
+             <widget class="QTextEdit" name="console_output">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
