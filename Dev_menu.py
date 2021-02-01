@@ -4,17 +4,17 @@
 The Dev_menu script is used to initiate all economic analysis, trading simulations,
 and economic model parameters evaluations and optimisations.
 
-Dev menu-based runs used the class based setting system, settings can be adjusted in the PhyTrade settings/class based settings folder
+Dev menu-based runs used the class based setting system, settings can be adjusted in the src settings/class based settings folder
 """
 
 # Built-in/Generic Imports
 import json
 
 # Own modules
-from PhyTrade.Settings.SETTINGS import SETTINGS
-from PhyTrade.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
-from PhyTrade.Tools.Colours_and_Fonts import cf
-from PhyTrade.RUN_protocols import RUN_protocols
+from src.Settings.SETTINGS import SETTINGS
+from src.Data_Collection_preparation.Fetch_parameter_set_labels_df import fetch_parameter_set_labels_df
+from src.Tools.Colours_and_Fonts import cf
+from src.RUN_protocols import RUN_protocols
 
 __version__ = '1.1.1'
 __author__ = 'Victor Guillet'
@@ -27,7 +27,7 @@ with open(r"Settings\settings_mode.json",
           'w') as fout:
     json.dump(0, fout, indent=4)
 
-print(cf["bold"] + cf["cyan"] + "\n-- Welcome to the PhyTrade Economic analyser and modeling tool --" + cf["reset"])
+print(cf["bold"] + cf["cyan"] + "\n-- Welcome to the src Economic analyser and modeling tool --" + cf["reset"])
 print("\nSelect the wanted run process:")
 print(cf["bold"] + "\n> == Model training and optimisation == <" + cf["reset"])
 print(cf["green"] + "1 - RUN EVOA Optimiser" + cf["reset"])
@@ -59,7 +59,7 @@ while run is True:
 
     # --> Run a single process
     if type(selection) == int and selection != 6 and selection != 0:
-        RUN_protocols([selection])
+        RUN_protocols(task_sequence=[selection])
 
     # --> Run a protocol
     elif selection == 6:
@@ -114,7 +114,7 @@ while run is True:
             confirmation = str(input("\nEnter 'True' to confirm run and initiate protocol or 'False' to redefine: "))
 
             if confirmation == "True":
-                RUN_protocols(task_sequence)
+                RUN_protocols(task_sequence=task_sequence)
             else:
                 print(cf["bold"] + cf["red"] + "Protocol initiation Aborted" + cf["reset"])
 
@@ -125,7 +125,7 @@ while run is True:
                     print(available_tasks[task - 1])
 
             protocol_reference = int(input("\nEnter pre-defined Protocol reference: "))
-            RUN_protocols(predefined_protocols[protocol_reference-1])
+            RUN_protocols(task_sequence=predefined_protocols[protocol_reference-1])
 
     elif selection == 0:
         import sys
