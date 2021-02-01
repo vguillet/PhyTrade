@@ -119,7 +119,7 @@ class Confusion_matrix_analysis:
             self.confusion_table_sell.at['Non-Sell', 'Sell'] = confusion_matrix.at['Hold', 'Sell'] + \
                                                                confusion_matrix.at['Buy', 'Sell']
             # Calc stats
-            self.sell_stats = self.calc_stats(self.confusion_table_sell)
+            self.sell_stats = self.calc_stats(confusion_matrix=self.confusion_table_sell)
 
             # ---> Buy
             self.confusion_table_buy = pd.DataFrame(ct_init, columns=["Buy", "Non-Buy"], index=["Buy", "Non-Buy"])
@@ -128,18 +128,18 @@ class Confusion_matrix_analysis:
             self.confusion_table_buy.at['Buy', 'Buy'] = confusion_matrix.at['Buy', 'Buy']
             # True Negative
             self.confusion_table_buy.at['Non-Buy', 'Non-Buy'] = confusion_matrix.at['Hold', 'Hold'] + \
-                                                                 confusion_matrix.at['Sell', 'Sell'] + \
-                                                                 confusion_matrix.at['Hold', 'Sell'] + \
-                                                                 confusion_matrix.at['Sell', 'Hold']
+                                                                confusion_matrix.at['Sell', 'Sell'] + \
+                                                                confusion_matrix.at['Hold', 'Sell'] + \
+                                                                confusion_matrix.at['Sell', 'Hold']
             # False Positive
             self.confusion_table_buy.at['Buy', 'Non-Buy'] = confusion_matrix.at['Buy', 'Hold'] + \
-                                                             confusion_matrix.at['Buy', 'Sell']
+                                                            confusion_matrix.at['Buy', 'Sell']
 
             # False Negative
             self.confusion_table_buy.at['Non-Buy', 'Buy'] = confusion_matrix.at['Hold', 'Buy'] + \
-                                                             confusion_matrix.at['Sell', 'Buy']
+                                                            confusion_matrix.at['Sell', 'Buy']
             # Calc stats
-            self.buy_stats = self.calc_stats(self.confusion_table_buy)
+            self.buy_stats = self.calc_stats(confusion_matrix=self.confusion_table_buy)
 
             # ---> Hold
             self.confusion_table_hold = pd.DataFrame(ct_init, columns=["Hold", "Non-Hold"], index=["Hold", "Non-Hold"])
@@ -159,7 +159,7 @@ class Confusion_matrix_analysis:
             self.confusion_table_hold.at['Non-Hold', 'Hold'] = confusion_matrix.at['Sell', 'Hold'] + \
                                                                confusion_matrix.at['Buy', 'Hold']
             # Calc stats
-            self.hold_stats = self.calc_stats(self.confusion_table_hold)
+            self.hold_stats = self.calc_stats(confusion_matrix=self.confusion_table_hold)
 
         # TODO: Fix overall accuracy bs calc
         if print_benchmark_results:
@@ -167,134 +167,133 @@ class Confusion_matrix_analysis:
             print("Overall accuracy achieved (excluding hold):", round(self.overall_accuracy_bs))
             print("\nConfusion matrix:\n", confusion_matrix, "\n")
 
-    def calc_TPR(self, cm):
-        tp = float(cm.ix[0, 0])
-        fn = float(cm.ix[1, 0])
+    def calc_stats(self, confusion_matrix):
+        return {"TPR": self.calc_TPR(confusion_matrix),
+                "TNR": self.calc_TNR(confusion_matrix),
+                "PPV": self.calc_PPV(confusion_matrix),
+                "NPV": self.calc_NPV(confusion_matrix),
+                "FNR": self.calc_FNR(confusion_matrix),
+                "FPR": self.calc_FPR(confusion_matrix),
+                "FDR": self.calc_FDR(confusion_matrix),
+                "FOR": self.calc_FOR(confusion_matrix),
+                "ACC": self.calc_ACC(confusion_matrix),
+                "F1": self.calc_F1(confusion_matrix),
+                "MCC": self.calc_MCC(confusion_matrix),
+                "BM": self.calc_BM(confusion_matrix),
+                "MK": self.calc_MK(confusion_matrix)}
+    
+    def calc_TPR(self, confusion_matrix):               # True Positive
+        tp = float(confusion_matrix.iloc[0, 0])
+        fn = float(confusion_matrix.iloc[1, 0])
 
         try:
             return tp / (tp + fn)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_TNR(self, cm):
-        tn = float(cm.ix[1, 1])
-        fp = float(cm.ix[0, 1])
+    def calc_TNR(self, confusion_matrix):               # True Negative
+        tn = float(confusion_matrix.iloc[1, 1])
+        fp = float(confusion_matrix.iloc[0, 1])
 
         try:
             return tn / (tn + fp)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_PPV(self, cm):
-        tp = float(cm.ix[0, 0])
-        fp = float(cm.ix[0, 1])
+    def calc_PPV(self, confusion_matrix):               #
+        tp = float(confusion_matrix.iloc[0, 0])
+        fp = float(confusion_matrix.iloc[0, 1])
 
         try:
             return tp / (tp + fp)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_NPV(self, cm):
-        tn = float(cm.ix[1, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_NPV(self, confusion_matrix):               #
+        tn = float(confusion_matrix.iloc[1, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return tn / (tn + fn)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_FNR(self, cm):
-        tp = float(cm.ix[0, 0])
-        fn = float(cm.ix[1, 0])
-        try:
-            return fn / (fn + tp)
-        except ZeroDivisionError:
-            return float('Inf')
-
-    def calc_FPR(self, cm):
-        tn = float(cm.ix[1, 1])
-        fp = float(cm.ix[0, 1])
+    def calc_FPR(self, confusion_matrix):               # False Positive
+        tn = float(confusion_matrix.iloc[1, 1])
+        fp = float(confusion_matrix.iloc[0, 1])
         try:
             return fp / (fp + tn)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_FDR(self, cm):
-        tp = float(cm.ix[0, 0])
-        fp = float(cm.ix[0, 1])
+    def calc_FNR(self, confusion_matrix):               # False Negative
+        tp = float(confusion_matrix.iloc[0, 0])
+        fn = float(confusion_matrix.iloc[1, 0])
+        try:
+            return fn / (fn + tp)
+        except ZeroDivisionError:
+            return float('Inf')
+
+    def calc_FDR(self, confusion_matrix):
+        tp = float(confusion_matrix.iloc[0, 0])
+        fp = float(confusion_matrix.iloc[0, 1])
         try:
             return fp / (fp + tp)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_FOR(self, cm):
-        tn = float(cm.ix[1, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_FOR(self, confusion_matrix):
+        tn = float(confusion_matrix.iloc[1, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return fn / (fn + tn)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_ACC(self, cm):
-        tp = float(cm.ix[0, 0])
-        tn = float(cm.ix[1, 1])
-        fp = float(cm.ix[0, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_ACC(self, confusion_matrix):
+        tp = float(confusion_matrix.iloc[0, 0])
+        tn = float(confusion_matrix.iloc[1, 1])
+        fp = float(confusion_matrix.iloc[0, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return (tp + tn) / (tp + tn + fp + fn)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_F1(self, cm):
-        tp = float(cm.ix[0, 0])
-        fp = float(cm.ix[0, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_F1(self, confusion_matrix):
+        tp = float(confusion_matrix.iloc[0, 0])
+        fp = float(confusion_matrix.iloc[0, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return 2 * tp / (2 * tp + fp + fn)
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_MCC(self, cm):
-        tp = float(cm.ix[0, 0])
-        tn = float(cm.ix[1, 1])
-        fp = float(cm.ix[0, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_MCC(self, confusion_matrix):
+        tp = float(confusion_matrix.iloc[0, 0])
+        tn = float(confusion_matrix.iloc[1, 1])
+        fp = float(confusion_matrix.iloc[0, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return (tp * tn - fp * fn) / sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_BM(self, cm):
-        tp = float(cm.ix[0, 0])
-        tn = float(cm.ix[1, 1])
-        fp = float(cm.ix[0, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_BM(self, confusion_matrix):
+        tp = float(confusion_matrix.iloc[0, 0])
+        tn = float(confusion_matrix.iloc[1, 1])
+        fp = float(confusion_matrix.iloc[0, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return tp / (tp + fn) + tn / (tn + fp) - 1
         except ZeroDivisionError:
             return float('Inf')
 
-    def calc_MK(self, cm):
-        tp = float(cm.ix[0, 0])
-        tn = float(cm.ix[1, 1])
-        fp = float(cm.ix[0, 1])
-        fn = float(cm.ix[1, 0])
+    def calc_MK(self, confusion_matrix):
+        tp = float(confusion_matrix.iloc[0, 0])
+        tn = float(confusion_matrix.iloc[1, 1])
+        fp = float(confusion_matrix.iloc[0, 1])
+        fn = float(confusion_matrix.iloc[1, 0])
         try:
             return tp / (tp + fp) + tn / (tn + fn) - 1
         except ZeroDivisionError:
             return float('Inf')
-
-    def calc_stats(self, cm):
-        return {"TPR": self.calc_TPR(cm),
-                "TNR": self.calc_TNR(cm),
-                "PPV": self.calc_PPV(cm),
-                "NPV": self.calc_NPV(cm),
-                "FNR": self.calc_FNR(cm),
-                "FPR": self.calc_FPR(cm),
-                "FDR": self.calc_FDR(cm),
-                "FOR": self.calc_FOR(cm),
-                "ACC": self.calc_ACC(cm),
-                "F1": self.calc_F1(cm),
-                "MCC": self.calc_MCC(cm),
-                "BM": self.calc_BM(cm),
-                "MK": self.calc_MK(cm)}
-

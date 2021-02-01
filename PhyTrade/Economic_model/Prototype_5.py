@@ -186,7 +186,7 @@ class Prototype_5:
                         self.big_data.content["indicator_splines"][indicator_type][i] = \
                             self.spline_tools.flip_spline(spline=self.big_data.content["indicator_splines"][indicator_type][i])
 
-        # --> Adding signals together
+        # --> Adding signals together to create major_spline
         # Creating signal array
         self.big_data.spline_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), data_slice.subslice_size*self.big_data.spline_multiplication_coef))
         self.big_data.weights_array = np.zeros(shape=(sum(parameter_dictionary["indicators_count"].values()), 1))

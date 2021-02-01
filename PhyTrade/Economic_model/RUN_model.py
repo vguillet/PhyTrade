@@ -35,7 +35,7 @@ class RUN_model:
 
         start_date = settings.market_settings.testing_start_date
         end_date = settings.market_settings.testing_end_date
-        data_slice_size = settings.market_settings.data_slice_size
+        subslice_size = settings.market_settings.subslice_size
 
         # ---- Fetch run_model settings
         settings.model_settings.gen_run_model_settings()
@@ -51,6 +51,10 @@ class RUN_model:
         lower_barrier = settings.metalabeling_settings
         look_ahead = settings.metalabeling_settings.look_ahead
 
+        # ---- Fetch individual settings
+        settings.individual_settings.gen_individual_settings()
+
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # ---- Initiate run parameters
         self.ticker = ticker
         self.parameter_set = parameter_set
@@ -61,7 +65,7 @@ class RUN_model:
         # ---- Generate data slice
         self.data_slice = Trading_dataslice(ticker=self.ticker,
                                             start_date=start_date,
-                                            subslice_size=data_slice_size,
+                                            subslice_size=subslice_size,
                                             subslice_shift_per_step=0,
                                             end_date=end_date)
 
@@ -76,13 +80,13 @@ class RUN_model:
         print("Evaluated ticker:", ticker)
         print("\nStart date:", self.data_slice.subslice_start_date)
         print("Stop date:", self.data_slice.subslice_stop_date)
-        print("Data slice size:", data_slice_size)
+        print("Data slice size:", subslice_size)
 
         print("\nStarting parameters:", parameter_set)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         # ============================ ECONOMIC ANALYSIS ================================
         # ---- Generate economic model and perform trade run
-        progress_bar = Progress_bar(math.ceil(abs(self.data_slice.start_index-self.data_slice.end_index)/data_slice_size)+1, label="Model being generated")
+        progress_bar = Progress_bar(math.ceil(abs(self.data_slice.start_index-self.data_slice.end_index)/subslice_size)+1, label="Model being generated")
         data_slice_count = 0
         while self.data_slice.end_of_dataset is not True:
             data_slice_count += 1
@@ -101,10 +105,10 @@ class RUN_model:
             self.data_slice.perform_metatrade_run()
 
             # --> Record results
-            self.results.spline += list(self.individual.analysis.spline)
+            self.results.trade_spline += list(self.individual.analysis.trade_spline)
             self.results.trade_signal += list(self.individual.analysis.trade_signal)
-            self.results.upper_threshold_spline += list(self.individual.analysis.big_data.Major_spline.upper_threshold)
-            self.results.lower_threshold_spline += list(self.individual.analysis.big_data.Major_spline.lower_threshold)
+            self.results.trade_upper_threshold += list(self.individual.analysis.trade_upper_threshold)
+            self.results.trade_lower_threshold += list(self.individual.analysis.trade_lower_threshold)
             self.results.metalabels += list(self.data_slice.metalabels)
 
             # --> Generate next dataslice
@@ -123,6 +127,7 @@ class RUN_model:
         self.results.look_ahead = look_ahead
 
         self.results.total_data_points_processed = abs(self.data_slice.start_index-self.data_slice.end_index)
+
         self.results.benchmark_data_slice_start = self.data_slice.start_date
         self.results.benchmark_data_slice_stop = self.data_slice.end_date
 
@@ -132,7 +137,8 @@ class RUN_model:
 
         if settings.model_settings.plot_eco_model_results:
             self.results.plot_results(settings=settings,
-                                      big_data=self.individual.analysis.big_data)
+                                      big_data=self.individual.analysis)
+
 
 class EVAL_parameter_set_results_gen:
     def __init__(self, ticker, run_label):
@@ -146,10 +152,10 @@ class EVAL_parameter_set_results_gen:
         self.lower_barrier = None
         self.look_ahead = None
 
-        self.spline = []
+        self.trade_spline = []
         self.trade_signal = []
-        self.upper_threshold_spline = []
-        self.lower_threshold_spline = []
+        self.trade_upper_threshold = []
+        self.trade_lower_threshold = []
         self.metalabels = []
 
         self.total_data_points_processed = None
@@ -165,7 +171,7 @@ class EVAL_parameter_set_results_gen:
 
         self.results_file.write("====================== " + self.run_label + " ======================\n")
         self.results_file.write("\n-----------> Model settings:" + "\n")
-        self.results_file.write("Ticker: " + str(self.individual.ticker) + "\n")
+        self.results_file.write("Ticker: " + str(self.ticker) + "\n")
 
         self.results_file.write("\n-----------> Metalabeling settings:" + "\n")
         self.results_file.write("upper_barrier = " + str(self.upper_barrier))
@@ -223,15 +229,17 @@ class EVAL_parameter_set_results_gen:
 
     def plot_results(self, settings, big_data):
         from PhyTrade.Tools.Plot_tools import Plot_tools
-        print_data_slice = Trading_dataslice(ticker=self.ticker,
-                                             start_date=self.benchmark_data_slice_start,
-                                             subslice_size=self.total_data_points_processed,
-                                             subslice_shift_per_step=0)
+
+        # --> Creating plotting dataslice with subslice the size of the total data count processed
+        plot_data_slice = Trading_dataslice(ticker=self.ticker,
+                                            start_date=self.benchmark_data_slice_start,
+                                            subslice_size=self.total_data_points_processed,
+                                            subslice_shift_per_step=0)
 
         Plot_tools().plot_trade_process(settings=settings,
-                                        data_slice=print_data_slice,
-                                        trade_spline=self.spline,
-                                        trade_upper_threshold=self.upper_threshold_spline,
-                                        trade_lower_threshold=self.lower_threshold_spline,
+                                        data_slice=plot_data_slice,
+                                        trade_spline=self.trade_spline,
+                                        trade_upper_threshold=self.trade_upper_threshold,
+                                        trade_lower_threshold=self.trade_lower_threshold,
                                         trade_signal=self.trade_signal,
                                         trading_indicators=big_data.content["trading_indicator_splines"])

@@ -45,7 +45,7 @@ class Plot_tools:
                                      "oc_gradient": settings.individual_settings.print_oc_gradient}
 
         plot_tools = Plot_tools()
-        datelist = list(pd.to_datetime(date) for date in data_slice.subslice_data["Date"])
+        # datelist = list(date for date in data_slice.subslice_data["Date"])
 
         fig = plt.figure(figsize=(14, 10), dpi=150)
         fig.tight_layout()
@@ -71,13 +71,15 @@ class Plot_tools:
         ax1.get_xaxis().set_ticklabels([])
         ax2.get_xaxis().set_ticklabels([])
 
-        plt.xlim(datelist[0], datelist[-1])
+        # plt.xlim(datelist[0], datelist[-1])
 
         # ------------------ Plot bb signal(s)
         ax3 = fig.add_subplot(gs2[0, 0])
+
         # --> Plot BB signal
         plot_tools.plot_spline(data_slice=data_slice,
                                spline=trade_spline,
+                               type="Trading",
                                color="y",
                                line_thickness=2,
                                label="BB signal")
@@ -85,10 +87,12 @@ class Plot_tools:
         # --> Plot Thresholds
         plot_tools.plot_spline(data_slice=data_slice,
                                spline=trade_upper_threshold,
+                               type="Trading",
                                label="Thresholds")
 
         plot_tools.plot_spline(data_slice=data_slice,
-                               spline=trade_lower_threshold)
+                               spline=trade_lower_threshold,
+                               type="Trading")
 
         # --> Plot trigger points and highlight sections
         plot_tools.plot_spline_trigger(data_slice=data_slice,
@@ -103,15 +107,16 @@ class Plot_tools:
                 for trading_indicator_spline in trading_indicators[indicator_type]:
                     plot_tools.plot_spline(data_slice=data_slice,
                                            spline=trading_indicator_spline,
+                                           type="Trading",
                                            color="k")
 
         # --> Formatting obtained plot
-        plt.xlim(datelist[0], datelist[-1])
+        # plt.xlim(datelist[0], datelist[-1])
         plt.gcf().autofmt_xdate()
 
         plt.show()
 
-        # plot_tools.plot_candlesticks(data_slice)
+        plot_tools.plot_candlesticks(data_slice)
 
     @staticmethod
     def plot_candlesticks(data_slice):
@@ -138,15 +143,15 @@ class Plot_tools:
 
         # --> Plot close values and boilinger bands
         if plot_close_values:
-            plt.plot(data_slice.subslice_data["Date"], list(data_slice.subslice_data["Close"]), linewidth=2, label="Close values", color="#1f77b4")   # Plot closing value
-            plt.plot(data_slice.subslice_data["Date"], data_slice.subslice_data["close_upper_band"], "r--", linewidth=1, color="#1f77b4")
-            plt.plot(data_slice.subslice_data["Date"], data_slice.subslice_data["close_lower_band"], "r--", linewidth=1, color="#1f77b4")
+            plt.plot_date(data_slice.subslice_data["Date"], list(data_slice.subslice_data["Close"]), "-", linewidth=2, label="Close values", color="#1f77b4")   # Plot closing value
+            plt.plot_date(data_slice.subslice_data["Date"], data_slice.subslice_data["close_upper_band"], "r--", linewidth=1, color="#1f77b4")
+            plt.plot_date(data_slice.subslice_data["Date"], data_slice.subslice_data["close_lower_band"], "r--", linewidth=1, color="#1f77b4")
 
         # --> Plot open values and boilinger bands
         if plot_open_values:
-            plt.plot(data_slice.subslice_data["Date"], list(data_slice.subslice_data["Open"]), linewidth=2, label="Open values", color="#FFA500")
-            plt.plot(data_slice.subslice_data["Date"], data_slice.subslice_data["open_upper_band"], "r--", linewidth=1, color="#FFA500")
-            plt.plot(data_slice.subslice_data["Date"], data_slice.subslice_data["open_lower_band"], "r--", linewidth=1, color="#FFA500")
+            plt.plot_date(data_slice.subslice_data["Date"], list(data_slice.subslice_data["Open"]), "-", linewidth=2, label="Open values", color="#FFA500")
+            plt.plot_date(data_slice.subslice_data["Date"], data_slice.subslice_data["open_upper_band"], "r--", linewidth=1, color="#FFA500")
+            plt.plot_date(data_slice.subslice_data["Date"], data_slice.subslice_data["open_lower_band"], "r--", linewidth=1, color="#FFA500")
 
         plt.title("Open and close values")
         plt.xlabel("Trade date")
@@ -174,21 +179,31 @@ class Plot_tools:
         plt.grid(which='major', color='#d1cfcf', linestyle='--', zorder=4)
 
     @staticmethod
-    def plot_spline(data_slice, spline, label=None, color='g', line_thickness=1):
+    def plot_spline(data_slice, spline, type=None, label=None, color='g', line_thickness=1):
         """
         Plot a spline against its corresponding dataslice
         """
 
-        if label is not None:
-            plt.plot(data_slice.subslice_data["Date"], spline, linewidth=line_thickness, label=label, c=color)
-            plt.legend()
-        else:
-            plt.plot(data_slice.subslice_data["Date"], spline, linewidth=line_thickness, c=color)
+        if type is None:
+            if label is not None:
+                plt.plot(range(len(spline)), spline, linewidth=line_thickness, label=label, c=color)
+                plt.legend()
+            else:
+                plt.plot(range(len(spline)), spline, linewidth=line_thickness, c=color)
 
-        plt.xlabel("Trade date")
+            plt.xlabel("Time")
+
+        if type == "Trading":
+            if label is not None:
+                plt.plot(data_slice.subslice_data["Date"], spline, linewidth=line_thickness, label=label, c=color)
+                plt.legend()
+            else:
+                plt.plot(data_slice.subslice_data["Date"], spline, linewidth=line_thickness, c=color)
+
+            plt.xlabel("Trade date")
+            plt.gcf().autofmt_xdate()
+
         plt.ylabel("Buy <-- Signal strength --> Sell")
-
-        plt.gcf().autofmt_xdate()
 
         plt.minorticks_on()
         plt.grid(which='minor', color='#e5e5e5', linestyle=':', zorder=3)
@@ -209,11 +224,13 @@ class Plot_tools:
         for i in range(len(trade_signal)):
             if trade_signal[i] == 1:
                 sell_spline_values.append(trade_spline[i])
-                sell_dates.append(list(data_slice.subslice_data["Date"])[i])
+                sell_dates.append(data_slice.subslice_data["Date"].iloc[i])
+                # sell_dates.append(i)
 
             elif trade_signal[i] == -1:
                 buy_spline_values.append(trade_spline[i])
-                buy_dates.append(list(data_slice.subslice_data["Date"])[i])
+                buy_dates.append(data_slice.subslice_data["Date"].iloc[i])
+                # buy_dates.append(i)
 
         plt.scatter(sell_dates, sell_spline_values, label="Sell trigger", zorder=6)
         plt.scatter(buy_dates, buy_spline_values, label="Buy trigger", zorder=6)
