@@ -61,7 +61,7 @@ class BIGDATA:
         self.major_upper_threshold = upper_threshold
         self.major_lower_threshold = lower_threshold
 
-        # -- Calculating buy/sell dates
+        # --> Calculating buy/sell dates
         self.trade_signal, self.trade_spline, self.trade_upper_threshold, self.trade_lower_threshold = \
             spline_tools.calc_trading_spline(big_data=self,
                                              spline=self.major_spline,

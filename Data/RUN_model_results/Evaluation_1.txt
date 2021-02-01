@@ -4,7 +4,7 @@
 Ticker: AAPL
 
 -----------> Metalabeling settings:
-upper_barrier = 20lower_barrier = <PhyTrade.Settings.Class_based_settings.Metalabeling_settings.Metalabeling_settings object at 0x00000250A53DFFC8>look_ahead = 20
+upper_barrier = 20lower_barrier = <PhyTrade.Settings.Class_based_settings.Metalabeling_settings.Metalabeling_settings object at 0x00000262201E3308>look_ahead = 20
 
 -----------> Benchmarking data slice settings:
 benchmark_data_slice_start = 2019-06-03 00:00:00

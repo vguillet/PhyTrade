@@ -7,6 +7,8 @@ Used for generating time series plots
 # Libs
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
+import matplotlib.dates as mpl_dates
+
 import pandas as pd
 
 __version__ = '1.1.1'
@@ -45,7 +47,7 @@ class Plot_tools:
                                      "oc_gradient": settings.individual_settings.print_oc_gradient}
 
         plot_tools = Plot_tools()
-        # datelist = list(date for date in data_slice.subslice_data["Date"])
+        datelist = list(date for date in data_slice.subslice_data["Date"])
 
         fig = plt.figure(figsize=(14, 10), dpi=150)
         fig.tight_layout()
@@ -54,6 +56,8 @@ class Plot_tools:
 
         # ------------------ Plot Open/Close prices
         ax1 = fig.add_subplot(gs1[0, 0])
+        # plot_tools.plot_candlesticks(data_slice)
+
         plot_tools.plot_oc_values(data_slice=data_slice)
 
         plot_tools.plot_values_trigger(data_slice=data_slice,
@@ -64,6 +68,8 @@ class Plot_tools:
 
         # ------------------ Plot Volume
         ax2 = fig.add_subplot(gs1[1, 0], sharex=ax1)
+        # ax2 = fig.add_subplot(gs1[1, 0])
+
         plot_tools.plot_volume(data_slice=data_slice)
         plt.xlabel("")
 
@@ -71,7 +77,7 @@ class Plot_tools:
         ax1.get_xaxis().set_ticklabels([])
         ax2.get_xaxis().set_ticklabels([])
 
-        # plt.xlim(datelist[0], datelist[-1])
+        plt.xlim(datelist[0], datelist[-1])
 
         # ------------------ Plot bb signal(s)
         ax3 = fig.add_subplot(gs2[0, 0])
@@ -111,22 +117,80 @@ class Plot_tools:
                                            color="k")
 
         # --> Formatting obtained plot
-        # plt.xlim(datelist[0], datelist[-1])
+        plt.xlim(datelist[0], datelist[-1])
         plt.gcf().autofmt_xdate()
 
         plt.show()
 
-        plot_tools.plot_candlesticks(data_slice)
+        # plot_tools.plot_candlesticks(data_slice)
 
     @staticmethod
     def plot_candlesticks(data_slice):
         # --> Plot candlesticks
-        import mplfinance as mpf
+        # import mplfinance as mpf
+        #
+        # ohlc = data_slice.subslice_data[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']].copy()
+        # ohlc['Date'] = pd.to_datetime(ohlc['Date'])
+        # ohlc = ohlc.set_index('Date')
+        # mpf.plot(ohlc, type='candlestick', volume=False)
 
-        ohlc = data_slice.subslice_data[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']].copy()
-        ohlc['Date'] = pd.to_datetime(ohlc['Date'])
-        ohlc = ohlc.set_index('Date')
-        mpf.plot(ohlc, type='candle', volume=True)
+        import matplotlib as mpl
+        import matplotlib.pyplot as plt
+
+        # TODO: Fix candlestick chart
+
+        # ---- Function to draw candlestick
+        def draw_candlestick(axis, index, data, color_up, color_down):
+
+            # Check if stock closed higher or not
+            if data['Close'] > data['Open']:
+                color = color_up
+            else:
+                color = color_down
+
+            # Plot the candle wick
+            axis.plot([index, index], [data['Low'], data['High']], linewidth=1.5, color='black',
+                      solid_capstyle='round', zorder=2)
+
+            # Draw the candle body
+            rect = mpl.patches.Rectangle((index - 0.25, data['Open']), 0.5, (data['Close'] - data['Open']),
+                                         facecolor=color, edgecolor='black', linewidth=1.5, zorder=3)
+
+            # Add candle body to the axis
+            axis.add_patch(rect)
+
+            # Return modified axis
+            return axis
+
+        # General plot parameters
+        mpl.rcParams['font.family'] = 'Avenir'
+        mpl.rcParams['font.size'] = 18
+
+        mpl.rcParams['axes.linewidth'] = 0
+        mpl.rcParams['axes.facecolor'] = '#ededed'
+
+        mpl.rcParams['xtick.major.size'] = 0
+        mpl.rcParams['xtick.major.pad'] = 10
+        mpl.rcParams['ytick.major.size'] = 0
+        mpl.rcParams['ytick.major.pad'] = 10
+
+        # Create figure and axes
+        fig = plt.figure(figsize=(10, 5), facecolor='white')
+        ax = fig.add_subplot(111)
+
+        # Grid lines
+        ax.grid(linestyle='-', linewidth=2, color='white', zorder=1)
+
+        # Draw candlesticks
+        for day in range(data_slice.subslice_size):
+            ax = draw_candlestick(axis=ax,
+                                  index=day,
+                                  data=data_slice.subslice_data.iloc[day],
+                                  color_up='#ff4500',
+                                  color_down='#800080')
+
+        # Append ticker symbol
+        ax.text(0, 1.05, data_slice.ticker, va='baseline', ha='left', size=30, transform=ax.transAxes)
 
     @staticmethod
     def plot_oc_values(data_slice, plot_close_values=True, plot_open_values=True):
