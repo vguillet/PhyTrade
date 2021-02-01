@@ -6,6 +6,7 @@ This script contains tools for smoothing out and adding up signals, using interp
 
 # Built-in/Generic Imports
 import statistics
+import sys
 
 # Libs
 import numpy as np
@@ -220,14 +221,19 @@ class Spline_tools:
             upper_threshold = standard_upper_threshold + standard_upper_threshold*0.5*upper_band_price_diff_spline
             lower_threshold = standard_lower_threshold - standard_upper_threshold*0.5*lower_band_price_diff_spline
 
+        else:
+            sys.exit("Invalid threshold setting selected")
+
         # ---- Define upper dynamic bound method
         max_prev = 1
         freeze_trade = False
         for i in range(len(spline)):
+            # --> If spline is below upper threshold
             if spline[i] < upper_threshold[i]:
                 max_prev = 1
                 freeze_trade = False
 
+            # --> If spline is above upper threshold and no trade has been performed recently
             if spline[i] > (upper_threshold[i] + (buffer * spline_buffer[i])) and freeze_trade is False or spline[i] > max_prev:
                 new_upper_threshold = spline[i] - (buffer * spline_buffer[i])
                 if new_upper_threshold >= upper_threshold[i - 1]:

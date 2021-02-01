@@ -157,7 +157,7 @@ class EVO_algorithm:
                 # ------------------ Define the data slice to be used by the generation
                 self.subslice_cycle_count += 1
                 if self.subslice_cycle_count > settings.signal_tuning_settings.subslice_cycle_count:
-                    self.data_slice.get_shifted_data_slice()
+                    self.data_slice.get_shifted_subslice()
                     self.data_slice.gen_subslice_metalabels(upper_barrier=settings.metalabeling_settings.upper_barrier,
                                                             lower_barrier=settings.metalabeling_settings.lower_barrier,
                                                             look_ahead=settings.metalabeling_settings.look_ahead,
